@@ -1,0 +1,5 @@
+{
+  "modelType": "IMAGE_LABELING",
+  "modelFile": "automl_labeler_model.tflite",
+  "labelsFile": "automl_labeler_labels.txt",
+}

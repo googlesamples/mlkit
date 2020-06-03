@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <PreferenceCategory
+      android:enabled="true"
+      android:key="@string/pref_category_key_camera"
+      android:title="@string/pref_category_title_camera">
+
+    <ListPreference
+        android:key="@string/pref_key_rear_camera_preview_size"
+        android:persistent="true"
+        android:title="@string/pref_title_rear_camera_preview_size"/>
+
+    <ListPreference
+        android:key="@string/pref_key_front_camera_preview_size"
+        android:persistent="true"
+        android:title="@string/pref_title_front_camera_preview_size"/>
+
+    <ListPreference
+        android:key="@string/pref_key_camerax_target_analysis_size"
+        android:persistent="true"
+        android:title="@string/pref_title_camerax_target_analysis_size"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_key_camera_live_viewport"
+        android:persistent="true"
+        android:summary="@string/pref_summary_camera_live_viewport"
+        android:title="@string/pref_title_camera_live_viewport"/>
+
+  </PreferenceCategory>
+
+  <PreferenceCategory android:title="@string/pref_category_automl">
+
+    <EditTextPreference
+        android:defaultValue="mlkit_flowers"
+        android:dialogMessage="@string/pref_dialog_message_automl_remote_model_name"
+        android:key="@string/pref_key_live_preview_automl_remote_model_name"
+        android:persistent="true"
+        android:title="@string/pref_title_automl_remote_model_name"/>
+  </PreferenceCategory>
+
+</PreferenceScreen>

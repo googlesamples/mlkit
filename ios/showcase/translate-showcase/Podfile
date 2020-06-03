@@ -1,0 +1,15 @@
+platform :ios, '10.0'
+use_frameworks!
+
+pod 'GoogleMLKit/LanguageID'
+pod 'GoogleMLKit/TextRecognition'
+pod 'GoogleMLKit/Translate'
+pod 'MaterialComponents/List'
+pod 'MaterialComponents/AppBar'
+pod 'MaterialComponents/Chips'
+pod 'MaterialComponents/Chips+ChipThemer'
+pod 'MaterialComponents'
+
+target 'TranslateDemo' do
+end
+

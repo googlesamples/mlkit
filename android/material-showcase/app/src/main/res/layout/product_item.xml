@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/product_item_padding"
+    android:paddingStart="@dimen/product_item_padding"
+    android:paddingEnd="@dimen/product_item_padding">
+
+  <ImageView
+      android:id="@+id/product_image"
+      android:layout_width="@dimen/product_item_image_size"
+      android:layout_height="@dimen/product_item_image_size"
+      android:layout_marginEnd="@dimen/product_item_image_margin_end"
+      android:contentDescription="@null"/>
+
+  <TextView
+      android:id="@+id/product_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignTop="@+id/product_image"
+      android:layout_toEndOf="@id/product_image"
+      android:maxLines="1"
+      android:textColor="@color/black"
+      android:textSize="@dimen/product_item_title_size"/>
+
+  <TextView
+      android:id="@+id/product_subtitle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/product_title"
+      android:layout_toEndOf="@id/product_image"
+      android:maxLines="2"
+      android:textColor="@color/product_description"
+      android:textSize="@dimen/product_item_subtitle_size"/>
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/divider_height"
+      android:layout_marginTop="@dimen/product_item_padding"
+      android:layout_below="@+id/product_image"
+      android:background="@color/lighter_grey"/>
+
+</RelativeLayout>

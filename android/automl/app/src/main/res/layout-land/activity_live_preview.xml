@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    android:keepScreenOn="true">
+
+  <com.google.mlkit.vision.automl.demo.CameraSourcePreview
+      android:id="@+id/preview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <com.google.mlkit.vision.automl.demo.GraphicOverlay
+        android:id="@+id/graphic_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+  </com.google.mlkit.vision.automl.demo.CameraSourcePreview>
+
+  <FrameLayout
+      android:id="@+id/control"
+      android:layout_width="220dp"
+      android:layout_height="match_parent"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
+      android:background="#000" >
+
+      <Spinner
+          android:id="@+id/spinner"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal" />
+
+      <ToggleButton
+          android:id="@+id/facing_switch"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_gravity="bottom|start"
+          android:background="@layout/toggle_style"
+          android:textOff=""
+          android:textOn=""
+          android:checked="false" />
+
+      <include
+          layout="@layout/settings_style"
+          android:id="@+id/settings_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom|end"/>
+
+  </FrameLayout>
+
+</RelativeLayout>

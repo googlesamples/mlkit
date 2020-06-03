@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">MLKit Showcase</string>
+
+  <string name="entry_java_title">Java</string>
+  <string name="entry_java_subtitle">Run the MLKit Showcase written in Java.</string>
+  <string name="entry_kotlin_title">Kotlin</string>
+  <string name="entry_kotlin_subtitle">Run the MLKit Showcase written in Kotlin.</string>
+  <string name="mode_odt_live_title">Object Detection: Live Camera</string>
+  <string name="mode_odt_live_subtitle">A device’s live camera can be used to detect objects in an environment.</string>
+  <string name="mode_odt_static_title">Object Detection: Static Image</string>
+  <string name="mode_odt_static_subtitle">One or more objects can be detected from a provided image.</string>
+  <string name="mode_barcode_live_title">Barcode Scanning</string>
+  <string name="mode_barcode_live_subtitle">Read data encoded in most standard barcode formats.</string>
+  <string name="custom_model_live_title">Object Detection: Live Camera with Custom Classification (Birds)</string>
+  <string name="custom_model_live_subtitle">A device\'s live camera can be used to detect birds in an environment.</string>
+  <string name="settings_title">MLKit Showcase Settings</string>
+  <string name="cd_settings_button">Settings</string>
+  <string name="cd_close_button">Back</string>
+  <string name="cd_flash_button">Toggle camera flash</string>
+  <string name="cd_photo_library_button">Upload image</string>
+  <string name="prompt_point_at_an_object">Point your camera at an object</string>
+  <string name="prompt_point_at_a_barcode">Point your camera at a barcode</string>
+  <string name="prompt_point_at_a_bird">Point your camera at a bird</string>
+  <string name="prompt_hold_camera_steady">Keep camera still for a moment</string>
+  <string name="prompt_move_camera_closer">Move closer to search</string>
+  <string name="prompt_searching">Searching&#8230;</string>
+  <string name="product_search_button">Search object</string>
+  <plurals name="bottom_sheet_title">
+    <item quantity="one">%d match found</item>
+    <item quantity="other">%d matches found</item>
+  </plurals>
+  <string name="buttom_sheet_custom_model_title">Custom object found</string>
+  <string name="static_image_prompt_detected_no_results">No results found</string>
+  <string name="static_image_prompt_detected_results">Tap on a dot to inspect</string>
+  <string name="static_image_card_no_result_title">No result found</string>
+  <string name="static_image_card_no_result_subtitle">Support text place holder</string>
+  <string name="static_image_preview_card_subtitle">+%d more results</string>
+
+  <!-- Strings for camera settings. -->
+  <string name="pref_category_camera">Camera</string>
+  <string name="pref_key_rear_camera_preview_size" translatable="false">rcpvs</string>
+  <string name="pref_key_rear_camera_picture_size" translatable="false">rcpts</string>
+  <string name="pref_title_rear_camera_preview_size">Rear camera preview size</string>
+
+  <!-- Strings for object detection settings. -->
+  <string name="pref_category_object_detection">Object detection</string>
+  <string name="pref_key_object_detector_enable_multiple_objects" translatable="false">odemo</string>
+  <string name="pref_title_object_detector_enable_multiple_objects">Enable multiple objects</string>
+  <string name="pref_key_object_detector_enable_classification" translatable="false">odec</string>
+  <string name="pref_title_object_detector_enable_classification">Enable classification</string>
+
+  <!-- Strings for product search settings. -->
+  <string name="pref_category_product_search">Product search</string>
+  <string name="pref_key_enable_auto_search" translatable="false">pkeas</string>
+  <string name="pref_title_enable_auto_search">Enable auto search</string>
+  <string name="pref_key_confirmation_time_in_manual_search" translatable="false">ctims</string>
+  <string name="pref_title_confirmation_time_in_manual_search">Confirmation time in manual search</string>
+  <string name="pref_summary_confirmation_time_in_manual_search">Ranges from 100ms to 1000ms</string>
+  <string name="pref_key_confirmation_time_in_auto_search" translatable="false">ctias</string>
+  <string name="pref_title_confirmation_time_in_auto_search">Confirmation time in auto search</string>
+  <string name="pref_summary_confirmation_time_in_auto_search">Ranges from 500ms to 2000ms</string>
+
+  <!-- Strings for barcode detection settings. -->
+  <string name="pref_category_barcode_detection">Barcode detection</string>
+  <string name="pref_key_barcode_reticle_width" translatable="false">barcode_brw</string>
+  <string name="pref_title_barcode_reticle_width">Barcode reticle width</string>
+  <string name="pref_summary_barcode_reticle_width" formatted="false">Relative to the camera view width, ranges from 50% to 95%</string>
+  <string name="pref_key_barcode_reticle_height" translatable="false">barcode_brh</string>
+  <string name="pref_title_barcode_reticle_height">Barcode reticle height</string>
+  <string name="pref_summary_barcode_reticle_height" formatted="false">Relative to the camera view height, ranges from 20% to 80%</string>
+  <string name="pref_key_enable_barcode_size_check" translatable="false">barcode_ebsc</string>
+  <string name="pref_title_enable_barcode_size_check">Enable barcode size check</string>
+  <string name="pref_summary_enable_barcode_size_check">Will prompt user to move camera closer if the detected barcode is too small</string>
+  <string name="pref_key_minimum_barcode_width" translatable="false">barcode_mbw</string>
+  <string name="pref_title_minimum_barcode_width">Minimum barcode width</string>
+  <string name="pref_summary_minimum_barcode_width" formatted="false">Relative to the reticle width, ranges from 20% to 80% (only applicable when barcode size check enabled)</string>
+  <string name="pref_key_delay_loading_barcode_result" translatable="false">barcode_dlbr</string>
+  <string name="pref_title_delay_loading_barcode_result">Delay loading barcode result</string>
+  <string name="pref_summary_delay_loading_barcode_result">Will show the loading spinner for 2s</string>
+
+</resources>

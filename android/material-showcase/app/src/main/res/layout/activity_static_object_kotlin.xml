@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <include
+      layout="@layout/top_action_bar_in_static_image"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/top_action_bar_height"
+      android:layout_gravity="top"/>
+
+  <ImageView
+      android:id="@+id/input_image_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="@dimen/top_action_bar_height"
+      android:layout_marginBottom="@dimen/preview_card_carousel_height"
+      android:paddingStart="@dimen/static_image_view_padding_horizontal"
+      android:paddingEnd="@dimen/static_image_view_padding_horizontal"
+      android:contentDescription="@null"/>
+
+  <FrameLayout
+      android:id="@+id/dot_view_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="@dimen/top_action_bar_height"
+      android:layout_marginBottom="@dimen/preview_card_carousel_height"
+      android:background="@color/transparent"/>
+
+  <com.google.android.material.chip.Chip
+      android:id="@+id/bottom_prompt_chip"
+      style="@style/Widget.MaterialComponents.Chip.Entry"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/preview_card_carousel_height"
+      android:layout_gravity="bottom|center_horizontal"
+      android:checkable="false"
+      android:clickable="false"
+      android:fontFamily="sans-serif"
+      android:textColor="@color/white"
+      android:textSize="@dimen/bottom_prompt_chip_text_size"
+      android:visibility="gone"
+      app:chipCornerRadius="@dimen/bottom_prompt_chip_corner_radius"
+      app:chipSurfaceColor="@color/dark"
+      app:closeIconVisible="false"/>
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/card_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/preview_card_carousel_height"
+      android:layout_gravity="bottom"
+      android:paddingBottom="@dimen/preview_card_carousel_padding_bottom"
+      android:paddingTop="@dimen/preview_card_carousel_padding_top"/>
+
+  <FrameLayout
+      android:id="@+id/loading_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/dark"
+      android:visibility="gone">
+
+    <ProgressBar
+        android:layout_width="@dimen/search_progress_bar_size"
+        android:layout_height="@dimen/search_progress_bar_size"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/white"
+        android:indeterminateTintMode="src_in"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/static_image_loading_view_text_margin_bottom"
+        android:layout_gravity="bottom|center_horizontal"
+        android:text="@string/prompt_searching"
+        android:textColor="@color/white"
+        android:textSize="@dimen/static_image_loading_view_text_size"/>
+
+  </FrameLayout>
+
+  <com.google.mlkit.md.productsearch.BottomSheetScrimView
+      android:id="@+id/bottom_sheet_scrim_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="gone"/>
+
+  <include
+      android:id="@+id/bottom_sheet"
+      layout="@layout/product_bottom_sheet"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:behavior_hideable="true"
+      app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

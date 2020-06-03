@@ -1,0 +1,14 @@
+*.DS_Store
+*.idea
+*.iml
+.gradle
+local.properties
+
+.project
+.settings
+.classpath
+
+**/Pods/
+**/*.xcuserstate
+ios-snippets/Podfile.lock
+ios-snippets/mlkit-snippets.xcworkspace/xcuserdata/dfurlong.xcuserdatad/UserInterfaceState.xcuserstate

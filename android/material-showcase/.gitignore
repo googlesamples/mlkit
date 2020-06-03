@@ -1,0 +1,14 @@
+.gradle
+local.properties
+.idea
+build/
+.DS_Store
+*.iml
+*.apk
+*.aar
+*.zip
+google-services.json
+
+.project
+.settings
+.classpath

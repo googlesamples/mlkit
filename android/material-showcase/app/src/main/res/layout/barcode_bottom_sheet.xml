@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/barcode_bottom_sheet_padding_vertical"
+    android:paddingBottom="@dimen/barcode_bottom_sheet_padding_vertical"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/barcode_field_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scrollbars="vertical"/>
+
+</LinearLayout>

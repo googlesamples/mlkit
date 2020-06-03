@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.MaterialComponents.CardView"
+    android:layout_width="@dimen/preview_card_width"
+    android:layout_height="@dimen/preview_card_height"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/preview_card_corner_radius">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/card_image"
+        android:layout_width="@dimen/preview_card_image_size"
+        android:layout_height="@dimen/preview_card_image_size"
+        android:layout_margin="@dimen/preview_card_image_margin"
+        android:contentDescription="@null"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+      <TextView
+          android:id="@+id/card_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/preview_card_title_padding_top"
+          android:fontFamily="sans-serif-medium"
+          android:maxLines="2"
+          android:textColor="@color/black"
+          android:textSize="@dimen/preview_card_title_text_size"/>
+
+      <TextView
+          android:id="@+id/card_subtitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/preview_card_subtitle_padding_top"
+          android:fontFamily="sans-serif"
+          android:maxLines="2"
+          android:textColor="@color/dark"
+          android:textSize="@dimen/preview_card_subtitle_text_size"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

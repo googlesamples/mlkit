@@ -1,0 +1,9 @@
+use_frameworks!
+platform :ios, '10.0'
+
+pod 'GoogleMLKit/LanguageID'
+
+target 'LanguageIDExample' do
+end
+target 'LanguageIDExampleObjC' do
+end

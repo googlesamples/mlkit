@@ -1,0 +1,20 @@
+use_frameworks!
+
+platform :ios, '10.0'
+
+pod 'GoogleMLKit/Translate'
+
+target 'TranslateExample' do
+  target 'TranslateExampleTests' do
+    inherit! :search_paths
+  end
+end
+
+target 'TranslateExampleObjC' do
+  target 'TranslateExampleObjCTests' do
+    inherit! :search_paths
+  end
+end
+
+target 'TranslateExampleUITests' do
+end

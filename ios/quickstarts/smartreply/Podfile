@@ -1,0 +1,18 @@
+use_frameworks!
+platform :ios, '10.0'
+
+# [START smartreply_pod]
+pod 'GoogleMLKit/SmartReply'
+# [END smartreply_pod]
+
+pod 'MaterialComponents/Buttons'
+pod 'MaterialComponents/Chips'
+pod 'MaterialComponents/List'
+pod 'MaterialComponents/TextFields'
+pod 'MaterialComponents/Buttons+ButtonThemer'
+pod 'SwiftLint'
+
+target 'SmartReplyExample' do
+end
+target 'SmartReplyExampleSwift' do
+end

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <com.google.mlkit.md.camera.GraphicOverlay
+      android:id="@+id/camera_preview_graphic_overlay"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+  <FrameLayout
+      android:id="@+id/static_overlay_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/transparent">
+
+    <ProgressBar
+        android:id="@+id/search_progress_bar"
+        android:layout_width="@dimen/search_progress_bar_size"
+        android:layout_height="@dimen/search_progress_bar_size"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/white"
+        android:indeterminateTintMode="src_in"
+        android:visibility="gone"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/bottom_prompt_chip"
+        style="@style/Widget.MaterialComponents.Chip.Entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/bottom_prompt_chip_margin_bottom"
+        android:layout_gravity="bottom|center_horizontal"
+        android:checkable="false"
+        android:clickable="false"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/white"
+        android:textSize="@dimen/bottom_prompt_chip_text_size"
+        android:visibility="gone"
+        app:chipCornerRadius="@dimen/bottom_prompt_chip_corner_radius"
+        app:chipSurfaceColor="@color/dark"
+        app:closeIconVisible="false"/>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/product_search_button"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/search_button_margin_bottom"
+        android:layout_gravity="bottom|center_horizontal"
+        android:fontFamily="sans-serif"
+        android:text="@string/product_search_button"
+        android:textColor="@color/black"
+        android:textSize="@dimen/search_button_text_size"
+        android:visibility="gone"
+        app:icon="@drawable/ic_image_search_vd_black_24"
+        app:iconTint="@color/black"/>
+  </FrameLayout>
+
+</merge>

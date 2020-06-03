@@ -1,0 +1,9 @@
+# MLKit Android Samples
+
+A collection of quickstart samples demonstrating the MLKit APIs on Android.
+
+## Introduction
+[Read more about ML Kit](developers.google.com/mlkit)
+
+## How to make contributions?
+Please read and follow the steps in the [CONTRIBUTING.md](CONTRIBUTING.md)
