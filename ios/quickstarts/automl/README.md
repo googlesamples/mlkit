@@ -1,13 +1,9 @@
-ML Kit Quickstart
-=======================
+# ML Kit AutoML Remote Model Demo App
 
-ML Kit iOS quickstart demonstrates how to use the various features of ML Kit to add machine
-learning to your application.
+## Introduction
 
-Introduction
-------------
-
-- [Read more about ML Kit](https://developers.google.com/ml-kit/guides)
+* [Read more about ML Kit Vision](https://developers.google.com/ml-kit/vision)
+* [Read more about ML Kit's AutoML](https://developers.google.com/ml-kit/vision/auto-ml-vision-edge/overview)
 
 Getting Started
 ---------------

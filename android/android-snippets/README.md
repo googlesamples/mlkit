@@ -1,4 +1,4 @@
-# ML Kit Vision Demo App
+# ML Kit Android Snippets
 
 This is a collection of Android code snippets seen on https://developers.google.com/ml-kit. This project is not meant to be run as a standalone app to demo ML Kit APIs. 
 

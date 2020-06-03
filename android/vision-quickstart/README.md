@@ -19,8 +19,8 @@ Features are included in this demo app:
 ## Support
 
 * [Documentation](https://developers.google.com/ml-kit/guides)
-* [API Reference](https://developers.google.com/ml-kit/reference)
-* [Stack Overflow](https://stackoverflow.com/questions/tagged/mlkit)
+* [API Reference](https://developers.google.com/ml-kit/reference/android)
+* [Stack Overflow](https://stackoverflow.com/questions/tagged/google-mlkit)
 
 ## License
 

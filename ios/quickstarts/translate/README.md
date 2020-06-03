@@ -1,4 +1,4 @@
-ML Kit Translate ID Quickstart
+ML Kit Translate Quickstart
 =======================
 
 The ML Kit Translate iOS Quickstart app demonstrates how to use the Translate feature of ML Kit
