@@ -90,11 +90,28 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
             }
         } ?: layoutWidth.toFloat() / layoutHeight.toFloat()
 
-        // Match the width of the child view to its parent.
+        // Setting up a child view where the camera preview will fill the screen while maintaining
+        // the preview aspect ratio
+        val childWidth = (layoutHeight * previewSizeRatio).toInt()
         val childHeight = (layoutWidth / previewSizeRatio).toInt()
-        if (childHeight <= layoutHeight) {
+
+        if (layoutWidth <= childWidth) {
+            // When the child view is too wide to be fitted in its parent: If the child view is
+            // static overlay view container (contains views such as bottom prompt chip), we apply
+            // the size of the parent view to it. Otherwise, we offset the left/right position
+            // equally to position it in the center of the parent.
+            val excessLenInHalf = (childWidth - layoutWidth) / 2
             for (i in 0 until childCount) {
-                getChildAt(i).layout(0, 0, layoutWidth, childHeight)
+                val childView = getChildAt(i)
+                when (childView.id) {
+                    R.id.static_overlay_container -> {
+                        childView.layout(0, 0, layoutWidth, layoutHeight)
+                    }
+                    else -> {
+                        childView.layout(
+                                -excessLenInHalf, 0, layoutWidth + excessLenInHalf, layoutHeight)
+                    }
+                }
             }
         } else {
             // When the child view is too tall to be fitted in its parent: If the child view is
