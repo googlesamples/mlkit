@@ -341,6 +341,7 @@ typedef NS_ENUM(NSInteger, Detector) {
       (id)
       kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]
     };
+    output.alwaysDiscardsLateVideoFrames = YES;
     dispatch_queue_t outputQueue = dispatch_queue_create(videoDataOutputQueueLabel.UTF8String, nil);
     [output setSampleBufferDelegate:self queue:outputQueue];
     if ([self.captureSession canAddOutput:output]) {
