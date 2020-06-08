@@ -42,7 +42,7 @@ class Language(val code: String) : Comparable<Language> {
     }
 
     override fun toString(): String {
-        return "$displayName"
+        return displayName
     }
 
     override fun compareTo(other: Language): Int {

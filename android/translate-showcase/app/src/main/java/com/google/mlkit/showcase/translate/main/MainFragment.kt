@@ -19,31 +19,16 @@ package com.google.mlkit.showcase.translate.main
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.PixelFormat
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.Rect
-import android.graphics.RectF
+import android.graphics.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Rational
-import android.view.LayoutInflater
-import android.view.Surface
-import android.view.SurfaceHolder
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.camera.core.CameraX
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageAnalysisConfig
-import androidx.camera.core.Preview
-import androidx.camera.core.PreviewConfig
+import androidx.camera.core.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -68,7 +53,7 @@ class MainFragment : Fragment() {
         private const val HEIGHT_CROP_PERCENT = 74
     }
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,13 +64,12 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         // Request camera permissions
         if (allPermissionsGranted()) {
             viewfinder.post { startCamera() }
         } else {
-            requestPermissions(Companion.REQUIRED_PERMISSIONS, Companion.REQUEST_CODE_PERMISSIONS)
+            requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
         // Get available language list and set up the target language spinner
@@ -113,8 +97,8 @@ class MainFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        viewModel.sourceLang.observe(this, Observer { srcLang.text = it.displayName })
-        viewModel.translatedText.observe(this, Observer { resultOrError ->
+        viewModel.sourceLang.observe(viewLifecycleOwner, Observer { srcLang.text = it.displayName })
+        viewModel.translatedText.observe(viewLifecycleOwner, Observer { resultOrError ->
             resultOrError?.let {
                 if (it.error != null) {
                     translatedText.error = resultOrError.error?.localizedMessage
@@ -123,7 +107,7 @@ class MainFragment : Fragment() {
                 }
             }
         })
-        viewModel.modelDownloading.observe(this, Observer { isDownloading ->
+        viewModel.modelDownloading.observe(viewLifecycleOwner, Observer { isDownloading ->
             progressBar.visibility = if (isDownloading) {
                 View.VISIBLE
             } else {
@@ -192,7 +176,7 @@ class MainFragment : Fragment() {
         }.build()
 
         // Build the image analysis use case and instantiate our analyzer
-        viewModel.sourceText.observe(this, Observer { srcText.text = it })
+        viewModel.sourceText.observe(viewLifecycleOwner, Observer { srcText.text = it })
         val analyzerUseCase = ImageAnalysis(analyzerConfig).apply {
             analyzer =
                 TextAnalyzer(
@@ -278,7 +262,7 @@ class MainFragment : Fragment() {
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
-        if (requestCode == Companion.REQUEST_CODE_PERMISSIONS) {
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 viewfinder.post { startCamera() }
             } else {
@@ -294,7 +278,7 @@ class MainFragment : Fragment() {
     /**
      * Check if all permission specified in the manifest have been granted
      */
-    private fun allPermissionsGranted() = Companion.REQUIRED_PERMISSIONS.all {
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             requireContext(), it
         ) == PackageManager.PERMISSION_GRANTED
