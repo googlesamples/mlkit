@@ -321,6 +321,7 @@ class CameraViewController: UIViewController {
       output.videoSettings = [
         (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA,
       ]
+      output.alwaysDiscardsLateVideoFrames = true
       let outputQueue = DispatchQueue(label: Constant.videoDataOutputQueueLabel)
       output.setSampleBufferDelegate(self, queue: outputQueue)
       guard self.captureSession.canAddOutput(output) else {
