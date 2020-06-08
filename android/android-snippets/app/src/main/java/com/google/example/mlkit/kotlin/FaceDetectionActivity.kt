@@ -35,6 +35,8 @@ class FaceDetectionActivity : AppCompatActivity() {
 
         // [START get_detector]
         val detector = FaceDetection.getClient(options)
+        // Or, to use the default option:
+        // val detector = FaceDetection.getClient();
         // [END get_detector]
 
         // [START run_detector]

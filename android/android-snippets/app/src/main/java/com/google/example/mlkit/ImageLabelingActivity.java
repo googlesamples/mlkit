@@ -86,12 +86,9 @@ public class ImageLabelingActivity extends AppCompatActivity {
     }
 
     private void configureAndRunImageLabeler(InputImage image) {
-        ImageLabelerOptions options =
-                new ImageLabelerOptions.Builder()
-                        .build();
-
         // [START on_device_image_labeler]
-        ImageLabeler labeler = ImageLabeling.getClient(options);
+        // To use default options:
+        ImageLabeler labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
 
         // Or, to set the minimum confidence required:
         // ImageLabelerOptions options =

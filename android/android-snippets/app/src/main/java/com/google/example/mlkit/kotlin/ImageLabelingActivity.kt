@@ -52,11 +52,9 @@ class ImageLabelingActivity : AppCompatActivity() {
     }
 
     private fun configureAndRunImageLabeler(image: InputImage) {
-        val options = ImageLabelerOptions.Builder()
-                .build()
-
         // [START on_device_image_labeler]
-        val labeler = ImageLabeling.getClient(options)
+        // To use default options:
+        val labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
 
         // Or, to set the minimum confidence required:
         // val options = ImageLabelerOptions.Builder()

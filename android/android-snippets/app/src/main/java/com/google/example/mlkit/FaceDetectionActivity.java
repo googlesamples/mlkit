@@ -56,6 +56,8 @@ public class FaceDetectionActivity extends AppCompatActivity {
 
         // [START get_detector]
         FaceDetector detector = FaceDetection.getClient(options);
+        // Or, to use the default option:
+        // FaceDetector detector = FaceDetection.getClient();
         // [END get_detector]
 
         // [START run_detector]
