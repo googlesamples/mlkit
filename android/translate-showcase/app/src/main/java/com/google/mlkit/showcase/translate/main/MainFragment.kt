@@ -37,6 +37,7 @@ import com.google.mlkit.showcase.translate.R
 import com.google.mlkit.showcase.translate.analyzer.TextAnalyzer
 import com.google.mlkit.showcase.translate.util.Language
 import kotlinx.android.synthetic.main.main_fragment.*
+import androidx.fragment.app.viewModels
 
 
 class MainFragment : Fragment() {
