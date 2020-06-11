@@ -49,7 +49,8 @@ class TextAnalyzer(
     // Flag to skip analyzing new available frames until previous analysis has finished.
     private var isBusy = false
 
-    override fun analyze(imageProxy: ImageProxy, imageRotationDegrees: Int) {
+    @androidx.camera.core.ExperimentalGetImage
+    override fun analyze(imageProxy: ImageProxy) {
         val mediaImage = imageProxy.image ?: return
         if (isBusy) return
 
@@ -57,9 +58,11 @@ class TextAnalyzer(
         val convertImageToBitmap = ImageUtils.convertYuv420888ImageToBitmap(mediaImage)
         val cropRect = Rect(0, 0, mediaImage.width, mediaImage.height)
 
+        val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+
         // If the image is rotated by 90 (or 270) degrees, swap height and width when calculating
         // the crop.
-        val (widthCrop, heightCrop) = when(imageRotationDegrees) {
+        val (widthCrop, heightCrop) = when(rotationDegrees) {
             90, 270 -> Pair(heightCropPercent / 100f, widthCropPercent / 100f)
             else -> Pair(widthCropPercent / 100f, heightCropPercent / 100f)
         }
@@ -68,9 +71,10 @@ class TextAnalyzer(
             (mediaImage.height * heightCrop / 2).toInt()
         )
         val croppedBitmap =
-            ImageUtils.rotateAndCrop(convertImageToBitmap, imageRotationDegrees, cropRect);
+            ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect);
         recognizeTextOnDevice(InputImage.fromBitmap(croppedBitmap, 0)).addOnCompleteListener {
             isBusy = false
+            imageProxy.close()
         }
     }
 
