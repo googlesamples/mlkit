@@ -46,15 +46,10 @@ class TextAnalyzer(
 ) : ImageAnalysis.Analyzer {
     private val detector = TextRecognition.getClient()
 
-    // Flag to skip analyzing new available frames until previous analysis has finished.
-    private var isBusy = false
-
     @androidx.camera.core.ExperimentalGetImage
     override fun analyze(imageProxy: ImageProxy) {
         val mediaImage = imageProxy.image ?: return
-        if (isBusy) return
 
-        isBusy = true
         val convertImageToBitmap = ImageUtils.convertYuv420888ImageToBitmap(mediaImage)
         val cropRect = Rect(0, 0, mediaImage.width, mediaImage.height)
 
@@ -73,7 +68,6 @@ class TextAnalyzer(
         val croppedBitmap =
             ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect);
         recognizeTextOnDevice(InputImage.fromBitmap(croppedBitmap, 0)).addOnCompleteListener {
-            isBusy = false
             imageProxy.close()
         }
     }

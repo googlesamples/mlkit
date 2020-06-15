@@ -48,6 +48,7 @@ import kotlinx.android.synthetic.main.main_fragment.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
+import kotlin.math.log
 import kotlin.math.max
 import kotlin.math.min
 
@@ -81,10 +82,6 @@ class MainFragment : Fragment() {
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
 
-    private val displayManager by lazy {
-        requireContext().getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -97,9 +94,6 @@ class MainFragment : Fragment() {
 
         // Shut down our background executor
         cameraExecutor.shutdown()
-
-        // Unregister listeners
-        displayManager.unregisterDisplayListener(displayListener)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -125,9 +119,6 @@ class MainFragment : Fragment() {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        // Every time the orientation of device changes, update rotation for use cases
-        displayManager.registerDisplayListener(displayListener, null)
-
         // Get available language list and set up the target language spinner
         // with default selections.
         val adapter = ArrayAdapter(
@@ -140,7 +131,7 @@ class MainFragment : Fragment() {
         targetLangSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
-                view: View,
+                view: View?,
                 position: Int,
                 id: Long
             ) {
@@ -229,6 +220,7 @@ class MainFragment : Fragment() {
             // We request aspect ratio but no resolution
             .setTargetAspectRatio(screenAspectRatio)
             .setTargetRotation(rotation)
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
             .also {
                 it.setAnalyzer(
@@ -256,8 +248,8 @@ class MainFragment : Fragment() {
                 this, cameraSelector, preview, imageAnalyzer
             )
             preview.setSurfaceProvider(viewFinder.createSurfaceProvider())
-        } catch (exc: Exception) {
-            Log.e(TAG, "Use case binding failed", exc)
+        } catch (exc: IllegalStateException) {
+            Log.e(TAG, "Use case binding failed. This must be running on main thread.", exc)
         }
     }
 
@@ -305,26 +297,10 @@ class MainFragment : Fragment() {
     }
 
     /**
-     * We need a display listener for orientation changes that do not trigger a configuration
-     * change, for example if we choose to override config change in manifest or for 180-degree
-     * orientation changes.
-     */
-    private val displayListener = object : DisplayManager.DisplayListener {
-        override fun onDisplayAdded(displayId: Int) = Unit
-        override fun onDisplayRemoved(displayId: Int) = Unit
-        override fun onDisplayChanged(displayId: Int) = view?.let { view ->
-            if (displayId == this@MainFragment.displayId) {
-                Log.d(TAG, "Rotation changed: ${view.display.rotation}")
-                imageAnalyzer?.targetRotation = view.display.rotation
-            }
-        } ?: Unit
-    }
-
-    /**
      *  [androidx.camera.core.ImageAnalysisConfig] requires enum value of
      *  [androidx.camera.core.AspectRatio]. Currently it has values of 4:3 & 16:9.
      *
-     *  Detecting the most suitable ratio for dimensions provided in @params by counting absolute
+     *  Detecting the most suitable ratio for dimensions provided in @params by comparing absolute
      *  of preview ratio to one of the provided values.
      *
      *  @param width - preview width
@@ -332,8 +308,9 @@ class MainFragment : Fragment() {
      *  @return suitable aspect ratio
      */
     private fun aspectRatio(width: Int, height: Int): Int {
-        val previewRatio = max(width, height).toDouble() / min(width, height)
-        if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
+        val previewRatio = log(max(width, height).toDouble() / min(width, height), 10.0)
+        if (abs(previewRatio - log(RATIO_4_3_VALUE, 10.0))
+            <= abs(previewRatio - log(RATIO_16_9_VALUE, 10.0))) {
             return AspectRatio.RATIO_4_3
         }
         return AspectRatio.RATIO_16_9
