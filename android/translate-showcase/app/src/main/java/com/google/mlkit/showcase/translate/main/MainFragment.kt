@@ -18,10 +18,8 @@
 package com.google.mlkit.showcase.translate.main
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.*
-import android.hardware.display.DisplayManager
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -48,7 +46,7 @@ import kotlinx.android.synthetic.main.main_fragment.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
-import kotlin.math.log
+import kotlin.math.ln
 import kotlin.math.max
 import kotlin.math.min
 
@@ -57,6 +55,11 @@ class MainFragment : Fragment() {
     companion object {
         fun newInstance() = MainFragment()
 
+        // We only need to analyze the part of the image that has text, so we set crop percentages
+        // to avoid analyze the entire image from the live camera feed.
+        const val DESIRED_WIDTH_CROP_PERCENT = 8
+        const val DESIRED_HEIGHT_CROP_PERCENT = 74
+
         // This is an arbitrary number we are using to keep tab of the permission
         // request. Where an app has multiple context for requesting permission,
         // this can help differentiate the different contexts
@@ -64,8 +67,6 @@ class MainFragment : Fragment() {
 
         // This is an array of all the permission specified in the manifest
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val WIDTH_CROP_PERCENT = 8
-        private const val HEIGHT_CROP_PERCENT = 74
         private const val RATIO_4_3_VALUE = 4.0 / 3.0
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
         private const val TAG = "MainFragment"
@@ -176,7 +177,7 @@ class MainFragment : Fragment() {
                 }
 
                 override fun surfaceCreated(holder: SurfaceHolder?) {
-                    holder?.let { drawOverlay(it) }
+                    holder?.let { drawOverlay(it, DESIRED_HEIGHT_CROP_PERCENT, DESIRED_WIDTH_CROP_PERCENT) }
                 }
 
             })
@@ -228,12 +229,13 @@ class MainFragment : Fragment() {
                     , TextAnalyzer(
                         requireContext(),
                         viewModel.sourceText,
-                        widthCropPercent = WIDTH_CROP_PERCENT,
-                        heightCropPercent = HEIGHT_CROP_PERCENT
+                        viewModel.imageCropPercentages
                     )
                 )
             }
         viewModel.sourceText.observe(viewLifecycleOwner, Observer { srcText.text = it })
+        viewModel.imageCropPercentages.observe(viewLifecycleOwner,
+            Observer { drawOverlay(overlay.holder, it.first, it.second) })
 
         // Select back camera since text detection does not work with front camera
         val cameraSelector =
@@ -253,7 +255,11 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun drawOverlay(holder: SurfaceHolder) {
+    private fun drawOverlay(
+        holder: SurfaceHolder,
+        heightCropPercent: Int,
+        widthCropPercent: Int
+    ) {
         val canvas = holder.lockCanvas()
         val bgPaint = Paint().apply {
             alpha = 140
@@ -272,10 +278,10 @@ class MainFragment : Fragment() {
 
         val cornerRadius = 25f
         // Set rect centered in frame
-        val rectTop = surfaceHeight * HEIGHT_CROP_PERCENT / 2 / 100f
-        val rectLeft = surfaceWidth * WIDTH_CROP_PERCENT / 2 / 100f
-        val rectRight = surfaceWidth * (1 - WIDTH_CROP_PERCENT / 2 / 100f)
-        val rectBottom = surfaceHeight * (1 - HEIGHT_CROP_PERCENT / 2 / 100f)
+        val rectTop = surfaceHeight * heightCropPercent / 2 / 100f
+        val rectLeft = surfaceWidth * widthCropPercent / 2 / 100f
+        val rectRight = surfaceWidth * (1 - widthCropPercent / 2 / 100f)
+        val rectBottom = surfaceHeight * (1 - heightCropPercent / 2 / 100f)
         val rect = RectF(rectLeft, rectTop, rectRight, rectBottom)
         canvas.drawRoundRect(
             rect, cornerRadius, cornerRadius, rectPaint
@@ -308,9 +314,10 @@ class MainFragment : Fragment() {
      *  @return suitable aspect ratio
      */
     private fun aspectRatio(width: Int, height: Int): Int {
-        val previewRatio = log(max(width, height).toDouble() / min(width, height), 10.0)
-        if (abs(previewRatio - log(RATIO_4_3_VALUE, 10.0))
-            <= abs(previewRatio - log(RATIO_16_9_VALUE, 10.0))) {
+        val previewRatio = ln(max(width, height).toDouble() / min(width, height))
+        if (abs(previewRatio - ln(RATIO_4_3_VALUE))
+            <= abs(previewRatio - ln(RATIO_16_9_VALUE))
+        ) {
             return AspectRatio.RATIO_4_3
         }
         return AspectRatio.RATIO_16_9
