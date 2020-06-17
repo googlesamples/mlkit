@@ -171,8 +171,8 @@ static NSString *const kFakeProductItemNumberText = @"12345678";
 // Width to height ratio of the thumbnail.
 @property(nonatomic) CGFloat thumbnailWidthHeightRatio;
 
-// Target height of the bottom sheet.
-@property(nonatomic) CGFloat bottomSheetTargetHeight;
+// Target Y offset of the bottom sheet.
+@property(nonatomic) CGFloat bottomSheetTargetOffsetY;
 
 // Array of timers scheduled before Confirmation.
 @property(nonatomic, nullable) NSMutableArray<NSTimer *> *timers;
@@ -273,7 +273,7 @@ static NSString *const kFakeProductItemNumberText = @"12345678";
 #pragma mark - MDCBottomSheetControllerDelegate
 
 - (void)bottomSheetControllerDidDismissBottomSheet:(nonnull MDCBottomSheetController *)controller {
-  self.bottomSheetTargetHeight = 0;
+  self.bottomSheetTargetOffsetY = 0;
   [self startToDetect];
 }
 
@@ -295,9 +295,9 @@ static NSString *const kFakeProductItemNumberText = @"12345678";
 
   CGFloat imageAlpha =
       [self ratioOfCurrentValue:yOffset
-                           from:(yOffset > self.bottomSheetTargetHeight) ? bottomFadeOutOffsetY
+                           from:(yOffset > self.bottomSheetTargetOffsetY) ? bottomFadeOutOffsetY
                                                                          : topFadeOutOffsetY
-                             to:self.bottomSheetTargetHeight];
+                             to:self.bottomSheetTargetOffsetY];
   [self.overlayView showImageInRect:rect alpha:imageAlpha];
 }
 
@@ -802,10 +802,10 @@ static NSString *const kFakeProductItemNumberText = @"12345678";
 
   UIEdgeInsets safeInsets = [MLKUIUtilities safeAreaInsets];
 
-  CGFloat toOffsetY = contentHeight > screenHeight
+  CGFloat toOffsetY = contentHeight > screenHeight / 2.0f
                           ? screenHeight / 2.0f - safeInsets.bottom
                           : screenHeight - contentHeight - safeInsets.top - safeInsets.bottom;
-  self.bottomSheetTargetHeight = toOffsetY;
+  self.bottomSheetTargetOffsetY = toOffsetY;
 
   CGRect toFrame =
       CGRectMake(kThumbnailPaddingAround,                                                  // X
