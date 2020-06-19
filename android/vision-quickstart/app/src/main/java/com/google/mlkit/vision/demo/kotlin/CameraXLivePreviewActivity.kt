@@ -264,19 +264,19 @@ class CameraXLivePreviewActivity :
     }
 
     private fun bindPreviewUseCase() {
+        if (!PreferenceUtils.isCameraLiveViewportEnabled(this)) {
+            return
+        }
         if (cameraProvider == null) {
             return
         }
         if (previewUseCase != null) {
             cameraProvider!!.unbind(previewUseCase)
         }
+
         previewUseCase = Preview.Builder().build()
-        val camera =
-                cameraProvider!!.bindToLifecycle(
-                        /* lifecycleOwner= */this,
-                        cameraSelector!!, previewUseCase
-                )
         previewUseCase!!.setSurfaceProvider(previewView!!.createSurfaceProvider())
+        cameraProvider!!.bindToLifecycle(/* lifecycleOwner= */this, cameraSelector!!, previewUseCase)
     }
 
     @SuppressLint("NewApi")
