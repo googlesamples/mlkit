@@ -21,40 +21,67 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
-import android.util.Rational
-import android.view.*
+import android.util.DisplayMetrics
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.SurfaceHolder
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.camera.core.*
+import androidx.camera.core.Camera
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.google.mlkit.showcase.translate.R
 import com.google.mlkit.showcase.translate.analyzer.TextAnalyzer
 import com.google.mlkit.showcase.translate.util.Language
 import kotlinx.android.synthetic.main.main_fragment.*
-import androidx.fragment.app.viewModels
-
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import kotlin.math.abs
+import kotlin.math.ln
+import kotlin.math.max
+import kotlin.math.min
 
 class MainFragment : Fragment() {
 
     companion object {
         fun newInstance() = MainFragment()
+
+        // We only need to analyze the part of the image that has text, so we set crop percentages
+        // to avoid analyze the entire image from the live camera feed.
+        const val DESIRED_WIDTH_CROP_PERCENT = 8
+        const val DESIRED_HEIGHT_CROP_PERCENT = 74
+
         // This is an arbitrary number we are using to keep tab of the permission
         // request. Where an app has multiple context for requesting permission,
         // this can help differentiate the different contexts
         private const val REQUEST_CODE_PERMISSIONS = 10
+
         // This is an array of all the permission specified in the manifest
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val WIDTH_CROP_PERCENT = 8
-        private const val HEIGHT_CROP_PERCENT = 74
+        private const val RATIO_4_3_VALUE = 4.0 / 3.0
+        private const val RATIO_16_9_VALUE = 16.0 / 9.0
+        private const val TAG = "MainFragment"
     }
 
+    private var displayId: Int = -1
     private val viewModel: MainViewModel by viewModels()
+    private var cameraProvider: ProcessCameraProvider? = null
+    private var camera: Camera? = null
+    private var imageAnalyzer: ImageAnalysis? = null
+    private lateinit var container: ConstraintLayout
+    private lateinit var viewFinder: PreviewView
+
+    /** Blocking camera operations are performed using this executor */
+    private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,12 +90,32 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        // Shut down our background executor
+        cameraExecutor.shutdown()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        container = view as ConstraintLayout
+        viewFinder = container.findViewById(R.id.viewfinder)
+
+        // Initialize our background executor
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
         // Request camera permissions
         if (allPermissionsGranted()) {
-            viewfinder.post { startCamera() }
+            // Wait for the views to be properly laid out
+            viewFinder.post {
+                // Keep track of the display in which this view is attached
+                displayId = viewFinder.display.displayId
+
+                // Set up the camera and its use cases
+                setUpCamera()
+            }
         } else {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
@@ -79,16 +126,13 @@ class MainFragment : Fragment() {
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item, viewModel.availableLanguages
         )
-        // Every time the provided texture view changes, recompute layout
-        viewfinder.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateTransform()
-        }
+
         targetLangSelector.adapter = adapter
         targetLangSelector.setSelection(adapter.getPosition(Language("en")))
         targetLangSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
-                view: View,
+                view: View?,
                 position: Int,
                 id: Long
             ) {
@@ -133,87 +177,89 @@ class MainFragment : Fragment() {
                 }
 
                 override fun surfaceCreated(holder: SurfaceHolder?) {
-                    holder?.let { drawOverlay(it) }
+                    holder?.let { drawOverlay(it, DESIRED_HEIGHT_CROP_PERCENT, DESIRED_WIDTH_CROP_PERCENT) }
                 }
 
             })
         }
     }
 
-    private fun startCamera() {
-        // Create configuration object for the viewfinder use case
-        val previewConfig = PreviewConfig.Builder().apply {
-            setTargetAspectRatio(Rational(1, 1))
 
-        }.build()
+    /** Initialize CameraX, and prepare to bind the camera use cases  */
+    private fun setUpCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        cameraProviderFuture.addListener(Runnable {
 
-        // Build the viewfinder use case
-        val preview = Preview(previewConfig)
+            // CameraProvider
+            cameraProvider = cameraProviderFuture.get()
 
-        // Every time the viewfinder is updated, recompute layout
-        preview.setOnPreviewOutputUpdateListener {
+            // Build and bind the camera use cases
+            bindCameraUseCases()
+        }, ContextCompat.getMainExecutor(requireContext()))
+    }
 
-            // To update the SurfaceTexture, we have to remove it and re-add it
-            val parent = viewfinder.parent as ViewGroup
-            parent.removeView(viewfinder)
-            parent.addView(viewfinder, 0)
+    private fun bindCameraUseCases() {
+        val cameraProvider = cameraProvider
+            ?: throw IllegalStateException("Camera initialization failed.")
 
-            viewfinder.surfaceTexture = it.surfaceTexture
-            updateTransform()
-        }
+        // Get screen metrics used to setup camera for full screen resolution
+        val metrics = DisplayMetrics().also { viewFinder.display.getRealMetrics(it) }
+        Log.d(TAG, "Screen metrics: ${metrics.widthPixels} x ${metrics.heightPixels}")
 
-        // Setup image analysis pipeline that computes average pixel luminance
-        val analyzerConfig = ImageAnalysisConfig.Builder().apply {
-            // Use a worker thread for image analysis to prevent glitches
-            val analyzerThread = HandlerThread(
-                "TextAnalysis"
-            ).apply { start() }
-            setCallbackHandler(Handler(analyzerThread.looper))
-            // In our analysis, we care more about the latest image than
-            // analyzing *every* image
-            setImageReaderMode(
-                ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE
-            )
-        }.build()
+        val screenAspectRatio = aspectRatio(metrics.widthPixels, metrics.heightPixels)
+        Log.d(TAG, "Preview aspect ratio: $screenAspectRatio")
+
+        val rotation = viewFinder.display.rotation
+
+        val preview = Preview.Builder()
+            .setTargetAspectRatio(screenAspectRatio)
+            .setTargetRotation(rotation)
+            .build()
 
         // Build the image analysis use case and instantiate our analyzer
-        viewModel.sourceText.observe(viewLifecycleOwner, Observer { srcText.text = it })
-        val analyzerUseCase = ImageAnalysis(analyzerConfig).apply {
-            analyzer =
-                TextAnalyzer(
-                    requireContext(),
-                    viewModel.sourceText,
-                    widthCropPercent = WIDTH_CROP_PERCENT,
-                    heightCropPercent = HEIGHT_CROP_PERCENT
+        imageAnalyzer = ImageAnalysis.Builder()
+            // We request aspect ratio but no resolution
+            .setTargetAspectRatio(screenAspectRatio)
+            .setTargetRotation(rotation)
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+            .also {
+                it.setAnalyzer(
+                    cameraExecutor
+                    , TextAnalyzer(
+                        requireContext(),
+                        viewModel.sourceText,
+                        viewModel.imageCropPercentages
+                    )
                 )
-        }
+            }
+        viewModel.sourceText.observe(viewLifecycleOwner, Observer { srcText.text = it })
+        viewModel.imageCropPercentages.observe(viewLifecycleOwner,
+            Observer { drawOverlay(overlay.holder, it.first, it.second) })
 
-        // Bind use cases to lifecycle
-        CameraX.bindToLifecycle(this, preview, analyzerUseCase)
+        // Select back camera since text detection does not work with front camera
+        val cameraSelector =
+            CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
+
+        try {
+            // Unbind use cases before rebinding
+            cameraProvider.unbindAll()
+
+            // Bind use cases to camera
+            camera = cameraProvider.bindToLifecycle(
+                this, cameraSelector, preview, imageAnalyzer
+            )
+            preview.setSurfaceProvider(viewFinder.createSurfaceProvider())
+        } catch (exc: IllegalStateException) {
+            Log.e(TAG, "Use case binding failed. This must be running on main thread.", exc)
+        }
     }
 
-    private fun updateTransform() {
-        val matrix = Matrix()
-
-        // Compute the center of the view finder
-        val centerX = viewfinder.width / 2f
-        val centerY = viewfinder.height / 2f
-
-        // Correct preview output to account for display rotation
-        val rotationDegrees = when (viewfinder.display.rotation) {
-            Surface.ROTATION_0 -> 0
-            Surface.ROTATION_90 -> 90
-            Surface.ROTATION_180 -> 180
-            Surface.ROTATION_270 -> 270
-            else -> return
-        }
-        matrix.postRotate(-rotationDegrees.toFloat(), centerX, centerY)
-
-        // Finally, apply transformations to our TextureView
-        viewfinder.setTransform(matrix)
-    }
-
-    private fun drawOverlay(holder: SurfaceHolder) {
+    private fun drawOverlay(
+        holder: SurfaceHolder,
+        heightCropPercent: Int,
+        widthCropPercent: Int
+    ) {
         val canvas = holder.lockCanvas()
         val bgPaint = Paint().apply {
             alpha = 140
@@ -232,10 +278,10 @@ class MainFragment : Fragment() {
 
         val cornerRadius = 25f
         // Set rect centered in frame
-        val rectTop = surfaceHeight * HEIGHT_CROP_PERCENT / 2 / 100f
-        val rectLeft = surfaceWidth * WIDTH_CROP_PERCENT / 2 / 100f
-        val rectRight = surfaceWidth * (1 - WIDTH_CROP_PERCENT / 2 / 100f)
-        val rectBottom = surfaceHeight * (1 - HEIGHT_CROP_PERCENT / 2 / 100f)
+        val rectTop = surfaceHeight * heightCropPercent / 2 / 100f
+        val rectLeft = surfaceWidth * widthCropPercent / 2 / 100f
+        val rectRight = surfaceWidth * (1 - widthCropPercent / 2 / 100f)
+        val rectBottom = surfaceHeight * (1 - heightCropPercent / 2 / 100f)
         val rect = RectF(rectLeft, rectTop, rectRight, rectBottom)
         canvas.drawRoundRect(
             rect, cornerRadius, cornerRadius, rectPaint
@@ -257,6 +303,27 @@ class MainFragment : Fragment() {
     }
 
     /**
+     *  [androidx.camera.core.ImageAnalysisConfig] requires enum value of
+     *  [androidx.camera.core.AspectRatio]. Currently it has values of 4:3 & 16:9.
+     *
+     *  Detecting the most suitable ratio for dimensions provided in @params by comparing absolute
+     *  of preview ratio to one of the provided values.
+     *
+     *  @param width - preview width
+     *  @param height - preview height
+     *  @return suitable aspect ratio
+     */
+    private fun aspectRatio(width: Int, height: Int): Int {
+        val previewRatio = ln(max(width, height).toDouble() / min(width, height))
+        if (abs(previewRatio - ln(RATIO_4_3_VALUE))
+            <= abs(previewRatio - ln(RATIO_16_9_VALUE))
+        ) {
+            return AspectRatio.RATIO_4_3
+        }
+        return AspectRatio.RATIO_16_9
+    }
+
+    /**
      * Process result from permission request dialog box, has the request
      * been granted? If yes, start Camera. Otherwise display a toast
      */
@@ -265,7 +332,7 @@ class MainFragment : Fragment() {
     ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
-                viewfinder.post { startCamera() }
+                viewFinder.post { bindCameraUseCases() }
             } else {
                 Toast.makeText(
                     context,

@@ -35,12 +35,19 @@ import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.Translator
 import com.google.mlkit.nl.translate.TranslatorOptions
+import com.google.mlkit.showcase.translate.main.MainFragment.Companion.DESIRED_HEIGHT_CROP_PERCENT
+import com.google.mlkit.showcase.translate.main.MainFragment.Companion.DESIRED_WIDTH_CROP_PERCENT
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val languageIdentification =
-        LanguageIdentification.getClient()
+    private val languageIdentification = LanguageIdentification.getClient()
     val targetLang = MutableLiveData<Language>()
     val sourceText = SmoothedMutableLiveData<String>(SMOOTHING_DURATION)
+    // We set desired crop percentages to avoid having the analyze the whole image from the live
+    // camera feed. However, we are not guaranteed what aspect ratio we will get from the camera, so
+    // we use the first frame we get back from the camera to update these crop percentages based on
+    // the actual aspect ratio of images.
+    val imageCropPercentages = MutableLiveData<Pair<Int, Int>>()
+        .apply { value = Pair(DESIRED_HEIGHT_CROP_PERCENT, DESIRED_WIDTH_CROP_PERCENT) }
     val translatedText = MediatorLiveData<ResultOrError>()
     private val translating = MutableLiveData<Boolean>()
     val modelDownloading = SmoothedMutableLiveData<Boolean>(SMOOTHING_DURATION)

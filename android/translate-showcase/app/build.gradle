@@ -61,9 +61,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     // Add CameraX dependencies
-    def camerax_version = "1.0.0-alpha05"
+    def camerax_version = "1.0.0-beta05"
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+    implementation "androidx.camera:camera-view:1.0.0-alpha12"
 
     // Add ML Kit dependencies
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.0.0'
