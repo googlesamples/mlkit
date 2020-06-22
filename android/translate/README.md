@@ -1,35 +1,30 @@
-ML Kit Translate Quickstart
-==============================
+# ML Kit Translate Quickstart Sample App
 
-The ML Kit Translate Android Quickstart app demonstrates how to
-use the Translate feature of ML Kit to perform translations of text in
-your application.
+## Introduction
 
-Introduction
-------------
+The ML Kit Translate quickstart sample app demonstrates how to use ML Kit APIs to translate text in your application.
+* [Read more about ML Kit Translate](https://developers.google.com/ml-kit/language/translation)
 
-- [Read more about ML Kit Translate](https://developers.google.com/ml-kit/language/translation)
 
-Getting Started
----------------
+## Feature List
+Features that are included in this demo app:
+* [Translate](https://developers.google.com/ml-kit/language/translation/android) - Translate Text with ML Kit on Android
 
-- Run the sample on an Android device.
-- Choose the Java or Kotlin version on the initial screen.
-- Type input text and press the buttons to identify languages.
+<img src="../screenshots/translate-quickstart.png" width="256"/>
 
-Result
------------
-<img src="app/src/screen.png" height="534" width="300"/>
+## Getting Started
 
-Support
--------
+* Run the sample on an Android device.
+* Choose the Java or Kotlin version on the initial screen.
+* Type input text and press the buttons to identify languages.
 
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/mlkit)
+## Support
 
-License
--------
+* [Stack Overflow](https://stackoverflow.com/questions/tagged/google-mlkit)
 
-Copyright 2019 Google, Inc.
+## License
+
+Copyright 2020 Google, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE file distributed with this work for
