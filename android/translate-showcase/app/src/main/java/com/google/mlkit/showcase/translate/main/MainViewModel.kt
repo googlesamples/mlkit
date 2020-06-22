@@ -40,6 +40,11 @@ import com.google.mlkit.showcase.translate.main.MainFragment.Companion.DESIRED_W
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val languageIdentification = LanguageIdentification.getClient()
+    override fun onCleared() {
+        languageIdentification.close()
+        translators.evictAll()
+    }
+
     val targetLang = MutableLiveData<Language>()
     val sourceText = SmoothedMutableLiveData<String>(SMOOTHING_DURATION)
     // We set desired crop percentages to avoid having the analyze the whole image from the live

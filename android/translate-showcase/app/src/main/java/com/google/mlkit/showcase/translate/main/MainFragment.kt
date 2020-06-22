@@ -42,7 +42,9 @@ import androidx.lifecycle.Observer
 import com.google.mlkit.showcase.translate.R
 import com.google.mlkit.showcase.translate.analyzer.TextAnalyzer
 import com.google.mlkit.showcase.translate.util.Language
+import com.google.mlkit.showcase.translate.util.ScopedExecutor
 import kotlinx.android.synthetic.main.main_fragment.*
+import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -82,6 +84,7 @@ class MainFragment : Fragment() {
 
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var scopedExecutor: ScopedExecutor
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -95,6 +98,7 @@ class MainFragment : Fragment() {
 
         // Shut down our background executor
         cameraExecutor.shutdown()
+        scopedExecutor.shutdown()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,6 +109,7 @@ class MainFragment : Fragment() {
 
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
+        scopedExecutor = ScopedExecutor(cameraExecutor)
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -177,7 +182,13 @@ class MainFragment : Fragment() {
                 }
 
                 override fun surfaceCreated(holder: SurfaceHolder?) {
-                    holder?.let { drawOverlay(it, DESIRED_HEIGHT_CROP_PERCENT, DESIRED_WIDTH_CROP_PERCENT) }
+                    holder?.let {
+                        drawOverlay(
+                            it,
+                            DESIRED_HEIGHT_CROP_PERCENT,
+                            DESIRED_WIDTH_CROP_PERCENT
+                        )
+                    }
                 }
 
             })
@@ -225,9 +236,9 @@ class MainFragment : Fragment() {
             .build()
             .also {
                 it.setAnalyzer(
-                    cameraExecutor
-                    , TextAnalyzer(
+                    scopedExecutor, TextAnalyzer(
                         requireContext(),
+                        lifecycle,
                         viewModel.sourceText,
                         viewModel.imageCropPercentages
                     )
