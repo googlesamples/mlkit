@@ -23,6 +23,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.common.MlKitException
@@ -38,10 +39,15 @@ import java.lang.Exception
  */
 class TextAnalyzer(
     private val context: Context,
+    lifecycle: Lifecycle,
     private val result: MutableLiveData<String>,
     private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>
 ) : ImageAnalysis.Analyzer {
     private val detector = TextRecognition.getClient()
+
+    init {
+        lifecycle.addObserver(detector)
+    }
 
     @androidx.camera.core.ExperimentalGetImage
     override fun analyze(imageProxy: ImageProxy) {
