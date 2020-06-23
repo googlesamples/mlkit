@@ -10,7 +10,7 @@ The ML Kit Smart Reply quickstart sample app demonstrates how to use the Smart R
 Features that are included in this demo app:
 * [Smart Reply](https://developers.google.com/ml-kit/language/smart-reply/android) - Generate smart replies with ML Kit on Android
 
-<img src=“app/src/screen.png” height=“534” width=“300”/>
+<img src="app/src/screen.png" height="534" width="300"/>
 
 ## Getting Started
 

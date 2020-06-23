@@ -39,9 +39,7 @@ The CameraX live preview scenario is very similar to the native live camera scen
 
 ## Support
 
-* [Documentation](https://developers.google.com/ml-kit/guides)
-* [API Reference](https://developers.google.com/ml-kit/reference)
-* [Stack Overflow](https://stackoverflow.com/questions/tagged/mlkit)
+* [Stack Overflow](https://stackoverflow.com/questions/tagged/google-mlkit)
 
 ## License
 

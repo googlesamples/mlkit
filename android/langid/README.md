@@ -15,7 +15,8 @@ Features that are included in this demo app:
 * Choose the Java or Kotlin version on the initial screen.
 * Type input text and press the buttons to identify languages.
 
-<img src=“../screenshots/langid-quickstart.png” width=“300”/>
+<img src="../screenshots/langid-quickstart.png" width="256"/>
+
 
 ## Support
 
