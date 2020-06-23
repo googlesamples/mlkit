@@ -11,7 +11,7 @@ This ML Kit Quickstart App demonstrates how to label images with an AutoML Visio
 Features that are included in this demo app:
 * [AutoML Image labeling](https://developers.google.com/ml-kit/vision/image-labeling/automl/ios) - Label images using an AutoML VisionEdge trained model
 
-<img src="../../screenshots/auto_ml_1.jpg" width="256"/> <img src="../../screenshots/auto_ml_2.jpg" width="256"/>
+<img src="../../screenshots/auto_ml_1.jpeg" width="256"/> <img src="../../screenshots/auto_ml_2.jpeg" width="256"/>
 
 ## Getting Started
 
