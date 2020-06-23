@@ -1,20 +1,54 @@
-# ML Kit Vision Demo App
+# ML Kit Vision Quickstart Sample App
 
 ## Introduction
 
-* [Read more about ML Kit Vision](https://developers.google.com/ml-kit/vision)
+This ML Kit Quickstart app demonstrates how to use and integrate various vision based ML Kit features into your app.
 
-Features are included in this demo app:
-* [Object Detection](https://developers.google.com/ml-kit/vision/object-detection/android)
-* [Face Detection](https://developers.google.com/ml-kit/vision/face-detection/android)
-* [Text Recognition](https://developers.google.com/ml-kit/vision/text-recognition/android)
-* [Barcode Scanning](https://developers.google.com/ml-kit/vision/barcode-scanning/android)
-* [Image Labeling](https://developers.google.com/ml-kit/vision/image-labeling/android)
+## Feature List
+
+Features that are included in this Quickstart app:
+* [Object Detection](https://developers.google.com/ml-kit/vision/object-detection/android) - Detect, track, and classify objects in real time and static images
+* [Face Detection](https://developers.google.com/ml-kit/vision/face-detection/android) - Detect faces in real time and static images
+* [Text Recognition](https://developers.google.com/ml-kit/vision/text-recognition/android) - Recognize text in real time and static images
+* [Barcode Scanning](https://developers.google.com/ml-kit/vision/barcode-scanning/android)  - Scan barcodes in real time and static images
+* [Image Labeling](https://developers.google.com/ml-kit/vision/image-labeling/android) - Label images in real time and static images
+* [Custom Image Labeling - Birds](https://developers.google.com/ml-kit/vision/image-labeling/custom-models/android) - Label images of birds with a custom TensorFlow Lite model.
+
+<img src="../screenshots/quickstart-picker.png" width="256"/> <img src="../screenshots/quickstart-image-labeling.png" width="256"/> <img src="../screenshots/quickstart-object-detection.png" width="256"/> 
 
 ## Getting Started
 
 * Run the sample code on your Android device or emulator
 * Try extending the code to add new features and functionality
+
+## How to use the app
+
+This app supports three usage scenarios: Live Camera, Static Image, and CameraX enabled live camera.
+
+### Live Camera scenario
+It uses the camera preview as input and contains these API workflows: Object detection & tracking, Face Detection, Text Recognition, Barcode Scanning, and Image Labeling. There's also a settings page that allows you to configure several options:
+* Camera
+    * Preview Size - Specify the preview size of rear camera manually (Default size is chose appropriately based on screen size)
+    * Enable live viewport - Prevent the live camera preview from being blocked by API rendering speed
+* Object detection / Custom Object Detection
+    * Enable Multiple Objects -- Enable multiple objects to be detected at once.
+    * Enable classification -- Enable coarse classification 
+* Face Detection
+    * Landmark Mode -- Toggle between showing no or all facial landmarks
+    * Contour Mode -- Toggle between showing no or all contours
+    * Classification Mode -- Toggle between showing no or all classifications (smiling, eyes open/closed)
+    * Performance Mode -- Toggle between two operating modes (Fast or Accurate)
+    * Face Tracking -- Enable or disable face tracking
+    * Minimum Face Size -- Choose the proportion of the head width to the image width
+* AutoML Image Labeling
+    * AutoML Remote Model Name -- Allows you to specify an AutoML VisionEdge model to remotely download from the Firebase Console
+    * AutoML Model Choices -- Toggle between using the remote or local AutoML model.
+    
+### Static Image scenario
+The static image scenario is identical to the live camera scenario, but instead relies on images fed into the app through the gallery.
+
+### CameraX Live Preview scenario
+The CameraX live preview scenario is very similar to the native live camera scenario, but instead relies on CameraX live preview instead of the Camera2 live preview. Note: CameraX is only supported on API level 21+.
 
 ## Support
 

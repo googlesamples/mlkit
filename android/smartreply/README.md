@@ -1,33 +1,27 @@
-ML Kit Smart Reply for Quickstart
-==============================
+# ML Kit Smart Reply Quickstart Sample App
 
-The ML Kit Smart Reply for Android Quickstart app demonstrates how to
-use the Smart Reply feature of ML Kit to automatically generate replies
-to conversation threads in your application.
+## Introduction
 
-Introduction
-------------
+The ML Kit Smart Reply quickstart sample app demonstrates how to use the Smart Reply API to automatically generate replies for conversation threads in your application.
 
-- [Read more about ML Kit Smart Reply](https://developers.google.com/ml-kit/language/smart-reply)
+* [Read more about ML Kit Smart Reply](https://developers.google.com/ml-kit/language/smart-reply)
 
-Getting Started
----------------
+## Feature List
+Features that are included in this demo app:
+* [Smart Reply](https://developers.google.com/ml-kit/language/smart-reply/android) - Generate smart replies with ML Kit on Android
 
-- Run the sample on an Android device.
-- Choose the Java or Kotlin version on the initial screen.
-- Type input text and press the buttons to identify languages.
+<img src=“app/src/screen.png” height=“534” width=“300”/>
 
-Result
------------
-<img src="app/src/screen.png" height="534" width="300"/>
+## Getting Started
 
-Support
--------
+* Run the sample on an Android device.
+* Type message text and press the ML Kit Logo button to switch between users.
 
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/mlkit)
+## Support
 
-License
--------
+* [Stack Overflow](https://stackoverflow.com/questions/tagged/google-mlkit)
+
+## License
 
 Copyright 2020 Google, Inc.
 

@@ -1,35 +1,29 @@
-ML Kit Language ID Quickstart
-==============================
+# ML Kit Language ID Quickstart Sample App
 
-The ML Kit LanguageID Android Quickstart app demonstrates how to
-use the Language ID feature of ML Kit to to identify the language
-of text in your application.
+## Introduction
 
-Introduction
-------------
+The ML Kit Language ID quickstart sample app demonstrates how to use the Language ID feature to identify the language of entered text in your application.
+* [Read more about ML Kit Language ID](https://developers.google.com/ml-kit/language/identification)
 
-- [Read more about ML Kit LanguageID](https://developers.google.com/ml-kit/language/identification)
+## Feature List
+Features that are included in this demo app:
+* [Language Identification](https://developers.google.com/ml-kit/language/identification/android) -  Identify the language of text with ML Kit on Android 
 
-Getting Started
----------------
+## Getting Started
 
-- Run the sample on an Android device.
-- Choose the Java or Kotlin version on the initial screen.
-- Type input text and press the buttons to identify languages.
+* Run the sample on an Android device.
+* Choose the Java or Kotlin version on the initial screen.
+* Type input text and press the buttons to identify languages.
 
-Result
------------
-<img src="app/src/screen.png" height="534" width="300"/>
+<img src=“../screenshots/langid-quickstart.png” width=“300”/>
 
-Support
--------
+## Support
 
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/mlkit)
+* [Stack Overflow](https://stackoverflow.com/questions/tagged/google-mlkit)
 
-License
--------
+## License
 
-Copyright 2019 Google, Inc.
+Copyright 2020 Google, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE file distributed with this work for
