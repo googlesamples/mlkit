@@ -1,24 +1,39 @@
-# ML Kit AutoML Remote Model Demo App
+# ML Kit AutoML Remote Model Quickstart Sample App
 
 ## Introduction
 
-* [Read more about ML Kit Vision](https://developers.google.com/ml-kit/vision)
-* [Read more about ML Kit's AutoML](https://developers.google.com/ml-kit/vision/auto-ml-vision-edge/overview)
+This ML Kit Quickstart App demonstrates how to label images with an AutoML Vision Edge trained model, and also how to download models that are hosted with Firebase.
 
-Getting Started
----------------
+* [Read more about training an image classification model using AutoML Vision Edge model](https://firebase.google.com/docs/ml/automl-image-labeling)
+* [Read more about hosting models with Firebase Model deployment](https://firebase.google.com/docs/ml/manage-hosted-models)
+
+## Feature List
+Features that are included in this demo app:
+* [AutoML Image labeling](https://developers.google.com/ml-kit/vision/image-labeling/automl/ios) - Label images using an AutoML VisionEdge trained model
+
+<img src="../../screenshots/auto_ml_1.jpg" width="256"/> <img src="../../screenshots/auto_ml_2.jpg" width="256"/>
+
+## Getting Started
 
 - [Add Firebase to your iOS Project](https://firebase.google.com/docs/ios/setup).
 - Run the sample on your iOS device or simulator.
 - Choose Photo Library, Photo Camera, or Video Camera to see a demo of labeling images using
   a model trained by AutoML
+  
+## How to use the app
+  
+This app supports two usage scenarios: Live Camera mode and Static Image mode.
 
-Support
--------
+### Live Camera Scenario
+This mode uses the camera preview as input and allows you to label images using a remotely downloaded AutoML Vision Edge model.
 
-- [Stack Overflow for ML Kit](https://stackoverflow.com/questions/tagged/mlkit)
-- [Stack Overflow for Firebase](https://stackoverflow.com/questions/tagged/firebase-mlkit)
-- [Firebase Support](https://firebase.google.com/support/)
+### Static Image Scenario
+The static image scenario is identical to the live camera scenario, but instead relies on images fed into the app through the camera roll.
+
+
+## Support
+
+- [Stack Overflow for ML Kit](https://stackoverflow.com/questions/tagged/google-mlkit)
 
 License
 -------
