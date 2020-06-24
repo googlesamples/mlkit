@@ -2,7 +2,7 @@
 
 A collection of quickstart samples demonstrating the [ML Kit](https://developers.google.com/ml-kit) APIs on Android and iOS.  
 
-ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package. Make your iOS and Android apps more engaging, personalized, and helpful with solutions that are optimized to run on device.
+ML Kit brings Google’s machine learning expertise to mobile developers in a powerful, on-device and easy-to-use package. Make your iOS and Android apps more engaging, personalized, and helpful with solutions that are optimized to run on device.
 
 ML Kit currently supports the following APIs:
 - [Barcode Scanning](https://developers.google.com/ml-kit/vision/barcode-scanning/) - Scan and process barcodes.
