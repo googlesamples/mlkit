@@ -42,28 +42,28 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72'
 
     // Barcode model
-    implementation 'com.google.mlkit:barcode-scanning:16.0.0'
+    implementation 'com.google.mlkit:barcode-scanning:16.0.1'
 
     // Object detection feature with bundled default classifier
-    implementation 'com.google.mlkit:object-detection:16.0.0'
+    implementation 'com.google.mlkit:object-detection:16.1.0'
 
     // Object detection feature with custom classifier support
-    implementation 'com.google.mlkit:object-detection-custom:16.0.0'
+    implementation 'com.google.mlkit:object-detection-custom:16.1.0'
 
     // Face features
-    implementation 'com.google.mlkit:face-detection:16.0.0'
+    implementation 'com.google.mlkit:face-detection:16.0.1'
 
     // Text features
-    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.0.0'
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.0'
 
     // Image labeling with automl model support
-    implementation 'com.google.mlkit:image-labeling-automl:16.0.0'
+    implementation 'com.google.mlkit:image-labeling-automl:16.1.0'
 
     // Image labeling
-    implementation 'com.google.mlkit:image-labeling:16.0.0'
+    implementation 'com.google.mlkit:image-labeling:16.1.0'
 
     // Image labeling custom
-    implementation 'com.google.mlkit:image-labeling-custom:16.0.0'
+    implementation 'com.google.mlkit:image-labeling-custom:16.1.0'
 
     // -------------------------------------------------------
 
