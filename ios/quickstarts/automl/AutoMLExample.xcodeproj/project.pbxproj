@@ -15,7 +15,6 @@
 		100D2A52222F37E100DF5C02 /* automl_labeler_model.tflite in Resources */ = {isa = PBXBuildFile; fileRef = B217D4AA220D24CA001CE5AA /* automl_labeler_model.tflite */; };
 		10224B582087E43100A77316 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10224B572087E43100A77316 /* ViewController.swift */; };
 		10224B5E2087E49F00A77316 /* MLKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10224B5B2087E49F00A77316 /* MLKitExtensions.swift */; };
-		10B3184E22EB9C5E00E834FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 10B3184D22EB9C5E00E834FF /* GoogleService-Info.plist */; };
 		10B3184F22EB9C5E00E834FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 10B3184D22EB9C5E00E834FF /* GoogleService-Info.plist */; };
 		10E114E420E5CBAA0013E4A4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 10E114E320E5CBAA0013E4A4 /* AppDelegate.m */; };
 		10E114E720E5CBAA0013E4A4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 10E114E620E5CBAA0013E4A4 /* ViewController.m */; };
@@ -41,23 +40,6 @@
 		BB287B3920729CE90069707A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB287B3820729CE90069707A /* AppDelegate.swift */; };
 		BB287B3E20729CE90069707A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB287B3C20729CE90069707A /* Main.storyboard */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		1036DA2C2087CC16003253C9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BB287B2D20729CE90069707A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BB287B3420729CE90069707A;
-			remoteInfo = AutoMLExample;
-		};
-		1036DA3A2087CC26003253C9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BB287B2D20729CE90069707A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BB287B3420729CE90069707A;
-			remoteInfo = AutoMLExample;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1001E6F620CEE0DD00445CB3 /* UIUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIUtilities.swift; sourceTree = "<group>"; };
@@ -93,20 +75,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1036DA242087CC16003253C9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1036DA322087CC25003253C9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		10E114DD20E5CBAA0013E4A4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -247,16 +215,6 @@
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Google Inc.";
 				TargetAttributes = {
-					1036DA262087CC16003253C9 = {
-						CreatedOnToolsVersion = 9.3;
-						ProvisioningStyle = Automatic;
-						TestTargetID = BB287B3420729CE90069707A;
-					};
-					1036DA342087CC25003253C9 = {
-						CreatedOnToolsVersion = 9.3;
-						ProvisioningStyle = Automatic;
-						TestTargetID = BB287B3420729CE90069707A;
-					};
 					10E114DF20E5CBAA0013E4A4 = {
 						CreatedOnToolsVersion = 9.4;
 						ProvisioningStyle = Automatic;
@@ -288,20 +246,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1036DA252087CC16003253C9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1036DA332087CC25003253C9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		10E114DE20E5CBAA0013E4A4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -341,20 +285,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1036DA232087CC16003253C9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1036DA312087CC25003253C9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		10E114DC20E5CBAA0013E4A4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -382,19 +312,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		1036DA2D2087CC16003253C9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BB287B3420729CE90069707A /* AutoMLExample */;
-			targetProxy = 1036DA2C2087CC16003253C9 /* PBXContainerItemProxy */;
-		};
-		1036DA3B2087CC26003253C9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BB287B3420729CE90069707A /* AutoMLExample */;
-			targetProxy = 1036DA3A2087CC26003253C9 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
 		BB287B3C20729CE90069707A /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -418,6 +335,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.firebase.quickstart.AutoMLExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Debug;
 		};
@@ -432,6 +350,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.firebase.quickstart.AutoMLExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Release;
 		};
@@ -466,7 +385,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -525,7 +444,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -550,7 +469,7 @@
 		BB287B4820729CE90069707A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
@@ -582,13 +501,14 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Debug;
 		};
 		BB287B4920729CE90069707A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
@@ -600,6 +520,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Release;
 		};

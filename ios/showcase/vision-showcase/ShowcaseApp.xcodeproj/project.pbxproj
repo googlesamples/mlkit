@@ -8,16 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		1B29147C227A54EB009B5E23 /* MLKDetectionOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29147A227A54EA009B5E23 /* MLKDetectionOverlayView.m */; };
-		1B291481227A54F4009B5E23 /* MLKResultListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29147D227A54F2009B5E23 /* MLKResultListHeaderView.m */; };
-		1B291482227A54F4009B5E23 /* MLKResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29147E227A54F2009B5E23 /* MLKResultCell.m */; };
+		1B291481227A54F4009B5E23 /* MLKProductListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29147D227A54F2009B5E23 /* MLKProductListHeaderView.m */; };
+		1B291482227A54F4009B5E23 /* MLKProductResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29147E227A54F2009B5E23 /* MLKProductResultCell.m */; };
 		1B291485227A551B009B5E23 /* MLKImageUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B291483227A551A009B5E23 /* MLKImageUtilities.m */; };
-		1B29148C227A5554009B5E23 /* MLKResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B291487227A5552009B5E23 /* MLKResult.m */; };
+		1B29148C227A5554009B5E23 /* MLKProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B291487227A5552009B5E23 /* MLKProduct.m */; };
 		1B29148D227A5554009B5E23 /* MLKProductSearchRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29148A227A5553009B5E23 /* MLKProductSearchRequest.m */; };
-		1B291490227A5E4A009B5E23 /* MLKResultListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29148F227A5E4A009B5E23 /* MLKResultListViewController.m */; };
-		1B5AC8E3246340A2009BDAED /* MLKStartPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B5AC8E2246340A2009BDAED /* MLKStartPageViewController.m */; };
-		1B5AC8E924634F7E009BDAED /* MLKStartPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B5AC8E824634F7E009BDAED /* MLKStartPageCell.m */; };
-		1B5AC8EC246355DF009BDAED /* MLKStartPageHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B5AC8EB246355DF009BDAED /* MLKStartPageHeaderView.m */; };
-		1BEE5C182450C1B100C18F44 /* bird.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 1BEE5C172450C1B000C18F44 /* bird.tflite */; };
+		1B291490227A5E4A009B5E23 /* MLKProductListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29148F227A5E4A009B5E23 /* MLKProductListViewController.m */; };
 		AA10D303226F745E0057608A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D302226F745E0057608A /* AppDelegate.m */; };
 		AA10D311226F74610057608A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D310226F74610057608A /* main.m */; };
 		AA10D33D226F7C930057608A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA10D33B226F7C930057608A /* LaunchScreen.xib */; };
@@ -32,26 +28,19 @@
 /* Begin PBXFileReference section */
 		1B29147A227A54EA009B5E23 /* MLKDetectionOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKDetectionOverlayView.m; sourceTree = "<group>"; };
 		1B29147B227A54EA009B5E23 /* MLKDetectionOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKDetectionOverlayView.h; sourceTree = "<group>"; };
-		1B29147D227A54F2009B5E23 /* MLKResultListHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKResultListHeaderView.m; sourceTree = "<group>"; };
-		1B29147E227A54F2009B5E23 /* MLKResultCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKResultCell.m; sourceTree = "<group>"; };
-		1B29147F227A54F3009B5E23 /* MLKResultCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKResultCell.h; sourceTree = "<group>"; };
-		1B291480227A54F3009B5E23 /* MLKResultListHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKResultListHeaderView.h; sourceTree = "<group>"; };
+		1B29147D227A54F2009B5E23 /* MLKProductListHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKProductListHeaderView.m; sourceTree = "<group>"; };
+		1B29147E227A54F2009B5E23 /* MLKProductResultCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKProductResultCell.m; sourceTree = "<group>"; };
+		1B29147F227A54F3009B5E23 /* MLKProductResultCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKProductResultCell.h; sourceTree = "<group>"; };
+		1B291480227A54F3009B5E23 /* MLKProductListHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKProductListHeaderView.h; sourceTree = "<group>"; };
 		1B291483227A551A009B5E23 /* MLKImageUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKImageUtilities.m; sourceTree = "<group>"; };
 		1B291484227A551B009B5E23 /* MLKImageUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKImageUtilities.h; sourceTree = "<group>"; };
-		1B291487227A5552009B5E23 /* MLKResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MLKResult.m; path = Models/MLKResult.m; sourceTree = "<group>"; };
-		1B291488227A5552009B5E23 /* MLKResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MLKResult.h; path = Models/MLKResult.h; sourceTree = "<group>"; };
+		1B291487227A5552009B5E23 /* MLKProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MLKProduct.m; path = Models/MLKProduct.m; sourceTree = "<group>"; };
+		1B291488227A5552009B5E23 /* MLKProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MLKProduct.h; path = Models/MLKProduct.h; sourceTree = "<group>"; };
 		1B291489227A5553009B5E23 /* MLKProductSearchRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MLKProductSearchRequest.h; path = Models/MLKProductSearchRequest.h; sourceTree = "<group>"; };
 		1B29148A227A5553009B5E23 /* MLKProductSearchRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MLKProductSearchRequest.m; path = Models/MLKProductSearchRequest.m; sourceTree = "<group>"; };
 		1B29148B227A5553009B5E23 /* MLKODTStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MLKODTStatus.h; path = Models/MLKODTStatus.h; sourceTree = "<group>"; };
-		1B29148E227A5E49009B5E23 /* MLKResultListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKResultListViewController.h; sourceTree = "<group>"; };
-		1B29148F227A5E4A009B5E23 /* MLKResultListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKResultListViewController.m; sourceTree = "<group>"; };
-		1B5AC8E1246340A2009BDAED /* MLKStartPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLKStartPageViewController.h; sourceTree = "<group>"; };
-		1B5AC8E2246340A2009BDAED /* MLKStartPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MLKStartPageViewController.m; sourceTree = "<group>"; };
-		1B5AC8E724634F7D009BDAED /* MLKStartPageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLKStartPageCell.h; sourceTree = "<group>"; };
-		1B5AC8E824634F7E009BDAED /* MLKStartPageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MLKStartPageCell.m; sourceTree = "<group>"; };
-		1B5AC8EA246355DF009BDAED /* MLKStartPageHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MLKStartPageHeaderView.h; sourceTree = "<group>"; };
-		1B5AC8EB246355DF009BDAED /* MLKStartPageHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MLKStartPageHeaderView.m; sourceTree = "<group>"; };
-		1BEE5C172450C1B000C18F44 /* bird.tflite */ = {isa = PBXFileReference; lastKnownFileType = file; path = bird.tflite; sourceTree = "<group>"; };
+		1B29148E227A5E49009B5E23 /* MLKProductListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKProductListViewController.h; sourceTree = "<group>"; };
+		1B29148F227A5E4A009B5E23 /* MLKProductListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKProductListViewController.m; sourceTree = "<group>"; };
 		AA10D2FE226F745E0057608A /* ShowcaseApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShowcaseApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA10D301226F745E0057608A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		AA10D302226F745E0057608A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -86,8 +75,8 @@
 			isa = PBXGroup;
 			children = (
 				1B29148B227A5553009B5E23 /* MLKODTStatus.h */,
-				1B291488227A5552009B5E23 /* MLKResult.h */,
-				1B291487227A5552009B5E23 /* MLKResult.m */,
+				1B291488227A5552009B5E23 /* MLKProduct.h */,
+				1B291487227A5552009B5E23 /* MLKProduct.m */,
 				1B291489227A5553009B5E23 /* MLKProductSearchRequest.h */,
 				1B29148A227A5553009B5E23 /* MLKProductSearchRequest.m */,
 			);
@@ -122,7 +111,6 @@
 				AA10D30F226F74610057608A /* Info.plist */,
 				AA10D33B226F7C930057608A /* LaunchScreen.xib */,
 				AA10D340226F7D260057608A /* Images.xcassets */,
-				1BEE5C172450C1B000C18F44 /* bird.tflite */,
 				AA10D310226F74610057608A /* main.m */,
 			);
 			path = ShowcaseApp;
@@ -131,12 +119,10 @@
 		AA10D342226F7F860057608A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				1B29148E227A5E49009B5E23 /* MLKResultListViewController.h */,
-				1B29148F227A5E4A009B5E23 /* MLKResultListViewController.m */,
+				1B29148E227A5E49009B5E23 /* MLKProductListViewController.h */,
+				1B29148F227A5E4A009B5E23 /* MLKProductListViewController.m */,
 				AA10D343226F7F860057608A /* MLKLiveObjectDetectionViewController.h */,
 				AA10D344226F7F860057608A /* MLKLiveObjectDetectionViewController.m */,
-				1B5AC8E1246340A2009BDAED /* MLKStartPageViewController.h */,
-				1B5AC8E2246340A2009BDAED /* MLKStartPageViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -144,14 +130,10 @@
 		AA10D345226F7F870057608A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1B291480227A54F3009B5E23 /* MLKResultListHeaderView.h */,
-				1B29147D227A54F2009B5E23 /* MLKResultListHeaderView.m */,
-				1B29147F227A54F3009B5E23 /* MLKResultCell.h */,
-				1B29147E227A54F2009B5E23 /* MLKResultCell.m */,
-				1B5AC8EA246355DF009BDAED /* MLKStartPageHeaderView.h */,
-				1B5AC8EB246355DF009BDAED /* MLKStartPageHeaderView.m */,
-				1B5AC8E724634F7D009BDAED /* MLKStartPageCell.h */,
-				1B5AC8E824634F7E009BDAED /* MLKStartPageCell.m */,
+				1B291480227A54F3009B5E23 /* MLKProductListHeaderView.h */,
+				1B29147D227A54F2009B5E23 /* MLKProductListHeaderView.m */,
+				1B29147F227A54F3009B5E23 /* MLKProductResultCell.h */,
+				1B29147E227A54F2009B5E23 /* MLKProductResultCell.m */,
 				1B29147B227A54EA009B5E23 /* MLKDetectionOverlayView.h */,
 				1B29147A227A54EA009B5E23 /* MLKDetectionOverlayView.m */,
 				AA10D346226F7F870057608A /* MLKCameraReticle.h */,
@@ -233,7 +215,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA10D33D226F7C930057608A /* LaunchScreen.xib in Resources */,
-				1BEE5C182450C1B100C18F44 /* bird.tflite in Resources */,
 				AA10D341226F7D260057608A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -245,23 +226,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B5AC8E3246340A2009BDAED /* MLKStartPageViewController.m in Sources */,
 				1B291485227A551B009B5E23 /* MLKImageUtilities.m in Sources */,
 				AA10D355226F7F880057608A /* MLKConfirmationSpinner.m in Sources */,
 				1B29147C227A54EB009B5E23 /* MLKDetectionOverlayView.m in Sources */,
 				AA10D311226F74610057608A /* main.m in Sources */,
-				1B291490227A5E4A009B5E23 /* MLKResultListViewController.m in Sources */,
+				1B291490227A5E4A009B5E23 /* MLKProductListViewController.m in Sources */,
 				1B29148D227A5554009B5E23 /* MLKProductSearchRequest.m in Sources */,
 				AA10D358226F7F880057608A /* UIImage+MLKShowcase.m in Sources */,
-				1B29148C227A5554009B5E23 /* MLKResult.m in Sources */,
-				1B291482227A54F4009B5E23 /* MLKResultCell.m in Sources */,
+				1B29148C227A5554009B5E23 /* MLKProduct.m in Sources */,
+				1B291482227A54F4009B5E23 /* MLKProductResultCell.m in Sources */,
 				AA10D303226F745E0057608A /* AppDelegate.m in Sources */,
 				AA10D353226F7F880057608A /* MLKLiveObjectDetectionViewController.m in Sources */,
-				1B5AC8E924634F7E009BDAED /* MLKStartPageCell.m in Sources */,
 				AA10D35C226F83FE0057608A /* MLKUIUtilities.m in Sources */,
-				1B5AC8EC246355DF009BDAED /* MLKStartPageHeaderView.m in Sources */,
 				AA10D354226F7F880057608A /* MLKCameraReticle.m in Sources */,
-				1B291481227A54F4009B5E23 /* MLKResultListHeaderView.m in Sources */,
+				1B291481227A54F4009B5E23 /* MLKProductListHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,7 +289,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -334,7 +312,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 arm64e";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Debug;
 		};
@@ -370,7 +348,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -387,7 +365,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "arm64 arm64e";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Release;
 		};
@@ -395,7 +373,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ShowcaseApp/Info.plist;
@@ -407,6 +385,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Debug;
 		};
@@ -414,7 +393,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ShowcaseApp/Info.plist;
@@ -426,6 +405,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Release;
 		};
