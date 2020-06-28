@@ -23,30 +23,38 @@ import android.util.LruCache
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.mlkit.showcase.translate.util.Language
-import com.google.mlkit.showcase.translate.util.ResultOrError
-import com.google.mlkit.showcase.translate.util.SmoothedMutableLiveData
 import com.google.mlkit.nl.languageid.LanguageIdentification
+import com.google.mlkit.nl.languageid.LanguageIdentificationOptions
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.Translator
 import com.google.mlkit.nl.translate.TranslatorOptions
 import com.google.mlkit.showcase.translate.main.MainFragment.Companion.DESIRED_HEIGHT_CROP_PERCENT
 import com.google.mlkit.showcase.translate.main.MainFragment.Companion.DESIRED_WIDTH_CROP_PERCENT
+import com.google.mlkit.showcase.translate.util.Language
+import com.google.mlkit.showcase.translate.util.ResultOrError
+import com.google.mlkit.showcase.translate.util.SmoothedMutableLiveData
+import java.util.concurrent.Executor
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val languageIdentification = LanguageIdentification.getClient()
     override fun onCleared() {
         languageIdentification.close()
         translators.evictAll()
     }
 
+    lateinit var executor: Executor
+    private val languageIdentification by lazy {
+        LanguageIdentification.getClient(
+            LanguageIdentificationOptions.Builder().setExecutor(executor).build()
+        )
+    }
+
     val targetLang = MutableLiveData<Language>()
     val sourceText = SmoothedMutableLiveData<String>(SMOOTHING_DURATION)
+
     // We set desired crop percentages to avoid having the analyze the whole image from the live
     // camera feed. However, we are not guaranteed what aspect ratio we will get from the camera, so
     // we use the first frame we get back from the camera to update these crop percentages based on
@@ -75,34 +83,23 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-    val sourceLang = Transformations.switchMap(sourceText) { text ->
-        val result = MutableLiveData<Language>()
-        languageIdentification.identifyLanguage(text)
-            .addOnSuccessListener {
-                if (it != "und")
-                    result.value = Language(it)
-            }
-        result
-    }
+    val sourceLang = MediatorLiveData<Language>()
 
     private fun translate(): Task<String> {
-        val text = sourceText.value
-        val source = sourceLang.value
-        val target = targetLang.value
         if (modelDownloading.value != false || translating.value != false) {
             return Tasks.forCanceled()
         }
-        if (source == null || target == null || text == null || text.isEmpty()) {
-            return Tasks.forResult("")
-        }
-        val sourceLangCode = TranslateLanguage.fromLanguageTag(source.code)
-        val targetLangCode = TranslateLanguage.fromLanguageTag(target.code)
-        if (sourceLangCode == null || targetLangCode == null) {
-            return Tasks.forCanceled()
-        }
+        val text = sourceText.value ?: return Tasks.forResult("")
+        val source = sourceLang.value ?: return Tasks.forResult("")
+        val target = targetLang.value ?: return Tasks.forResult("")
+        val sourceLangCode =
+            TranslateLanguage.fromLanguageTag(source.code) ?: return Tasks.forCanceled()
+        val targetLangCode =
+            TranslateLanguage.fromLanguageTag(target.code) ?: return Tasks.forCanceled()
         val options = TranslatorOptions.Builder()
             .setSourceLanguage(sourceLangCode)
             .setTargetLanguage(targetLangCode)
+            .setExecutor(executor)
             .build()
         val translator = translators[options]
         modelDownloading.setValue(true)
@@ -127,6 +124,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         modelDownloading.setValue(false)
         translating.value = false
+
+        sourceLang.addSource(sourceText) { text ->
+            languageIdentification.identifyLanguage(text)
+                .addOnSuccessListener {
+                    if (it != "und")
+                        sourceLang.value = Language(it)
+                }
+        }
+
         // Create a translation result or error object.
         val processTranslation =
             OnCompleteListener<String> { task ->

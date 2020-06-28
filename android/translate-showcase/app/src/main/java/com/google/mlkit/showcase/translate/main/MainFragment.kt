@@ -44,7 +44,6 @@ import com.google.mlkit.showcase.translate.analyzer.TextAnalyzer
 import com.google.mlkit.showcase.translate.util.Language
 import com.google.mlkit.showcase.translate.util.ScopedExecutor
 import kotlinx.android.synthetic.main.main_fragment.*
-import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -108,8 +107,10 @@ class MainFragment : Fragment() {
         viewFinder = container.findViewById(R.id.viewfinder)
 
         // Initialize our background executor
-        cameraExecutor = Executors.newSingleThreadExecutor()
+        cameraExecutor = Executors.newCachedThreadPool()
         scopedExecutor = ScopedExecutor(cameraExecutor)
+
+        viewModel.executor = cameraExecutor
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -178,8 +179,7 @@ class MainFragment : Fragment() {
                 ) {
                 }
 
-                override fun surfaceDestroyed(holder: SurfaceHolder?) {
-                }
+                override fun surfaceDestroyed(holder: SurfaceHolder?) {}
 
                 override fun surfaceCreated(holder: SurfaceHolder?) {
                     holder?.let {
@@ -239,6 +239,7 @@ class MainFragment : Fragment() {
                     scopedExecutor, TextAnalyzer(
                         requireContext(),
                         lifecycle,
+                        cameraExecutor,
                         viewModel.sourceText,
                         viewModel.imageCropPercentages
                     )
