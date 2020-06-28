@@ -31,7 +31,8 @@ import com.google.mlkit.showcase.translate.util.ImageUtils
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
-import java.lang.Exception
+import com.google.mlkit.vision.text.TextRecognizerOptions
+import java.util.concurrent.Executor
 
 /**
  * Analyzes the frames passed in from the camera and returns any detected text within the requested
@@ -40,10 +41,12 @@ import java.lang.Exception
 class TextAnalyzer(
     private val context: Context,
     lifecycle: Lifecycle,
+    executor: Executor,
     private val result: MutableLiveData<String>,
     private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>
 ) : ImageAnalysis.Analyzer {
-    private val detector = TextRecognition.getClient()
+    private val detector =
+        TextRecognition.getClient(TextRecognizerOptions.Builder().setExecutor(executor).build())
 
     init {
         lifecycle.addObserver(detector)

@@ -16,4 +16,4 @@
  */
 
 include ':app'
-rootProject.name='ML Kit Translate Codelab'
+rootProject.name='ML Kit Translate Showcase'
