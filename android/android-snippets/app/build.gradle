@@ -36,25 +36,25 @@ dependencies {
     // Cannot fit requested classes in a single dex file
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    // MLKit related dependencies
+    // ML Kit related dependencies
 
     // Barcode model
-    implementation 'com.google.mlkit:barcode-scanning:16.0.0'
+    implementation 'com.google.mlkit:barcode-scanning:16.0.1'
 
     // Object feature and model
-    implementation 'com.google.mlkit:object-detection:16.0.0'
+    implementation 'com.google.mlkit:object-detection:16.1.0'
 
     // Face features
-    implementation 'com.google.android.gms:play-services-mlkit-face-detection:16.0.0'
+    implementation 'com.google.android.gms:play-services-mlkit-face-detection:16.1.0'
 
     // Text features
-    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.0.0'
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.0'
 
     // Image labeling
-    implementation 'com.google.mlkit:image-labeling:16.0.0'
+    implementation 'com.google.mlkit:image-labeling:16.1.0'
 
     // Language Identification
-    implementation 'com.google.mlkit:language-id:16.0.0'
+    implementation 'com.google.mlkit:language-id:16.1.0'
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

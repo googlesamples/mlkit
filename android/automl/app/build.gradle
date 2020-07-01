@@ -40,8 +40,8 @@ repositories {
 }
 
 dependencies {
-    // Image labeling with automl model support
-    implementation 'com.google.mlkit:image-labeling-automl:16.0.0'
+    // Image labeling with AutoML model support
+    implementation 'com.google.mlkit:image-labeling-automl:16.1.0'
     implementation 'com.google.mlkit:linkfirebase:16.0.0'
 
     // -------------------------------------------------------

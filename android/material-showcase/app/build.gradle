@@ -53,12 +53,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
 
     // Barcode model
-    implementation 'com.google.mlkit:barcode-scanning:16.0.0'
+    implementation 'com.google.mlkit:barcode-scanning:16.0.1'
 
     // Object feature and model
-    implementation 'com.google.mlkit:object-detection:16.0.0'
+    implementation 'com.google.mlkit:object-detection:16.1.0'
     // Custom model
-    implementation 'com.google.mlkit:object-detection-custom:16.0.0'
+    implementation 'com.google.mlkit:object-detection-custom:16.1.0'
 
     api 'com.google.guava:guava:27.1-jre'
 }
