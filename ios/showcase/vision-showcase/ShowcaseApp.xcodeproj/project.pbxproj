@@ -94,19 +94,11 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
-		1EF790D4D7D83172AF4693B5 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		AA10D2F5226F745E0057608A = {
 			isa = PBXGroup;
 			children = (
 				AA10D300226F745E0057608A /* ShowcaseApp */,
 				AA10D2FF226F745E0057608A /* Products */,
-				1EF790D4D7D83172AF4693B5 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
