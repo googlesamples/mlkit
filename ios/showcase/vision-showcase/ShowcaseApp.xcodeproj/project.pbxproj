@@ -3,17 +3,21 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1B29147C227A54EB009B5E23 /* MLKDetectionOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29147A227A54EA009B5E23 /* MLKDetectionOverlayView.m */; };
-		1B291481227A54F4009B5E23 /* MLKProductListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29147D227A54F2009B5E23 /* MLKProductListHeaderView.m */; };
-		1B291482227A54F4009B5E23 /* MLKProductResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29147E227A54F2009B5E23 /* MLKProductResultCell.m */; };
 		1B291485227A551B009B5E23 /* MLKImageUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B291483227A551A009B5E23 /* MLKImageUtilities.m */; };
-		1B29148C227A5554009B5E23 /* MLKProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B291487227A5552009B5E23 /* MLKProduct.m */; };
 		1B29148D227A5554009B5E23 /* MLKProductSearchRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29148A227A5553009B5E23 /* MLKProductSearchRequest.m */; };
-		1B291490227A5E4A009B5E23 /* MLKProductListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B29148F227A5E4A009B5E23 /* MLKProductListViewController.m */; };
+		1BD28FCA24ACF75E0013BC60 /* MLKResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD28FC924ACF75E0013BC60 /* MLKResult.m */; };
+		1BD28FCF24ACF7710013BC60 /* MLKResultListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD28FCB24ACF7710013BC60 /* MLKResultListViewController.m */; };
+		1BD28FD024ACF7710013BC60 /* MLKStartPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD28FCE24ACF7710013BC60 /* MLKStartPageViewController.m */; };
+		1BD28FD924ACF77B0013BC60 /* MLKResultListHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD28FD124ACF77A0013BC60 /* MLKResultListHeaderView.m */; };
+		1BD28FDA24ACF77B0013BC60 /* MLKStartPageHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD28FD224ACF77A0013BC60 /* MLKStartPageHeaderView.m */; };
+		1BD28FDB24ACF77B0013BC60 /* MLKResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD28FD524ACF77B0013BC60 /* MLKResultCell.m */; };
+		1BD28FDC24ACF77B0013BC60 /* MLKStartPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD28FD824ACF77B0013BC60 /* MLKStartPageCell.m */; };
+		1BD28FDE24ACF8C80013BC60 /* bird.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 1BD28FDD24ACF8C80013BC60 /* bird.tflite */; };
 		AA10D303226F745E0057608A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D302226F745E0057608A /* AppDelegate.m */; };
 		AA10D311226F74610057608A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D310226F74610057608A /* main.m */; };
 		AA10D33D226F7C930057608A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA10D33B226F7C930057608A /* LaunchScreen.xib */; };
@@ -28,19 +32,26 @@
 /* Begin PBXFileReference section */
 		1B29147A227A54EA009B5E23 /* MLKDetectionOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKDetectionOverlayView.m; sourceTree = "<group>"; };
 		1B29147B227A54EA009B5E23 /* MLKDetectionOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKDetectionOverlayView.h; sourceTree = "<group>"; };
-		1B29147D227A54F2009B5E23 /* MLKProductListHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKProductListHeaderView.m; sourceTree = "<group>"; };
-		1B29147E227A54F2009B5E23 /* MLKProductResultCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKProductResultCell.m; sourceTree = "<group>"; };
-		1B29147F227A54F3009B5E23 /* MLKProductResultCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKProductResultCell.h; sourceTree = "<group>"; };
-		1B291480227A54F3009B5E23 /* MLKProductListHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKProductListHeaderView.h; sourceTree = "<group>"; };
 		1B291483227A551A009B5E23 /* MLKImageUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKImageUtilities.m; sourceTree = "<group>"; };
 		1B291484227A551B009B5E23 /* MLKImageUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKImageUtilities.h; sourceTree = "<group>"; };
-		1B291487227A5552009B5E23 /* MLKProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MLKProduct.m; path = Models/MLKProduct.m; sourceTree = "<group>"; };
-		1B291488227A5552009B5E23 /* MLKProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MLKProduct.h; path = Models/MLKProduct.h; sourceTree = "<group>"; };
 		1B291489227A5553009B5E23 /* MLKProductSearchRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MLKProductSearchRequest.h; path = Models/MLKProductSearchRequest.h; sourceTree = "<group>"; };
 		1B29148A227A5553009B5E23 /* MLKProductSearchRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MLKProductSearchRequest.m; path = Models/MLKProductSearchRequest.m; sourceTree = "<group>"; };
 		1B29148B227A5553009B5E23 /* MLKODTStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MLKODTStatus.h; path = Models/MLKODTStatus.h; sourceTree = "<group>"; };
-		1B29148E227A5E49009B5E23 /* MLKProductListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKProductListViewController.h; sourceTree = "<group>"; };
-		1B29148F227A5E4A009B5E23 /* MLKProductListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKProductListViewController.m; sourceTree = "<group>"; };
+		1BD28FC824ACF75E0013BC60 /* MLKResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MLKResult.h; path = Models/MLKResult.h; sourceTree = "<group>"; };
+		1BD28FC924ACF75E0013BC60 /* MLKResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MLKResult.m; path = Models/MLKResult.m; sourceTree = "<group>"; };
+		1BD28FCB24ACF7710013BC60 /* MLKResultListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKResultListViewController.m; sourceTree = "<group>"; };
+		1BD28FCC24ACF7710013BC60 /* MLKResultListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKResultListViewController.h; sourceTree = "<group>"; };
+		1BD28FCD24ACF7710013BC60 /* MLKStartPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKStartPageViewController.h; sourceTree = "<group>"; };
+		1BD28FCE24ACF7710013BC60 /* MLKStartPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKStartPageViewController.m; sourceTree = "<group>"; };
+		1BD28FD124ACF77A0013BC60 /* MLKResultListHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKResultListHeaderView.m; sourceTree = "<group>"; };
+		1BD28FD224ACF77A0013BC60 /* MLKStartPageHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKStartPageHeaderView.m; sourceTree = "<group>"; };
+		1BD28FD324ACF77A0013BC60 /* MLKStartPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKStartPageCell.h; sourceTree = "<group>"; };
+		1BD28FD424ACF77A0013BC60 /* MLKResultCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKResultCell.h; sourceTree = "<group>"; };
+		1BD28FD524ACF77B0013BC60 /* MLKResultCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKResultCell.m; sourceTree = "<group>"; };
+		1BD28FD624ACF77B0013BC60 /* MLKStartPageHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKStartPageHeaderView.h; sourceTree = "<group>"; };
+		1BD28FD724ACF77B0013BC60 /* MLKResultListHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLKResultListHeaderView.h; sourceTree = "<group>"; };
+		1BD28FD824ACF77B0013BC60 /* MLKStartPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLKStartPageCell.m; sourceTree = "<group>"; };
+		1BD28FDD24ACF8C80013BC60 /* bird.tflite */ = {isa = PBXFileReference; lastKnownFileType = file; path = bird.tflite; sourceTree = "<group>"; };
 		AA10D2FE226F745E0057608A /* ShowcaseApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShowcaseApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA10D301226F745E0057608A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		AA10D302226F745E0057608A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -74,13 +85,20 @@
 		1B291486227A5533009B5E23 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1BD28FC824ACF75E0013BC60 /* MLKResult.h */,
+				1BD28FC924ACF75E0013BC60 /* MLKResult.m */,
 				1B29148B227A5553009B5E23 /* MLKODTStatus.h */,
-				1B291488227A5552009B5E23 /* MLKProduct.h */,
-				1B291487227A5552009B5E23 /* MLKProduct.m */,
 				1B291489227A5553009B5E23 /* MLKProductSearchRequest.h */,
 				1B29148A227A5553009B5E23 /* MLKProductSearchRequest.m */,
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		1EF790D4D7D83172AF4693B5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		AA10D2F5226F745E0057608A = {
@@ -88,6 +106,7 @@
 			children = (
 				AA10D300226F745E0057608A /* ShowcaseApp */,
 				AA10D2FF226F745E0057608A /* Products */,
+				1EF790D4D7D83172AF4693B5 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -102,6 +121,7 @@
 		AA10D300226F745E0057608A /* ShowcaseApp */ = {
 			isa = PBXGroup;
 			children = (
+				1BD28FDD24ACF8C80013BC60 /* bird.tflite */,
 				AA10D301226F745E0057608A /* AppDelegate.h */,
 				AA10D302226F745E0057608A /* AppDelegate.m */,
 				1B291486227A5533009B5E23 /* Models */,
@@ -119,8 +139,10 @@
 		AA10D342226F7F860057608A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				1B29148E227A5E49009B5E23 /* MLKProductListViewController.h */,
-				1B29148F227A5E4A009B5E23 /* MLKProductListViewController.m */,
+				1BD28FCC24ACF7710013BC60 /* MLKResultListViewController.h */,
+				1BD28FCB24ACF7710013BC60 /* MLKResultListViewController.m */,
+				1BD28FCD24ACF7710013BC60 /* MLKStartPageViewController.h */,
+				1BD28FCE24ACF7710013BC60 /* MLKStartPageViewController.m */,
 				AA10D343226F7F860057608A /* MLKLiveObjectDetectionViewController.h */,
 				AA10D344226F7F860057608A /* MLKLiveObjectDetectionViewController.m */,
 			);
@@ -130,10 +152,14 @@
 		AA10D345226F7F870057608A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1B291480227A54F3009B5E23 /* MLKProductListHeaderView.h */,
-				1B29147D227A54F2009B5E23 /* MLKProductListHeaderView.m */,
-				1B29147F227A54F3009B5E23 /* MLKProductResultCell.h */,
-				1B29147E227A54F2009B5E23 /* MLKProductResultCell.m */,
+				1BD28FD424ACF77A0013BC60 /* MLKResultCell.h */,
+				1BD28FD524ACF77B0013BC60 /* MLKResultCell.m */,
+				1BD28FD724ACF77B0013BC60 /* MLKResultListHeaderView.h */,
+				1BD28FD124ACF77A0013BC60 /* MLKResultListHeaderView.m */,
+				1BD28FD324ACF77A0013BC60 /* MLKStartPageCell.h */,
+				1BD28FD824ACF77B0013BC60 /* MLKStartPageCell.m */,
+				1BD28FD624ACF77B0013BC60 /* MLKStartPageHeaderView.h */,
+				1BD28FD224ACF77A0013BC60 /* MLKStartPageHeaderView.m */,
 				1B29147B227A54EA009B5E23 /* MLKDetectionOverlayView.h */,
 				1B29147A227A54EA009B5E23 /* MLKDetectionOverlayView.m */,
 				AA10D346226F7F870057608A /* MLKCameraReticle.h */,
@@ -215,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA10D33D226F7C930057608A /* LaunchScreen.xib in Resources */,
+				1BD28FDE24ACF8C80013BC60 /* bird.tflite in Resources */,
 				AA10D341226F7D260057608A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -226,20 +253,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BD28FDC24ACF77B0013BC60 /* MLKStartPageCell.m in Sources */,
+				1BD28FDA24ACF77B0013BC60 /* MLKStartPageHeaderView.m in Sources */,
+				1BD28FCA24ACF75E0013BC60 /* MLKResult.m in Sources */,
 				1B291485227A551B009B5E23 /* MLKImageUtilities.m in Sources */,
+				1BD28FD024ACF7710013BC60 /* MLKStartPageViewController.m in Sources */,
 				AA10D355226F7F880057608A /* MLKConfirmationSpinner.m in Sources */,
 				1B29147C227A54EB009B5E23 /* MLKDetectionOverlayView.m in Sources */,
 				AA10D311226F74610057608A /* main.m in Sources */,
-				1B291490227A5E4A009B5E23 /* MLKProductListViewController.m in Sources */,
 				1B29148D227A5554009B5E23 /* MLKProductSearchRequest.m in Sources */,
+				1BD28FCF24ACF7710013BC60 /* MLKResultListViewController.m in Sources */,
 				AA10D358226F7F880057608A /* UIImage+MLKShowcase.m in Sources */,
-				1B29148C227A5554009B5E23 /* MLKProduct.m in Sources */,
-				1B291482227A54F4009B5E23 /* MLKProductResultCell.m in Sources */,
 				AA10D303226F745E0057608A /* AppDelegate.m in Sources */,
 				AA10D353226F7F880057608A /* MLKLiveObjectDetectionViewController.m in Sources */,
+				1BD28FD924ACF77B0013BC60 /* MLKResultListHeaderView.m in Sources */,
+				1BD28FDB24ACF77B0013BC60 /* MLKResultCell.m in Sources */,
 				AA10D35C226F83FE0057608A /* MLKUIUtilities.m in Sources */,
 				AA10D354226F7F880057608A /* MLKCameraReticle.m in Sources */,
-				1B291481227A54F4009B5E23 /* MLKProductListHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
