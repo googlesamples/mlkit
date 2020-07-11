@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright 2020 Google LLC. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
-
 # Exit on error
 set -e
 
 # Work off travis
-if [[ ! -z TRAVIS_PULL_REQUEST ]]; then
+if [[ ! -z $TRAVIS_PULL_REQUEST ]]; then
   echo "TRAVIS_PULL_REQUEST: $TRAVIS_PULL_REQUEST"
 else
   echo "TRAVIS_PULL_REQUEST: unset, setting to false"
@@ -30,8 +30,8 @@ echo "Using mock google-services.json"
 cp mock-google-services.json app/google-services.json
 
 # Install preview deps
-${ANDROID_HOME}/tools/bin/sdkmanager --channel=3 \
-  "tools" "platform-tools" "build-tools;26.0.0-rc2" "platforms;android-26"
+"${ANDROID_HOME}"/tools/bin/sdkmanager --channel=3 \
+  "tools" "platform-tools" "build-tools;26.0.0" "platforms;android-26"
 
 # Build
 if [ $TRAVIS_PULL_REQUEST = false ] ; then
