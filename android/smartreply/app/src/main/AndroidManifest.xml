@@ -12,18 +12,16 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name="com.google.mlkit.samples.smartreply.java.MainActivity">
+        <activity android:name="com.google.mlkit.samples.smartreply.java.MainActivity"
+            android:theme="@style/MaterialAppTheme" >
         </activity>
 
-        <activity android:name="com.google.mlkit.samples.smartreply.kotlin.MainActivity">
+        <activity android:name="com.google.mlkit.samples.smartreply.kotlin.MainActivity"
+            android:theme="@style/MaterialAppTheme" >
         </activity>
 
-        <activity android:name="com.google.mlkit.samples.smartreply.EntryChoiceActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name="com.google.mlkit.samples.smartreply.EntryChoiceActivity"
+            android:theme="@style/MaterialAppTheme" >
         </activity>
     </application>
 

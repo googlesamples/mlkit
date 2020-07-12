@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation project (':internal:common')
     implementation project(':internal:chooserx')
     implementation 'com.google.mlkit:translate:16.1.2'
 

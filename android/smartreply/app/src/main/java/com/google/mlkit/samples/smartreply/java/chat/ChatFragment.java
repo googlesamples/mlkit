@@ -182,16 +182,16 @@ public class ChatFragment extends Fragment implements ReplyChipAdapter.ClickList
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        switch (item.getItemId()) {
-            case R.id.generateHistoryBasic:
-                generateChatHistoryBasic();
-                return true;
-            case R.id.generateHistorySensitive:
-                generateChatHistoryWithSensitiveContent();
-                return true;
-            case R.id.clearHistory:
-                mViewModel.setMessages(new ArrayList<Message>());
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.generateHistoryBasic) {
+            generateChatHistoryBasic();
+            return true;
+        } else if (itemId == R.id.generateHistorySensitive) {
+            generateChatHistoryWithSensitiveContent();
+            return true;
+        } else if (itemId == R.id.clearHistory) {
+            mViewModel.setMessages(new ArrayList<Message>());
+            return true;
         }
         return false;
     }
