@@ -14,7 +14,6 @@
       android:icon="@drawable/logo_mlkit"
       android:label="@string/app_name"
       android:supportsRtl="true"
-      android:theme="@style/AppTheme"
       tools:ignore="GoogleAppIndexingWarning">
 
     <meta-data
@@ -24,40 +23,42 @@
     <activity
         android:name="com.google.mlkit.md.MainActivity"
         android:exported="true"
+        android:theme="@style/MaterialAppTheme"
         android:screenOrientation="portrait">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
     </activity>
 
     <activity
         android:name="com.google.mlkit.md.LiveObjectDetectionActivity"
         android:exported="false"
+        android:theme="@style/MaterialAppTheme"
         android:screenOrientation="portrait">
     </activity>
 
     <activity
         android:name="com.google.mlkit.md.LiveBarcodeScanningActivity"
         android:exported="false"
+        android:theme="@style/MaterialAppTheme"
         android:screenOrientation="portrait">
     </activity>
 
     <activity
         android:name="com.google.mlkit.md.StaticObjectDetectionActivity"
         android:exported="false"
+        android:theme="@style/MaterialAppTheme"
         android:screenOrientation="portrait">
     </activity>
 
     <activity
         android:name="com.google.mlkit.md.CustomModelObjectDetectionActivity"
         android:exported="false"
+        android:theme="@style/MaterialAppTheme"
         android:screenOrientation="portrait">
     </activity>
 
     <activity
         android:name="com.google.mlkit.md.settings.SettingsActivity"
         android:exported="false"
+        android:theme="@style/MaterialAppTheme"
         android:label="@string/settings_title"
         android:screenOrientation="portrait">
     </activity>
