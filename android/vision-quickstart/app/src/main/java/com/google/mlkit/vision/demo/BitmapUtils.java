@@ -34,6 +34,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageProxy;
 import androidx.exifinterface.media.ExifInterface;
 
@@ -78,6 +79,7 @@ public class BitmapUtils {
      */
     @RequiresApi(VERSION_CODES.KITKAT)
     @Nullable
+    @ExperimentalGetImage
     public static Bitmap getBitmap(ImageProxy image) {
         FrameMetadata frameMetadata = new FrameMetadata.Builder()
                 .setWidth(image.getWidth())
