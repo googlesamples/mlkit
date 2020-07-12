@@ -8,6 +8,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,11 +17,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.mlkit.samples.vision.digitalink.StrokeManager.DownloadedModelsChangedListener;
 import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier;
+
 import java.util.Locale;
 import java.util.Set;
 
 /** Main activity which creates a StrokeManager and connects it to the DrawingView. */
-public class MainActivity extends AppCompatActivity implements DownloadedModelsChangedListener {
+public class DigitalInkMainActivity extends AppCompatActivity implements DownloadedModelsChangedListener {
     private static final String TAG = "MLKDI.Activity";
     private static final ImmutableMap<String, String> NON_TEXT_MODELS =
             ImmutableMap.of(
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements DownloadedModelsC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_digital_ink_main);
 
         Spinner languageSpinner = findViewById(R.id.languages_spinner);
 
@@ -130,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements DownloadedModelsC
             this.downloaded = downloaded;
         }
 
+        @NonNull
         @Override
         public String toString() {
             if (languageTag == null) {
