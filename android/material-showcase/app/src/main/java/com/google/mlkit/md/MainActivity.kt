@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(bundle)
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_material_shocase_main)
         findViewById<RecyclerView>(R.id.mode_recycler_view).apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@MainActivity)

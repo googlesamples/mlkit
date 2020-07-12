@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/grp1" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_material_showcase"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Material showcase" />
+        <item
+            android:id="@+id/nav_tutorial2"
+            android:icon="@drawable/ic_camera_mixed_processing"
+            android:title="Mixed processing" />
+        <item
+            android:id="@+id/nav_tutorial3"
+            android:icon="@drawable/ic_camera_iris"
+            android:title="Camera controll" />
+        <item
+            android:id="@+id/nav_faceDetection"
+            android:icon="@drawable/ic_tag_faces"
+            android:title="Face detection" />
+        <item
+            android:id="@+id/nav_image_manipulation"
+            android:icon="@drawable/ic_image_filter_black_white"
+            android:title="Image manipulation" />
+        <item
+            android:id="@+id/nav_color_blob_detection"
+            android:icon="@drawable/ic_palette"
+            android:title="Color blob detection" />
+        <item
+            android:id="@+id/nav_camera_calibration"
+            android:icon="@drawable/ic_camera_callibration"
+            android:title="Calibrate" />
+        <item
+            android:id="@+id/nav_puzzle15"
+            android:icon="@drawable/ic_puzzle"
+            android:title="Puzzle 15" />
+    </group>
+
+    <group android:id="@+id/grp2" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_cascadeDetection"
+            android:icon="@drawable/ic_github_face"
+            android:title="Cascade detection" />
+        <item
+            android:id="@+id/nav_objectDetection"
+            android:icon="@drawable/ic_tag_faces"
+            android:title="Object detection" />
+    </group>
+</menu>
