@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <style name="MaterialAppTheme" parent="Theme.MaterialComponents.NoActionBar">
-    <item name="android:colorPrimary">@color/white</item>
-    <item name="android:colorPrimaryDark">@color/black</item>
+    <item name="android:colorPrimary">@android:color/white</item>
+    <item name="android:colorPrimaryDark">@android:color/black</item>
   </style>
 </resources>

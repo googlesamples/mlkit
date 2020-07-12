@@ -7,6 +7,7 @@ include ':translate:app'
 include ':smartreply:app'
 include ':automl:app'
 include ':mainSample'
+include ':internal:common'
 
 include ':langid:app'
 include ':internal:lintchecks'
