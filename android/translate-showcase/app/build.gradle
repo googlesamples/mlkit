@@ -15,16 +15,13 @@
  *
  */
 
-apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "com.google.mlkit.showcase.translate"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1

@@ -7,34 +7,24 @@
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-  <application
-      android:allowBackup="true"
-      android:icon="@drawable/logo_mlkit"
-      android:label="@string/app_name"
-      android:theme="@style/AppTheme">
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true">
 
-    <activity
-        android:name=".EntryChoiceActivity"
-        android:exported="true"
-        android:label="@string/app_name">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
+        <activity android:name="com.google.mlkit.samples.translate.java.MainActivity"
+            android:theme="@style/MaterialAppTheme" >
+        </activity>
 
-    <activity
-        android:name=".java.MainActivity"
-        android:exported="true"
-        android:label="@string/app_name">
-    </activity>
+        <activity android:name="com.google.mlkit.samples.translate.kotlin.MainActivity"
+            android:theme="@style/MaterialAppTheme" >
+        </activity>
 
-    <activity
-        android:name=".kotlin.MainActivity"
-        android:exported="true"
-        android:label="@string/app_name">
-    </activity>
-
-  </application>
+        <activity android:name="com.google.mlkit.samples.translate.EntryChoiceActivity"
+            android:theme="@style/MaterialAppTheme" >
+        </activity>
+    </application>
 
 </manifest>

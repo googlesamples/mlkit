@@ -1,4 +1,14 @@
 rootProject.name = 'ML-kit'
 
+include ':vision-quickstart:app'
 include ':material-showcase:app'
+include ':translate-showcase:app'
+include ':translate:app'
+include ':smartreply:app'
+include ':automl:app'
 include ':mainSample'
+
+include ':langid:app'
+include ':internal:lintchecks'
+include ':internal:lint'
+include ':internal:chooserx'
