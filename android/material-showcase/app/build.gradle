@@ -42,6 +42,7 @@ androidExtensions {
 }
 
 dependencies {
+    implementation project (':internal:common')
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.android.material:material:1.2.1'
     implementation "android.arch.lifecycle:extensions:1.1.1"
