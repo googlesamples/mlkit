@@ -1,10 +1,9 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.google.mlkit.vision.automl.demo"
         minSdkVersion 16
         multiDexEnabled true
         targetSdkVersion 29

@@ -10,18 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.google.mlkit.samples.languageid.java.MainActivity"/>
+            android:name="com.google.mlkit.samples.languageid.java.MainActivity"
+            android:theme="@style/MaterialAppTheme" />
         <activity
-            android:name="com.google.mlkit.samples.languageid.kotlin.MainActivity"/>
+            android:name="com.google.mlkit.samples.languageid.kotlin.MainActivity"
+            android:theme="@style/MaterialAppTheme" />
         <activity
             android:name="com.google.mlkit.samples.languageid.EntryChoiceActivity"
             android:exported="true"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:label="@string/app_name"
+            android:theme="@style/MaterialAppTheme" />
     </application>
 
 

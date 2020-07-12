@@ -14,14 +14,13 @@
  *  limitations under the License.
  */
 
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.google.mlkit.samples.translate"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -40,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation project (':internal:common')
     implementation project(':internal:chooserx')
     implementation project(":internal:lintchecks")
     implementation fileTree(dir: 'libs', include: ['*.jar'])

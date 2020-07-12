@@ -7,43 +7,29 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Material showcase" />
         <item
-            android:id="@+id/nav_tutorial2"
+            android:id="@+id/nav_vision_quickstart"
             android:icon="@drawable/ic_camera_mixed_processing"
-            android:title="Mixed processing" />
+            android:title="Vision quickstart" />
         <item
-            android:id="@+id/nav_tutorial3"
+            android:id="@+id/nav_translate_showcase"
             android:icon="@drawable/ic_camera_iris"
-            android:title="Camera controll" />
+            android:title="Translate showcase" />
         <item
-            android:id="@+id/nav_faceDetection"
+            android:id="@+id/nav_translate"
             android:icon="@drawable/ic_tag_faces"
-            android:title="Face detection" />
+            android:title="Translate" />
         <item
-            android:id="@+id/nav_image_manipulation"
+            android:id="@+id/nav_smart_replay"
+            android:icon="@drawable/ic_github_face"
+            android:title="Smart replay" />
+        <item
+            android:id="@+id/nav_langid"
             android:icon="@drawable/ic_image_filter_black_white"
-            android:title="Image manipulation" />
+            android:title="LanguageID" />
         <item
-            android:id="@+id/nav_color_blob_detection"
+            android:id="@+id/nav_auto_ml"
             android:icon="@drawable/ic_palette"
-            android:title="Color blob detection" />
-        <item
-            android:id="@+id/nav_camera_calibration"
-            android:icon="@drawable/ic_camera_callibration"
-            android:title="Calibrate" />
-        <item
-            android:id="@+id/nav_puzzle15"
-            android:icon="@drawable/ic_puzzle"
-            android:title="Puzzle 15" />
+            android:title="Auto ML" />
     </group>
 
-    <group android:id="@+id/grp2" android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_cascadeDetection"
-            android:icon="@drawable/ic_github_face"
-            android:title="Cascade detection" />
-        <item
-            android:id="@+id/nav_objectDetection"
-            android:icon="@drawable/ic_tag_faces"
-            android:title="Object detection" />
-    </group>
 </menu>
