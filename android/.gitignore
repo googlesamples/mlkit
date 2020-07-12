@@ -14,7 +14,7 @@ google-services.json
 local.properties
 
 .idea/*
-!idea/codeStyles
+!.idea/codeStyles/
 
 captures
 .externalNativeBuild
