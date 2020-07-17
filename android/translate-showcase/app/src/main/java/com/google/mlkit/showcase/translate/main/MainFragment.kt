@@ -81,8 +81,10 @@ class MainFragment : Fragment() {
     private lateinit var container: ConstraintLayout
     private lateinit var viewFinder: PreviewView
 
-    /** Blocking camera operations are performed using this executor */
+    /** Blocking camera and inference operations are performed using this executor. */
     private lateinit var cameraExecutor: ExecutorService
+
+    /** UI callbacks are run on this executor. */
     private lateinit var scopedExecutor: ScopedExecutor
 
     override fun onCreateView(
@@ -95,8 +97,8 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        // Shut down our background executor
-        cameraExecutor.shutdown()
+        // Shut down the scoped executor. The camera executor will automatically shut down its
+        // background threads after 60s of idling.
         scopedExecutor.shutdown()
     }
 
