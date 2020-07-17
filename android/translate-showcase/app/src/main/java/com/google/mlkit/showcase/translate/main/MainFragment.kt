@@ -44,6 +44,7 @@ import com.google.mlkit.showcase.translate.analyzer.TextAnalyzer
 import com.google.mlkit.showcase.translate.util.Language
 import com.google.mlkit.showcase.translate.util.ScopedExecutor
 import kotlinx.android.synthetic.main.main_fragment.*
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -75,7 +76,6 @@ class MainFragment : Fragment() {
 
     private var displayId: Int = -1
     private val viewModel: MainViewModel by viewModels()
-    private var cameraProvider: ProcessCameraProvider? = null
     private var camera: Camera? = null
     private var imageAnalyzer: ImageAnalysis? = null
     private lateinit var container: ConstraintLayout
@@ -202,19 +202,17 @@ class MainFragment : Fragment() {
     private fun setUpCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         cameraProviderFuture.addListener(Runnable {
-
-            // CameraProvider
-            cameraProvider = cameraProviderFuture.get()
-
+            val cameraProvider = try {
+                cameraProviderFuture.get()
+            } catch (e: ExecutionException) {
+                throw IllegalStateException("Camera initialization failed.", e.cause!!)
+            }
             // Build and bind the camera use cases
-            bindCameraUseCases()
+            bindCameraUseCases(cameraProvider)
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    private fun bindCameraUseCases() {
-        val cameraProvider = cameraProvider
-            ?: throw IllegalStateException("Camera initialization failed.")
-
+    private fun bindCameraUseCases(cameraProvider: ProcessCameraProvider) {
         // Get screen metrics used to setup camera for full screen resolution
         val metrics = DisplayMetrics().also { viewFinder.display.getRealMetrics(it) }
         Log.d(TAG, "Screen metrics: ${metrics.widthPixels} x ${metrics.heightPixels}")
@@ -346,7 +344,7 @@ class MainFragment : Fragment() {
     ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
-                viewFinder.post { bindCameraUseCases() }
+                viewFinder.post { setUpCamera() }
             } else {
                 Toast.makeText(
                     context,
