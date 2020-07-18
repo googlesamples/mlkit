@@ -23,7 +23,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.google.mlkit.showcase.translate"
         minSdkVersion 21
