@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.google.mlkit:image-labeling-automl:16.1.0'
     implementation 'com.google.mlkit:linkfirebase:16.0.0'
 
+    implementation 'androidx.multidex:multidex:2.0.1'
     // -------------------------------------------------------
 
     implementation 'com.google.code.gson:gson:2.8.5'
