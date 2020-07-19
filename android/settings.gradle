@@ -1,15 +1,32 @@
 rootProject.name = 'ML-kit'
 
-include ':vision-quickstart:app'
-include ':material-showcase:app'
-include ':translate-showcase:app'
-include ':translate:app'
-include ':smartreply:app'
-include ':automl:app'
 include ':mainSample'
 include ':internal:common'
 
-include ':langid:app'
 include ':internal:lintchecks'
 include ':internal:lint'
 include ':internal:chooserx'
+
+include ':langid:langidApp'
+project(':langid:langidApp').projectDir = new File('./langid/app')
+
+include ':automl:automlApp'
+project(':automl:automlApp').projectDir = new File('./automl/app')
+
+include ':entityextraction:entityextractionApp'
+project(':entityextraction:entityextractionApp').projectDir = new File('./entityextraction/app')
+
+include ':smartreply:smartreplyApp'
+project(':smartreply:smartreplyApp').projectDir = new File('./smartreply/app')
+
+include ':translate:translateApp'
+project(':translate:translateApp').projectDir = new File('./translate/app')
+
+include ':translate-showcase:translateShowCaseApp'
+project(':translate-showcase:translateShowCaseApp').projectDir = new File('./translate-showcase/app')
+
+include ':vision-quickstart:visionQuickstartApp'
+project(':vision-quickstart:visionQuickstartApp').projectDir = new File('./vision-quickstart/app')
+
+include ':material-showcase:materialApp'
+project(':material-showcase:materialApp').projectDir = new File('./material-showcase/app')
