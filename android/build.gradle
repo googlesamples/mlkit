@@ -22,6 +22,7 @@ allprojects {
         google()
         jcenter()
         mavenLocal()
+        maven { url 'https://jitpack.io' }
     }
 
     // See: https://github.com/ben-manes/gradle-versions-plugin
