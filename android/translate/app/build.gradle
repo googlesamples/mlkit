@@ -39,6 +39,9 @@ android {
 dependencies {
     implementation project (':internal:common')
     implementation project(':internal:chooserx')
+    implementation project(":internal:lintchecks")
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'com.google.mlkit:translate:16.1.2'
 
     // Those dependencies are not required by the SDK. They are used for the sample itself.
