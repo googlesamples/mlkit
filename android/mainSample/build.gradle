@@ -78,14 +78,13 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    implementation project(':material-showcase:app')
-    implementation project(':vision-quickstart:app')
-    implementation project(':material-showcase:app')
-    implementation project(':translate-showcase:app')
-    implementation project(':translate:app')
-    implementation project(':smartreply:app')
-    implementation project(':automl:app')
-    implementation project(':langid:app')
+    implementation project(':vision-quickstart:visionQuickstartApp')
+    implementation project(':material-showcase:materialApp')
+    implementation project(':translate-showcase:translateShowCaseApp')
+    implementation project(':translate:translateApp')
+    implementation project(':smartreply:smartreplyApp')
+    implementation project(':automl:automlApp')
+    implementation project(':langid:langidApp')
     implementation 'com.github.hannesa2:githubAppUpdate:0.8'
 
     implementation "androidx.core:core-ktx:1.3.1"
