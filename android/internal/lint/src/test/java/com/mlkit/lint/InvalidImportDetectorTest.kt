@@ -61,7 +61,7 @@ class InvalidImportDetectorTest {
                 .expect("""
           |src/com/google/mlkit/kotlin/Example.java:3: Error: $SHORT_MESSAGE [SuspiciousImport]
           |import com.google.mlkit.java.Hello;
-          |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~
           |1 errors, 0 warnings""".trimMargin())
     }
 }
