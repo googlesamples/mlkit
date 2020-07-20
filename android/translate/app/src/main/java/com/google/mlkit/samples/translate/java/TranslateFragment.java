@@ -76,8 +76,7 @@ public class TranslateFragment extends Fragment {
         final Spinner sourceLangSelector = view.findViewById(R.id.sourceLangSelector);
         final Spinner targetLangSelector = view.findViewById(R.id.targetLangSelector);
 
-        final TranslateViewModel viewModel =
-                ViewModelProviders.of(this).get(TranslateViewModel.class);
+        final TranslateViewModel viewModel = ViewModelProviders.of(this).get(TranslateViewModel.class);
 
         // Get available language list and set up source and target language spinners
         // with default selections.
@@ -162,7 +161,7 @@ public class TranslateFragment extends Fragment {
                 viewModel.sourceText.postValue(s.toString());
             }
         });
-        viewModel.translatedText.observe(this, new Observer<TranslateViewModel.ResultOrError>() {
+        viewModel.translatedText.observe(getViewLifecycleOwner(), new Observer<TranslateViewModel.ResultOrError>() {
             @Override
             public void onChanged(TranslateViewModel.ResultOrError resultOrError) {
                 if (resultOrError.error != null) {
@@ -174,7 +173,7 @@ public class TranslateFragment extends Fragment {
         });
 
         // Update sync toggle button states based on downloaded models list.
-        viewModel.availableModels.observe(this, new Observer<List<String>>() {
+        viewModel.availableModels.observe(getViewLifecycleOwner(), new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> translateRemoteModels) {
                 String output = getContext().getString(R.string.downloaded_models_label,
