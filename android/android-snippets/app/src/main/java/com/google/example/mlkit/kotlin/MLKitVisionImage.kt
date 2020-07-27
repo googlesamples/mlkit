@@ -96,22 +96,24 @@ class MLKitVisionImage {
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Throws(CameraAccessException::class)
-    private fun getRotationCompensation(cameraId: String, activity: Activity, context: Context): Int {
+    private fun getRotationCompensation(cameraId: String, activity: Activity, context: Context, isFrontFacing: Boolean): Int {
         // Get the device's current rotation relative to its "native" orientation.
         // Then, from the ORIENTATIONS table, look up the angle the image must be
         // rotated to compensate for the device's rotation.
         val deviceRotation = activity.windowManager.defaultDisplay.rotation
         var rotationCompensation = ORIENTATIONS.get(deviceRotation)
 
-        // On most devices, the sensor orientation is 90 degrees, but for some
-        // devices it is 270 degrees. For devices with a sensor orientation of
-        // 270, rotate the image an additional 180 ((270 + 270) % 360) degrees.
+        // Get the device's sensor orientation.
         val cameraManager = context.getSystemService(CAMERA_SERVICE) as CameraManager
         val sensorOrientation = cameraManager
                 .getCameraCharacteristics(cameraId)
                 .get(CameraCharacteristics.SENSOR_ORIENTATION)!!
-        rotationCompensation = (rotationCompensation + sensorOrientation + 270) % 360
 
+        if (isFrontFacing) {
+            rotationCompensation = (sensorOrientation + rotationDegrees) % 360;
+        } else { // back-facing
+            rotationCompensation = (sensorOrientation - rotationDegrees + 360) % 360;
+        }
         return rotationCompensation
     }
     // [END get_rotation]
@@ -132,10 +134,10 @@ class MLKitVisionImage {
         private val ORIENTATIONS = SparseIntArray()
 
         init {
-            ORIENTATIONS.append(Surface.ROTATION_0, 90)
-            ORIENTATIONS.append(Surface.ROTATION_90, 0)
-            ORIENTATIONS.append(Surface.ROTATION_180, 270)
-            ORIENTATIONS.append(Surface.ROTATION_270, 180)
+            ORIENTATIONS.append(Surface.ROTATION_0, 0)
+            ORIENTATIONS.append(Surface.ROTATION_90, 90)
+            ORIENTATIONS.append(Surface.ROTATION_180, 180)
+            ORIENTATIONS.append(Surface.ROTATION_270, 270)
         }
         // [END camera_orientations]
     }

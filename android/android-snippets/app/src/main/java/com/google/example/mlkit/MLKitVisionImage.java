@@ -97,12 +97,11 @@ public class MLKitVisionImage {
 
     // [START get_rotation]
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-
     static {
-        ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        ORIENTATIONS.append(Surface.ROTATION_90, 0);
-        ORIENTATIONS.append(Surface.ROTATION_180, 270);
-        ORIENTATIONS.append(Surface.ROTATION_270, 180);
+        ORIENTATIONS.append(Surface.ROTATION_0, 0);
+        ORIENTATIONS.append(Surface.ROTATION_90, 90);
+        ORIENTATIONS.append(Surface.ROTATION_180, 180);
+        ORIENTATIONS.append(Surface.ROTATION_270, 270);
     }
 
     /**
@@ -110,7 +109,7 @@ public class MLKitVisionImage {
      * orientation.
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private int getRotationCompensation(String cameraId, Activity activity, Context context)
+    private int getRotationCompensation(String cameraId, Activity activity, boolean isFrontFacing)
             throws CameraAccessException {
         // Get the device's current rotation relative to its "native" orientation.
         // Then, from the ORIENTATIONS table, look up the angle the image must be
@@ -118,15 +117,17 @@ public class MLKitVisionImage {
         int deviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         int rotationCompensation = ORIENTATIONS.get(deviceRotation);
 
-        // On most devices, the sensor orientation is 90 degrees, but for some
-        // devices it is 270 degrees. For devices with a sensor orientation of
-        // 270, rotate the image an additional 180 ((270 + 270) % 360) degrees.
-        CameraManager cameraManager = (CameraManager) context.getSystemService(CAMERA_SERVICE);
+        // Get the device's sensor orientation.
+        CameraManager cameraManager = (CameraManager) activity.getSystemService(CAMERA_SERVICE);
         int sensorOrientation = cameraManager
                 .getCameraCharacteristics(cameraId)
                 .get(CameraCharacteristics.SENSOR_ORIENTATION);
-        rotationCompensation = (rotationCompensation + sensorOrientation + 270) % 360;
 
+        if (isFrontFacing) {
+            rotationCompensation = (sensorOrientation + rotationDegrees) % 360;
+        } else { // back-facing
+            rotationCompensation = (sensorOrientation - rotationDegrees + 360) % 360;
+        }
         return rotationCompensation;
     }
     // [END get_rotation]
