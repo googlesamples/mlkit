@@ -41,8 +41,9 @@ dependencies {
     // Barcode model
     implementation 'com.google.mlkit:barcode-scanning:16.0.1'
 
-    // Object feature and model
+    // Object detection and tracking features
     implementation 'com.google.mlkit:object-detection:16.1.0'
+    implementation 'com.google.mlkit:object-detection-custom:16.1.0'
 
     // Face features
     implementation 'com.google.android.gms:play-services-mlkit-face-detection:16.1.0'

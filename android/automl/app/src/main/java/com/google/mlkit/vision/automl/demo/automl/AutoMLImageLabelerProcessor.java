@@ -61,28 +61,18 @@ public class AutoMLImageLabelerProcessor extends VisionProcessorBase<List<ImageL
                 new AutoMLImageLabelerRemoteModel.Builder(remoteModelName).build();
         createDetector(remoteModel);
 
-        RemoteModelManager.getInstance()
-                .isModelDownloaded(remoteModel)
-                .addOnCompleteListener(
-                        task -> {
-                            if (!task.getResult()) {
-                                Log.d(TAG, "Model needs to be downloaded");
-                                DownloadConditions downloadConditions =
-                                        new DownloadConditions.Builder().requireWifi().build();
-                                modelDownloadingTask =
-                                        RemoteModelManager.getInstance().download(remoteModel, downloadConditions);
-                                modelDownloadingTask.addOnFailureListener(
-                                        ignored ->
-                                                Toast.makeText(
-                                                        context,
-                                                        "Model download failed for AutoMLImageLabelerImpl,"
-                                                                + " please check your connection.",
-                                                        Toast.LENGTH_LONG)
-                                                        .show());
-                            } else {
-                                Log.d(TAG, "Model Exist Locally");
-                            }
-                        });
+        DownloadConditions downloadConditions =
+                new DownloadConditions.Builder().requireWifi().build();
+        modelDownloadingTask =
+                RemoteModelManager.getInstance()
+                        .download(remoteModel, downloadConditions)
+                        .addOnFailureListener(ignored ->
+                                Toast.makeText(
+                                        context,
+                                        "Model download failed for AutoMLImageLabelerImpl,"
+                                                + " please check your connection.",
+                                        Toast.LENGTH_LONG)
+                                        .show());
     }
 
     @Override
@@ -97,10 +87,7 @@ public class AutoMLImageLabelerProcessor extends VisionProcessorBase<List<ImageL
 
     @Override
     protected Task<List<ImageLabel>> detectInImage(InputImage image) {
-        if (modelDownloadingTask == null) {
-            // No download task means only the locally bundled model is used. Model can be used directly.
-            return imageLabeler.process(image);
-        } else if (!modelDownloadingTask.isComplete()) {
+        if (!modelDownloadingTask.isComplete()) {
             if (mode == Mode.LIVE_PREVIEW) {
                 Log.i(TAG, "Model download is in progress. Skip detecting image.");
                 return Tasks.forResult(new ArrayList<>());
