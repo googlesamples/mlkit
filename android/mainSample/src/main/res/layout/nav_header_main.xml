@@ -20,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@drawable/ic_mlkit"
+        android:background="@color/white"
         tools:ignore="ContentDescription" />
 
     <TextView
