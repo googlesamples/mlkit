@@ -1,0 +1,39 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.mlkit.samples.vision.digitalink">
+
+    <application android:name="androidx.multidex.MultiDexApplication"
+        android:icon="@mipmap/ic_launcher" android:label="@string/app_name"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+
+        <activity
+            android:name="com.google.mlkit.samples.vision.digitalink.MainActivity"
+            android:label="@string/title_activity_main"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- Replace the activity declaration above with the following one for trying out the kotlin version of the app.
+        <activity
+           android:name="com.google.mlkit.samples.vision.digitalink.kotlin.MainActivity"
+           android:label="@string/title_activity_main"
+           android:exported="true"
+           android:screenOrientation="portrait" >
+           <intent-filter>
+               <action android:name="android.intent.action.MAIN" />
+
+               <category android:name="android.intent.category.LAUNCHER" />
+           </intent-filter>
+        </activity>
+        -->
+    </application>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- For downloading -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+</manifest>
