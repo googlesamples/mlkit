@@ -1,2 +1,0 @@
-include ':app'
-rootProject.name = "ML Kit Digital Ink Recognition Demo"
