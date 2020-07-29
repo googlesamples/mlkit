@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application android:name="androidx.multidex.MultiDexApplication"
+    <application
         android:icon="@mipmap/ic_launcher" android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
 
@@ -15,11 +15,6 @@
             android:label="@string/title_activity_main"
             android:exported="true"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <!-- Replace the activity declaration above with the following one for trying out the kotlin version of the app.
         <activity

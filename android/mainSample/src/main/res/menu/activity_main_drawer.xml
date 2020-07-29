@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:id="@+id/grp1" android:checkableBehavior="single">
+    <group
+        android:id="@+id/grp1"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_material_showcase"
             android:icon="@drawable/ic_menu_camera"
@@ -27,9 +29,17 @@
             android:icon="@drawable/ic_image_filter_black_white"
             android:title="LanguageID" />
         <item
+            android:id="@+id/nav_entityextraction"
+            android:icon="@drawable/ic_image_filter_black_white"
+            android:title="Entity Extraction" />
+        <item
             android:id="@+id/nav_auto_ml"
             android:icon="@drawable/ic_palette"
             android:title="Auto ML" />
+        <item
+            android:id="@+id/nav_digital_ink"
+            android:icon="@drawable/ic_palette"
+            android:title="Digital Ink" />
     </group>
 
 </menu>

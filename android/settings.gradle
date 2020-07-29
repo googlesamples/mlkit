@@ -30,3 +30,6 @@ project(':vision-quickstart:visionQuickstartApp').projectDir = new File('./visio
 
 include ':material-showcase:materialApp'
 project(':material-showcase:materialApp').projectDir = new File('./material-showcase/app')
+
+include ':digitalink:digitalinkApp'
+project(':digitalink:digitalinkApp').projectDir = new File('./digitalink/app')
