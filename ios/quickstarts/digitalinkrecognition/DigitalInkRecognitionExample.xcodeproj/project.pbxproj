@@ -1,0 +1,756 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06B702967D07DFBE8B611A65 /* Pods_DigitalInkRecognitionExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43C581A52410A68C001DDCD7 /* Pods_DigitalInkRecognitionExample.framework */; };
+		4316679E23E3C9B600320D07 /* StrokeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4316679D23E3C9B500320D07 /* StrokeManager.m */; };
+		431667A123E79EC200320D07 /* RecognizedInk.m in Sources */ = {isa = PBXBuildFile; fileRef = 431667A023E79EC200320D07 /* RecognizedInk.m */; };
+		437C575823ECB138007755CF /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 437C575723ECB138007755CF /* SceneDelegate.m */; };
+		43941DD62491F2AE0003EF8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43941DD52491F2AE0003EF8E /* AppDelegate.swift */; };
+		43941DD82491F2AE0003EF8E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43941DD72491F2AE0003EF8E /* SceneDelegate.swift */; };
+		43941DDA2491F2AE0003EF8E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43941DD92491F2AE0003EF8E /* ViewController.swift */; };
+		43941DE72491F2D90003EF8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43A74FD723D9502C003CD995 /* Main.storyboard */; };
+		43941DE82491F2DC0003EF8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43A74FDA23D9502D003CD995 /* Assets.xcassets */; };
+		43941DE92491F2DF0003EF8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43A74FDC23D9502D003CD995 /* LaunchScreen.storyboard */; };
+		43941DEC2491FF520003EF8E /* RecognizedInk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43941DEB2491FF520003EF8E /* RecognizedInk.swift */; };
+		43941DEE2491FF660003EF8E /* StrokeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43941DED2491FF660003EF8E /* StrokeManager.swift */; };
+		43A74FD023D9502C003CD995 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A74FCF23D9502C003CD995 /* AppDelegate.m */; };
+		43A74FD623D9502C003CD995 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A74FD523D9502C003CD995 /* ViewController.m */; };
+		43A74FD923D9502C003CD995 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43A74FD723D9502C003CD995 /* Main.storyboard */; };
+		43A74FDB23D9502D003CD995 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43A74FDA23D9502D003CD995 /* Assets.xcassets */; };
+		43A74FDE23D9502D003CD995 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43A74FDC23D9502D003CD995 /* LaunchScreen.storyboard */; };
+		43A74FE123D9502D003CD995 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A74FE023D9502D003CD995 /* main.m */; };
+		BDC0E56B3269ACD32101DEC2 /* Pods_DigitalInkRecognitionExampleObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22A22BB43CB8C0FDB75229DD /* Pods_DigitalInkRecognitionExampleObjC.framework */; };
+		DB5FEFEEC8CADB42FA3F1F4A /* Pods_DigitalInkRecognitionExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F00C43D4D2F0B9368E3DBA /* Pods_DigitalInkRecognitionExample.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		43C581A82410A68D001DDCD7 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		22A22BB43CB8C0FDB75229DD /* Pods_DigitalInkRecognitionExampleObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DigitalInkRecognitionExampleObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2FA139D9122F19DE977BD81B /* Pods-DigitalInkRecognitionExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DigitalInkRecognitionExample.debug.xcconfig"; path = "Target Support Files/Pods-DigitalInkRecognitionExample/Pods-DigitalInkRecognitionExample.debug.xcconfig"; sourceTree = "<group>"; };
+		4316679D23E3C9B500320D07 /* StrokeManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StrokeManager.m; sourceTree = "<group>"; };
+		4316679F23E3C9E200320D07 /* StrokeManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StrokeManager.h; sourceTree = "<group>"; };
+		431667A023E79EC200320D07 /* RecognizedInk.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecognizedInk.m; sourceTree = "<group>"; };
+		431667A223E79EE600320D07 /* RecognizedInk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecognizedInk.h; sourceTree = "<group>"; };
+		437C575623ECB137007755CF /* SceneDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		437C575723ECB138007755CF /* SceneDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		43941DD32491F2AE0003EF8E /* DigitalInkRecognitionExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DigitalInkRecognitionExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		43941DD52491F2AE0003EF8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		43941DD72491F2AE0003EF8E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		43941DD92491F2AE0003EF8E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		43941DEB2491FF520003EF8E /* RecognizedInk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognizedInk.swift; sourceTree = "<group>"; };
+		43941DED2491FF660003EF8E /* StrokeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeManager.swift; sourceTree = "<group>"; };
+		43A74FCB23D9502C003CD995 /* DigitalInkRecognitionExampleObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DigitalInkRecognitionExampleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		43A74FCE23D9502C003CD995 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		43A74FCF23D9502C003CD995 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		43A74FD423D9502C003CD995 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		43A74FD523D9502C003CD995 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		43A74FD823D9502C003CD995 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		43A74FDA23D9502D003CD995 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		43A74FDD23D9502D003CD995 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		43A74FDF23D9502D003CD995 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		43A74FE023D9502D003CD995 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		43C581A52410A68C001DDCD7 /* Pods_DigitalInkRecognitionExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_DigitalInkRecognitionExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		43C581A92410A6F1001DDCD7 /* MLKitDigitalInkRecognition_resource.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = MLKitDigitalInkRecognition_resource.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EDBFCAB26C99F32DBC3BB47 /* Pods-DigitalInkRecognitionExampleObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DigitalInkRecognitionExampleObjC.release.xcconfig"; path = "Target Support Files/Pods-DigitalInkRecognitionExampleObjC/Pods-DigitalInkRecognitionExampleObjC.release.xcconfig"; sourceTree = "<group>"; };
+		A4F00C43D4D2F0B9368E3DBA /* Pods_DigitalInkRecognitionExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DigitalInkRecognitionExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFA1E264236E71DB7382FA5E /* Pods-DigitalInkRecognitionExampleObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DigitalInkRecognitionExampleObjC.debug.xcconfig"; path = "Target Support Files/Pods-DigitalInkRecognitionExampleObjC/Pods-DigitalInkRecognitionExampleObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		E1DF0DA0323C1E13E5250180 /* Pods-DigitalInkRecognitionExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DigitalInkRecognitionExample.release.xcconfig"; path = "Target Support Files/Pods-DigitalInkRecognitionExample/Pods-DigitalInkRecognitionExample.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		43941DD02491F2AE0003EF8E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06B702967D07DFBE8B611A65 /* Pods_DigitalInkRecognitionExample.framework in Frameworks */,
+				DB5FEFEEC8CADB42FA3F1F4A /* Pods_DigitalInkRecognitionExample.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43A74FC823D9502C003CD995 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDC0E56B3269ACD32101DEC2 /* Pods_DigitalInkRecognitionExampleObjC.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		20CD2168EC1B2C7E1B64CE02 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				43C581A92410A6F1001DDCD7 /* MLKitDigitalInkRecognition_resource.bundle */,
+				22A22BB43CB8C0FDB75229DD /* Pods_DigitalInkRecognitionExampleObjC.framework */,
+				A4F00C43D4D2F0B9368E3DBA /* Pods_DigitalInkRecognitionExample.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		43941DD42491F2AE0003EF8E /* DigitalInkRecognitionExample */ = {
+			isa = PBXGroup;
+			children = (
+				43A74FDF23D9502D003CD995 /* Info.plist */,
+				43941DD52491F2AE0003EF8E /* AppDelegate.swift */,
+				43941DD72491F2AE0003EF8E /* SceneDelegate.swift */,
+				43941DD92491F2AE0003EF8E /* ViewController.swift */,
+				43941DEB2491FF520003EF8E /* RecognizedInk.swift */,
+				43941DED2491FF660003EF8E /* StrokeManager.swift */,
+			);
+			path = DigitalInkRecognitionExample;
+			sourceTree = "<group>";
+		};
+		43941DEA2491F4A80003EF8E /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				43C581A52410A68C001DDCD7 /* Pods_DigitalInkRecognitionExample.framework */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		43A74FC223D9502C003CD995 = {
+			isa = PBXGroup;
+			children = (
+				43A74FCD23D9502C003CD995 /* DigitalInkRecognitionExampleObjC */,
+				43941DD42491F2AE0003EF8E /* DigitalInkRecognitionExample */,
+				43A74FCC23D9502C003CD995 /* Products */,
+				7EE461C10C1CFC1BEB2001DD /* Pods */,
+				20CD2168EC1B2C7E1B64CE02 /* Frameworks */,
+				43941DEA2491F4A80003EF8E /* Recovered References */,
+			);
+			sourceTree = "<group>";
+		};
+		43A74FCC23D9502C003CD995 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				43A74FCB23D9502C003CD995 /* DigitalInkRecognitionExampleObjC.app */,
+				43941DD32491F2AE0003EF8E /* DigitalInkRecognitionExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		43A74FCD23D9502C003CD995 /* DigitalInkRecognitionExampleObjC */ = {
+			isa = PBXGroup;
+			children = (
+				437C575623ECB137007755CF /* SceneDelegate.h */,
+				437C575723ECB138007755CF /* SceneDelegate.m */,
+				43A74FCE23D9502C003CD995 /* AppDelegate.h */,
+				43A74FCF23D9502C003CD995 /* AppDelegate.m */,
+				43A74FD423D9502C003CD995 /* ViewController.h */,
+				43A74FD523D9502C003CD995 /* ViewController.m */,
+				4316679F23E3C9E200320D07 /* StrokeManager.h */,
+				4316679D23E3C9B500320D07 /* StrokeManager.m */,
+				43A74FD723D9502C003CD995 /* Main.storyboard */,
+				43A74FDA23D9502D003CD995 /* Assets.xcassets */,
+				43A74FDC23D9502D003CD995 /* LaunchScreen.storyboard */,
+				43A74FE023D9502D003CD995 /* main.m */,
+				431667A023E79EC200320D07 /* RecognizedInk.m */,
+				431667A223E79EE600320D07 /* RecognizedInk.h */,
+			);
+			path = DigitalInkRecognitionExampleObjC;
+			sourceTree = "<group>";
+		};
+		7EE461C10C1CFC1BEB2001DD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2FA139D9122F19DE977BD81B /* Pods-DigitalInkRecognitionExample.debug.xcconfig */,
+				E1DF0DA0323C1E13E5250180 /* Pods-DigitalInkRecognitionExample.release.xcconfig */,
+				AFA1E264236E71DB7382FA5E /* Pods-DigitalInkRecognitionExampleObjC.debug.xcconfig */,
+				8EDBFCAB26C99F32DBC3BB47 /* Pods-DigitalInkRecognitionExampleObjC.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		43941DD22491F2AE0003EF8E /* DigitalInkRecognitionExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43941DE42491F2B00003EF8E /* Build configuration list for PBXNativeTarget "DigitalInkRecognitionExample" */;
+			buildPhases = (
+				349051F548B767D9E6444D3A /* [CP] Check Pods Manifest.lock */,
+				43941DCF2491F2AE0003EF8E /* Sources */,
+				43941DD02491F2AE0003EF8E /* Frameworks */,
+				43941DD12491F2AE0003EF8E /* Resources */,
+				F3BFDE80257CA33EFABF9D3A /* [CP] Embed Pods Frameworks */,
+				F50F853499C8DF375ECCF48B /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DigitalInkRecognitionExample;
+			productName = DigitalInkRecognitionExample;
+			productReference = 43941DD32491F2AE0003EF8E /* DigitalInkRecognitionExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		43A74FCA23D9502C003CD995 /* DigitalInkRecognitionExampleObjC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43A74FFA23D9502D003CD995 /* Build configuration list for PBXNativeTarget "DigitalInkRecognitionExampleObjC" */;
+			buildPhases = (
+				41730B736DDDA270BEB1DE14 /* [CP] Check Pods Manifest.lock */,
+				43A74FC723D9502C003CD995 /* Sources */,
+				43A74FC823D9502C003CD995 /* Frameworks */,
+				43A74FC923D9502C003CD995 /* Resources */,
+				C1BAD7E585DB7C7F50315AB7 /* [CP] Embed Pods Frameworks */,
+				82C89EC12BC1D0E9062AFAD4 /* [CP] Copy Pods Resources */,
+				43C581A82410A68D001DDCD7 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DigitalInkRecognitionExampleObjC;
+			productName = DigitalInkRecognitionExample;
+			productReference = 43A74FCB23D9502C003CD995 /* DigitalInkRecognitionExampleObjC.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		43A74FC323D9502C003CD995 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1150;
+				LastUpgradeCheck = 1150;
+				ORGANIZATIONNAME = "";
+				TargetAttributes = {
+					43941DD22491F2AE0003EF8E = {
+						CreatedOnToolsVersion = 11.5;
+					};
+					43A74FCA23D9502C003CD995 = {
+						CreatedOnToolsVersion = 11.3;
+					};
+				};
+			};
+			buildConfigurationList = 43A74FC623D9502C003CD995 /* Build configuration list for PBXProject "DigitalInkRecognitionExample" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 43A74FC223D9502C003CD995;
+			productRefGroup = 43A74FCC23D9502C003CD995 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				43A74FCA23D9502C003CD995 /* DigitalInkRecognitionExampleObjC */,
+				43941DD22491F2AE0003EF8E /* DigitalInkRecognitionExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		43941DD12491F2AE0003EF8E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43941DE92491F2DF0003EF8E /* LaunchScreen.storyboard in Resources */,
+				43941DE82491F2DC0003EF8E /* Assets.xcassets in Resources */,
+				43941DE72491F2D90003EF8E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43A74FC923D9502C003CD995 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43A74FDE23D9502D003CD995 /* LaunchScreen.storyboard in Resources */,
+				43A74FDB23D9502D003CD995 /* Assets.xcassets in Resources */,
+				43A74FD923D9502C003CD995 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		349051F548B767D9E6444D3A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DigitalInkRecognitionExample-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		41730B736DDDA270BEB1DE14 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DigitalInkRecognitionExampleObjC-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		82C89EC12BC1D0E9062AFAD4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExampleObjC/Pods-DigitalInkRecognitionExampleObjC-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExampleObjC/Pods-DigitalInkRecognitionExampleObjC-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExampleObjC/Pods-DigitalInkRecognitionExampleObjC-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C1BAD7E585DB7C7F50315AB7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExampleObjC/Pods-DigitalInkRecognitionExampleObjC-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExampleObjC/Pods-DigitalInkRecognitionExampleObjC-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExampleObjC/Pods-DigitalInkRecognitionExampleObjC-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F3BFDE80257CA33EFABF9D3A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExample/Pods-DigitalInkRecognitionExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExample/Pods-DigitalInkRecognitionExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExample/Pods-DigitalInkRecognitionExample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F50F853499C8DF375ECCF48B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExample/Pods-DigitalInkRecognitionExample-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExample/Pods-DigitalInkRecognitionExample-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DigitalInkRecognitionExample/Pods-DigitalInkRecognitionExample-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		43941DCF2491F2AE0003EF8E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43941DDA2491F2AE0003EF8E /* ViewController.swift in Sources */,
+				43941DD62491F2AE0003EF8E /* AppDelegate.swift in Sources */,
+				43941DEE2491FF660003EF8E /* StrokeManager.swift in Sources */,
+				43941DEC2491FF520003EF8E /* RecognizedInk.swift in Sources */,
+				43941DD82491F2AE0003EF8E /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43A74FC723D9502C003CD995 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				431667A123E79EC200320D07 /* RecognizedInk.m in Sources */,
+				437C575823ECB138007755CF /* SceneDelegate.m in Sources */,
+				43A74FD623D9502C003CD995 /* ViewController.m in Sources */,
+				43A74FD023D9502C003CD995 /* AppDelegate.m in Sources */,
+				4316679E23E3C9B600320D07 /* StrokeManager.m in Sources */,
+				43A74FE123D9502D003CD995 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		43A74FD723D9502C003CD995 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				43A74FD823D9502C003CD995 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		43A74FDC23D9502D003CD995 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				43A74FDD23D9502D003CD995 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		43941DE52491F2B00003EF8E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2FA139D9122F19DE977BD81B /* Pods-DigitalInkRecognitionExample.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DigitalInkRecognitionExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_SWIFT_FLAGS = "-D COCOAPODS";
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.DigitalInkRecognitionExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
+			};
+			name = Debug;
+		};
+		43941DE62491F2B00003EF8E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1DF0DA0323C1E13E5250180 /* Pods-DigitalInkRecognitionExample.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DigitalInkRecognitionExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_SWIFT_FLAGS = "-D COCOAPODS";
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.DigitalInkRecognitionExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
+			};
+			name = Release;
+		};
+		43A74FF823D9502D003CD995 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				VALID_ARCHS = "x86_64 arm64 arm64e";
+			};
+			name = Debug;
+		};
+		43A74FF923D9502D003CD995 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "x86_64 arm64 arm64e";
+			};
+			name = Release;
+		};
+		43A74FFB23D9502D003CD995 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AFA1E264236E71DB7382FA5E /* Pods-DigitalInkRecognitionExampleObjC.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DigitalInkRecognitionExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GTMSessionFetcher\"",
+					"-framework",
+					"\"GoogleDataTransport\"",
+					"-framework",
+					"\"GoogleToolboxForMac\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"GoogleUtilitiesComponents\"",
+					"-framework",
+					"\"LocalAuthentication\"",
+					"-framework",
+					"\"MLKitCommon\"",
+					"-framework",
+					"\"MLKitDigitalInkRecognition\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"nanopb\"",
+					"-framework",
+					"\"protobuf\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.DigitalInkRecognitionExampleObjC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
+			};
+			name = Debug;
+		};
+		43A74FFC23D9502D003CD995 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8EDBFCAB26C99F32DBC3BB47 /* Pods-DigitalInkRecognitionExampleObjC.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DigitalInkRecognitionExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GTMSessionFetcher\"",
+					"-framework",
+					"\"GoogleDataTransport\"",
+					"-framework",
+					"\"GoogleToolboxForMac\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"GoogleUtilitiesComponents\"",
+					"-framework",
+					"\"LocalAuthentication\"",
+					"-framework",
+					"\"MLKitCommon\"",
+					"-framework",
+					"\"MLKitDigitalInkRecognition\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"nanopb\"",
+					"-framework",
+					"\"protobuf\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.DigitalInkRecognitionExampleObjC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "x86_64 arm64 arm64e";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		43941DE42491F2B00003EF8E /* Build configuration list for PBXNativeTarget "DigitalInkRecognitionExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43941DE52491F2B00003EF8E /* Debug */,
+				43941DE62491F2B00003EF8E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		43A74FC623D9502C003CD995 /* Build configuration list for PBXProject "DigitalInkRecognitionExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43A74FF823D9502D003CD995 /* Debug */,
+				43A74FF923D9502D003CD995 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		43A74FFA23D9502D003CD995 /* Build configuration list for PBXNativeTarget "DigitalInkRecognitionExampleObjC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43A74FFB23D9502D003CD995 /* Debug */,
+				43A74FFC23D9502D003CD995 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 43A74FC323D9502C003CD995 /* Project object */;
+}

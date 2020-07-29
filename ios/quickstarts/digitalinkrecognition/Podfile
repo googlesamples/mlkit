@@ -1,0 +1,10 @@
+platform :ios, '10.0'
+use_frameworks!
+
+pod 'GoogleMLKit/DigitalInkRecognition'
+
+target 'DigitalInkRecognitionExample' do
+end
+
+target 'DigitalInkRecognitionExampleObjC' do
+end

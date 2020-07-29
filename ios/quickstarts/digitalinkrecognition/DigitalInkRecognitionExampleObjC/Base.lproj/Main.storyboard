@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="250" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z03-vP-65t" userLabel="recognizedImage">
+                                <rect key="frame" x="0.0" y="44" width="414" height="720"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="250" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xgt-Hs-cjx" userLabel="drawnImage">
+                                <rect key="frame" x="0.0" y="44" width="414" height="720"/>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="1000" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="yMa-Tg-tkJ" userLabel="All Controls">
+                                <rect key="frame" x="0.0" y="764" width="414" height="98"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sZY-jL-V5N" userLabel="Message">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="34"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="34" id="PTc-he-IKD"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ZAH-Gw-jA6" userLabel="Language Controls">
+                                        <rect key="frame" x="0.0" y="34" width="414" height="34"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Language:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CbP-21-1fH">
+                                                <rect key="frame" x="0.0" y="0.0" width="72" height="34"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="l2s-aw-qOa">
+                                                <rect key="frame" x="80" y="0.0" width="334" height="34"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="tKw-MT-gsT" userLabel="Buttons">
+                                        <rect key="frame" x="0.0" y="68" width="414" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3vg-og-fQ2">
+                                                <rect key="frame" x="0.0" y="0.0" width="103.66666666666667" height="30"/>
+                                                <state key="normal" title="Download"/>
+                                                <connections>
+                                                    <action selector="didPressDownload" destination="BYZ-38-t0r" eventType="touchUpInside" id="6kA-rr-rob"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OEf-cP-CgV">
+                                                <rect key="frame" x="103.66666666666669" y="0.0" width="103.33333333333331" height="30"/>
+                                                <state key="normal" title="Delete"/>
+                                                <connections>
+                                                    <action selector="didPressDelete" destination="BYZ-38-t0r" eventType="touchUpInside" id="UbF-np-4rB"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CVF-Ff-gBp">
+                                                <rect key="frame" x="206.99999999999997" y="0.0" width="103.66666666666666" height="30"/>
+                                                <state key="normal" title="Recognize"/>
+                                                <connections>
+                                                    <action selector="didPressRecognize" destination="BYZ-38-t0r" eventType="touchUpInside" id="Jru-Aa-hm9"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vwy-Wy-bcU">
+                                                <rect key="frame" x="310.66666666666669" y="0.0" width="103.33333333333331" height="30"/>
+                                                <state key="normal" title="Clear"/>
+                                                <connections>
+                                                    <action selector="didPressClear" destination="BYZ-38-t0r" eventType="touchUpInside" id="3Eb-3P-Jvu"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yMa-Tg-tkJ" secondAttribute="trailing" id="3XU-P3-quG"/>
+                            <constraint firstItem="yMa-Tg-tkJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="3lX-cc-kRk"/>
+                            <constraint firstItem="Z03-vP-65t" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="KdI-ba-QzL"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="Z03-vP-65t" secondAttribute="top" id="ZHa-rc-I27"/>
+                            <constraint firstItem="Xgt-Hs-cjx" firstAttribute="top" secondItem="Z03-vP-65t" secondAttribute="top" id="emc-ZZ-wXt"/>
+                            <constraint firstItem="yMa-Tg-tkJ" firstAttribute="top" secondItem="Z03-vP-65t" secondAttribute="bottom" id="fm2-Mt-1WT" userLabel="All Controls.top = recognizedImage.bottom"/>
+                            <constraint firstItem="Xgt-Hs-cjx" firstAttribute="trailing" secondItem="Z03-vP-65t" secondAttribute="trailing" id="h1h-0Z-zw1"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="yMa-Tg-tkJ" secondAttribute="bottom" id="o0l-zs-rVA"/>
+                            <constraint firstItem="Xgt-Hs-cjx" firstAttribute="leading" secondItem="Z03-vP-65t" secondAttribute="leading" id="oh7-ZU-GfR"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Z03-vP-65t" secondAttribute="trailing" id="wcl-ft-pZc"/>
+                            <constraint firstItem="Xgt-Hs-cjx" firstAttribute="bottom" secondItem="Z03-vP-65t" secondAttribute="bottom" id="yTx-bs-PN8"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="drawnImage" destination="Xgt-Hs-cjx" id="vta-4X-NbX"/>
+                        <outlet property="messageLabel" destination="sZY-jL-V5N" id="vRn-Bm-p5P"/>
+                        <outlet property="recognizedImage" destination="Z03-vP-65t" id="7Jj-2f-yPu"/>
+                        <outlet property="selectedLanguageField" destination="l2s-aw-qOa" id="gOp-cn-32W"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="136.875" y="118.30985915492958"/>
+        </scene>
+    </scenes>
+</document>
