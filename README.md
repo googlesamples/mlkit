@@ -13,6 +13,8 @@ ML Kit currently supports the following APIs:
 - [Language ID](https://developers.google.com/ml-kit/language/identification) - Determine the language of a string of text with only a few words.
 - [Translation](https://developers.google.com/ml-kit/language/translation) - Translate text between 58 languages, entirely on device.
 - [Smart Reply](https://developers.google.com/ml-kit/language/smart-reply) - Generate reply suggestions in text conversations
+- [Digital Ink](https://developers.google.com/ml-kit/vision/digital-ink-recognition) - Recognize handwritten text on a digital surface in hundreds of languages
+
 
 <img src="android/material-showcase/screenshots/live_odt.gif" width="280"/> <img src="android/material-showcase/screenshots/live_barcode.gif" width="280"/> <img src="ios/showcase/translate-showcase/translate.gif" width="256"/> 
 
