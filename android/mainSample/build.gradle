@@ -82,6 +82,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.5.0'
     implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
 
+    implementation 'com.github.AppDevNext.Logcat:LogcatCrashlytic:2.4.0'
+
     implementation project(':vision-quickstart:visionQuickstartApp')
     implementation project(':material-showcase:materialApp')
     implementation project(':translate-showcase:translateShowCaseApp')
