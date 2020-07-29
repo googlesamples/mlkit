@@ -110,9 +110,9 @@ class MLKitVisionImage {
                 .get(CameraCharacteristics.SENSOR_ORIENTATION)!!
 
         if (isFrontFacing) {
-            rotationCompensation = (sensorOrientation + rotationDegrees) % 360;
+            rotationCompensation = (sensorOrientation + rotationDegrees) % 360
         } else { // back-facing
-            rotationCompensation = (sensorOrientation - rotationDegrees + 360) % 360;
+            rotationCompensation = (sensorOrientation - rotationDegrees + 360) % 360
         }
         return rotationCompensation
     }
