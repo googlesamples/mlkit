@@ -45,15 +45,15 @@ public class ImageLabelingActivity extends AppCompatActivity {
                         .setConfidenceThreshold(0.8f)
                         .build();
 
-        // [START get_detector_default]
+        // [START get_detector_options]
         ImageLabeler labeler = ImageLabeling.getClient(options);
-        // [END get_detector_default]
+        // [END get_detector_options]
 
         /*
-        // [START get_detector_options]
-        // Or, to set the minimum confidence required:
-        ImageLabeler detector = ImageLabeler.newInstance(options);
-        // [END get_detector_options]
+        // [START get_detector_default]
+        // Or use the default options:
+        ImageLabeler detector = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
+        // [END get_detector_default]
         */
 
         // [START run_detector]
