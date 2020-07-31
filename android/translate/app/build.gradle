@@ -37,7 +37,6 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
-    buildToolsVersion = '29.0.0'
 }
 
 dependencies {
