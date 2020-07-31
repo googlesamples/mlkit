@@ -44,9 +44,9 @@ dependencies {
 
     implementation 'com.google.mlkit:digital-ink-recognition:+'
 
-    androidTestImplementation 'androidx.test:rules:1.1.0-alpha2'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha2'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'com.google.truth:truth:1.0'
+    androidTestImplementation 'com.google.truth:truth:1.0.1'
 
 }
