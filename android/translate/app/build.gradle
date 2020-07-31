@@ -55,5 +55,5 @@ dependencies {
 
     implementation 'com.google.mlkit:translate:16.1.0'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
 }

@@ -39,5 +39,5 @@ dependencies {
     implementation 'com.google.mlkit:smart-reply:16.1.0'
 
     implementation 'com.google.guava:guava:27.0.1-android'
-    implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
