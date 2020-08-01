@@ -16,7 +16,7 @@ import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
 import java.util.Locale
 
 /** Main activity which creates a StrokeManager and connects it to the DrawingView.  */
-class MainActivity : AppCompatActivity(), StrokeManager.DownloadedModelsChangedListener {
+class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedModelsChangedListener {
     @JvmField
     @VisibleForTesting
     val strokeManager = StrokeManager()
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), StrokeManager.DownloadedModelsChangedL
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_kotlin)
+        setContentView(R.layout.activity_digital_ink_main_kotlin)
         val languageSpinner = findViewById<Spinner>(R.id.languages_spinner)
         val drawingView = findViewById<DrawingView>(R.id.drawing_view)
         val statusTextView = findViewById<StatusTextView>(
