@@ -34,6 +34,7 @@
 		1B76D8E123C7B01F00EBF6FC /* roses.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 1B76D8D823C7ACAA00EBF6FC /* roses.jpeg */; };
 		1B76D8E223C7B01F00EBF6FC /* sunflower.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1B76D8D523C7ACA900EBF6FC /* sunflower.jpg */; };
 		1B76D8E323C7B01F00EBF6FC /* tulips.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 1B76D8D623C7ACAA00EBF6FC /* tulips.jpeg */; };
+		A4581F0224C2473B005237E0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 10B3184D22EB9C5E00E834FF /* GoogleService-Info.plist */; };
 		B217D4AB220D24CA001CE5AA /* automl_labeler_labels.txt in Resources */ = {isa = PBXBuildFile; fileRef = B217D4A8220D24C9001CE5AA /* automl_labeler_labels.txt */; };
 		B217D4AC220D24CA001CE5AA /* automl_labeler_manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = B217D4A9220D24CA001CE5AA /* automl_labeler_manifest.json */; };
 		B217D4AD220D24CA001CE5AA /* automl_labeler_model.tflite in Resources */ = {isa = PBXBuildFile; fileRef = B217D4AA220D24CA001CE5AA /* automl_labeler_model.tflite */; };
@@ -272,11 +273,11 @@
 				100D2A51222F37DE00DF5C02 /* automl_labeler_manifest.json in Resources */,
 				1B76D8DB23C7ACAB00EBF6FC /* tulips.jpeg in Resources */,
 				100D2A52222F37E100DF5C02 /* automl_labeler_model.tflite in Resources */,
-				10B3184E22EB9C5E00E834FF /* GoogleService-Info.plist in Resources */,
 				1B76D8DE23C7ACAB00EBF6FC /* dandelion.jpg in Resources */,
 				1B76D8DC23C7ACAB00EBF6FC /* daisy.jpeg in Resources */,
 				1B76D8DD23C7ACAB00EBF6FC /* roses.jpeg in Resources */,
 				BB287B3E20729CE90069707A /* Main.storyboard in Resources */,
+				A4581F0224C2473B005237E0 /* GoogleService-Info.plist in Resources */,
 				100D2A50222F37DB00DF5C02 /* automl_labeler_labels.txt in Resources */,
 				1001E6FD20CF0C8F00445CB3 /* Assets.xcassets in Resources */,
 			);

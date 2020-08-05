@@ -133,3 +133,12 @@ private enum Constants {
   static let shapeViewAlpha: CGFloat = 0.3
   static let rectangleViewCornerRadius: CGFloat = 10.0
 }
+
+// MARK: - Extension
+
+extension CGRect {
+  /// Returns a `Bool` indicating whether the rectangle has any value that is `NaN`.
+  func isNaN()  -> Bool {
+    return origin.x.isNaN || origin.y.isNaN || width.isNaN || height.isNaN
+  }
+}

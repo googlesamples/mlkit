@@ -296,7 +296,7 @@ static NSString *const kFakeProductItemNumberText = @"12345678";
   CGFloat imageAlpha =
       [self ratioOfCurrentValue:yOffset
                            from:(yOffset > self.bottomSheetTargetOffsetY) ? bottomFadeOutOffsetY
-                                                                         : topFadeOutOffsetY
+                                                                          : topFadeOutOffsetY
                              to:self.bottomSheetTargetOffsetY];
   [self.overlayView showImageInRect:rect alpha:imageAlpha];
 }

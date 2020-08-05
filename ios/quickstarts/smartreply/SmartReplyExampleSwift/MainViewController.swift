@@ -89,6 +89,7 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
         self.messages = []
         self.updateReplies()
         self.collectionView.reloadData()
+        self.collectionView.collectionViewLayout.invalidateLayout()
       })
     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     return alert
@@ -206,6 +207,7 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
     ]
     self.updateReplies()
     self.collectionView.reloadData()
+    self.collectionView.collectionViewLayout.invalidateLayout()
   }
 
   private func generateChatHistoryWithSensitiveContent() {
@@ -228,6 +230,7 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
     ]
     self.updateReplies()
     self.collectionView.reloadData()
+    self.collectionView.collectionViewLayout.invalidateLayout()
   }
 
   func textViewDidEndEditing(_ textView: UITextView) {

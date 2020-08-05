@@ -114,6 +114,7 @@ NS_ASSUME_NONNULL_BEGIN
   MLKTranslatorOptions *options = [[MLKTranslatorOptions alloc]
       initWithSourceLanguage:self.allLanguages[[self.inputPicker selectedRowInComponent:0]]
               targetLanguage:self.allLanguages[[self.outputPicker selectedRowInComponent:0]]];
+  [self updateDownloadDeleteButtonLabels];
   self.translator = [MLKTranslator translatorWithOptions:options];
   [self translate];
 }

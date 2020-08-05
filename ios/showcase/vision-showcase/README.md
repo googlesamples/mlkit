@@ -1,21 +1,26 @@
 # ML Kit Showcase Apps with Material Design
 
-These apps demonstrate how to build an end-to-end user experience with [Google ML Kit APIs](https://developers.google.com/ml-kit/guides) and following the new [Material for ML design guidelines](https://material.io/collections/machine-learning/).
+These apps demonstrate how to build an end-to-end user experience with [Google ML Kit APIs](https://developers.google.com/ml-kit) and following the new [Material for ML design guidelines](https://material.io/collections/machine-learning/).
 
-The goal of this app is to showcase an ideal ML Kit driven end to end solution for various ML Kit vision APIs and use cases. The following use cases are covered:
-* Visual search using the Object Detection & Tracking API - An end to end workflow for object detection and product search
-* “Wild Bird” search using the Object Detection & Tracking API - An end to end workflow for object detection and search using a custom TensorFlow Lite model
+The goal is to make it as easy as possible to integrate ML Kit into your app with an experience that has been user tested.
 
-![live_odt](screenshots/live_odt.gif)
+## Apps
 
-## How to Install
-
-You can open the following app as an Xcode project, and run it on a mobile device or simulator. Simply install the pod and open the .xcworkspace file to see the project in Xcode.
+You can open each of the following apps as an Xcode project, and run
+them on a mobile device or a simulator. Simply install the pods and open
+the .xcworkspace file to see the project in Xcode.
 
 ```
 $ pod install --repo-update
 $ open your-project.xcworkspace
 ```
+
+- Object Detection and Tracking:
+  Search using the Object Detection & Tracking API - a complete workflow from object detection to product search in live camera.
+![live_odt](screenshots/live_odt.gif)
+
+- Object detection and Tracking with custom TensorFlow Lite model:
+  Search using a custom TensorFlow Lite model (Example used: Bird recognition model) to detect and recognize objects with a live camera view. This shows how to implement a visual search flow with a custom TensorFlow Lite model.
 
 ## How to make contributions?
 Please read and follow the steps in the [CONTRIBUTING.md](CONTRIBUTING.md)

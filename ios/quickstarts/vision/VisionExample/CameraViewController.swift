@@ -138,6 +138,7 @@ class CameraViewController: UIViewController {
         let convertedRect = self.previewLayer.layerRectConverted(
           fromMetadataOutputRect: normalizedRect
         )
+        guard !convertedRect.isNaN() else { return }
         UIUtilities.addRectangle(
           convertedRect,
           to: self.annotationOverlayView,
@@ -186,6 +187,7 @@ class CameraViewController: UIViewController {
         let standardizedRect = self.previewLayer.layerRectConverted(
           fromMetadataOutputRect: normalizedRect
         ).standardized
+        guard !standardizedRect.isNaN() else { return }
         UIUtilities.addRectangle(
           standardizedRect,
           to: self.annotationOverlayView,
@@ -237,6 +239,7 @@ class CameraViewController: UIViewController {
             let convertedRect = self.previewLayer.layerRectConverted(
               fromMetadataOutputRect: normalizedRect
             )
+            guard !convertedRect.isNaN() else { return }
             UIUtilities.addRectangle(
               convertedRect,
               to: self.annotationOverlayView,
@@ -286,6 +289,7 @@ class CameraViewController: UIViewController {
         let standardizedRect = self.previewLayer.layerRectConverted(
           fromMetadataOutputRect: normalizedRect
         ).standardized
+        guard !standardizedRect.isNaN() else { return }
         UIUtilities.addRectangle(
           standardizedRect,
           to: self.annotationOverlayView,

@@ -87,6 +87,8 @@ NS_ASSUME_NONNULL_BEGIN
                                                    self.messages = [NSMutableArray new];
                                                    [self updateReplies];
                                                    [self.collectionView reloadData];
+                                                   [self.collectionView
+                                                           .collectionViewLayout invalidateLayout];
                                                  }]];
     [_moreAlert addAction:[UIAlertAction actionWithTitle:@"Cancel"
                                                    style:UIAlertActionStyleCancel
@@ -380,6 +382,7 @@ NS_ASSUME_NONNULL_BEGIN
           .mutableCopy;
   [self updateReplies];
   [self.collectionView reloadData];
+  [self.collectionView.collectionViewLayout invalidateLayout];
 }
 
 - (void)generateChatHistoryWithSensitiveContent {
@@ -415,6 +418,7 @@ NS_ASSUME_NONNULL_BEGIN
           .mutableCopy;
   [self updateReplies];
   [self.collectionView reloadData];
+  [self.collectionView.collectionViewLayout invalidateLayout];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
