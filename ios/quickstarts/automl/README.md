@@ -1,28 +1,39 @@
-ML Kit Quickstart
-=======================
+# ML Kit AutoML Remote Model Quickstart Sample App
 
-ML Kit iOS quickstart demonstrates how to use the various features of ML Kit to add machine
-learning to your application.
+## Introduction
 
-Introduction
-------------
+This ML Kit AutoML iOS Quickstart app demonstrates how to label images with an AutoML Vision Edge trained model, and also how to download models that are hosted with Firebase.
 
-- [Read more about ML Kit](https://developers.google.com/ml-kit/guides)
+* [Read more about training an image classification model using AutoML Vision Edge model](https://firebase.google.com/docs/ml/automl-image-labeling)
+* [Read more about hosting models with Firebase Model deployment](https://firebase.google.com/docs/ml/manage-hosted-models)
 
-Getting Started
----------------
+## Feature List
+Features that are included in this demo app:
+* [AutoML Image labeling](https://developers.google.com/ml-kit/vision/image-labeling/automl/ios) - Label images using an AutoML VisionEdge trained model
+
+<img src="../../screenshots/auto_ml_1.jpeg" width="256"/> <img src="../../screenshots/auto_ml_2.jpeg" width="256"/>
+
+## Getting Started
 
 - [Add Firebase to your iOS Project](https://firebase.google.com/docs/ios/setup).
 - Run the sample on your iOS device or simulator.
 - Choose Photo Library, Photo Camera, or Video Camera to see a demo of labeling images using
   a model trained by AutoML
 
-Support
--------
+## How to use the app
+
+This app supports two usage scenarios: Live Camera mode and Static Image mode.
+
+### Live Camera Scenario
+This mode uses the camera preview as input and allows you to label images using a remotely downloaded AutoML Vision Edge model.
+
+### Static Image Scenario
+The static image scenario is identical to the live camera scenario, but instead relies on images fed into the app through the camera roll.
+
+
+## Support
 
 - [Stack Overflow for ML Kit](https://stackoverflow.com/questions/tagged/google-mlkit)
-- [Stack Overflow for Firebase](https://stackoverflow.com/questions/tagged/firebase-mlkit)
-- [Firebase Support](https://firebase.google.com/support/)
 
 License
 -------

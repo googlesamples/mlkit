@@ -1,29 +1,31 @@
-ML Kit Smart Reply Quickstart
-=======================
+# ML Kit Smart Reply Quickstart Sample App
 
-The ML Kit Smart Reply iOS Quickstart app demonstrates how to use the Smart Reply feature of
-ML Kit to automatically generate replies to conversation threads in your application.
+## Introduction
 
-Introduction
-------------
+The ML Kit Smart Reply iOS Quickstart app demonstrates how to use the Smart Reply feature of ML Kit to automatically generate replies to conversation threads in your application.
 
-- [Read more about ML Kit Smart Reply](https://developers.google.com/docs/ml-kit/ios/generate-smart-replies)
+* [Read more about ML Kit Smart Reply](https://developers.google.com/docs/ml-kit/ios/generate-smart-replies)
 
-Getting Started
----------------
+## Feature List
 
-- Run the sample on your iOS device or simulator.
-- Type message text and press Swith button to generate smart replies.
+Features that are included in this demo app:
+* [Smart Reply](https://developers.google.com/ml-kit/language/smart-reply/ios) - Generate smart replies with ML Kit on iOS
 
-Support
--------
+<img src="../../screenshots/smart_reply.jpg" width="256"/>
+
+## Getting Started
+
+* Run the sample on your iOS device or simulator.
+* Type message text and press “Switch” button to generate smart replies.
+
+## Support
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/google-mlkit)
 
 License
 -------
 
-Copyright 2019 Google, Inc.
+Copyright 2020 Google, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE file distributed with this work for

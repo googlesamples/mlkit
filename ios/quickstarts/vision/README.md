@@ -1,32 +1,38 @@
-ML Kit Quickstart
-=======================
+# ML Kit Vision Quickstart Sample App
 
-ML Kit iOS quickstart demonstrates how to use the various features of ML Kit to add machine
-learning to your application.
+## Introduction
 
-Introduction
-------------
+This ML Kit Vision iOS Quickstart app demonstrates how to use and integrate various vision based ML Kit features into your app.
 
-- [Read more about ML Kit](https://developers.google.com/ml-kit/guides)
+## Feature List
 
-Getting Started
----------------
+Features that are included in this demo app:
+* [Object Detection](https://developers.google.com/ml-kit/vision/object-detection/ios) - Detect, track, and classify objects in real time and static images
+* [Custom Object Detection (Birds)](https://developers.google.com/ml-kit/vision/object-detection/custom-models/ios) - Detect, track, and classify birds with a custom TensorFlow Lite model
+* [Face Detection](https://developers.google.com/ml-kit/vision/face-detection/ios) - Detect faces in real time and static images
+* [Text Recognition](https://developers.google.com/ml-kit/vision/text-recognition/ios) - Recognize text in real time and static images
+* [Barcode Scanning ](https://developers.google.com/ml-kit/vision/barcode-scanning/ios)- Scan barcodes in real time and static images
+* [Image Labeling](https://developers.google.com/ml-kit/vision/image-labeling/ios) - Label images in real time and static images
+* [Custom Image Labeling (Birds)](https://developers.google.com/ml-kit/vision/image-labeling/custom-models/ios) - Label images of birds with a custom TensorFlow Lite model
 
-- Run the sample on your iOS device or simulator.
-- Choose Photo Library or Photo Camera to see a demo of the following features:
-  - Detect faces
-  - Recognize text
-  - Scan barcodes
-  - Label images (built-in/custom models)
-  - Detect, track, and classify objects (built-in/custom models)
+<img src="../../screenshots/vision_quickstart_1.jpg" width="256"/> <img src="../../screenshots/vision_quickstart_2.jpg" width="256"/> <img src="../../screenshots/vision_quickstart_3.jpg" width="256"/>
 
-- Choose Video Camera to see a demo of the following features:
-  - Scan barcodes
-  - Detect faces
-  - Recognize text
-  - Detect, track, and classify objects (build-in/custom models)
+## Getting Started
 
-Support
+* Run the sample code on your iOS device or simulator
+* Try extending the code to add new features and functionality
+
+## How to use the app
+
+This app supports two usage scenarios: Live Camera mode and Static Image mode.
+
+### Static Image Scenario
+When the app is first opened, you will begin in Static Image mode. Use the carousel to select a specific API and hit “detect” to exercise the API on the preloaded images. In order to add your own images from the camera roll, select the camera roll icon on the top of the screen.
+
+### Live Camera Scenario
+This mode uses the camera preview as input instead of static images. In order to enter this mode, select the video camera icon in the top right corner of the screen.
+
+## Support
 -------
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/google-mlkit)

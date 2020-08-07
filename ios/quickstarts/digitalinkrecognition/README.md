@@ -8,7 +8,7 @@ in your application.
 Introduction
 ------------
 
-- [Read more about ML Kit Digital Ink Recognition](https://developers.google.com/docs/ml-kit/ios/digital-ink-recognition)
+- [Read more about ML Kit Digital Ink Recognition](https://developers.google.com/ml-kit/vision/digital-ink-recognition/ios)
 
 Getting Started
 ---------------

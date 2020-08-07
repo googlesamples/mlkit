@@ -41,7 +41,6 @@ class StrokeManager {
   /** Arrays used to keep the piece of ink that is currently being drawn. */
   private var strokes: [Stroke] = []
   private var points: [StrokePoint] = []
-  private var inkStartTime: TimeInterval = 0
 
   /** The recognizer that will translate the ink into text. */
   private var recognizer: DigitalInkRecognizer! = nil
@@ -204,8 +203,10 @@ class StrokeManager {
 
   /** Begins a new stroke when the user touches the screen. */
   func startStrokeAtPoint(point: CGPoint, t: TimeInterval) {
-    inkStartTime = t
-    points = [StrokePoint.init(x: Float(point.x), y: Float(point.y), t: 0)]
+    points = [
+      StrokePoint.init(
+        x: Float(point.x), y: Float(point.y), t: Int(t * kMillisecondsPerTimeInterval))
+    ]
   }
 
   /** Adds an additional point to the stroke when the user moves their finger. */
@@ -213,7 +214,7 @@ class StrokeManager {
     points.append(
       StrokePoint.init(
         x: Float(point.x), y: Float(point.y),
-        t: Int((t - inkStartTime) * kMillisecondsPerTimeInterval)))
+        t: Int(t * kMillisecondsPerTimeInterval)))
   }
 
   /** Completes a stroke when the user lifts their finger. */
@@ -221,7 +222,7 @@ class StrokeManager {
     points.append(
       StrokePoint.init(
         x: Float(point.x), y: Float(point.y),
-        t: Int((t - inkStartTime) * kMillisecondsPerTimeInterval)))
+        t: Int(t * kMillisecondsPerTimeInterval)))
     // Create an array of strokes if it doesn't exist already, and add this stroke to it.
     strokes.append(Stroke.init(points: points))
     points = []

@@ -18,7 +18,6 @@ static const double kMillisecondsPerTimeInterval = 1000.0;
 /** Arrays used to keep the piece of ink that is currently being drawn. */
 @property(nullable, nonatomic) NSMutableArray<MLKStroke *> *strokes;
 @property(nullable, nonatomic) NSMutableArray<MLKStrokePoint *> *points;
-@property(nonatomic) NSTimeInterval inkStartTime;
 
 /** The recognizer that will translate the ink into text. */
 @property(nullable, nonatomic) MLKDigitalInkRecognizer *recognizer;
@@ -218,25 +217,24 @@ static const double kMillisecondsPerTimeInterval = 1000.0;
 
 /** Begins a new stroke when the user touches the screen. */
 - (void)startStrokeAtPoint:(CGPoint)point time:(NSTimeInterval)t {
-  self.inkStartTime = t;
   self.points = [NSMutableArray array];
-  [self.points addObject:[[MLKStrokePoint alloc] initWithX:point.x y:point.y t:0]];
+  [self.points addObject:[[MLKStrokePoint alloc] initWithX:point.x
+                                                         y:point.y
+                                                         t:t * kMillisecondsPerTimeInterval]];
 }
 
 /** Adds an additional point to the stroke when the user moves their finger. */
 - (void)continueStrokeAtPoint:(CGPoint)point time:(NSTimeInterval)t {
-  [self.points addObject:[[MLKStrokePoint alloc]
-                             initWithX:point.x
-                                     y:point.y
-                                     t:(t - self.inkStartTime) * kMillisecondsPerTimeInterval]];
+  [self.points addObject:[[MLKStrokePoint alloc] initWithX:point.x
+                                                         y:point.y
+                                                         t:t * kMillisecondsPerTimeInterval]];
 }
 
 /** Completes a stroke when the user lifts their finger. */
 - (void)endStrokeAtPoint:(CGPoint)point time:(NSTimeInterval)t {
-  [self.points addObject:[[MLKStrokePoint alloc]
-                             initWithX:point.x
-                                     y:point.y
-                                     t:(t - self.inkStartTime) * kMillisecondsPerTimeInterval]];
+  [self.points addObject:[[MLKStrokePoint alloc] initWithX:point.x
+                                                         y:point.y
+                                                         t:t * kMillisecondsPerTimeInterval]];
   // Create an array of strokes if it doesn't exist already, and add this stroke to it.
   if (self.strokes == nil) {
     self.strokes = [NSMutableArray array];
