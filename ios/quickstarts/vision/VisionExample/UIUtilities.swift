@@ -15,6 +15,7 @@
 //
 
 import AVFoundation
+import MLKit
 import UIKit
 
 /// Defines UI-related utilitiy methods for vision detection.
@@ -37,6 +38,23 @@ public class UIUtilities {
     circleView.alpha = Constants.circleViewAlpha
     circleView.backgroundColor = color
     view.addSubview(circleView)
+  }
+
+  public static func addLineSegment(
+    fromPoint: CGPoint, toPoint: CGPoint, inView: UIView, color: UIColor, width: CGFloat
+  ) {
+    let path = UIBezierPath()
+    path.move(to: fromPoint)
+    path.addLine(to: toPoint)
+    let lineLayer = CAShapeLayer()
+    lineLayer.path = path.cgPath
+    lineLayer.strokeColor = color.cgColor
+    lineLayer.fillColor = nil
+    lineLayer.opacity = 1.0
+    lineLayer.lineWidth = width
+    let lineView = UIView()
+    lineView.layer.addSublayer(lineLayer)
+    inView.addSubview(lineView)
   }
 
   public static func addRectangle(_ rectangle: CGRect, to view: UIView, color: UIColor) {
@@ -95,6 +113,57 @@ public class UIUtilities {
     @unknown default:
       fatalError()
     }
+  }
+
+  /// Returns the minimum subset of all connected pose landmarks. Each key represents a start
+  /// landmark, and each value in the key's value array represents an end landmark which is
+  /// connected to the start landmark. These connections may be used for visualizing the landmark
+  /// positions on a pose object.
+  public static func poseConnections() -> [PoseLandmarkType: [PoseLandmarkType]] {
+    struct PoseConnectionsHolder {
+      static var connections: [PoseLandmarkType: [PoseLandmarkType]] = [
+        PoseLandmarkType.leftEar: [PoseLandmarkType.leftEyeOuter],
+        PoseLandmarkType.leftEyeOuter: [PoseLandmarkType.leftEye],
+        PoseLandmarkType.leftEye: [PoseLandmarkType.leftEyeInner],
+        PoseLandmarkType.leftEyeInner: [PoseLandmarkType.nose],
+        PoseLandmarkType.nose: [PoseLandmarkType.rightEyeInner],
+        PoseLandmarkType.rightEyeInner: [PoseLandmarkType.rightEye],
+        PoseLandmarkType.rightEye: [PoseLandmarkType.rightEyeOuter],
+        PoseLandmarkType.rightEyeOuter: [PoseLandmarkType.rightEar],
+        PoseLandmarkType.mouthLeft: [PoseLandmarkType.mouthRight],
+        PoseLandmarkType.leftShoulder: [
+          PoseLandmarkType.rightShoulder,
+          PoseLandmarkType.leftHip,
+        ],
+        PoseLandmarkType.rightShoulder: [
+          PoseLandmarkType.rightHip,
+          PoseLandmarkType.rightElbow,
+        ],
+        PoseLandmarkType.rightWrist: [
+          PoseLandmarkType.rightElbow,
+          PoseLandmarkType.rightThumb,
+          PoseLandmarkType.rightIndexFinger,
+          PoseLandmarkType.rightPinkyFinger,
+        ],
+        PoseLandmarkType.leftHip: [PoseLandmarkType.rightHip, PoseLandmarkType.leftKnee],
+        PoseLandmarkType.rightHip: [PoseLandmarkType.rightKnee],
+        PoseLandmarkType.rightKnee: [PoseLandmarkType.rightAnkle],
+        PoseLandmarkType.leftKnee: [PoseLandmarkType.leftAnkle],
+        PoseLandmarkType.leftElbow: [PoseLandmarkType.leftShoulder],
+        PoseLandmarkType.leftWrist: [
+          PoseLandmarkType.leftElbow, PoseLandmarkType.leftThumb,
+          PoseLandmarkType.leftIndexFinger,
+          PoseLandmarkType.leftPinkyFinger,
+        ],
+        PoseLandmarkType.leftAnkle: [PoseLandmarkType.leftHeel, PoseLandmarkType.leftToe],
+        PoseLandmarkType.rightAnkle: [PoseLandmarkType.rightHeel, PoseLandmarkType.rightToe],
+        PoseLandmarkType.rightHeel: [PoseLandmarkType.rightToe],
+        PoseLandmarkType.leftHeel: [PoseLandmarkType.leftToe],
+        PoseLandmarkType.rightIndexFinger: [PoseLandmarkType.rightPinkyFinger],
+        PoseLandmarkType.leftIndexFinger: [PoseLandmarkType.leftPinkyFinger],
+      ]
+    }
+    return PoseConnectionsHolder.connections
   }
 
   // MARK: - Private

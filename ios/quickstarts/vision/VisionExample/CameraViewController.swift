@@ -32,6 +32,8 @@ class CameraViewController: UIViewController {
     .onDeviceObjectCustomProminentWithClassifier,
     .onDeviceObjectCustomMultipleNoClassifier,
     .onDeviceObjectCustomMultipleWithClassifier,
+    .poseFast,
+    .poseAccurate,
   ]
 
   private var currentDetector: Detector = .onDeviceFace
@@ -56,6 +58,38 @@ class CameraViewController: UIViewController {
     annotationOverlayView.translatesAutoresizingMaskIntoConstraints = false
     return annotationOverlayView
   }()
+
+  /// Serial queue used for synchronizing access to `_poseDetector`. This is needed because Swift
+  /// lacks ObjC-style synchronization and the detector is accessed on different threads across
+  /// initialization, usage, and deallocation. Note that just using the main queue for
+  /// synchronization from the getter/setter overrides is unsafe because it could allow a deadlock
+  /// if the `poseDetector` property were accessed on the main thread.
+  private let poseDetectorQueue = DispatchQueue(label: "com.google.mlkit.pose")
+
+  /// The detector used for detecting poses. The pose detector's lifecycle is managed manually, so
+  /// it is initialized on-demand via the getter override and set to `nil` when a new detector is
+  /// chosen.
+  private var _poseDetector: PoseDetector? = nil
+  private var poseDetector: PoseDetector? {
+    get {
+      var detector: PoseDetector? = nil
+      poseDetectorQueue.sync {
+        if _poseDetector == nil {
+          let options = PoseDetectorOptions()
+          options.detectorMode = .stream
+          options.performanceMode = (currentDetector == .poseFast ? .fast : .accurate);
+          _poseDetector = PoseDetector.poseDetector(options: options)
+        }
+        detector = _poseDetector
+      }
+      return detector
+    }
+    set(newDetector) {
+      poseDetectorQueue.sync {
+        _poseDetector = newDetector
+      }
+    }
+  }
 
   // MARK: - IBOutlets
 
@@ -194,6 +228,58 @@ class CameraViewController: UIViewController {
           color: UIColor.green
         )
         self.addContours(for: face, width: width, height: height)
+      }
+    }
+  }
+
+  private func detectPose(in image: VisionImage, width: CGFloat, height: CGFloat) {
+    if let poseDetector = self.poseDetector {
+      var poses: [Pose]
+      do {
+        poses = try poseDetector.results(in: image)
+      } catch let error {
+        print("Failed to detect poses with error: \(error.localizedDescription).")
+        return
+      }
+      DispatchQueue.main.sync {
+        self.updatePreviewOverlayView()
+        self.removeDetectionAnnotations()
+      }
+      guard !poses.isEmpty else {
+        print("Pose detector returned no results.")
+        return
+      }
+      DispatchQueue.main.sync {
+        // Pose detected. Currently, only single person detection is supported.
+        poses.forEach { pose in
+          for (startLandmarkType, endLandmarkTypesArray) in UIUtilities.poseConnections() {
+            let startLandmark = pose.landmark(ofType: startLandmarkType)
+            for endLandmarkType in endLandmarkTypesArray {
+              let endLandmark = pose.landmark(ofType: endLandmarkType)
+              let startLandmarkPoint = normalizedPoint(
+                fromVisionPoint: startLandmark.position, width: width, height: height)
+              let endLandmarkPoint = normalizedPoint(
+                fromVisionPoint: endLandmark.position, width: width, height: height)
+              UIUtilities.addLineSegment(
+                fromPoint: startLandmarkPoint,
+                toPoint: endLandmarkPoint,
+                inView: self.annotationOverlayView,
+                color: UIColor.green,
+                width: Constant.lineWidth
+              )
+            }
+          }
+          for landmark in pose.landmarks {
+            let landmarkPoint = normalizedPoint(
+              fromVisionPoint: landmark.position, width: width, height: height)
+            UIUtilities.addCircle(
+              atPoint: landmarkPoint,
+              to: self.annotationOverlayView,
+              color: UIColor.blue,
+              radius: Constant.smallDotRadius
+            )
+          }
+        }
       }
     }
   }
@@ -422,6 +508,10 @@ class CameraViewController: UIViewController {
         guard let detector = Detector(rawValue: value) else { return }
         self.currentDetector = detector
         self.removeDetectionAnnotations()
+
+        // Reset the pose detector to `nil` when a new detector row is chosen. The detector will be
+        // re-initialized via its getter when it is needed for detection again.
+        self.poseDetector = nil
       }
       if detectorType.rawValue == currentDetector.rawValue { action.isEnabled = false }
       alertController.addAction(action)
@@ -719,6 +809,9 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         width: imageWidth,
         height: imageHeight,
         options: options)
+
+    case .poseFast, .poseAccurate:
+      detectPose(in: visionImage, width: imageWidth, height: imageHeight)
     }
   }
 }
@@ -737,6 +830,8 @@ public enum Detector: String {
   case onDeviceObjectCustomProminentWithClassifier = "ODT, custom, single, labeling"
   case onDeviceObjectCustomMultipleNoClassifier = "ODT, custom, multiple, no labeling"
   case onDeviceObjectCustomMultipleWithClassifier = "ODT, custom, multiple, labeling"
+  case poseAccurate = "Pose, accurate"
+  case poseFast = "Pose, fast"
 }
 
 private enum Constant {
@@ -749,6 +844,7 @@ private enum Constant {
   static let localModelFile = (name: "bird", type: "tflite")
   static let labelConfidenceThreshold: Float = 0.75
   static let smallDotRadius: CGFloat = 4.0
+  static let lineWidth: CGFloat = 3.0
   static let originalScale: CGFloat = 1.0
   static let padding: CGFloat = 10.0
   static let resultsLabelHeight: CGFloat = 200.0

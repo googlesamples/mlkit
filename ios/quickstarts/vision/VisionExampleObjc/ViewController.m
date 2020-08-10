@@ -37,7 +37,7 @@ static CGFloat const largeDotRadius = 10.0;
 static CGColorRef lineColor;
 static CGColorRef fillColor;
 
-static int const rowsCount = 13;
+static int const rowsCount = 14;
 static int const componentsCount = 1;
 
 /**
@@ -70,7 +70,9 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   /** On-Device vision object detector, custom model, multiple, only tracking. */
   DetectorPickerRowDetectObjectsCustomMultipleNoClassifier,
   /** On-Device vision object detector, custom model, multiple, with classification. */
-  DetectorPickerRowDetectObjectsCustomMultipleWithClassifier
+  DetectorPickerRowDetectObjectsCustomMultipleWithClassifier,
+  /** Vision pose detector. */
+  DetectorPickerRowDetectPose,
 };
 
 @interface ViewController () <UINavigationControllerDelegate,
@@ -95,6 +97,9 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 @property(weak, nonatomic) IBOutlet UIImageView *imageView;
 @property(weak, nonatomic) IBOutlet UIBarButtonItem *photoCameraButton;
 @property(weak, nonatomic) IBOutlet UIBarButtonItem *videoCameraButton;
+
+/** Initialized when pose is selected in the `detectorPicker`. Set to `nil` otherwise. */
+@property(nonatomic, nullable) MLKPoseDetector *poseDetector;
 
 @end
 
@@ -128,6 +133,8 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       return @"ODT, custom, multiple, no labeling";
     case DetectorPickerRowDetectObjectsCustomMultipleWithClassifier:
       return @"ODT, custom, multiple, labeling";
+    case DetectorPickerRowDetectPose:
+      return @"Pose";
   }
 }
 
@@ -147,6 +154,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   _imageView.image = [UIImage imageNamed:images[_currentImage]];
   _annotationOverlayView = [[UIView alloc] initWithFrame:CGRectZero];
   _annotationOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
+  _annotationOverlayView.clipsToBounds = YES;
   [_imageView addSubview:_annotationOverlayView];
   [NSLayoutConstraint activateConstraints:@[
     [_annotationOverlayView.topAnchor constraintEqualToAnchor:_imageView.topAnchor],
@@ -247,6 +255,9 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       [self detectObjectsOnDeviceInImage:_imageView.image withOptions:options];
       break;
     }
+    case DetectorPickerRowDetectPose:
+      [self detectPoseInImage:_imageView.image];
+      break;
   }
 }
 
@@ -270,14 +281,14 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   _imageView.image = [UIImage imageNamed:images[_currentImage]];
 }
 
-/// Removes the detection annotations from the annotation overlay view.
+/** Removes the detection annotations from the annotation overlay view. */
 - (void)removeDetectionAnnotations {
   for (UIView *annotationView in _annotationOverlayView.subviews) {
     [annotationView removeFromSuperview];
   }
 }
 
-/// Clears the results text view and removes any frames that are visible.
+/** Clears the results text view and removes any frames that are visible. */
 - (void)clearResults {
   [self removeDetectionAnnotations];
   self.resultsText = [NSMutableString new];
@@ -302,7 +313,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   NSLog(@"%@", _resultsText);
 }
 
-/// Updates the image view with a scaled version of the given image.
+/** Updates the image view with a scaled version of the given image. */
 - (void)updateImageViewWithImage:(UIImage *)image {
   CGFloat scaledImageWidth = 0.0;
   CGFloat scaledImageHeight = 0.0;
@@ -677,6 +688,13 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       didSelectRow:(NSInteger)row
        inComponent:(NSInteger)component {
   [self clearResults];
+
+  // Reset the pose detector to `nil` when a new detector row is chosen. If it happens to be the
+  // pose detector row, then it will be lazily-initialized with its getter override when accessed
+  // for pose detection.
+  if (row != DetectorPickerRowDetectPose) {
+    self.poseDetector = nil;
+  }
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -693,10 +711,12 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 #pragma mark - Vision On-Device Detection
 
-/// Detects faces on the specified image and draws a frame around the detected faces using
-/// On-Device face API.
-///
-/// - Parameter image: The image.
+/**
+ * Detects faces on the specified image and draws a frame around the detected faces using the
+ * On-Device face API.
+ *
+ * @param image The image.
+ */
 - (void)detectFacesInImage:(UIImage *)image {
   if (!image) {
     return;
@@ -781,10 +801,12 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   // [END detect_faces]
 }
 
-/// Detects barcodes on the specified image and draws a frame around the detected barcodes using
-/// On-Device barcode API.
-///
-/// - Parameter image: The image.
+/**
+ * Detects barcodes on the specified image and draws a frame around the detected barcodes using
+ * the On-Device barcode API.
+ *
+ * @param image The image.
+ */
 - (void)detectBarcodesInImage:(UIImage *)image {
   if (!image) {
     return;
@@ -838,10 +860,83 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   // [END detect_barcodes]
 }
 
-/// Detects labels on the specified image using On-Device label API.
-///
-/// - Parameter image: The image.
-/// - Parameter useCustomModel: Whether to use the custom image labeling model.
+/**
+ * Detects poses on the specified image and draws pose landmark points and line segments using the
+ * pose API.
+ *
+ * @param image The image.
+ */
+- (void)detectPoseInImage:(UIImage *)image {
+  if (!image) {
+    return;
+  }
+
+  // Initialize a VisionImage object with the given UIImage.
+  MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
+  visionImage.orientation = image.imageOrientation;
+
+  CGAffineTransform transform = [self transformMatrix];
+
+  __weak typeof(self) weakSelf = self;
+  [self.poseDetector processImage:visionImage completion:^(NSArray<MLKPose *> *_Nullable poses,
+                                                           NSError *_Nullable error) {
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    if (!strongSelf) {
+      return;
+    }
+    if (poses.count == 0) {
+      NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
+      strongSelf.resultsText = [NSMutableString
+          stringWithFormat:@"Pose detection failed with error: %@", errorString];
+      [strongSelf showResults];
+      return;
+    }
+
+    // Pose detection currently only supports single pose.
+    MLKPose *pose = poses.firstObject;
+
+    NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *connections =
+        [UIUtilities poseConnections];
+
+    for (MLKPoseLandmarkType landmarkType in connections) {
+      for (MLKPoseLandmarkType connectedLandmarkType in connections[landmarkType]) {
+        MLKPoseLandmark *landmark = [pose landmarkOfType:landmarkType];
+        MLKPoseLandmark *connectedLandmark = [pose landmarkOfType:connectedLandmarkType];
+
+        CGPoint transformedLandmarkPosition =
+            CGPointApplyAffineTransform([strongSelf pointFromVisionPoint:landmark.position],
+                                        transform);
+        CGPoint transformedConnectedLandmarkPosition = CGPointApplyAffineTransform(
+            [strongSelf pointFromVisionPoint:connectedLandmark.position], transform);
+        [UIUtilities addLineSegmentFromPoint:transformedLandmarkPosition
+                                     toPoint:transformedConnectedLandmarkPosition
+                                      inView:strongSelf.annotationOverlayView
+                                       color:UIColor.greenColor
+                                       width:3.0f];
+      }
+    }
+    for (MLKPoseLandmark *landmark in pose.landmarks) {
+      CGPoint transformedLandmarkPosition =
+          CGPointApplyAffineTransform([strongSelf pointFromVisionPoint:landmark.position],
+                                      transform);
+
+      [UIUtilities addCircleAtPoint:transformedLandmarkPosition
+                             toView:strongSelf.annotationOverlayView
+                              color:UIColor.blueColor
+                             radius:smallDotRadius];
+    }
+
+    strongSelf.resultsText = [NSMutableString stringWithFormat:@"Pose Detected"];
+    [strongSelf showResults];
+  }];
+}
+
+/**
+ * Detects labels on the specified image using the On-Device label API.
+ *
+ * @param image The image.
+ * @param useCustomModel Whether to use the custom image labeling model.
+ */
 - (void)detectLabelsInImage:(UIImage *)image useCustomModel:(BOOL)useCustomModel {
   if (!image) {
     return;
@@ -894,10 +989,12 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   // [END detect_label]
 }
 
-/// Detects text on the specified image and draws a frame around the recognized text using the
-/// On-Device text recognizer.
-///
-/// - Parameter image: The image.
+/**
+ * Detects text on the specified image and draws a frame around the recognized text using the
+ * On-Device text recognizer.
+ *
+ * @param image The image.
+ */
 - (void)detectTextOnDeviceInImage:(UIImage *)image {
   if (!image) {
     return;
@@ -978,6 +1075,19 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
         }];
   // [END detect_object]
 }
+
+#pragma mark - Getter overrides
+
+- (nullable MLKPoseDetector *)poseDetector {
+  if (_poseDetector == nil) {
+    MLKPoseDetectorOptions *options = [[MLKPoseDetectorOptions alloc] init];
+    options.detectorMode = MLKPoseDetectorModeSingleImage;
+    options.performanceMode = MLKPoseDetectorPerformanceModeAccurate;
+    _poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
+  }
+  return _poseDetector;
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

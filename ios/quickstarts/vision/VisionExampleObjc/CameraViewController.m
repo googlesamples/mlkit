@@ -49,7 +49,9 @@ typedef NS_ENUM(NSInteger, Detector) {
   DetectorOnDeviceObjectCustomProminentNoClassifier,
   DetectorOnDeviceObjectCustomProminentWithClassifier,
   DetectorOnDeviceObjectCustomMultipleNoClassifier,
-  DetectorOnDeviceObjectCustomMultipleWithClassifier
+  DetectorOnDeviceObjectCustomMultipleWithClassifier,
+  DetectorPoseAccurate,
+  DetectorPoseFast,
 };
 
 @property(nonatomic) NSArray *detectors;
@@ -62,9 +64,15 @@ typedef NS_ENUM(NSInteger, Detector) {
 @property(nonatomic) UIImageView *previewOverlayView;
 @property(weak, nonatomic) IBOutlet UIView *cameraView;
 @property(nonatomic) CMSampleBufferRef lastFrame;
+
+/** Lazily-initialized in an atomic getter. Reset to `nil` when a new detector is chosen. */
+@property(nonatomic, nullable) MLKPoseDetector *poseDetector;
+
 @end
 
 @implementation CameraViewController
+
+@synthesize poseDetector = _poseDetector;
 
 - (NSString *)stringForDetector:(Detector)detector {
   switch (detector) {
@@ -90,20 +98,29 @@ typedef NS_ENUM(NSInteger, Detector) {
       return @"ODT, custom, multiple, no labeling";
     case DetectorOnDeviceObjectCustomMultipleWithClassifier:
       return @"ODT, custom, multiple, labeling";
+    case DetectorPoseFast:
+      return @"Pose, fast";
+    case DetectorPoseAccurate:
+      return @"Pose, accurate";
   }
 }
 
 - (void)viewDidLoad {
   [super viewDidLoad];
   _detectors = @[
-    @(DetectorOnDeviceBarcode), @(DetectorOnDeviceFace), @(DetectorOnDeviceText),
+    @(DetectorOnDeviceBarcode),
+    @(DetectorOnDeviceFace),
+    @(DetectorOnDeviceText),
     @(DetectorOnDeviceObjectProminentNoClassifier),
-    @(DetectorOnDeviceObjectProminentWithClassifier), @(DetectorOnDeviceObjectMultipleNoClassifier),
+    @(DetectorOnDeviceObjectProminentWithClassifier),
+    @(DetectorOnDeviceObjectMultipleNoClassifier),
     @(DetectorOnDeviceObjectMultipleWithClassifier),
     @(DetectorOnDeviceObjectCustomProminentNoClassifier),
     @(DetectorOnDeviceObjectCustomProminentWithClassifier),
     @(DetectorOnDeviceObjectCustomMultipleNoClassifier),
-    @(DetectorOnDeviceObjectCustomMultipleWithClassifier)
+    @(DetectorOnDeviceObjectCustomMultipleWithClassifier),
+    @(DetectorPoseAccurate),
+    @(DetectorPoseFast),
   ];
   _currentDetector = DetectorOnDeviceFace;
   _isUsingFrontCamera = YES;
@@ -162,9 +179,11 @@ typedef NS_ENUM(NSInteger, Detector) {
   MLKFaceDetector *faceDetector = [MLKFaceDetector faceDetectorWithOptions:options];
   NSError *error;
   NSArray<MLKFace *> *faces = [faceDetector resultsInImage:image error:&error];
+  __weak typeof(self) weakSelf = self;
   dispatch_sync(dispatch_get_main_queue(), ^{
-    [self updatePreviewOverlayView];
-    [self removeDetectionAnnotations];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf updatePreviewOverlayView];
+    [strongSelf removeDetectionAnnotations];
     if (error != nil) {
       NSLog(@"Failed to detect faces with error: %@", error.localizedDescription);
       return;
@@ -178,11 +197,11 @@ typedef NS_ENUM(NSInteger, Detector) {
           CGRectMake(face.frame.origin.x / width, face.frame.origin.y / height,
                      face.frame.size.width / width, face.frame.size.height / height);
       CGRect standardizedRect = CGRectStandardize(
-          [self->_previewLayer rectForMetadataOutputRectOfInterest:normalizedRect]);
+          [strongSelf.previewLayer rectForMetadataOutputRectOfInterest:normalizedRect]);
       [UIUtilities addRectangle:standardizedRect
-                         toView:self->_annotationOverlayView
+                         toView:strongSelf.annotationOverlayView
                           color:UIColor.greenColor];
-      [self addContoursForFace:face width:width height:height];
+      [strongSelf addContoursForFace:face width:width height:height];
     }
   });
 }
@@ -193,29 +212,31 @@ typedef NS_ENUM(NSInteger, Detector) {
   MLKTextRecognizer *textRecognizer = [MLKTextRecognizer textRecognizer];
   NSError *error;
   MLKText *text = [textRecognizer resultsInImage:image error:&error];
+  __weak typeof(self) weakSelf = self;
   dispatch_sync(dispatch_get_main_queue(), ^{
-    [self removeDetectionAnnotations];
-    [self updatePreviewOverlayView];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf removeDetectionAnnotations];
+    [strongSelf updatePreviewOverlayView];
     if (error != nil) {
       NSLog(@"Failed to recognize text with error: %@", error.localizedDescription);
       return;
     }
     // Blocks.
     for (MLKTextBlock *block in text.blocks) {
-      NSArray<NSValue *> *points = [self convertedPointsFromPoints:block.cornerPoints
-                                                             width:width
-                                                            height:height];
+      NSArray<NSValue *> *points = [strongSelf convertedPointsFromPoints:block.cornerPoints
+                                                                   width:width
+                                                                  height:height];
       [UIUtilities addShapeWithPoints:points
-                               toView:self->_annotationOverlayView
+                               toView:strongSelf.annotationOverlayView
                                 color:UIColor.purpleColor];
 
       // Lines.
       for (MLKTextLine *line in block.lines) {
-        NSArray<NSValue *> *points = [self convertedPointsFromPoints:line.cornerPoints
-                                                               width:width
-                                                              height:height];
+        NSArray<NSValue *> *points = [strongSelf convertedPointsFromPoints:line.cornerPoints
+                                                                     width:width
+                                                                    height:height];
         [UIUtilities addShapeWithPoints:points
-                                 toView:self->_annotationOverlayView
+                                 toView:strongSelf.annotationOverlayView
                                   color:UIColor.purpleColor];
 
         // Elements.
@@ -224,16 +245,68 @@ typedef NS_ENUM(NSInteger, Detector) {
               CGRectMake(element.frame.origin.x / width, element.frame.origin.y / height,
                          element.frame.size.width / width, element.frame.size.height / height);
           CGRect convertedRect =
-              [self->_previewLayer rectForMetadataOutputRectOfInterest:normalizedRect];
+              [strongSelf.previewLayer rectForMetadataOutputRectOfInterest:normalizedRect];
           [UIUtilities addRectangle:convertedRect
-                             toView:self->_annotationOverlayView
+                             toView:strongSelf.annotationOverlayView
                               color:UIColor.greenColor];
           UILabel *label = [[UILabel alloc] initWithFrame:convertedRect];
           label.text = element.text;
           label.adjustsFontSizeToFitWidth = YES;
-          [self.annotationOverlayView addSubview:label];
+          [strongSelf.annotationOverlayView addSubview:label];
         }
       }
+    }
+  });
+}
+
+- (void)detectPoseInImage:(MLKVisionImage *)image width:(CGFloat)width height:(CGFloat)height {
+  NSError *error;
+  NSArray<MLKPose *> *poses = [self.poseDetector resultsInImage:image error:&error];
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf updatePreviewOverlayView];
+    [strongSelf removeDetectionAnnotations];
+
+    if (poses.count == 0) {
+      if (error != nil) {
+        NSLog(@"Failed to detect pose with error: %@", error.localizedDescription);
+      }
+      return;
+    }
+
+    // Pose detection currently only supports single pose.
+    MLKPose *pose = poses.firstObject;
+
+    NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *connections =
+        [UIUtilities poseConnections];
+
+    for (MLKPoseLandmarkType landmarkType in connections) {
+      for (MLKPoseLandmarkType connectedLandmarkType in connections[landmarkType]) {
+        MLKPoseLandmark *landmark = [pose landmarkOfType:landmarkType];
+        MLKPoseLandmark *connectedLandmark = [pose landmarkOfType:connectedLandmarkType];
+        CGPoint landmarkPosition = [strongSelf normalizedPointFromVisionPoint:landmark.position
+                                                                        width:width
+                                                                       height:height];
+        CGPoint connectedLandmarkPosition =
+            [strongSelf normalizedPointFromVisionPoint:connectedLandmark.position
+                                                 width:width
+                                                height:height];
+        [UIUtilities addLineSegmentFromPoint:landmarkPosition
+                                     toPoint:connectedLandmarkPosition
+                                      inView:strongSelf.annotationOverlayView
+                                       color:UIColor.greenColor
+                                       width:3.0f];
+      }
+    }
+    for (MLKPoseLandmark *landmark in pose.landmarks) {
+      CGPoint position = [strongSelf normalizedPointFromVisionPoint:landmark.position
+                                                              width:width
+                                                             height:height];
+      [UIUtilities addCircleAtPoint:position
+                             toView:strongSelf.annotationOverlayView
+                              color:UIColor.blueColor
+                             radius:MLKSmallDotRadius];
     }
   });
 }
@@ -245,9 +318,11 @@ typedef NS_ENUM(NSInteger, Detector) {
   MLKBarcodeScanner *scanner = [MLKBarcodeScanner barcodeScannerWithOptions:options];
   NSError *error;
   NSArray<MLKBarcode *> *barcodes = [scanner resultsInImage:image error:&error];
+  __weak typeof(self) weakSelf = self;
   dispatch_sync(dispatch_get_main_queue(), ^{
-    [self removeDetectionAnnotations];
-    [self updatePreviewOverlayView];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf removeDetectionAnnotations];
+    [strongSelf updatePreviewOverlayView];
     if (error != nil) {
       NSLog(@"Failed to scan barcodes with error: %@", error.localizedDescription);
       return;
@@ -261,10 +336,10 @@ typedef NS_ENUM(NSInteger, Detector) {
                                          barcode.frame.origin.y / height,      // Y
                                          barcode.frame.size.width / width,     // Width
                                          barcode.frame.size.height / height);  // Height
-      CGRect standardizedRect =
-          CGRectStandardize([self.previewLayer rectForMetadataOutputRectOfInterest:normalizedRect]);
+      CGRect standardizedRect = CGRectStandardize(
+          [strongSelf.previewLayer rectForMetadataOutputRectOfInterest:normalizedRect]);
       [UIUtilities addRectangle:standardizedRect
-                         toView:self.annotationOverlayView
+                         toView:strongSelf.annotationOverlayView
                           color:UIColor.greenColor];
       UILabel *label = [[UILabel alloc] initWithFrame:standardizedRect];
       label.numberOfLines = 0;
@@ -273,7 +348,7 @@ typedef NS_ENUM(NSInteger, Detector) {
       label.text = description;
 
       label.adjustsFontSizeToFitWidth = YES;
-      [self.annotationOverlayView addSubview:label];
+      [strongSelf.annotationOverlayView addSubview:label];
     }
   });
 }
@@ -286,9 +361,11 @@ typedef NS_ENUM(NSInteger, Detector) {
 
   NSError *error;
   NSArray *objects = [detector resultsInImage:image error:&error];
+  __weak typeof(self) weakSelf = self;
   dispatch_sync(dispatch_get_main_queue(), ^{
-    [self updatePreviewOverlayView];
-    [self removeDetectionAnnotations];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf updatePreviewOverlayView];
+    [strongSelf removeDetectionAnnotations];
     if (error != nil) {
       NSLog(@"Failed to detect object with error: %@", error.localizedDescription);
       return;
@@ -302,10 +379,10 @@ typedef NS_ENUM(NSInteger, Detector) {
       CGRect normalizedRect =
           CGRectMake(object.frame.origin.x / width, object.frame.origin.y / height,
                      object.frame.size.width / width, object.frame.size.height / height);
-      CGRect standardizedRect =
-          CGRectStandardize([self.previewLayer rectForMetadataOutputRectOfInterest:normalizedRect]);
+      CGRect standardizedRect = CGRectStandardize(
+          [strongSelf.previewLayer rectForMetadataOutputRectOfInterest:normalizedRect]);
       [UIUtilities addRectangle:standardizedRect
-                         toView:self.annotationOverlayView
+                         toView:strongSelf.annotationOverlayView
                           color:UIColor.greenColor];
       UILabel *label = [[UILabel alloc] initWithFrame:standardizedRect];
       if (object.trackingID != nil) {
@@ -322,7 +399,7 @@ typedef NS_ENUM(NSInteger, Detector) {
       label.text = description;
       label.numberOfLines = 0;
       label.adjustsFontSizeToFitWidth = YES;
-      [self.annotationOverlayView addSubview:label];
+      [strongSelf.annotationOverlayView addSubview:label];
     }
   });
 }
@@ -330,11 +407,17 @@ typedef NS_ENUM(NSInteger, Detector) {
 #pragma mark - Private
 
 - (void)setUpCaptureSessionOutput {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(_sessionQueue, ^{
-    [self->_captureSession beginConfiguration];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    if (strongSelf == nil) {
+      NSLog(@"Failed to setUpCaptureSessionOutput because self was deallocated");
+      return;
+    }
+    [strongSelf.captureSession beginConfiguration];
     // When performing latency tests to determine ideal capture settings,
     // run the app in 'release' mode to get accurate performance metrics
-    self->_captureSession.sessionPreset = AVCaptureSessionPresetMedium;
+    strongSelf.captureSession.sessionPreset = AVCaptureSessionPresetMedium;
 
     AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
     output.videoSettings = @{
@@ -344,9 +427,9 @@ typedef NS_ENUM(NSInteger, Detector) {
     output.alwaysDiscardsLateVideoFrames = YES;
     dispatch_queue_t outputQueue = dispatch_queue_create(videoDataOutputQueueLabel.UTF8String, nil);
     [output setSampleBufferDelegate:self queue:outputQueue];
-    if ([self.captureSession canAddOutput:output]) {
-      [self.captureSession addOutput:output];
-      [self.captureSession commitConfiguration];
+    if ([strongSelf.captureSession canAddOutput:output]) {
+      [strongSelf.captureSession addOutput:output];
+      [strongSelf.captureSession commitConfiguration];
     } else {
       NSLog(@"%@", @"Failed to add capture session output.");
     }
@@ -354,15 +437,21 @@ typedef NS_ENUM(NSInteger, Detector) {
 }
 
 - (void)setUpCaptureSessionInput {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(_sessionQueue, ^{
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    if (strongSelf == nil) {
+      NSLog(@"Failed to setUpCaptureSessionInput because self was deallocated");
+      return;
+    }
     AVCaptureDevicePosition cameraPosition =
-        self.isUsingFrontCamera ? AVCaptureDevicePositionFront : AVCaptureDevicePositionBack;
-    AVCaptureDevice *device = [self captureDeviceForPosition:cameraPosition];
+        strongSelf.isUsingFrontCamera ? AVCaptureDevicePositionFront : AVCaptureDevicePositionBack;
+    AVCaptureDevice *device = [strongSelf captureDeviceForPosition:cameraPosition];
     if (device) {
-      [self->_captureSession beginConfiguration];
-      NSArray<AVCaptureInput *> *currentInputs = self.captureSession.inputs;
+      [strongSelf.captureSession beginConfiguration];
+      NSArray<AVCaptureInput *> *currentInputs = strongSelf.captureSession.inputs;
       for (AVCaptureInput *input in currentInputs) {
-        [self.captureSession removeInput:input];
+        [strongSelf.captureSession removeInput:input];
       }
       NSError *error;
       AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device
@@ -371,13 +460,13 @@ typedef NS_ENUM(NSInteger, Detector) {
         NSLog(@"Failed to create capture device input: %@", error.localizedDescription);
         return;
       } else {
-        if ([self.captureSession canAddInput:input]) {
-          [self.captureSession addInput:input];
+        if ([strongSelf.captureSession canAddInput:input]) {
+          [strongSelf.captureSession addInput:input];
         } else {
           NSLog(@"%@", @"Failed to add capture session input.");
         }
       }
-      [self.captureSession commitConfiguration];
+      [strongSelf.captureSession commitConfiguration];
     } else {
       NSLog(@"Failed to get capture device for camera position: %ld", cameraPosition);
     }
@@ -385,14 +474,16 @@ typedef NS_ENUM(NSInteger, Detector) {
 }
 
 - (void)startSession {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(_sessionQueue, ^{
-    [self->_captureSession startRunning];
+    [weakSelf.captureSession startRunning];
   });
 }
 
 - (void)stopSession {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(_sessionQueue, ^{
-    [self->_captureSession stopRunning];
+    [weakSelf.captureSession stopRunning];
   });
 }
 
@@ -442,6 +533,12 @@ typedef NS_ENUM(NSInteger, Detector) {
                                                    handler:^(UIAlertAction *_Nonnull action) {
                                                      self.currentDetector = detector;
                                                      [self removeDetectionAnnotations];
+
+                                                     // Reset the pose detector to `nil` when a new
+                                                     // detector row is chosen. The detector will be
+                                                     // re-initialized via its getter when it is
+                                                     // needed for detection again.
+                                                     self.poseDetector = nil;
                                                    }];
     if (detector == _currentDetector) {
       [action setEnabled:NO];
@@ -681,6 +778,10 @@ typedef NS_ENUM(NSInteger, Detector) {
       case DetectorOnDeviceText:
         [self recognizeTextOnDeviceInImage:visionImage width:imageWidth height:imageHeight];
         break;
+      case DetectorPoseAccurate:
+      case DetectorPoseFast:
+        [self detectPoseInImage:visionImage width:imageWidth height:imageHeight];
+        break;
       case DetectorOnDeviceObjectProminentNoClassifier:
       case DetectorOnDeviceObjectProminentWithClassifier:
       case DetectorOnDeviceObjectMultipleNoClassifier:
@@ -721,6 +822,30 @@ typedef NS_ENUM(NSInteger, Detector) {
     }
   } else {
     NSLog(@"%@", @"Failed to get image buffer from sample buffer.");
+  }
+}
+
+#pragma mark - Getter / setter overrides
+
+- (nullable MLKPoseDetector *)poseDetector {
+  // Synchronize access to ensure thread-safety of the underlying ivar since it is modified on the
+  // main thread and used for processing on the video output queue.
+  @synchronized(self) {
+    if (_poseDetector == nil) {
+      MLKPoseDetectorOptions *options = [[MLKPoseDetectorOptions alloc] init];
+      options.detectorMode = MLKPoseDetectorModeStream;
+      options.performanceMode = self.currentDetector == DetectorPoseFast
+                                    ? MLKPoseDetectorPerformanceModeFast
+                                    : MLKPoseDetectorPerformanceModeAccurate;
+      _poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
+    }
+    return _poseDetector;
+  }
+}
+
+- (void)setPoseDetector:(MLKPoseDetector *_Nullable)poseDetector {
+  @synchronized(self) {
+    _poseDetector = poseDetector;
   }
 }
 
