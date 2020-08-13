@@ -4,4 +4,4 @@ A collection of quickstart samples demonstrating the [ML Kit](https://developers
 
 
 ## How to make contributions?
-Please read and follow the steps in the [CONTRIBUTING.md](CONTRIBUTING.md)
+Please read and follow the steps in the [CONTRIBUTING.md](CONTRIBUTING.md).
