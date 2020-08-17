@@ -1,6 +1,4 @@
 .gradle
-local.properties
-.idea
 build/
 .DS_Store
 *.iml
@@ -12,3 +10,13 @@ google-services.json
 .project
 .settings
 .classpath
+
+local.properties
+
+.idea/*
+!idea/codeStyles
+
+captures
+.externalNativeBuild
+.cxx
+
