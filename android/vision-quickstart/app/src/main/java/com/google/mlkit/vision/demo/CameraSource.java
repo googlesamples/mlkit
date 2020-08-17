@@ -38,7 +38,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Manages the camera and allows UI updates on top of it (e.g. overlaying extra Graphics or
@@ -105,10 +104,8 @@ public class CameraSource {
   private Thread processingThread;
 
   private final FrameProcessingRunnable processingRunnable;
-
   private final Object processorLock = new Object();
-  // TODO(b/74400062) Re-enable the annotaion
-  // @GuardedBy("processorLock")
+
   private VisionImageProcessor frameProcessor;
 
   /**
@@ -120,7 +117,7 @@ public class CameraSource {
    * equals, hashCode and toString methods is both useless and unexpected. IdentityHashMap enforces
    * identity ('==') check on the keys.
    */
-  private final Map<byte[], ByteBuffer> bytesToByteBuffer = new IdentityHashMap<>();
+  private final IdentityHashMap<byte[], ByteBuffer> bytesToByteBuffer = new IdentityHashMap<>();
 
   public CameraSource(Activity activity, GraphicOverlay overlay) {
     this.activity = activity;

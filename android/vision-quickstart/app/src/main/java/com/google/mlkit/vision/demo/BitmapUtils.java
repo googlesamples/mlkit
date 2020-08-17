@@ -18,7 +18,6 @@ package com.google.mlkit.vision.demo;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -106,27 +105,6 @@ public class BitmapUtils {
   }
 
   @Nullable
-  public static Bitmap getBitmapFromAsset(Context context, String fileName) {
-    InputStream inputStream = null;
-    try {
-      inputStream = context.getAssets().open(fileName);
-      return BitmapFactory.decodeStream(inputStream);
-    } catch (IOException e) {
-      Log.e(TAG, "Error reading asset: " + fileName, e);
-    } finally {
-      if (inputStream != null) {
-        try {
-          inputStream.close();
-        } catch (IOException e) {
-          Log.e(TAG, "Failed to close input stream: ", e);
-        }
-      }
-    }
-
-    return null;
-  }
-
-  @Nullable
   public static Bitmap getBitmapFromContentUri(ContentResolver contentResolver, Uri imageUri)
       throws IOException {
     Bitmap decodedBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri);
@@ -195,95 +173,6 @@ public class BitmapUtils {
     }
 
     return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-  }
-
-  public static ByteBuffer convertBitmapToNv21Buffer(Bitmap bitmap) {
-    return ByteBuffer.wrap(convertBitmapToNv21Bytes(bitmap));
-  }
-
-  public static byte[] convertBitmapToNv21Bytes(Bitmap bitmap) {
-    int inputWidth = bitmap.getWidth();
-    int inputHeight = bitmap.getHeight();
-    int[] argb = new int[inputWidth * inputHeight];
-
-    bitmap.getPixels(argb, 0, inputWidth, 0, 0, inputWidth, inputHeight);
-
-    byte[] nv21Bytes =
-        new byte
-            [inputHeight * inputWidth
-                + 2 * (int) Math.ceil(inputHeight / 2.0) * (int) Math.ceil(inputWidth / 2.0)];
-    encodeToNv21(nv21Bytes, argb, inputWidth, inputHeight);
-    return nv21Bytes;
-  }
-
-  private static void encodeToNv21(byte[] nv21Bytes, int[] argb, int width, int height) {
-    int frameSize = width * height;
-
-    int yIndex = 0;
-    int uvIndex = frameSize;
-
-    int red;
-    int green;
-    int blue;
-    int y;
-    int u;
-    int v;
-    int index = 0;
-    for (int j = 0; j < height; j++) {
-      for (int i = 0; i < width; i++) {
-
-        // first byte is alpha, but is unused
-        red = (argb[index] & 0xff0000) >> 16;
-        green = (argb[index] & 0xff00) >> 8;
-        blue = (argb[index] & 0xff) >> 0;
-
-        // well known RGB to YUV algorithm
-        y = ((66 * red + 129 * green + 25 * blue + 128) >> 8) + 16;
-        u = ((-38 * red - 74 * green + 112 * blue + 128) >> 8) + 128;
-        v = ((112 * red - 94 * green - 18 * blue + 128) >> 8) + 128;
-
-        // NV21 has a plane of Y and interleaved planes of VU each sampled by a factor of 2
-        // meaning for every 4 Y pixels there are 1 V and 1 U.  Note the sampling is every other
-        // pixel AND every other scanline.
-        nv21Bytes[yIndex++] = (byte) ((y < 0) ? 0 : ((y > 255) ? 255 : y));
-        if (j % 2 == 0 && index % 2 == 0) {
-          nv21Bytes[uvIndex++] = (byte) ((v < 0) ? 0 : ((v > 255) ? 255 : v));
-          nv21Bytes[uvIndex++] = (byte) ((u < 0) ? 0 : ((u > 255) ? 255 : u));
-        }
-
-        index++;
-      }
-    }
-  }
-
-  public static ByteBuffer convertBitmapToYv12Buffer(Bitmap bitmap) {
-    return ByteBuffer.wrap(convertBitmapToYv12Bytes(bitmap));
-  }
-
-  public static byte[] convertBitmapToYv12Bytes(Bitmap bitmap) {
-    byte[] nv21Bytes = convertBitmapToNv21Bytes(bitmap);
-    return nv21Toyv12(nv21Bytes);
-  }
-
-  /**
-   * Converts nv21 byte[] to yv12 byte[].
-   *
-   * <p>NV21 (4:2:0) Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y V U V U V U V U V U V U
-   *
-   * <p>YV12 (4:2:0) Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y V V V V V V U U U U U U
-   */
-  private static byte[] nv21Toyv12(byte[] nv21Bytes) {
-    int totalBytes = nv21Bytes.length;
-    int rowSize = totalBytes / 6; // 4+2+0
-    byte[] yv12Bytes = new byte[totalBytes];
-    System.arraycopy(nv21Bytes, 0, yv12Bytes, 0, rowSize * 4);
-    int offSet = totalBytes / 6 * 4;
-    for (int i = 0; i < rowSize; i++) {
-      yv12Bytes[offSet + i] = nv21Bytes[offSet + 2 * i]; // V
-      yv12Bytes[offSet + rowSize + i] = nv21Bytes[offSet + 2 * i + 1]; // U
-    }
-
-    return yv12Bytes;
   }
 
   /**

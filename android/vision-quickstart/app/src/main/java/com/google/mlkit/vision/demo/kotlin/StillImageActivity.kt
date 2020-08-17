@@ -80,7 +80,7 @@ class StillImageActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_still_image)
     findViewById<View>(R.id.select_image_button)
-      .setOnClickListener { view: View? ->
+      .setOnClickListener { view: View ->
         // Menu for selecting either: a) take new photo b) select from existing
         val popup =
           PopupMenu(this@StillImageActivity, view)
@@ -133,7 +133,7 @@ class StillImageActivity : AppCompatActivity() {
       })
 
     val settingsButton = findViewById<ImageView>(R.id.settings_button)
-    settingsButton.setOnClickListener { v: View? ->
+    settingsButton.setOnClickListener {
       val intent =
         Intent(
           applicationContext,
