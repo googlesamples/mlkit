@@ -58,6 +58,7 @@ public class UIUtilities {
   }
 
   public static func addRectangle(_ rectangle: CGRect, to view: UIView, color: UIColor) {
+    guard !rectangle.isNaN() else { return }
     let rectangleView = UIView(frame: rectangle)
     rectangleView.layer.cornerRadius = Constants.rectangleViewCornerRadius
     rectangleView.alpha = Constants.rectangleViewAlpha
