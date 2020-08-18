@@ -50,5 +50,4 @@ class ScopedExecutor(private val executor: Executor) : Executor {
     fun shutdown() {
         shutdown.set(true)
     }
-
 }

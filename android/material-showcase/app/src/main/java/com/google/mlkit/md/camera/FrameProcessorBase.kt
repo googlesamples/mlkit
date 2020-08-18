@@ -30,7 +30,6 @@ import com.google.mlkit.md.ScopedExecutor
 import com.google.mlkit.vision.common.InputImage
 import java.nio.ByteBuffer
 
-
 /** Abstract base class of [FrameProcessor].  */
 abstract class FrameProcessorBase<T> : FrameProcessor {
 
