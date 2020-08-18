@@ -6,7 +6,7 @@ buildscript {
         mavenLocal()
         google()
         jcenter()
-
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.2'
@@ -16,6 +16,7 @@ buildscript {
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath 'com.google.gms:google-services:4.3.3'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.2.0'
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:9.2.1"
     }
 }
 
@@ -48,34 +49,13 @@ allprojects {
     }
 }
 
-configurations {
-    ktlint
-}
+subprojects {
+    apply plugin: "org.jlleitschuh.gradle.ktlint"
 
-dependencies {
-    ktlint "com.github.shyiko:ktlint:0.31.0"
-}
-
-task("ktlint", type: JavaExec, group: "verification") {
-    def outputDir = "${project.buildDir}/reports/ktlint/"
-    def inputFiles = project.fileTree(dir: "src", include: "**/*.kt")
-    def outputFile = "${outputDir}ktlint-checkstyle-report.xml"
-
-    // See:
-    // https://medium.com/@vanniktech/making-your-gradle-tasks-incremental-7f26e4ef09c3
-    inputs.files(inputFiles)
-    outputs.dir(outputDir)
-
-    description = "Check Kotlin code style."
-    classpath = configurations.ktlint
-    main = "com.github.shyiko.ktlint.Main"
-    args = [
-        "--format",
-        "--android",
-        "--reporter=plain",
-        "--reporter=checkstyle,output=${outputFile}",
-        "**/*.kt",
-    ]
+    // Optionally configure plugin
+    ktlint {
+        debug = false
+    }
 }
 
 task clean(type: Delete) {
