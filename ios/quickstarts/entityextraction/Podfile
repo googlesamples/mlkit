@@ -1,0 +1,19 @@
+platform :ios, '10.0'
+use_frameworks!
+
+pod 'MLKitEntityExtraction'
+
+target 'EntityExtractionExample' do
+  target 'EntityExtractionExampleTests' do
+    inherit! :search_paths
+  end
+end
+
+target 'EntityExtractionExampleObjC' do
+  target 'EntityExtractionExampleObjCTests' do
+    inherit! :search_paths
+  end
+end
+
+target 'EntityExtractionExampleUITests' do
+end
