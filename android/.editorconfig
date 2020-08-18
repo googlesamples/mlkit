@@ -1,2 +1,5 @@
-[*.{java,kt}]
-max_line_length = 120
+[*]
+max_line_length = 150
+
+[*.{kt, kts}]
+disabled_rules=no-consecutive-blank-lines,no-wildcard-imports,import-ordering,max-line-length,import-ordering,no-blank-line-before-rbrace,final-newline,indent,no-multi-spaces,comment-spacing,parameter-list-wrapping
