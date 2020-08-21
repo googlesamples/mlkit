@@ -40,7 +40,7 @@ dependencies {
     implementation 'com.google.guava:guava:28.0-android'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 
     implementation 'com.google.mlkit:digital-ink-recognition:+'
 
