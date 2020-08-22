@@ -81,7 +81,7 @@ class LiveObjectDetectionActivity : AppCompatActivity(), OnClickListener {
 
         searchEngine = SearchEngine(applicationContext)
 
-        setContentView(R.layout.activity_live_object_kotlin)
+        setContentView(R.layout.activity_live_object)
         preview = findViewById(R.id.camera_preview)
         graphicOverlay = findViewById<GraphicOverlay>(R.id.camera_preview_graphic_overlay).apply {
             setOnClickListener(this@LiveObjectDetectionActivity)

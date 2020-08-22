@@ -87,7 +87,7 @@ class StaticObjectDetectionActivity : AppCompatActivity(), View.OnClickListener 
 
         searchEngine = SearchEngine(applicationContext)
 
-        setContentView(R.layout.activity_static_object_kotlin)
+        setContentView(R.layout.activity_static_object)
 
         loadingView = findViewById<View>(R.id.loading_view).apply {
             setOnClickListener(this@StaticObjectDetectionActivity)
