@@ -23,6 +23,7 @@ jobs:
       - name: Decrypt keystore
         run: cd android && ./signing/decrypt.sh
         env:
+          TAG_VERSION: ${{ github.ref }}
           CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
       - name: Build project
         run: cd android && ./gradlew clean assembleRelease
