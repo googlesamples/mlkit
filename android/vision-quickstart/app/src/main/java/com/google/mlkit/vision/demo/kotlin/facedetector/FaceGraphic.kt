@@ -111,7 +111,7 @@ class FaceGraphic constructor(overlay: GraphicOverlay?, private val face: Face) 
         textWidth,
         idPaints[colorID].measureText(
           String.format(
-            Locale.US, "Right eye open: %.2f", face.leftEyeOpenProbability
+            Locale.US, "Right eye open: %.2f", face.rightEyeOpenProbability
           )
         )
       )

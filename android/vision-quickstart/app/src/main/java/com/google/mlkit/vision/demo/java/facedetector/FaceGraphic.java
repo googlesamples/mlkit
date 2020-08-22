@@ -139,7 +139,7 @@ public class FaceGraphic extends Graphic {
               textWidth,
               idPaints[colorID].measureText(
                   String.format(
-                      Locale.US, "Right eye open: %.2f", face.getLeftEyeOpenProbability())));
+                      Locale.US, "Right eye open: %.2f", face.getRightEyeOpenProbability())));
     }
 
     // Draw labels

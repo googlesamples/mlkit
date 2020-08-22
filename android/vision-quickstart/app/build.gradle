@@ -52,31 +52,31 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Barcode model
-    implementation 'com.google.mlkit:barcode-scanning:+'
+    implementation 'com.google.mlkit:barcode-scanning:16.0.3'
 
     // Object detection feature with bundled default classifier
-    implementation 'com.google.mlkit:object-detection:+'
+    implementation 'com.google.mlkit:object-detection:16.2.1'
 
     // Object detection feature with custom classifier support
-    implementation 'com.google.mlkit:object-detection-custom:+'
+    implementation 'com.google.mlkit:object-detection-custom:16.2.1'
 
     // Face features
-    implementation 'com.google.mlkit:face-detection:+'
+    implementation 'com.google.mlkit:face-detection:16.0.2'
 
     // Text features
-    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:+'
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.1'
 
     // Image labeling with automl model support
-    implementation 'com.google.mlkit:image-labeling-automl:+'
+    implementation 'com.google.mlkit:image-labeling-automl:16.2.1'
 
     // Image labeling
-    implementation 'com.google.mlkit:image-labeling:+'
+    implementation 'com.google.mlkit:image-labeling:17.0.0'
 
     // Image labeling custom
-    implementation 'com.google.mlkit:image-labeling-custom:+'
+    implementation 'com.google.mlkit:image-labeling-custom:16.2.1'
 
     // Pose detection
-    implementation 'com.google.mlkit:pose-detection:+'
+    implementation 'com.google.mlkit:pose-detection:16.0.0'
 
     // -------------------------------------------------------
 
@@ -99,7 +99,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
