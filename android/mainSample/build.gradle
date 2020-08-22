@@ -15,6 +15,7 @@ android {
         versionName getTag()
         buildConfigField "String", 'GIT_USER', "\"" + getGitUser() + "\""
         buildConfigField "String", 'GIT_REPOSITORY', "\"" + getGitRepository() + "\""
+        buildConfigField "String", 'VERSION', "\"" + versionName + "\""
     }
 
     signingConfigs {
@@ -100,8 +101,21 @@ dependencies {
 }
 
 static def getTag() {
-    def process = "git describe --tags --abbrev=0".execute()
-    return process.text.toString().trim()
+    def tagVersion = "$System.env.TAG_VERSION"
+    if (tagVersion == "null") {
+        println "No variable TAG_VERSION specified, I'm using 'git describe --abbrev=0'"
+        def process = "git describe --abbrev=0".execute()
+        tagVersion = process.text.toString().trim()
+        if (tagVersion.equals("")) {
+            println "abbrev failed, I'm using 'git --tags'"
+            def processT = "git describe --tags".execute()
+            tagVersion = processT.text.toString().trim()
+        }
+    } else {
+        def tagVersionToken = tagVersion.split("/")
+        tagVersion = tagVersionToken[2]
+    }
+    return tagVersion
 }
 
 static def getGitCommitCount() {
