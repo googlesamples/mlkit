@@ -3,6 +3,7 @@ package com.google.mlkit
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -26,6 +27,10 @@ abstract class NavigationActivity : AppCompatActivity(), NavigationView.OnNaviga
         toggle.syncState()
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
+
+        val headerLayout = navigationView.getHeaderView(0)
+        val textVersion = headerLayout.findViewById<TextView>(R.id.textVersion)
+        textVersion.text = BuildConfig.VERSION
     }
 
     override fun onBackPressed() {
