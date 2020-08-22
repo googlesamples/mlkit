@@ -81,8 +81,8 @@ class DetectedObjectInfo(
         private const val INVALID_LABEL = "N/A"
 
         fun hasValidLabels(detectedObject: DetectedObject): Boolean {
-            return detectedObject.labels.isNotEmpty()
-                    && detectedObject.labels.none { label -> label.text == INVALID_LABEL }
+            return detectedObject.labels.isNotEmpty() &&
+                    detectedObject.labels.none { label -> label.text == INVALID_LABEL }
         }
     }
 }

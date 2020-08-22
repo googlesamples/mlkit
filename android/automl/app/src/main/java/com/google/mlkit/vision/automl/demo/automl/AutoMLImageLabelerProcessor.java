@@ -69,7 +69,7 @@ public class AutoMLImageLabelerProcessor extends VisionProcessorBase<List<ImageL
                         .addOnFailureListener(ignored ->
                                 Toast.makeText(
                                         context,
-                                        "Model download failed for AutoMLImageLabelerImpl,"
+                                        "Model download failed for '" + remoteModelName + "',"
                                                 + " please check your connection.",
                                         Toast.LENGTH_LONG)
                                         .show());
