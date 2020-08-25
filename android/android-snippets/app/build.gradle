@@ -28,9 +28,9 @@ android {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.exifinterface:exifinterface:1.2.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
 
     // Add this dependency and multiDexEnabled = true in your defaultConfig to solve the error:
     // Cannot fit requested classes in a single dex file
@@ -39,24 +39,24 @@ dependencies {
     // ML Kit related dependencies
 
     // Barcode model
-    implementation 'com.google.mlkit:barcode-scanning:16.0.2'
+    implementation 'com.google.mlkit:barcode-scanning:16.0.3'
 
     // Object detection and tracking features
-    implementation 'com.google.mlkit:object-detection:16.2.0'
-    implementation 'com.google.mlkit:object-detection-custom:16.2.0'
+    implementation 'com.google.mlkit:object-detection:16.2.1'
+    implementation 'com.google.mlkit:object-detection-custom:16.2.1'
 
     // Face features
-    implementation 'com.google.android.gms:play-services-mlkit-face-detection:16.1.0'
+    implementation 'com.google.android.gms:play-services-mlkit-face-detection:16.1.1'
 
     // Text features
-    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.0'
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.1'
 
     // Image labeling
-    implementation 'com.google.mlkit:image-labeling:16.1.0'
+    implementation 'com.google.mlkit:image-labeling:17.0.0'
 
     // Language Identification
-    implementation 'com.google.mlkit:language-id:16.1.0'
+    implementation 'com.google.mlkit:language-id:16.1.1'
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
 }

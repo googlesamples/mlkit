@@ -124,18 +124,18 @@ public class MLKitVisionImage {
                 .get(CameraCharacteristics.SENSOR_ORIENTATION);
 
         if (isFrontFacing) {
-            rotationCompensation = (sensorOrientation + rotationDegrees) % 360;
+            rotationCompensation = (sensorOrientation + rotationCompensation) % 360;
         } else { // back-facing
-            rotationCompensation = (sensorOrientation - rotationDegrees + 360) % 360;
+            rotationCompensation = (sensorOrientation - rotationCompensation + 360) % 360;
         }
         return rotationCompensation;
     }
     // [END get_rotation]
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void getCompensation(Activity activity, Context context) throws CameraAccessException {
+    private void getCompensation(Activity activity, boolean isFrontFacing) throws CameraAccessException {
         // Get the ID of the camera using CameraManager. Then:
-        int rotation = getRotationCompensation(MY_CAMERA_ID, activity, context);
+        int rotation = getRotationCompensation(MY_CAMERA_ID, activity, isFrontFacing);
     }
 
 }
