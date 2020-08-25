@@ -22,8 +22,5 @@ $ open your-project.xcworkspace
 - Object detection and Tracking with custom TensorFlow Lite model:
   Search using a custom TensorFlow Lite model (Example used: Bird recognition model) to detect and recognize objects with a live camera view. This shows how to implement a visual search flow with a custom TensorFlow Lite model.
 
-## How to make contributions?
-Please read and follow the steps in the [CONTRIBUTING.md](CONTRIBUTING.md)
-
 ## License
 © Google, 2020. Licensed under an [Apache-2](./LICENSE) license.

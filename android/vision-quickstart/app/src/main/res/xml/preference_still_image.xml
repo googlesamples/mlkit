@@ -18,4 +18,20 @@
 
   </PreferenceCategory>
 
+  <PreferenceCategory android:title="@string/pref_category_pose_detection">
+    <ListPreference
+        android:defaultValue="@string/pref_entry_values_pose_detector_performance_mode_fast"
+        android:entries="@array/pref_entries_values_pose_detector_performance_mode"
+        android:entryValues="@array/pref_entry_values_pose_detector_performance_mode"
+        android:key="@string/pref_key_still_image_pose_detection_performance_mode"
+        android:persistent="true"
+        android:title="@string/pref_title_pose_detector_performance_mode"
+        android:summary="%s"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_key_still_image_pose_detector_show_in_frame_likelihood"
+        android:persistent="true"
+        android:title="@string/pref_title_pose_detector_show_in_frame_likelihood"/>
+  </PreferenceCategory>
 </PreferenceScreen>

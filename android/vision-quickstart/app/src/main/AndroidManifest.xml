@@ -49,24 +49,24 @@
         </activity>
 
         <activity
-            android:name=".ChooserActivity"
+            android:name=".java.ChooserActivity"
             android:exported="true">
         </activity>
 
         <activity
-            android:name=".LivePreviewActivity"
+            android:name=".java.LivePreviewActivity"
             android:exported="true"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
-            android:name=".CameraXLivePreviewActivity"
+            android:name=".java.CameraXLivePreviewActivity"
             android:exported="true"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
-            android:name=".StillImageActivity"
+            android:name=".java.StillImageActivity"
             android:exported="true"
             android:theme="@style/AppTheme">
         </activity>

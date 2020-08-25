@@ -40,6 +40,25 @@ NS_ASSUME_NONNULL_BEGIN
   [view addSubview:circleView];
 }
 
++ (void)addLineSegmentFromPoint:(CGPoint)fromPoint
+                        toPoint:(CGPoint)toPoint
+                         inView:(UIView *)view
+                          color:(UIColor *)color
+                          width:(CGFloat)width {
+  UIBezierPath *path = [UIBezierPath bezierPath];
+  [path moveToPoint:fromPoint];
+  [path addLineToPoint:toPoint];
+  CAShapeLayer *lineLayer = [CAShapeLayer layer];
+  lineLayer.path = path.CGPath;
+  lineLayer.strokeColor = color.CGColor;
+  lineLayer.fillColor = nil;
+  lineLayer.opacity = 1.0f;
+  lineLayer.lineWidth = width;
+  UIView *lineView = [[UIView alloc] initWithFrame:view.bounds];
+  [lineView.layer addSublayer:lineLayer];
+  [view addSubview:lineView];
+}
+
 + (void)addRectangle:(CGRect)rectangle toView:(UIView *)view color:(UIColor *)color {
   UIView *rectangleView = [[UIView alloc] initWithFrame:rectangle];
   rectangleView.layer.cornerRadius = rectangleViewCornerRadius;
@@ -128,6 +147,47 @@ NS_ASSUME_NONNULL_BEGIN
     });
     return currentOrientation;
   }
+}
+
++ (NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *)poseConnections {
+  static dispatch_once_t onceToken;
+  static NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *connections;
+  dispatch_once(&onceToken, ^{
+    connections = @{
+      MLKPoseLandmarkTypeLeftEar : @[MLKPoseLandmarkTypeLeftEyeOuter],
+      MLKPoseLandmarkTypeLeftEyeOuter : @[MLKPoseLandmarkTypeLeftEye],
+      MLKPoseLandmarkTypeLeftEye : @[MLKPoseLandmarkTypeLeftEyeInner],
+      MLKPoseLandmarkTypeLeftEyeInner : @[MLKPoseLandmarkTypeNose],
+      MLKPoseLandmarkTypeNose : @[MLKPoseLandmarkTypeRightEyeInner],
+      MLKPoseLandmarkTypeRightEyeInner : @[MLKPoseLandmarkTypeRightEye],
+      MLKPoseLandmarkTypeRightEye : @[MLKPoseLandmarkTypeRightEyeOuter],
+      MLKPoseLandmarkTypeRightEyeOuter : @[MLKPoseLandmarkTypeRightEar],
+      MLKPoseLandmarkTypeMouthLeft : @[MLKPoseLandmarkTypeMouthRight],
+      MLKPoseLandmarkTypeLeftShoulder: @[MLKPoseLandmarkTypeRightShoulder,
+                                         MLKPoseLandmarkTypeLeftHip],
+      MLKPoseLandmarkTypeRightShoulder : @[MLKPoseLandmarkTypeRightHip,
+                                           MLKPoseLandmarkTypeRightElbow],
+      MLKPoseLandmarkTypeRightWrist : @[MLKPoseLandmarkTypeRightElbow,
+                                        MLKPoseLandmarkTypeRightThumb,
+                                        MLKPoseLandmarkTypeRightIndexFinger,
+                                        MLKPoseLandmarkTypeRightPinkyFinger],
+      MLKPoseLandmarkTypeLeftHip : @[MLKPoseLandmarkTypeRightHip, MLKPoseLandmarkTypeLeftKnee],
+      MLKPoseLandmarkTypeRightHip : @[MLKPoseLandmarkTypeRightKnee],
+      MLKPoseLandmarkTypeRightKnee : @[MLKPoseLandmarkTypeRightAnkle],
+      MLKPoseLandmarkTypeLeftKnee : @[MLKPoseLandmarkTypeLeftAnkle],
+      MLKPoseLandmarkTypeLeftElbow : @[MLKPoseLandmarkTypeLeftShoulder],
+      MLKPoseLandmarkTypeLeftWrist : @[MLKPoseLandmarkTypeLeftElbow, MLKPoseLandmarkTypeLeftThumb,
+                                       MLKPoseLandmarkTypeLeftIndexFinger,
+                                       MLKPoseLandmarkTypeLeftPinkyFinger],
+      MLKPoseLandmarkTypeLeftAnkle : @[MLKPoseLandmarkTypeLeftHeel, MLKPoseLandmarkTypeLeftToe],
+      MLKPoseLandmarkTypeRightAnkle : @[MLKPoseLandmarkTypeRightHeel, MLKPoseLandmarkTypeRightToe],
+      MLKPoseLandmarkTypeRightHeel : @[MLKPoseLandmarkTypeRightToe],
+      MLKPoseLandmarkTypeLeftHeel : @[MLKPoseLandmarkTypeLeftToe],
+      MLKPoseLandmarkTypeRightIndexFinger : @[MLKPoseLandmarkTypeRightPinkyFinger],
+      MLKPoseLandmarkTypeLeftIndexFinger : @[MLKPoseLandmarkTypeLeftPinkyFinger],
+    };
+  });
+  return connections;
 }
 
 @end

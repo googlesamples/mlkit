@@ -17,6 +17,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>
 
+@import MLKit;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UIUtilities : NSObject
@@ -26,6 +28,12 @@ NS_ASSUME_NONNULL_BEGIN
                    color:(UIColor *)color
                   radius:(CGFloat)radius;
 
++ (void)addLineSegmentFromPoint:(CGPoint)fromPoint
+                        toPoint:(CGPoint)toPoint
+                         inView:(UIView *)view
+                          color:(UIColor *)color
+                          width:(CGFloat)width;
+
 + (void)addRectangle:(CGRect)rectangle toView:(UIView *)view color:(UIColor *)color;
 + (void)addShapeWithPoints:(NSArray<NSValue *> *)points
                     toView:(UIView *)view
@@ -33,6 +41,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIImageOrientation)imageOrientation;
 + (UIImageOrientation)imageOrientationFromDevicePosition:(AVCaptureDevicePosition)devicePosition;
 + (UIDeviceOrientation)currentUIOrientation;
+
+/**
+ * Returns the minimum subset of all connected pose landmarks. Each key represents a start landmark,
+ * and each value in the key's value array represents an end landmark which is connected to the
+ * start landmark. These connections may be used for visualizing the landmark positions on a pose
+ * object.
+ */
++ (NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *)poseConnections;
 
 @end
 

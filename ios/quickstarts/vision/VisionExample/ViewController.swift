@@ -29,6 +29,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
     precondition(isViewLoaded)
     let annotationOverlayView = UIView(frame: .zero)
     annotationOverlayView.translatesAutoresizingMaskIntoConstraints = false
+    annotationOverlayView.clipsToBounds = true
     return annotationOverlayView
   }()
 
@@ -37,6 +38,25 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
   // Image counter.
   var currentImage = 0
+
+  /// The detector used for detecting poses. The pose detector's lifecycle is managed manually, so
+  /// it is initialized on-demand via the getter override and set to nil when a new detector is
+  /// chosen.
+  private var _poseDetector: PoseDetector? = nil
+  private var poseDetector: PoseDetector? {
+    get {
+      if _poseDetector == nil {
+        let options = PoseDetectorOptions()
+        options.detectorMode = .singleImage
+        options.performanceMode = .accurate
+        _poseDetector = PoseDetector.poseDetector(options: options)
+      }
+      return _poseDetector
+    }
+    set(newDetector) {
+      _poseDetector = newDetector
+    }
+  }
 
   // MARK: - IBOutlets
 
@@ -147,6 +167,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         options.shouldEnableMultipleObjects = shouldEnableMultipleObjects
         options.detectorMode = .singleImage
         detectObjectsOnDevice(in: imageView.image, options: options)
+      case .detectPose:
+        detectPose(image: imageView.image)
       }
     } else {
       print("No such item at row \(row) in detector picker.")
@@ -607,6 +629,14 @@ extension ViewController: UIPickerViewDataSource, UIPickerViewDelegate {
 
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
     clearResults()
+
+    if let rowIndex = DetectorPickerRow(rawValue: row) {
+      if rowIndex != .detectPose {
+        // Reset the pose detector to `nil` when a new detector row is chosen. The detector will be
+        // re-initialized via its getter when it is needed for detection again.
+        poseDetector = nil
+      }
+    }
   }
 }
 
@@ -714,6 +744,62 @@ extension ViewController {
       // [END_EXCLUDE]
     }
     // [END detect_faces]
+  }
+
+  /// Detects poses on the specified image and draw pose landmark points and line segments using
+  /// the On-Device face API.
+  ///
+  /// - Parameter image: The image.
+  func detectPose(image: UIImage?) {
+    guard let image = image else { return }
+
+    // Initialize a VisionImage object with the given UIImage.
+    let visionImage = VisionImage(image: image)
+    visionImage.orientation = image.imageOrientation
+
+    if let poseDetector = self.poseDetector {
+      poseDetector.process(visionImage) { poses, error in
+        guard error == nil, let poses = poses, !poses.isEmpty else {
+          let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
+          self.resultsText = "Pose detection failed with error: \(errorString)"
+          self.showResults()
+          return
+        }
+        let transform = self.transformMatrix()
+
+        // Pose detected. Currently, only single person detection is supported.
+        poses.forEach { pose in
+          for (startLandmarkType, endLandmarkTypesArray) in UIUtilities.poseConnections() {
+            let startLandmark = pose.landmark(ofType: startLandmarkType)
+            for endLandmarkType in endLandmarkTypesArray {
+              let endLandmark = pose.landmark(ofType: endLandmarkType)
+              let transformedStartLandmarkPoint = self.pointFrom(startLandmark.position).applying(
+                transform)
+              let transformedEndLandmarkPoint = self.pointFrom(endLandmark.position).applying(
+                transform)
+              UIUtilities.addLineSegment(
+                fromPoint: transformedStartLandmarkPoint,
+                toPoint: transformedEndLandmarkPoint,
+                inView: self.annotationOverlayView,
+                color: UIColor.green,
+                width: Constants.lineWidth
+              )
+            }
+          }
+          for landmark in pose.landmarks {
+            let transformedPoint = self.pointFrom(landmark.position).applying(transform)
+            UIUtilities.addCircle(
+              atPoint: transformedPoint,
+              to: self.annotationOverlayView,
+              color: UIColor.blue,
+              radius: Constants.smallDotRadius
+            )
+          }
+          self.resultsText = "Pose Detected"
+          self.showResults()
+        }
+      }
+    }
   }
 
   /// Detects barcodes on the specified image and draws a frame around the detected barcodes using
@@ -926,9 +1012,10 @@ private enum DetectorPickerRow: Int {
     detectObjectsCustomProminentNoClassifier,
     detectObjectsCustomProminentWithClassifier,
     detectObjectsCustomMultipleNoClassifier,
-    detectObjectsCustomMultipleWithClassifier
+    detectObjectsCustomMultipleWithClassifier,
+    detectPose
 
-  static let rowsCount = 13
+  static let rowsCount = 14
   static let componentsCount = 1
 
   public var description: String {
@@ -959,6 +1046,8 @@ private enum DetectorPickerRow: Int {
       return "ODT, custom, multiple, no labeling"
     case .detectObjectsCustomMultipleWithClassifier:
       return "ODT, custom, multiple, labeling"
+    case .detectPose:
+      return "Pose"
     }
   }
 }
@@ -976,6 +1065,7 @@ private enum Constants {
   static let smallDotRadius: CGFloat = 5.0
   static let largeDotRadius: CGFloat = 10.0
   static let lineColor = UIColor.yellow.cgColor
+  static let lineWidth: CGFloat = 3.0
   static let fillColor = UIColor.clear.cgColor
 }
 

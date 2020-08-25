@@ -18,27 +18,28 @@ package com.google.mlkit.vision.demo
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
+import com.google.mlkit.vision.demo.java.ChooserActivity
 
 class EntryChoiceActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_vision_entry_choice)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_vision_entry_choice)
 
-        findViewById<TextView>(R.id.java_entry_point).setOnClickListener {
-            val intent = Intent(this@EntryChoiceActivity, ChooserActivity::class.java)
-            startActivity(intent)
-        }
-
-        findViewById<TextView>(R.id.kotlin_entry_point).setOnClickListener {
-            val intent =
-                    Intent(
-                            this@EntryChoiceActivity,
-                            com.google.mlkit.vision.demo.kotlin.ChooserActivity::class.java
-                    )
-            startActivity(intent)
-        }
+    findViewById<TextView>(R.id.java_entry_point).setOnClickListener {
+      val intent = Intent(this@EntryChoiceActivity, ChooserActivity::class.java)
+      startActivity(intent)
     }
+
+    findViewById<TextView>(R.id.kotlin_entry_point).setOnClickListener {
+      val intent =
+        Intent(
+          this@EntryChoiceActivity,
+          com.google.mlkit.vision.demo.kotlin.ChooserActivity::class.java
+        )
+      startActivity(intent)
+    }
+  }
 }

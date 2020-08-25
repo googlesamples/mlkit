@@ -40,4 +40,14 @@
     <item>@string/pref_entry_values_face_detector_performance_mode_fast</item>
     <item>@string/pref_entry_values_face_detector_performance_mode_accurate</item>
   </string-array>
+
+  <string-array name="pref_entries_values_pose_detector_performance_mode">
+    <item>@string/pref_entries_pose_detector_performance_mode_fast</item>
+    <item>@string/pref_entries_pose_detector_performance_mode_accurate</item>
+  </string-array>
+
+  <string-array name="pref_entry_values_pose_detector_performance_mode">
+    <item>@string/pref_entry_values_pose_detector_performance_mode_fast</item>
+    <item>@string/pref_entry_values_pose_detector_performance_mode_accurate</item>
+  </string-array>
 </resources>

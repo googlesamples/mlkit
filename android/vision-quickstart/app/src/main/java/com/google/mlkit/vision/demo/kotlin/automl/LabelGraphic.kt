@@ -25,30 +25,30 @@ import com.google.mlkit.vision.label.ImageLabel
 
 /** Graphic instance for rendering a label within an associated graphic overlay view.  */
 class LabelGraphic(
-        private val overlay: GraphicOverlay,
-        private val labels: List<ImageLabel>
+  private val overlay: GraphicOverlay,
+  private val labels: List<ImageLabel>
 ) : Graphic(overlay) {
 
-    private val textPaint: Paint = Paint()
+  private val textPaint: Paint = Paint()
 
-    init {
-        textPaint.color = Color.RED
-        textPaint.textSize = TEXT_SIZE
-    }
+  init {
+    textPaint.color = Color.RED
+    textPaint.textSize = TEXT_SIZE
+  }
 
-    @Synchronized
-    override fun draw(canvas: Canvas) {
-        val x = overlay.width / 8.0f
-        var y = TEXT_SIZE * 4
-        for (label in labels) {
-            canvas.drawText(label.text + " (index: " + label.index + ")", x, y, textPaint)
-            y += TEXT_SIZE
-            canvas.drawText("confidence: " + label.confidence, x, y, textPaint)
-            y += TEXT_SIZE
-        }
+  @Synchronized
+  override fun draw(canvas: Canvas) {
+    val x = overlay.width / 8.0f
+    var y = TEXT_SIZE * 4
+    for (label in labels) {
+      canvas.drawText(label.text + " (index: " + label.index + ")", x, y, textPaint)
+      y += TEXT_SIZE
+      canvas.drawText("confidence: " + label.confidence, x, y, textPaint)
+      y += TEXT_SIZE
     }
+  }
 
-    companion object {
-        private const val TEXT_SIZE = 70.0f
-    }
+  companion object {
+    private const val TEXT_SIZE = 70.0f
+  }
 }

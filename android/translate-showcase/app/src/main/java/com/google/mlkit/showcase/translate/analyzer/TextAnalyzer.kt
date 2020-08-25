@@ -95,8 +95,7 @@ class TextAnalyzer(
             (imageWidth * widthCrop / 2).toInt(),
             (imageHeight * heightCrop / 2).toInt()
         )
-        val croppedBitmap =
-            ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect);
+        val croppedBitmap = ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect)
         recognizeTextOnDevice(InputImage.fromBitmap(croppedBitmap, 0)).addOnCompleteListener {
             imageProxy.close()
         }

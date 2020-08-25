@@ -25,9 +25,9 @@ import android.widget.Toast
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
 import com.google.mlkit.samples.languageid.R
-import kotlinx.android.synthetic.main.activity_main.buttonIdAll
-import kotlinx.android.synthetic.main.activity_main.buttonIdLanguage
-import kotlinx.android.synthetic.main.activity_main.inputText
+import kotlinx.android.synthetic.main.activity_langid_main.buttonIdAll
+import kotlinx.android.synthetic.main.activity_langid_main.buttonIdLanguage
+import kotlinx.android.synthetic.main.activity_langid_main.inputText
 import java.util.ArrayList
 import java.util.Locale
 
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_langid_main)
 
         outputText = findViewById(R.id.outputText)
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
+
+  <com.google.mlkit.md.camera.CameraSourcePreview
+      android:id="@+id/camera_preview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <include layout="@layout/camera_preview_overlay"/>
+
+  </com.google.mlkit.md.camera.CameraSourcePreview>
+
+  <include
+      layout="@layout/top_action_bar_in_live_camera"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="top"/>
+
+  <com.google.mlkit.md.productsearch.BottomSheetScrimView
+      android:id="@+id/bottom_sheet_scrim_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="gone"/>
+
+  <include
+      android:id="@+id/bottom_sheet"
+      layout="@layout/product_bottom_sheet"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:behavior_hideable="true"
+      app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

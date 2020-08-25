@@ -96,7 +96,7 @@ class MLKitVisionImage {
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Throws(CameraAccessException::class)
-    private fun getRotationCompensation(cameraId: String, activity: Activity, context: Context, isFrontFacing: Boolean): Int {
+    private fun getRotationCompensation(cameraId: String, activity: Activity, isFrontFacing: Boolean): Int {
         // Get the device's current rotation relative to its "native" orientation.
         // Then, from the ORIENTATIONS table, look up the angle the image must be
         // rotated to compensate for the device's rotation.
@@ -104,15 +104,15 @@ class MLKitVisionImage {
         var rotationCompensation = ORIENTATIONS.get(deviceRotation)
 
         // Get the device's sensor orientation.
-        val cameraManager = context.getSystemService(CAMERA_SERVICE) as CameraManager
+        val cameraManager = activity.getSystemService(CAMERA_SERVICE) as CameraManager
         val sensorOrientation = cameraManager
                 .getCameraCharacteristics(cameraId)
                 .get(CameraCharacteristics.SENSOR_ORIENTATION)!!
 
         if (isFrontFacing) {
-            rotationCompensation = (sensorOrientation + rotationDegrees) % 360
+            rotationCompensation = (sensorOrientation + rotationCompensation) % 360
         } else { // back-facing
-            rotationCompensation = (sensorOrientation - rotationDegrees + 360) % 360
+            rotationCompensation = (sensorOrientation - rotationCompensation + 360) % 360
         }
         return rotationCompensation
     }
@@ -120,9 +120,9 @@ class MLKitVisionImage {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Throws(CameraAccessException::class)
-    private fun getCompensation(activity: Activity, context: Context) {
+    private fun getCompensation(activity: Activity, context: Context, isFrontFacing: Boolean) {
         // Get the ID of the camera using CameraManager. Then:
-        val rotation = getRotationCompensation(MY_CAMERA_ID, activity, context)
+        val rotation = getRotationCompensation(MY_CAMERA_ID, activity, isFrontFacing)
     }
 
     companion object {

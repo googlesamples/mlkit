@@ -34,7 +34,6 @@
       android:id="@id/control"
       android:layout_width="match_parent"
       android:layout_height="60dp"
-      app:layout_constraintTop_toBottomOf="@id/preview_view"
       app:layout_constraintBottom_toBottomOf="parent"
       android:background="#000"
       android:orientation="horizontal">

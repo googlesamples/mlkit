@@ -28,10 +28,10 @@ import java.util.concurrent.Executor
  * [Task].
  */
 fun <TResult> Task<TResult>.addOnSuccessListener(
-        executor: Executor,
-        listener: (TResult) -> Unit
+  executor: Executor,
+  listener: (TResult) -> Unit
 ): Task<TResult> {
-    return addOnSuccessListener(executor, OnSuccessListener(listener))
+  return addOnSuccessListener(executor, OnSuccessListener(listener))
 }
 
 /**
@@ -39,10 +39,10 @@ fun <TResult> Task<TResult>.addOnSuccessListener(
  * [Task].
  */
 fun <TResult> Task<TResult>.addOnFailureListener(
-        executor: Executor,
-        listener: (Exception) -> Unit
+  executor: Executor,
+  listener: (Exception) -> Unit
 ): Task<TResult> {
-    return addOnFailureListener(executor, OnFailureListener(listener))
+  return addOnFailureListener(executor, OnFailureListener(listener))
 }
 
 /**
@@ -50,10 +50,10 @@ fun <TResult> Task<TResult>.addOnFailureListener(
  * a [Task].
  */
 fun <TResult> Task<TResult>.addOnCompleteListener(
-        executor: Executor,
-        listener: (Task<TResult>) -> Unit
+  executor: Executor,
+  listener: (Task<TResult>) -> Unit
 ): Task<TResult> {
-    return addOnCompleteListener(executor, OnCompleteListener(listener))
+  return addOnCompleteListener(executor, OnCompleteListener(listener))
 }
 
 /**
@@ -61,8 +61,8 @@ fun <TResult> Task<TResult>.addOnCompleteListener(
  * to a [Task].
  */
 fun <TResult> Task<TResult>.addOnCanceledListener(
-        executor: Executor,
-        listener: () -> Unit
+  executor: Executor,
+  listener: () -> Unit
 ): Task<TResult> {
-    return addOnCanceledListener(executor, OnCanceledListener(listener))
+  return addOnCanceledListener(executor, OnCanceledListener(listener))
 }

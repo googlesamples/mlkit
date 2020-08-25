@@ -23,6 +23,8 @@ import android.graphics.RectF
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.demo.GraphicOverlay
 import com.google.mlkit.vision.demo.GraphicOverlay.Graphic
+import kotlin.math.max
+import kotlin.math.min
 
 /** Graphic instance for rendering Barcode position and content information in an overlay view.  */
 class BarcodeGraphic constructor(overlay: GraphicOverlay?, private val barcode: Barcode?) :
@@ -50,27 +52,29 @@ class BarcodeGraphic constructor(overlay: GraphicOverlay?, private val barcode: 
     checkNotNull(barcode) { "Attempting to draw a null barcode." }
     // Draws the bounding box around the BarcodeBlock.
     val rect = RectF(barcode.boundingBox)
-    rect.left = translateX(rect.left)
+    // If the image is flipped, the left will be translated to right, and the right to left.
+    val x0 = translateX(rect.left)
+    val x1 = translateX(rect.right)
+    rect.left = min(x0, x1)
+    rect.right = max(x0, x1)
     rect.top = translateY(rect.top)
-    rect.right = translateX(rect.right)
     rect.bottom = translateY(rect.bottom)
     canvas.drawRect(rect, rectPaint)
     // Draws other object info.
     val lineHeight =
       TEXT_SIZE + 2 * STROKE_WIDTH
     val textWidth = barcodePaint.measureText(barcode.rawValue)
-    val left = if (isImageFlipped) rect.right else rect.left
     canvas.drawRect(
-      left - STROKE_WIDTH,
+      rect.left - STROKE_WIDTH,
       rect.top - lineHeight,
-      left + textWidth + 2 * STROKE_WIDTH,
+      rect.left + textWidth + 2 * STROKE_WIDTH,
       rect.top,
       labelPaint
     )
     // Renders the barcode at the bottom of the box.
     canvas.drawText(
       barcode.rawValue!!,
-      left,
+      rect.left,
       rect.top - STROKE_WIDTH,
       barcodePaint
     )

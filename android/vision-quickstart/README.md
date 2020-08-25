@@ -43,7 +43,7 @@ It uses the camera preview as input and contains these API workflows: Object det
 * AutoML Image Labeling
     * AutoML Remote Model Name -- Allows you to specify an AutoML VisionEdge model to remotely download from the Firebase Console
     * AutoML Model Choices -- Toggle between using the remote or local AutoML model.
-    
+
 ### Static Image scenario
 The static image scenario is identical to the live camera scenario, but instead relies on images fed into the app through the gallery.
 

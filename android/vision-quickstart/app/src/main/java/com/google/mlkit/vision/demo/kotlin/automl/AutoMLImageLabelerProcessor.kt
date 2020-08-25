@@ -21,7 +21,6 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.demo.GraphicOverlay
-import com.google.mlkit.vision.demo.automl.LabelGraphic
 import com.google.mlkit.vision.demo.kotlin.VisionProcessorBase
 import com.google.mlkit.vision.label.ImageLabel
 import com.google.mlkit.vision.label.ImageLabeler
@@ -32,45 +31,45 @@ import java.io.IOException
 
 /** AutoML image labeler demo.  */
 class AutoMLImageLabelerProcessor(context: Context) :
-        VisionProcessorBase<List<ImageLabel>>(context) {
-    private val imageLabeler: ImageLabeler
+  VisionProcessorBase<List<ImageLabel>>(context) {
+  private val imageLabeler: ImageLabeler
 
-    init {
-        Log.d(TAG, "Local model used.")
-        val localModel = AutoMLImageLabelerLocalModel.Builder()
-                .setAssetFilePath("automl/manifest.json")
-                .build()
-        imageLabeler = ImageLabeling.getClient(
-                AutoMLImageLabelerOptions.Builder(localModel).setConfidenceThreshold(0f).build()
-        )
-    }
+  init {
+    Log.d(TAG, "Local model used.")
+    val localModel = AutoMLImageLabelerLocalModel.Builder()
+      .setAssetFilePath("automl/manifest.json")
+      .build()
+    imageLabeler = ImageLabeling.getClient(
+      AutoMLImageLabelerOptions.Builder(localModel).setConfidenceThreshold(0f).build()
+    )
+  }
 
-    override fun stop() {
-        super.stop()
-        try {
-            imageLabeler.close()
-        } catch (e: IOException) {
-            Log.e(
-                    TAG,
-                    "Exception thrown while trying to close the image labeler",
-                    e
-            )
-        }
+  override fun stop() {
+    super.stop()
+    try {
+      imageLabeler.close()
+    } catch (e: IOException) {
+      Log.e(
+        TAG,
+        "Exception thrown while trying to close the image labeler",
+        e
+      )
     }
+  }
 
-    override fun detectInImage(image: InputImage): Task<List<ImageLabel>> {
-        return imageLabeler.process(image)
-    }
+  override fun detectInImage(image: InputImage): Task<List<ImageLabel>> {
+    return imageLabeler.process(image)
+  }
 
-    override fun onSuccess(results: List<ImageLabel>, graphicOverlay: GraphicOverlay) {
-        graphicOverlay.add(LabelGraphic(graphicOverlay, results))
-    }
+  override fun onSuccess(results: List<ImageLabel>, graphicOverlay: GraphicOverlay) {
+    graphicOverlay.add(LabelGraphic(graphicOverlay, results))
+  }
 
-    override fun onFailure(e: Exception) {
-        Log.w(TAG, "Label detection failed.", e)
-    }
+  override fun onFailure(e: Exception) {
+    Log.w(TAG, "Label detection failed.", e)
+  }
 
-    companion object {
-        private const val TAG = "AutoMLProcessor"
-    }
+  companion object {
+    private const val TAG = "AutoMLProcessor"
+  }
 }
