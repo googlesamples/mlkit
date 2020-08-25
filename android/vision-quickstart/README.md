@@ -13,8 +13,9 @@ Features that are included in this Quickstart app:
 * [Barcode Scanning](https://developers.google.com/ml-kit/vision/barcode-scanning/android)  - Scan barcodes in real time and static images
 * [Image Labeling](https://developers.google.com/ml-kit/vision/image-labeling/android) - Label images in real time and static images
 * [Custom Image Labeling - Birds](https://developers.google.com/ml-kit/vision/image-labeling/custom-models/android) - Label images of birds with a custom TensorFlow Lite model.
+* [Pose Detection](https://developers.google.com/ml-kit/vision/pose-detection/android) - Detect the position of the human body in real time.
 
-<img src="../screenshots/quickstart-picker.png" width="256"/> <img src="../screenshots/quickstart-image-labeling.png" width="256"/> <img src="../screenshots/quickstart-object-detection.png" width="256"/> 
+<img src="../screenshots/quickstart-picker.png" width="256"/> <img src="../screenshots/quickstart-image-labeling.png" width="256"/> <img src="../screenshots/quickstart-object-detection.png" width="256"/>
 
 ## Getting Started
 
@@ -43,6 +44,9 @@ It uses the camera preview as input and contains these API workflows: Object det
 * AutoML Image Labeling
     * AutoML Remote Model Name -- Allows you to specify an AutoML VisionEdge model to remotely download from the Firebase Console
     * AutoML Model Choices -- Toggle between using the remote or local AutoML model.
+* Pose Detection
+    * Performance Mode -- Allows you to switch between "Fast" and "Accurate" operation mode
+    * Show In-Frame Likelihood -- Displays InFrameLikelihood confidence within the app
 
 ### Static Image scenario
 The static image scenario is identical to the live camera scenario, but instead relies on images fed into the app through the gallery.
