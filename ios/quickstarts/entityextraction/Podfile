@@ -1,7 +1,7 @@
 platform :ios, '10.0'
 use_frameworks!
 
-pod 'MLKitEntityExtraction'
+pod 'GoogleMLKit/EntityExtraction'
 
 target 'EntityExtractionExample' do
   target 'EntityExtractionExampleTests' do

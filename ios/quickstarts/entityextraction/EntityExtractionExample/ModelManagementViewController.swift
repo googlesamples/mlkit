@@ -16,7 +16,7 @@
 
 import UIKit
 
-import MLKit
+import MLKitCommon
 import MLKitEntityExtraction
 
 @objc(ModelManagementViewController)
