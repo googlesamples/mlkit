@@ -33,7 +33,7 @@ It uses the camera preview as input and contains these API workflows: Object det
     * Enable live viewport - Prevent the live camera preview from being blocked by API rendering speed
 * Object detection / Custom Object Detection
     * Enable Multiple Objects -- Enable multiple objects to be detected at once.
-    * Enable classification -- Enable coarse classification 
+    * Enable classification -- Enable coarse classification
 * Face Detection
     * Landmark Mode -- Toggle between showing no or all facial landmarks
     * Contour Mode -- Toggle between showing no or all contours

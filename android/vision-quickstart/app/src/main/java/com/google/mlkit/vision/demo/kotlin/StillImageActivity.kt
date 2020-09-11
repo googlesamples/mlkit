@@ -44,7 +44,6 @@ import com.google.mlkit.vision.demo.BitmapUtils
 import com.google.mlkit.vision.demo.GraphicOverlay
 import com.google.mlkit.vision.demo.R
 import com.google.mlkit.vision.demo.VisionImageProcessor
-import com.google.mlkit.vision.demo.kotlin.automl.AutoMLImageLabelerProcessor
 import com.google.mlkit.vision.demo.kotlin.barcodescanner.BarcodeScannerProcessor
 import com.google.mlkit.vision.demo.kotlin.facedetector.FaceDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.labeldetector.LabelDetectorProcessor
@@ -54,6 +53,8 @@ import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
 import com.google.mlkit.vision.demo.preference.SettingsActivity.LaunchSource
+import com.google.mlkit.vision.label.automl.AutoMLImageLabelerLocalModel
+import com.google.mlkit.vision.label.automl.AutoMLImageLabelerOptions
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import java.io.IOException
@@ -441,9 +442,24 @@ class StillImageActivity : AppCompatActivity() {
               customImageLabelerOptions
             )
         }
-        AUTOML_LABELING ->
+        AUTOML_LABELING -> {
+          Log.i(
+            TAG,
+            "Using AutoML Image Label Detector Processor"
+          )
+          val autoMLLocalModel = AutoMLImageLabelerLocalModel.Builder()
+            .setAssetFilePath("automl/manifest.json")
+            .build()
+          val autoMLOptions = AutoMLImageLabelerOptions
+            .Builder(autoMLLocalModel)
+            .setConfidenceThreshold(0f)
+            .build()
           imageProcessor =
-            AutoMLImageLabelerProcessor(this)
+            LabelDetectorProcessor(
+              this,
+              autoMLOptions
+            )
+        }
         POSE_DETECTION -> {
           val poseDetectorOptions =
             PreferenceUtils.getPoseDetectorOptionsForStillImage(this)

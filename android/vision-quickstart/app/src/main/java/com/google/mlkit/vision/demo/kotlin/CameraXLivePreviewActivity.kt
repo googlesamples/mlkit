@@ -54,7 +54,6 @@ import com.google.mlkit.vision.demo.CameraXViewModel
 import com.google.mlkit.vision.demo.GraphicOverlay
 import com.google.mlkit.vision.demo.R
 import com.google.mlkit.vision.demo.VisionImageProcessor
-import com.google.mlkit.vision.demo.kotlin.automl.AutoMLImageLabelerProcessor
 import com.google.mlkit.vision.demo.kotlin.barcodescanner.BarcodeScannerProcessor
 import com.google.mlkit.vision.demo.kotlin.facedetector.FaceDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.labeldetector.LabelDetectorProcessor
@@ -64,6 +63,8 @@ import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
 import com.google.mlkit.vision.demo.preference.SettingsActivity.LaunchSource
+import com.google.mlkit.vision.label.automl.AutoMLImageLabelerLocalModel
+import com.google.mlkit.vision.label.automl.AutoMLImageLabelerOptions
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import java.util.ArrayList
@@ -283,7 +284,7 @@ class CameraXLivePreviewActivity :
     }
 
     previewUseCase = Preview.Builder().build()
-    previewUseCase!!.setSurfaceProvider(previewView!!.createSurfaceProvider())
+    previewUseCase!!.setSurfaceProvider(previewView!!.getSurfaceProvider())
     cameraProvider!!.bindToLifecycle(/* lifecycleOwner= */this, cameraSelector!!, previewUseCase)
   }
 
@@ -371,7 +372,22 @@ class CameraXLivePreviewActivity :
             this, customImageLabelerOptions
           )
         }
-        AUTOML_LABELING -> AutoMLImageLabelerProcessor(this)
+        AUTOML_LABELING -> {
+          Log.i(
+            TAG,
+            "Using AutoML Image Label Detector Processor"
+          )
+          val autoMLLocalModel = AutoMLImageLabelerLocalModel.Builder()
+            .setAssetFilePath("automl/manifest.json")
+            .build()
+          val autoMLOptions = AutoMLImageLabelerOptions
+            .Builder(autoMLLocalModel)
+            .setConfidenceThreshold(0f)
+            .build()
+          LabelDetectorProcessor(
+            this, autoMLOptions
+          )
+        }
         POSE_DETECTION -> {
           val poseDetectorOptions =
             PreferenceUtils.getPoseDetectorOptionsForLivePreview(this)

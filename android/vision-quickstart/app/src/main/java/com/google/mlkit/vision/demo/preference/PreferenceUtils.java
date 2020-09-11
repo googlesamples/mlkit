@@ -33,10 +33,14 @@ import com.google.mlkit.vision.face.FaceDetectorOptions;
 import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase.DetectorMode;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
-import com.google.mlkit.vision.pose.PoseDetectorOptions;
+import com.google.mlkit.vision.pose.PoseDetectorOptionsBase;
+import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions;
+import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions;
 
 /** Utility class to retrieve shared preferences. */
 public class PreferenceUtils {
+
+  private static final int POSE_DETECTOR_PERFORMANCE_MODE_FAST = 1;
 
   static void saveString(Context context, @StringRes int prefKeyId, @Nullable String value) {
     PreferenceManager.getDefaultSharedPreferences(context)
@@ -212,28 +216,38 @@ public class PreferenceUtils {
     return optionsBuilder.build();
   }
 
-  public static PoseDetectorOptions getPoseDetectorOptionsForLivePreview(Context context) {
+  public static PoseDetectorOptionsBase getPoseDetectorOptionsForLivePreview(Context context) {
     int performanceMode =
         getModeTypePreferenceValue(
             context,
             R.string.pref_key_live_preview_pose_detection_performance_mode,
-            PoseDetectorOptions.PERFORMANCE_MODE_FAST);
-    return new PoseDetectorOptions.Builder()
+            POSE_DETECTOR_PERFORMANCE_MODE_FAST);
+    if (performanceMode == POSE_DETECTOR_PERFORMANCE_MODE_FAST) {
+      return new PoseDetectorOptions.Builder()
         .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
-        .setPerformanceMode(performanceMode)
         .build();
+    } else {
+      return new AccuratePoseDetectorOptions.Builder()
+        .setDetectorMode(AccuratePoseDetectorOptions.STREAM_MODE)
+        .build();
+    }
   }
 
-  public static PoseDetectorOptions getPoseDetectorOptionsForStillImage(Context context) {
-    int performance =
+  public static PoseDetectorOptionsBase getPoseDetectorOptionsForStillImage(Context context) {
+    int performanceMode =
         getModeTypePreferenceValue(
             context,
             R.string.pref_key_still_image_pose_detection_performance_mode,
-            PoseDetectorOptions.PERFORMANCE_MODE_FAST);
-    return new PoseDetectorOptions.Builder()
+            POSE_DETECTOR_PERFORMANCE_MODE_FAST);
+    if (performanceMode == POSE_DETECTOR_PERFORMANCE_MODE_FAST) {
+      return new PoseDetectorOptions.Builder()
         .setDetectorMode(PoseDetectorOptions.SINGLE_IMAGE_MODE)
-        .setPerformanceMode(performance)
         .build();
+    } else {
+      return new AccuratePoseDetectorOptions.Builder()
+        .setDetectorMode(AccuratePoseDetectorOptions.SINGLE_IMAGE_MODE)
+        .build();
+    }
   }
 
   public static boolean shouldShowPoseDetectionInFrameLikelihoodLivePreview(Context context) {

@@ -51,10 +51,6 @@ public class CameraSourcePreview extends ViewGroup {
   }
 
   private void start(CameraSource cameraSource) throws IOException {
-    if (cameraSource == null) {
-      stop();
-    }
-
     this.cameraSource = cameraSource;
 
     if (this.cameraSource != null) {

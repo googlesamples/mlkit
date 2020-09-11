@@ -44,7 +44,6 @@ import com.google.mlkit.vision.demo.BitmapUtils;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.R;
 import com.google.mlkit.vision.demo.VisionImageProcessor;
-import com.google.mlkit.vision.demo.java.automl.AutoMLImageLabelerProcessor;
 import com.google.mlkit.vision.demo.java.barcodescanner.BarcodeScannerProcessor;
 import com.google.mlkit.vision.demo.java.facedetector.FaceDetectorProcessor;
 import com.google.mlkit.vision.demo.java.labeldetector.LabelDetectorProcessor;
@@ -54,11 +53,13 @@ import com.google.mlkit.vision.demo.java.textdetector.TextRecognitionProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
 import com.google.mlkit.vision.demo.preference.SettingsActivity.LaunchSource;
+import com.google.mlkit.vision.label.automl.AutoMLImageLabelerLocalModel;
+import com.google.mlkit.vision.label.automl.AutoMLImageLabelerOptions;
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
-import com.google.mlkit.vision.pose.PoseDetectorOptions;
+import com.google.mlkit.vision.pose.PoseDetectorOptionsBase;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -418,10 +419,19 @@ public final class StillImageActivity extends AppCompatActivity {
           imageProcessor = new LabelDetectorProcessor(this, customImageLabelerOptions);
           break;
         case AUTOML_LABELING:
-          imageProcessor = new AutoMLImageLabelerProcessor(this);
+          Log.i(TAG, "Using AutoML Image Label Detector Processor");
+          AutoMLImageLabelerLocalModel autoMLLocalModel =
+              new AutoMLImageLabelerLocalModel.Builder()
+                  .setAssetFilePath("automl/manifest.json")
+                  .build();
+          AutoMLImageLabelerOptions autoMLOptions =
+              new AutoMLImageLabelerOptions.Builder(autoMLLocalModel)
+                  .setConfidenceThreshold(0)
+                  .build();
+          imageProcessor = new LabelDetectorProcessor(this, autoMLOptions);
           break;
         case POSE_DETECTION:
-          PoseDetectorOptions poseDetectorOptions =
+          PoseDetectorOptionsBase poseDetectorOptions =
               PreferenceUtils.getPoseDetectorOptionsForStillImage(this);
           boolean shouldShowInFrameLikelihood =
               PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodStillImage(this);

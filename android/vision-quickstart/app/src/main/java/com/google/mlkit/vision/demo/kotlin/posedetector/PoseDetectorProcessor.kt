@@ -25,12 +25,12 @@ import com.google.mlkit.vision.demo.java.VisionProcessorBase
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseDetector
-import com.google.mlkit.vision.pose.PoseDetectorOptions
+import com.google.mlkit.vision.pose.PoseDetectorOptionsBase
 
 /** A processor to run pose detector.  */
 class PoseDetectorProcessor(
   context: Context,
-  options: PoseDetectorOptions,
+  options: PoseDetectorOptionsBase,
   private val showInFrameLikelihood: Boolean
 ) :
   VisionProcessorBase<Pose>(context) {

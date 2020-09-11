@@ -103,7 +103,6 @@
     <string name="pref_key_still_image_pose_detection_performance_mode" translatable="false">sipdpm</string>
     <string name="pref_entries_pose_detector_performance_mode_fast">Fast</string>
     <string name="pref_entries_pose_detector_performance_mode_accurate">Accurate</string>
-    <!-- The following entry values must match the ones in PoseDetectorOptions#PerformanceMode -->
     <string name="pref_entry_values_pose_detector_performance_mode_fast" translatable="false">1</string>
     <string name="pref_entry_values_pose_detector_performance_mode_accurate" translatable="false">2</string>
 

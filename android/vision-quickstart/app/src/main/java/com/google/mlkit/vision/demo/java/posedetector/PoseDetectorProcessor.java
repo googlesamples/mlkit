@@ -26,7 +26,7 @@ import com.google.mlkit.vision.demo.java.VisionProcessorBase;
 import com.google.mlkit.vision.pose.Pose;
 import com.google.mlkit.vision.pose.PoseDetection;
 import com.google.mlkit.vision.pose.PoseDetector;
-import com.google.mlkit.vision.pose.PoseDetectorOptions;
+import com.google.mlkit.vision.pose.PoseDetectorOptionsBase;
 
 /** A processor to run pose detector. */
 public class PoseDetectorProcessor extends VisionProcessorBase<Pose> {
@@ -38,7 +38,7 @@ public class PoseDetectorProcessor extends VisionProcessorBase<Pose> {
   private final boolean showInFrameLikelihood;
 
   public PoseDetectorProcessor(
-      Context context, PoseDetectorOptions options, boolean showInFrameLikelihood) {
+      Context context, PoseDetectorOptionsBase options, boolean showInFrameLikelihood) {
     super(context);
     this.showInFrameLikelihood = showInFrameLikelihood;
     detector = PoseDetection.getClient(options);

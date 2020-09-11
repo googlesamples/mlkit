@@ -84,18 +84,12 @@ public class CameraSource {
   private static final float REQUESTED_FPS = 30.0f;
   private static final boolean REQUESTED_AUTO_FOCUS = true;
 
-  // These instances need to be held onto to avoid GC of their underlying resources.  Even though
-  // these aren't used outside of the method that creates them, they still must have hard
-  // references maintained to them.
+  // This instance needs to be held onto to avoid GC of its underlying resources. Even though it
+  // isn't used outside of the method that creates it, it still must have hard references maintained
+  // to it.
   private SurfaceTexture dummySurfaceTexture;
-  private final GraphicOverlay graphicOverlay;
 
-  // True if a SurfaceTexture is being used for the preview, false if a SurfaceHolder is being
-  // used for the preview.  We want to be compatible back to Gingerbread, but SurfaceTexture
-  // wasn't introduced until Honeycomb.  Since the interface cannot use a SurfaceTexture, if the
-  // developer wants to display a preview we must use a SurfaceHolder.  If the developer doesn't
-  // want to display a preview we use a SurfaceTexture if we are running at least Honeycomb.
-  private boolean usingSurfaceTexture;
+  private final GraphicOverlay graphicOverlay;
 
   /**
    * Dedicated thread and associated runnable for calling into the detector with frames, as the
@@ -158,7 +152,6 @@ public class CameraSource {
     camera = createCamera();
     dummySurfaceTexture = new SurfaceTexture(DUMMY_TEXTURE_NAME);
     camera.setPreviewTexture(dummySurfaceTexture);
-    usingSurfaceTexture = true;
     camera.startPreview();
 
     processingThread = new Thread(processingRunnable);
@@ -187,8 +180,6 @@ public class CameraSource {
     processingThread = new Thread(processingRunnable);
     processingRunnable.setActive(true);
     processingThread.start();
-
-    usingSurfaceTexture = false;
     return this;
   }
 
@@ -219,11 +210,9 @@ public class CameraSource {
       camera.stopPreview();
       camera.setPreviewCallbackWithBuffer(null);
       try {
-        if (usingSurfaceTexture) {
-          camera.setPreviewTexture(null);
-        } else {
-          camera.setPreviewDisplay(null);
-        }
+        camera.setPreviewTexture(null);
+        dummySurfaceTexture = null;
+        camera.setPreviewDisplay(null);
       } catch (Exception e) {
         Log.e(TAG, "Failed to clear camera preview: " + e);
       }
