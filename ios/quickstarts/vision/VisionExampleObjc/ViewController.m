@@ -71,8 +71,8 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   DetectorPickerRowDetectObjectsCustomMultipleNoClassifier,
   /** On-Device vision object detector, custom model, multiple, with classification. */
   DetectorPickerRowDetectObjectsCustomMultipleWithClassifier,
-  /** Vision pose detector. */
-  DetectorPickerRowDetectPose,
+  /** Vision pose accurate detector. */
+  DetectorPickerRowDetectPoseAccurate,
 };
 
 @interface ViewController () <UINavigationControllerDelegate,
@@ -108,15 +108,15 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 - (NSString *)stringForDetectorPickerRow:(DetectorPickerRow)detectorPickerRow {
   switch (detectorPickerRow) {
     case DetectorPickerRowDetectFaceOnDevice:
-      return @"Face On-Device";
+      return @"Face Detection";
     case DetectorPickerRowDetectTextOnDevice:
-      return @"Text On-Device";
+      return @"Text Recognition";
     case DetectorPickerRowDetectBarcodeOnDevice:
-      return @"Barcode On-Device";
+      return @"Barcode Scanning";
     case DetectorPickerRowDetectImageLabelsOnDevice:
-      return @"Image Labeling On-Device";
+      return @"Image Labeling";
     case DetectorPickerRowDetectImageLabelsCustomOnDevice:
-      return @"Image Labeling Custom On-Device";
+      return @"Image Labeling Custom";
     case DetectorPickerRowDetectObjectsProminentNoClassifier:
       return @"ODT, single, no labeling";
     case DetectorPickerRowDetectObjectsProminentWithClassifier:
@@ -133,8 +133,8 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       return @"ODT, custom, multiple, no labeling";
     case DetectorPickerRowDetectObjectsCustomMultipleWithClassifier:
       return @"ODT, custom, multiple, labeling";
-    case DetectorPickerRowDetectPose:
-      return @"Pose";
+    case DetectorPickerRowDetectPoseAccurate:
+      return @"Pose Detection, accurate";
   }
 }
 
@@ -255,7 +255,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       [self detectObjectsOnDeviceInImage:_imageView.image withOptions:options];
       break;
     }
-    case DetectorPickerRowDetectPose:
+    case DetectorPickerRowDetectPoseAccurate:
       [self detectPoseInImage:_imageView.image];
       break;
   }
@@ -692,7 +692,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   // Reset the pose detector to `nil` when a new detector row is chosen. If it happens to be the
   // pose detector row, then it will be lazily-initialized with its getter override when accessed
   // for pose detection.
-  if (row != DetectorPickerRowDetectPose) {
+  if (row != DetectorPickerRowDetectPoseAccurate) {
     self.poseDetector = nil;
   }
 }
@@ -1080,9 +1080,8 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 - (nullable MLKPoseDetector *)poseDetector {
   if (_poseDetector == nil) {
-    MLKPoseDetectorOptions *options = [[MLKPoseDetectorOptions alloc] init];
+    MLKAccuratePoseDetectorOptions *options = [[MLKAccuratePoseDetectorOptions alloc] init];
     options.detectorMode = MLKPoseDetectorModeSingleImage;
-    options.performanceMode = MLKPoseDetectorPerformanceModeAccurate;
     _poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
   }
   return _poseDetector;

@@ -32,7 +32,7 @@ class CameraViewController: UIViewController {
     .onDeviceObjectCustomProminentWithClassifier,
     .onDeviceObjectCustomMultipleNoClassifier,
     .onDeviceObjectCustomMultipleWithClassifier,
-    .poseFast,
+    .pose,
     .poseAccurate,
   ]
 
@@ -75,9 +75,9 @@ class CameraViewController: UIViewController {
       var detector: PoseDetector? = nil
       poseDetectorQueue.sync {
         if _poseDetector == nil {
-          let options = PoseDetectorOptions()
+          let options = currentDetector == .pose ? PoseDetectorOptions()
+                                                 : AccuratePoseDetectorOptions()
           options.detectorMode = .stream
-          options.performanceMode = (currentDetector == .poseFast ? .fast : .accurate);
           _poseDetector = PoseDetector.poseDetector(options: options)
         }
         detector = _poseDetector
@@ -806,7 +806,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         height: imageHeight,
         options: options)
 
-    case .poseFast, .poseAccurate:
+    case .pose, .poseAccurate:
       detectPose(in: visionImage, width: imageWidth, height: imageHeight)
     }
   }
@@ -815,9 +815,9 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 // MARK: - Constants
 
 public enum Detector: String {
-  case onDeviceBarcode = "On-Device Barcode Scanner"
-  case onDeviceFace = "On-Device Face Detection"
-  case onDeviceText = "On-Device Text Recognition"
+  case onDeviceBarcode = "Barcode Scanning"
+  case onDeviceFace = "Face Detection"
+  case onDeviceText = "Text Recognition"
   case onDeviceObjectProminentNoClassifier = "ODT, single, no labeling"
   case onDeviceObjectProminentWithClassifier = "ODT, single, labeling"
   case onDeviceObjectMultipleNoClassifier = "ODT, multiple, no labeling"
@@ -826,8 +826,8 @@ public enum Detector: String {
   case onDeviceObjectCustomProminentWithClassifier = "ODT, custom, single, labeling"
   case onDeviceObjectCustomMultipleNoClassifier = "ODT, custom, multiple, no labeling"
   case onDeviceObjectCustomMultipleWithClassifier = "ODT, custom, multiple, labeling"
-  case poseAccurate = "Pose, accurate"
-  case poseFast = "Pose, fast"
+  case pose = "Pose Detection"
+  case poseAccurate = "Pose Detection, accurate"
 }
 
 private enum Constant {

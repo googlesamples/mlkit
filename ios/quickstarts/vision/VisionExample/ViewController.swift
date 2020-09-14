@@ -46,9 +46,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
   private var poseDetector: PoseDetector? {
     get {
       if _poseDetector == nil {
-        let options = PoseDetectorOptions()
+        let options = AccuratePoseDetectorOptions()
         options.detectorMode = .singleImage
-        options.performanceMode = .accurate
         _poseDetector = PoseDetector.poseDetector(options: options)
       }
       return _poseDetector
@@ -167,7 +166,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         options.shouldEnableMultipleObjects = shouldEnableMultipleObjects
         options.detectorMode = .singleImage
         detectObjectsOnDevice(in: imageView.image, options: options)
-      case .detectPose:
+      case .detectPoseAccurate:
         detectPose(image: imageView.image)
       }
     } else {
@@ -631,7 +630,7 @@ extension ViewController: UIPickerViewDataSource, UIPickerViewDelegate {
     clearResults()
 
     if let rowIndex = DetectorPickerRow(rawValue: row) {
-      if rowIndex != .detectPose {
+      if rowIndex != .detectPoseAccurate {
         // Reset the pose detector to `nil` when a new detector row is chosen. The detector will be
         // re-initialized via its getter when it is needed for detection again.
         poseDetector = nil
@@ -1013,7 +1012,7 @@ private enum DetectorPickerRow: Int {
     detectObjectsCustomProminentWithClassifier,
     detectObjectsCustomMultipleNoClassifier,
     detectObjectsCustomMultipleWithClassifier,
-    detectPose
+    detectPoseAccurate
 
   static let rowsCount = 14
   static let componentsCount = 1
@@ -1021,15 +1020,15 @@ private enum DetectorPickerRow: Int {
   public var description: String {
     switch self {
     case .detectFaceOnDevice:
-      return "Face On-Device"
+      return "Face Detection"
     case .detectTextOnDevice:
-      return "Text On-Device"
+      return "Text Recognition"
     case .detectBarcodeOnDevice:
-      return "Barcode On-Device"
+      return "Barcode Scanning"
     case .detectImageLabelsOnDevice:
-      return "Image Labeling On-Device"
+      return "Image Labeling"
     case .detectImageLabelsCustomOnDevice:
-      return "Image Labeling Custom On-Device"
+      return "Image Labeling Custom"
     case .detectObjectsProminentNoClassifier:
       return "ODT, single, no labeling"
     case .detectObjectsProminentWithClassifier:
@@ -1046,8 +1045,8 @@ private enum DetectorPickerRow: Int {
       return "ODT, custom, multiple, no labeling"
     case .detectObjectsCustomMultipleWithClassifier:
       return "ODT, custom, multiple, labeling"
-    case .detectPose:
-      return "Pose"
+    case .detectPoseAccurate:
+      return "Pose Detection, accurate"
     }
   }
 }

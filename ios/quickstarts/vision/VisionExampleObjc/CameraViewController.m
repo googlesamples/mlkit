@@ -50,8 +50,8 @@ typedef NS_ENUM(NSInteger, Detector) {
   DetectorOnDeviceObjectCustomProminentWithClassifier,
   DetectorOnDeviceObjectCustomMultipleNoClassifier,
   DetectorOnDeviceObjectCustomMultipleWithClassifier,
+  DetectorPose,
   DetectorPoseAccurate,
-  DetectorPoseFast,
 };
 
 @property(nonatomic) NSArray *detectors;
@@ -77,11 +77,11 @@ typedef NS_ENUM(NSInteger, Detector) {
 - (NSString *)stringForDetector:(Detector)detector {
   switch (detector) {
     case DetectorOnDeviceBarcode:
-      return @"On-Device Barcode Scanner";
+      return @"Barcode Scanning";
     case DetectorOnDeviceFace:
-      return @"On-Device Face Detection";
+      return @"Face Detection";
     case DetectorOnDeviceText:
-      return @"On-Device Text Recognition";
+      return @"Text Recognition";
     case DetectorOnDeviceObjectProminentNoClassifier:
       return @"ODT, single, no labeling";
     case DetectorOnDeviceObjectProminentWithClassifier:
@@ -98,10 +98,10 @@ typedef NS_ENUM(NSInteger, Detector) {
       return @"ODT, custom, multiple, no labeling";
     case DetectorOnDeviceObjectCustomMultipleWithClassifier:
       return @"ODT, custom, multiple, labeling";
-    case DetectorPoseFast:
-      return @"Pose, fast";
+    case DetectorPose:
+      return @"Pose Detection";
     case DetectorPoseAccurate:
-      return @"Pose, accurate";
+      return @"Pose Detection, accurate";
   }
 }
 
@@ -119,8 +119,8 @@ typedef NS_ENUM(NSInteger, Detector) {
     @(DetectorOnDeviceObjectCustomProminentWithClassifier),
     @(DetectorOnDeviceObjectCustomMultipleNoClassifier),
     @(DetectorOnDeviceObjectCustomMultipleWithClassifier),
+    @(DetectorPose),
     @(DetectorPoseAccurate),
-    @(DetectorPoseFast),
   ];
   _currentDetector = DetectorOnDeviceFace;
   _isUsingFrontCamera = YES;
@@ -778,8 +778,8 @@ typedef NS_ENUM(NSInteger, Detector) {
       case DetectorOnDeviceText:
         [self recognizeTextOnDeviceInImage:visionImage width:imageWidth height:imageHeight];
         break;
+      case DetectorPose:
       case DetectorPoseAccurate:
-      case DetectorPoseFast:
         [self detectPoseInImage:visionImage width:imageWidth height:imageHeight];
         break;
       case DetectorOnDeviceObjectProminentNoClassifier:
@@ -832,11 +832,10 @@ typedef NS_ENUM(NSInteger, Detector) {
   // main thread and used for processing on the video output queue.
   @synchronized(self) {
     if (_poseDetector == nil) {
-      MLKPoseDetectorOptions *options = [[MLKPoseDetectorOptions alloc] init];
+      MLKCommonPoseDetectorOptions *options = self.currentDetector == DetectorPose
+                                                  ? [[MLKPoseDetectorOptions alloc] init]
+                                                  : [[MLKAccuratePoseDetectorOptions alloc] init];
       options.detectorMode = MLKPoseDetectorModeStream;
-      options.performanceMode = self.currentDetector == DetectorPoseFast
-                                    ? MLKPoseDetectorPerformanceModeFast
-                                    : MLKPoseDetectorPerformanceModeAccurate;
       _poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
     }
     return _poseDetector;
