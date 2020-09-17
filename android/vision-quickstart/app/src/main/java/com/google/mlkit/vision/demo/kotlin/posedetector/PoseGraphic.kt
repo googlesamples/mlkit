@@ -54,49 +54,49 @@ class PoseGraphic internal constructor(
       }
     }
     val leftShoulder =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_SHOULDER)
+      pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER)
     val rightShoulder =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_SHOULDER)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER)
     val leftElbow =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_ELBOW)
+      pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW)
     val rightElbow =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_ELBOW)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW)
     val leftWrist =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_WRIST)
+      pose.getPoseLandmark(PoseLandmark.LEFT_WRIST)
     val rightWrist =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_WRIST)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST)
     val leftHip =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_HIP)
+      pose.getPoseLandmark(PoseLandmark.LEFT_HIP)
     val rightHip =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_HIP)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_HIP)
     val leftKnee =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_KNEE)
+      pose.getPoseLandmark(PoseLandmark.LEFT_KNEE)
     val rightKnee =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_KNEE)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE)
     val leftAnkle =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_ANKLE)
+      pose.getPoseLandmark(PoseLandmark.LEFT_ANKLE)
     val rightAnkle =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_ANKLE)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_ANKLE)
     val leftPinky =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_PINKY)
+      pose.getPoseLandmark(PoseLandmark.LEFT_PINKY)
     val rightPinky =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_PINKY)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_PINKY)
     val leftIndex =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_INDEX)
+      pose.getPoseLandmark(PoseLandmark.LEFT_INDEX)
     val rightIndex =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_INDEX)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_INDEX)
     val leftThumb =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_THUMB)
+      pose.getPoseLandmark(PoseLandmark.LEFT_THUMB)
     val rightThumb =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_THUMB)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_THUMB)
     val leftHeel =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_HEEL)
+      pose.getPoseLandmark(PoseLandmark.LEFT_HEEL)
     val rightHeel =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_HEEL)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL)
     val leftFootIndex =
-      pose.getPoseLandmark(PoseLandmark.Type.LEFT_FOOT_INDEX)
+      pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX)
     val rightFootIndex =
-      pose.getPoseLandmark(PoseLandmark.Type.RIGHT_FOOT_INDEX)
+      pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX)
     drawLine(canvas, leftShoulder!!.position, rightShoulder!!.position, whitePaint)
     drawLine(canvas, leftHip!!.position, rightHip!!.position, whitePaint)
     // Left body

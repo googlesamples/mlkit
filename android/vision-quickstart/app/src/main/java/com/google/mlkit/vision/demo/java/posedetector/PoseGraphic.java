@@ -72,29 +72,29 @@ public class PoseGraphic extends Graphic {
             whitePaint);
       }
     }
-    PoseLandmark leftShoulder = pose.getPoseLandmark(PoseLandmark.Type.LEFT_SHOULDER);
-    PoseLandmark rightShoulder = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_SHOULDER);
-    PoseLandmark leftElbow = pose.getPoseLandmark(PoseLandmark.Type.LEFT_ELBOW);
-    PoseLandmark rightElbow = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_ELBOW);
-    PoseLandmark leftWrist = pose.getPoseLandmark(PoseLandmark.Type.LEFT_WRIST);
-    PoseLandmark rightWrist = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_WRIST);
-    PoseLandmark leftHip = pose.getPoseLandmark(PoseLandmark.Type.LEFT_HIP);
-    PoseLandmark rightHip = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_HIP);
-    PoseLandmark leftKnee = pose.getPoseLandmark(PoseLandmark.Type.LEFT_KNEE);
-    PoseLandmark rightKnee = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_KNEE);
-    PoseLandmark leftAnkle = pose.getPoseLandmark(PoseLandmark.Type.LEFT_ANKLE);
-    PoseLandmark rightAnkle = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_ANKLE);
+    PoseLandmark leftShoulder = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER);
+    PoseLandmark rightShoulder = pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER);
+    PoseLandmark leftElbow = pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW);
+    PoseLandmark rightElbow = pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW);
+    PoseLandmark leftWrist = pose.getPoseLandmark(PoseLandmark.LEFT_WRIST);
+    PoseLandmark rightWrist = pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST);
+    PoseLandmark leftHip = pose.getPoseLandmark(PoseLandmark.LEFT_HIP);
+    PoseLandmark rightHip = pose.getPoseLandmark(PoseLandmark.RIGHT_HIP);
+    PoseLandmark leftKnee = pose.getPoseLandmark(PoseLandmark.LEFT_KNEE);
+    PoseLandmark rightKnee = pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE);
+    PoseLandmark leftAnkle = pose.getPoseLandmark(PoseLandmark.LEFT_ANKLE);
+    PoseLandmark rightAnkle = pose.getPoseLandmark(PoseLandmark.RIGHT_ANKLE);
 
-    PoseLandmark leftPinky = pose.getPoseLandmark(PoseLandmark.Type.LEFT_PINKY);
-    PoseLandmark rightPinky = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_PINKY);
-    PoseLandmark leftIndex = pose.getPoseLandmark(PoseLandmark.Type.LEFT_INDEX);
-    PoseLandmark rightIndex = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_INDEX);
-    PoseLandmark leftThumb = pose.getPoseLandmark(PoseLandmark.Type.LEFT_THUMB);
-    PoseLandmark rightThumb = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_THUMB);
-    PoseLandmark leftHeel = pose.getPoseLandmark(PoseLandmark.Type.LEFT_HEEL);
-    PoseLandmark rightHeel = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_HEEL);
-    PoseLandmark leftFootIndex = pose.getPoseLandmark(PoseLandmark.Type.LEFT_FOOT_INDEX);
-    PoseLandmark rightFootIndex = pose.getPoseLandmark(PoseLandmark.Type.RIGHT_FOOT_INDEX);
+    PoseLandmark leftPinky = pose.getPoseLandmark(PoseLandmark.LEFT_PINKY);
+    PoseLandmark rightPinky = pose.getPoseLandmark(PoseLandmark.RIGHT_PINKY);
+    PoseLandmark leftIndex = pose.getPoseLandmark(PoseLandmark.LEFT_INDEX);
+    PoseLandmark rightIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_INDEX);
+    PoseLandmark leftThumb = pose.getPoseLandmark(PoseLandmark.LEFT_THUMB);
+    PoseLandmark rightThumb = pose.getPoseLandmark(PoseLandmark.RIGHT_THUMB);
+    PoseLandmark leftHeel = pose.getPoseLandmark(PoseLandmark.LEFT_HEEL);
+    PoseLandmark rightHeel = pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL);
+    PoseLandmark leftFootIndex = pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX);
+    PoseLandmark rightFootIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX);
 
     drawLine(canvas, leftShoulder.getPosition(), rightShoulder.getPosition(), whitePaint);
     drawLine(canvas, leftHip.getPosition(), rightHip.getPosition(), whitePaint);
