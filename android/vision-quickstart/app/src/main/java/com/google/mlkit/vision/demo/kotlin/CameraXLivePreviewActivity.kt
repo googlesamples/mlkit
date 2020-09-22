@@ -16,7 +16,6 @@
 
 package com.google.mlkit.vision.demo.kotlin
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.content.Context
@@ -38,6 +37,7 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraInfoUnavailableException
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -71,6 +71,7 @@ import java.util.ArrayList
 
 /** Live preview demo app for ML Kit APIs using CameraX.  */
 @KeepName
+@RequiresApi(VERSION_CODES.LOLLIPOP)
 class CameraXLivePreviewActivity :
   AppCompatActivity(),
   ActivityCompat.OnRequestPermissionsResultCallback,
@@ -283,12 +284,16 @@ class CameraXLivePreviewActivity :
       cameraProvider!!.unbind(previewUseCase)
     }
 
-    previewUseCase = Preview.Builder().build()
+    val builder = Preview.Builder()
+    val targetResolution = PreferenceUtils.getCameraXTargetResolution(this)
+    if (targetResolution != null) {
+      builder.setTargetResolution(targetResolution)
+    }
+    previewUseCase = builder.build()
     previewUseCase!!.setSurfaceProvider(previewView!!.getSurfaceProvider())
     cameraProvider!!.bindToLifecycle(/* lifecycleOwner= */this, cameraSelector!!, previewUseCase)
   }
 
-  @SuppressLint("NewApi")
   private fun bindAnalysisUseCase() {
     if (cameraProvider == null) {
       return
@@ -413,9 +418,9 @@ class CameraXLivePreviewActivity :
     }
 
     val builder = ImageAnalysis.Builder()
-    val targetAnalysisSize = PreferenceUtils.getCameraXTargetAnalysisSize(this)
-    if (targetAnalysisSize != null) {
-      builder.setTargetResolution(targetAnalysisSize)
+    val targetResolution = PreferenceUtils.getCameraXTargetResolution(this)
+    if (targetResolution != null) {
+      builder.setTargetResolution(targetResolution)
     }
     analysisUseCase = builder.build()
 

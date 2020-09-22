@@ -57,7 +57,7 @@ public class LivePreviewPreferenceFragment extends PreferenceFragment {
       setUpCameraXTargetAnalysisSizePreference();
     } else {
       cameraPreference.removePreference(
-          findPreference(getString(R.string.pref_key_camerax_target_analysis_size)));
+          findPreference(getString(R.string.pref_key_camerax_target_resolution)));
       setUpCameraPreviewSizePreference(
           R.string.pref_key_rear_camera_preview_size,
           R.string.pref_key_rear_camera_picture_size,
@@ -134,7 +134,7 @@ public class LivePreviewPreferenceFragment extends PreferenceFragment {
 
   private void setUpCameraXTargetAnalysisSizePreference() {
     ListPreference pref =
-        (ListPreference) findPreference(getString(R.string.pref_key_camerax_target_analysis_size));
+        (ListPreference) findPreference(getString(R.string.pref_key_camerax_target_resolution));
     String[] entries =
         new String[] {
           "2000x2000",
@@ -155,7 +155,7 @@ public class LivePreviewPreferenceFragment extends PreferenceFragment {
           String newStringValue = (String) newValue;
           pref.setSummary(newStringValue);
           PreferenceUtils.saveString(
-              getActivity(), R.string.pref_key_camerax_target_analysis_size, newStringValue);
+              getActivity(), R.string.pref_key_camerax_target_resolution, newStringValue);
           return true;
         });
   }

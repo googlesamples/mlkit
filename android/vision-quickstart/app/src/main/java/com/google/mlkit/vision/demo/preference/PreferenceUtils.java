@@ -76,8 +76,8 @@ public class PreferenceUtils {
 
   @RequiresApi(VERSION_CODES.LOLLIPOP)
   @Nullable
-  public static android.util.Size getCameraXTargetAnalysisSize(Context context) {
-    String prefKey = context.getString(R.string.pref_key_camerax_target_analysis_size);
+  public static android.util.Size getCameraXTargetResolution(Context context) {
+    String prefKey = context.getString(R.string.pref_key_camerax_target_resolution);
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     try {
       return android.util.Size.parseSize(sharedPreferences.getString(prefKey, null));

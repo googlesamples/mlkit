@@ -305,7 +305,12 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
       cameraProvider.unbind(previewUseCase);
     }
 
-    previewUseCase = new Preview.Builder().build();
+    Preview.Builder builder = new Preview.Builder();
+    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this);
+    if (targetResolution != null) {
+      builder.setTargetResolution(targetResolution);
+    }
+    previewUseCase = builder.build();
     previewUseCase.setSurfaceProvider(previewView.getSurfaceProvider());
     cameraProvider.bindToLifecycle(/* lifecycleOwner= */ this, cameraSelector, previewUseCase);
   }
@@ -401,9 +406,9 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
     }
 
     ImageAnalysis.Builder builder = new ImageAnalysis.Builder();
-    Size targetAnalysisSize = PreferenceUtils.getCameraXTargetAnalysisSize(this);
-    if (targetAnalysisSize != null) {
-      builder.setTargetResolution(targetAnalysisSize);
+    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this);
+    if (targetResolution != null) {
+      builder.setTargetResolution(targetResolution);
     }
     analysisUseCase = builder.build();
 
