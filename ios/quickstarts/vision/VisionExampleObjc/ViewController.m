@@ -37,7 +37,7 @@ static CGFloat const largeDotRadius = 10.0;
 static CGColorRef lineColor;
 static CGColorRef fillColor;
 
-static int const rowsCount = 14;
+static int const rowsCount = 15;
 static int const componentsCount = 1;
 
 /**
@@ -71,6 +71,8 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   DetectorPickerRowDetectObjectsCustomMultipleNoClassifier,
   /** On-Device vision object detector, custom model, multiple, with classification. */
   DetectorPickerRowDetectObjectsCustomMultipleWithClassifier,
+  /** Vision pose detector. */
+  DetectorPickerRowDetectPose,
   /** Vision pose accurate detector. */
   DetectorPickerRowDetectPoseAccurate,
 };
@@ -98,8 +100,14 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 @property(weak, nonatomic) IBOutlet UIBarButtonItem *photoCameraButton;
 @property(weak, nonatomic) IBOutlet UIBarButtonItem *videoCameraButton;
 
-/** Initialized when pose is selected in the `detectorPicker`. Set to `nil` otherwise. */
+/** Initialized when one of the pose detector rows are chosen. Reset to `nil` when neither are. */
 @property(nonatomic, nullable) MLKPoseDetector *poseDetector;
+
+/**
+ * The detector row with which detection was most recently run. Useful for inferring when to reset
+ * detector instances which use a conventional lifecyle paradigm.
+ */
+@property(nonatomic) DetectorPickerRow lastDetectorRow;
 
 @end
 
@@ -133,6 +141,8 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       return @"ODT, custom, multiple, no labeling";
     case DetectorPickerRowDetectObjectsCustomMultipleWithClassifier:
       return @"ODT, custom, multiple, labeling";
+    case DetectorPickerRowDetectPose:
+      return @"Pose Detection";
     case DetectorPickerRowDetectPoseAccurate:
       return @"Pose Detection, accurate";
   }
@@ -198,6 +208,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 - (IBAction)detect:(id)sender {
   [self clearResults];
   NSInteger rowIndex = [_detectorPicker selectedRowInComponent:0];
+  [self resetManagedLifecycleDetectorsForActiveDetectorRow:rowIndex];
   BOOL shouldEnableClassification =
       (rowIndex == DetectorPickerRowDetectObjectsProminentWithClassifier) ||
       (rowIndex == DetectorPickerRowDetectObjectsMultipleWithClassifier) ||
@@ -255,6 +266,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       [self detectObjectsOnDeviceInImage:_imageView.image withOptions:options];
       break;
     }
+    case DetectorPickerRowDetectPose:
     case DetectorPickerRowDetectPoseAccurate:
       [self detectPoseInImage:_imageView.image];
       break;
@@ -688,13 +700,6 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       didSelectRow:(NSInteger)row
        inComponent:(NSInteger)component {
   [self clearResults];
-
-  // Reset the pose detector to `nil` when a new detector row is chosen. If it happens to be the
-  // pose detector row, then it will be lazily-initialized with its getter override when accessed
-  // for pose detection.
-  if (row != DetectorPickerRowDetectPoseAccurate) {
-    self.poseDetector = nil;
-  }
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -1076,15 +1081,44 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   // [END detect_object]
 }
 
-#pragma mark - Getter overrides
+#pragma mark - Private
 
-- (nullable MLKPoseDetector *)poseDetector {
-  if (_poseDetector == nil) {
-    MLKAccuratePoseDetectorOptions *options = [[MLKAccuratePoseDetectorOptions alloc] init];
-    options.detectorMode = MLKPoseDetectorModeSingleImage;
-    _poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
+/**
+ * Resets any detector instances which use a conventional lifecycle paradigm. This approach is
+ * advantageous to tearing down old detectors in the `UIPickerViewDelegate` method because that
+ * method isn't actually invoked in-sync with when the selected row changes and can result in
+ * tearing down the wrong detector in the event of a race condition.
+ *
+ * @param activeDetectorRow The new detector row for which detection will be run.
+ */
+- (void)resetManagedLifecycleDetectorsForActiveDetectorRow:(DetectorPickerRow)activeDetectorRow {
+  if (activeDetectorRow == self.lastDetectorRow) {
+    // Same row as before, no need to reset any detectors.
+    return;
   }
-  return _poseDetector;
+  // Clear the old detector, if applicable.
+  switch (self.lastDetectorRow) {
+    case DetectorPickerRowDetectPose:
+    case DetectorPickerRowDetectPoseAccurate:
+      self.poseDetector = nil;
+      break;
+    default:
+      break;
+  }
+  // Initialize the new detector, if applicable.
+  switch (activeDetectorRow) {
+    case DetectorPickerRowDetectPose:
+    case DetectorPickerRowDetectPoseAccurate: {
+      MLKCommonPoseDetectorOptions *options = activeDetectorRow == DetectorPickerRowDetectPose
+          ? [[MLKPoseDetectorOptions alloc] init] : [[MLKAccuratePoseDetectorOptions alloc] init];
+      options.detectorMode = MLKPoseDetectorModeSingleImage;
+      self.poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
+      break;
+    }
+    default:
+      break;
+  }
+  self.lastDetectorRow = activeDetectorRow;
 }
 
 @end

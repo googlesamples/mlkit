@@ -39,23 +39,12 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
   // Image counter.
   var currentImage = 0
 
-  /// The detector used for detecting poses. The pose detector's lifecycle is managed manually, so
-  /// it is initialized on-demand via the getter override and set to nil when a new detector is
-  /// chosen.
-  private var _poseDetector: PoseDetector? = nil
-  private var poseDetector: PoseDetector? {
-    get {
-      if _poseDetector == nil {
-        let options = AccuratePoseDetectorOptions()
-        options.detectorMode = .singleImage
-        _poseDetector = PoseDetector.poseDetector(options: options)
-      }
-      return _poseDetector
-    }
-    set(newDetector) {
-      _poseDetector = newDetector
-    }
-  }
+  /// Initialized when one of the pose detector rows are chosen. Reset to `nil` when neither are.
+  private var poseDetector: PoseDetector? = nil
+
+  /// The detector row with which detection was most recently run. Useful for inferring when to
+  /// reset detector instances which use a conventional lifecyle paradigm.
+  private var lastDetectorRow: DetectorPickerRow?
 
   // MARK: - IBOutlets
 
@@ -121,6 +110,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
     clearResults()
     let row = detectorPicker.selectedRow(inComponent: 0)
     if let rowIndex = DetectorPickerRow(rawValue: row) {
+      resetManagedLifecycleDetectors(activeDetectorRow: rowIndex)
+
       let shouldEnableClassification =
         (rowIndex == .detectObjectsProminentWithClassifier)
         || (rowIndex == .detectObjectsMultipleWithClassifier)
@@ -166,7 +157,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         options.shouldEnableMultipleObjects = shouldEnableMultipleObjects
         options.detectorMode = .singleImage
         detectObjectsOnDevice(in: imageView.image, options: options)
-      case .detectPoseAccurate:
+      case .detectPose, .detectPoseAccurate:
         detectPose(image: imageView.image)
       }
     } else {
@@ -628,14 +619,6 @@ extension ViewController: UIPickerViewDataSource, UIPickerViewDelegate {
 
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
     clearResults()
-
-    if let rowIndex = DetectorPickerRow(rawValue: row) {
-      if rowIndex != .detectPoseAccurate {
-        // Reset the pose detector to `nil` when a new detector row is chosen. The detector will be
-        // re-initialized via its getter when it is needed for detection again.
-        poseDetector = nil
-      }
-    }
   }
 }
 
@@ -992,6 +975,38 @@ extension ViewController {
     }
     // [END detect_object]
   }
+
+  /// Resets any detector instances which use a conventional lifecycle paradigm. This method should
+  /// be invoked immediately prior to performing detection. This approach is advantageous to tearing
+  /// down old detectors in the `UIPickerViewDelegate` method because that method isn't actually
+  /// invoked in-sync with when the selected row changes and can result in tearing down the wrong
+  /// detector in the event of a race condition.
+  private func resetManagedLifecycleDetectors(activeDetectorRow: DetectorPickerRow) {
+    if activeDetectorRow == self.lastDetectorRow {
+      // Same row as before, no need to reset any detectors.
+      return;
+    }
+    // Clear the old detector, if applicable.
+    switch (self.lastDetectorRow) {
+    case .detectPose, .detectPoseAccurate:
+      self.poseDetector = nil
+      break
+    default:
+      break
+    }
+    // Initialize the new detector, if applicable.
+    switch (activeDetectorRow) {
+    case .detectPose, .detectPoseAccurate:
+      let options = activeDetectorRow == .detectPose ? PoseDetectorOptions()
+                                                     : AccuratePoseDetectorOptions()
+      options.detectorMode = .singleImage
+      self.poseDetector = PoseDetector.poseDetector(options: options)
+      break
+    default:
+      break
+    }
+    self.lastDetectorRow = activeDetectorRow
+  }
 }
 
 // MARK: - Enums
@@ -1012,9 +1027,10 @@ private enum DetectorPickerRow: Int {
     detectObjectsCustomProminentWithClassifier,
     detectObjectsCustomMultipleNoClassifier,
     detectObjectsCustomMultipleWithClassifier,
+    detectPose,
     detectPoseAccurate
 
-  static let rowsCount = 14
+  static let rowsCount = 15
   static let componentsCount = 1
 
   public var description: String {
@@ -1045,6 +1061,8 @@ private enum DetectorPickerRow: Int {
       return "ODT, custom, multiple, no labeling"
     case .detectObjectsCustomMultipleWithClassifier:
       return "ODT, custom, multiple, labeling"
+    case .detectPose:
+      return "Pose Detection"
     case .detectPoseAccurate:
       return "Pose Detection, accurate"
     }

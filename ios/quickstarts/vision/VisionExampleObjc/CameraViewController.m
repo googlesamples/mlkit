@@ -65,14 +65,19 @@ typedef NS_ENUM(NSInteger, Detector) {
 @property(weak, nonatomic) IBOutlet UIView *cameraView;
 @property(nonatomic) CMSampleBufferRef lastFrame;
 
-/** Lazily-initialized in an atomic getter. Reset to `nil` when a new detector is chosen. */
+/** Initialized when one of the pose detector rows are chosen. Reset to `nil` when neither are. */
 @property(nonatomic, nullable) MLKPoseDetector *poseDetector;
+
+/**
+ * The detector mode with which detection was most recently run. Only used on the video output
+ * queue. Useful for inferring when to reset detector instances which use a conventional lifecycle
+ * paradigm.
+ */
+@property(nonatomic) Detector lastDetector;
 
 @end
 
 @implementation CameraViewController
-
-@synthesize poseDetector = _poseDetector;
 
 - (NSString *)stringForDetector:(Detector)detector {
   switch (detector) {
@@ -122,7 +127,7 @@ typedef NS_ENUM(NSInteger, Detector) {
     @(DetectorPose),
     @(DetectorPoseAccurate),
   ];
-  _currentDetector = DetectorOnDeviceFace;
+  self.currentDetector = DetectorOnDeviceFace;
   _isUsingFrontCamera = YES;
   _captureSession = [[AVCaptureSession alloc] init];
   _sessionQueue = dispatch_queue_create(sessionQueueLabel.UTF8String, nil);
@@ -533,14 +538,8 @@ typedef NS_ENUM(NSInteger, Detector) {
                                                    handler:^(UIAlertAction *_Nonnull action) {
                                                      self.currentDetector = detector;
                                                      [self removeDetectionAnnotations];
-
-                                                     // Reset the pose detector to `nil` when a new
-                                                     // detector row is chosen. The detector will be
-                                                     // re-initialized via its getter when it is
-                                                     // needed for detection again.
-                                                     self.poseDetector = nil;
                                                    }];
-    if (detector == _currentDetector) {
+    if (detector == self.currentDetector) {
       [action setEnabled:NO];
     }
     [alertController addAction:action];
@@ -733,6 +732,11 @@ typedef NS_ENUM(NSInteger, Detector) {
            fromConnection:(AVCaptureConnection *)connection {
   CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
   if (imageBuffer) {
+    // Evaluate `self.currentDetector` once to ensure consistency throughout this method since it
+    // can be concurrently modified from the main thread.
+    Detector activeDetector = self.currentDetector;
+    [self resetManagedLifecycleDetectorsForActiveDetector:activeDetector];
+
     _lastFrame = sampleBuffer;
     MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithBuffer:sampleBuffer];
     UIImageOrientation orientation = [UIUtilities
@@ -744,7 +748,7 @@ typedef NS_ENUM(NSInteger, Detector) {
     CGFloat imageHeight = CVPixelBufferGetHeight(imageBuffer);
     BOOL shouldEnableClassification = NO;
     BOOL shouldEnableMultipleObjects = NO;
-    switch (_currentDetector) {
+    switch (activeDetector) {
       case DetectorOnDeviceObjectCustomMultipleWithClassifier:
       case DetectorOnDeviceObjectCustomProminentWithClassifier:
       case DetectorOnDeviceObjectMultipleWithClassifier:
@@ -753,7 +757,7 @@ typedef NS_ENUM(NSInteger, Detector) {
       default:
         break;
     }
-    switch (_currentDetector) {
+    switch (activeDetector) {
       case DetectorOnDeviceObjectCustomMultipleNoClassifier:
       case DetectorOnDeviceObjectCustomMultipleWithClassifier:
       case DetectorOnDeviceObjectMultipleNoClassifier:
@@ -763,7 +767,7 @@ typedef NS_ENUM(NSInteger, Detector) {
         break;
     }
 
-    switch (_currentDetector) {
+    switch (activeDetector) {
       case DetectorOnDeviceBarcode: {
         MLKBarcodeScannerOptions *options = [[MLKBarcodeScannerOptions alloc] init];
         [self scanBarcodesOnDeviceInImage:visionImage
@@ -825,27 +829,42 @@ typedef NS_ENUM(NSInteger, Detector) {
   }
 }
 
-#pragma mark - Getter / setter overrides
+#pragma mark - Private
 
-- (nullable MLKPoseDetector *)poseDetector {
-  // Synchronize access to ensure thread-safety of the underlying ivar since it is modified on the
-  // main thread and used for processing on the video output queue.
-  @synchronized(self) {
-    if (_poseDetector == nil) {
-      MLKCommonPoseDetectorOptions *options = self.currentDetector == DetectorPose
-                                                  ? [[MLKPoseDetectorOptions alloc] init]
-                                                  : [[MLKAccuratePoseDetectorOptions alloc] init];
+/**
+ * Resets any detector instances which use a conventional lifecycle paradigm. This method is
+ * expected to be invoked on the AVCaptureOutput queue - the same queue on which detection is run.
+ *
+ * @param activeDetector The detector mode for which detection will be run.
+ */
+- (void)resetManagedLifecycleDetectorsForActiveDetector:(Detector)activeDetector {
+  if (activeDetector == self.lastDetector) {
+    // Same row as before, no need to reset any detectors.
+    return;
+  }
+  // Clear the old detector, if applicable.
+  switch (self.lastDetector) {
+    case DetectorPose:
+    case DetectorPoseAccurate:
+      self.poseDetector = nil;
+      break;
+    default:
+      break;
+  }
+  // Initialize the new detector, if applicable.
+  switch (activeDetector) {
+    case DetectorPose:
+    case DetectorPoseAccurate: {
+      MLKCommonPoseDetectorOptions *options = activeDetector == DetectorPose
+          ? [[MLKPoseDetectorOptions alloc] init] : [[MLKAccuratePoseDetectorOptions alloc] init];
       options.detectorMode = MLKPoseDetectorModeStream;
-      _poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
+      self.poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
+      break;
     }
-    return _poseDetector;
+    default:
+      break;
   }
-}
-
-- (void)setPoseDetector:(MLKPoseDetector *_Nullable)poseDetector {
-  @synchronized(self) {
-    _poseDetector = poseDetector;
-  }
+  self.lastDetector = activeDetector;
 }
 
 @end
