@@ -150,6 +150,7 @@ public class UIUtilities {
         PoseLandmarkType.rightHip: [PoseLandmarkType.rightKnee],
         PoseLandmarkType.rightKnee: [PoseLandmarkType.rightAnkle],
         PoseLandmarkType.leftKnee: [PoseLandmarkType.leftAnkle],
+        PoseLandmarkType.rightElbow: [PoseLandmarkType.rightShoulder],
         PoseLandmarkType.leftElbow: [PoseLandmarkType.leftShoulder],
         PoseLandmarkType.leftWrist: [
           PoseLandmarkType.leftElbow, PoseLandmarkType.leftThumb,
