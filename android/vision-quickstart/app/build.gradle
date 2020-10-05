@@ -96,7 +96,7 @@ dependencies {
 
     // -------------------------------------------------------
 
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.guava:guava:27.1-android'
 
     // For how to setup gradle dependencies in Android X, see:
@@ -112,8 +112,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 
     // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.annotation:annotation:1.1.0'
