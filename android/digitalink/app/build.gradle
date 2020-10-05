@@ -31,9 +31,9 @@ android {
 }
 
 dependencies {
-    implementation "com.google.auto.value:auto-value-annotations:1.6.5"
+    implementation "com.google.auto.value:auto-value-annotations:1.7.2"
     annotationProcessor "com.google.auto.value:auto-value:1.6.3"
-    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.guava:guava:28.0-android'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -42,9 +42,9 @@ dependencies {
 
     implementation 'com.google.mlkit:digital-ink-recognition:16.2.0'
 
-    androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'com.google.truth:truth:1.0.1'
 
 }
