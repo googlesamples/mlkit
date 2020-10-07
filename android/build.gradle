@@ -24,6 +24,10 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.36.0'
 }
 
+ext {
+    camerax_version = "1.0.0-SNAPSHOT"
+}
+
 allprojects {
     apply plugin: VersionsPlugin
 
@@ -32,6 +36,8 @@ allprojects {
         jcenter()
         mavenLocal()
         maven { url 'https://jitpack.io' }
+        // Depending on AndroidX Snapshot Builds to get the latest CameraX libs.
+        maven { url 'https://androidx.dev/snapshots/builds/6787662/artifacts/repository/' }
     }
 
     // See: https://github.com/ben-manes/gradle-versions-plugin

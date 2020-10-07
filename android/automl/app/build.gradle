@@ -89,9 +89,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     // CameraX
-    implementation "androidx.camera:camera-camera2:1.0.0-SNAPSHOT"
-    implementation "androidx.camera:camera-lifecycle:1.0.0-SNAPSHOT"
-    implementation "androidx.camera:camera-view:1.0.0-SNAPSHOT"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-view:${camerax_version}"
 }
 
 configurations {
