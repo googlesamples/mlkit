@@ -58,9 +58,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // Add CameraX dependencies
-    implementation "androidx.camera:camera-core:"
-    implementation "androidx.camera:camera-camera2:1.1.0-alpha04"
-    implementation "androidx.camera:camera-lifecycle:1.1.0-alpha04"
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
     implementation "androidx.camera:camera-view:1.0.0-alpha24"
 
     // Add ML Kit dependencies
