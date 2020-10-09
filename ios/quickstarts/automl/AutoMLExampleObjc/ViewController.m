@@ -109,7 +109,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
   _modelManager = [MLKModelManager modelManager];
   MLKAutoMLImageLabelerRemoteModel *remoteModel =
-      [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
+      (MLKAutoMLImageLabelerRemoteModel *)[self remoteModel];
   NSString *buttonImage =
       [self.modelManager isModelDownloaded:remoteModel] ? @"delete" : @"cloud_download";
   self.downloadOrDeleteModelButton.image = [UIImage imageNamed:buttonImage];
@@ -185,9 +185,9 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 - (IBAction)downloadOrDeleteModel:(id)sender {
   [self clearResults];
-  MLKAutoMLImageLabelerRemoteModel *remoteModel =
-      [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
+  MLKRemoteModel *remoteModel = [self remoteModel];
   if ([self.modelManager isModelDownloaded:remoteModel]) {
+    __weak typeof(self) weakSelf = self;
     [self.modelManager
         deleteDownloadedModel:remoteModel
                    completion:^(NSError *_Nullable error) {
@@ -195,11 +195,18 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
                        NSLog(@"Failed to delete the AutoML model.");
                        return;
                      }
+                     __strong typeof(weakSelf) strongSelf = weakSelf;
                      NSLog(@"The downloaded remote model has been successfully deleted.");
-                     self.downloadOrDeleteModelButton.image =
+                     strongSelf.downloadOrDeleteModelButton.image =
                          [UIImage imageNamed:@"cloud_download"];
                    }];
   }
+}
+
+#pragma mark - Private
+
+- (MLKRemoteModel *)remoteModel {
+  return [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
 }
 
 /// Removes the detection annotations from the annotation overlay view.
@@ -252,6 +259,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       break;
   }
 
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
     // Scale image while maintaining aspect ratio so it displays better in the UIImageView.
     UIImage *scaledImage =
@@ -263,36 +271,10 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       return;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-      self->_imageView.image = scaledImage;
+      __strong typeof(weakSelf) strongSelf = weakSelf;
+      strongSelf->_imageView.image = scaledImage;
     });
   });
-}
-
-- (CGAffineTransform)transformMatrix {
-  UIImage *image = _imageView.image;
-  if (!image) {
-    return CGAffineTransformMake(0, 0, 0, 0, 0, 0);
-  }
-  CGFloat imageViewWidth = _imageView.frame.size.width;
-  CGFloat imageViewHeight = _imageView.frame.size.height;
-  CGFloat imageWidth = image.size.width;
-  CGFloat imageHeight = image.size.height;
-
-  CGFloat imageViewAspectRatio = imageViewWidth / imageViewHeight;
-  CGFloat imageAspectRatio = imageWidth / imageHeight;
-  CGFloat scale = (imageViewAspectRatio > imageAspectRatio) ? imageViewHeight / imageHeight
-                                                            : imageViewWidth / imageWidth;
-
-  // Image view's `contentMode` is `scaleAspectFit`, which scales the image to fit the size of the
-  // image view by maintaining the aspect ratio. Multiple by `scale` to get image's original size.
-  CGFloat scaledImageWidth = imageWidth * scale;
-  CGFloat scaledImageHeight = imageHeight * scale;
-  CGFloat xValue = (imageViewWidth - scaledImageWidth) / 2.0;
-  CGFloat yValue = (imageViewHeight - scaledImageHeight) / 2.0;
-
-  CGAffineTransform transform =
-      CGAffineTransformTranslate(CGAffineTransformIdentity, xValue, yValue);
-  return CGAffineTransformScale(transform, scale, scale);
 }
 
 #pragma mark - UIPickerViewDataSource
@@ -345,9 +327,10 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   [self requestAutoMLRemoteModelIfNeeded];
 
   // [START config_automl_label]
-  MLKAutoMLImageLabelerOptions *options;
+  MLKCommonImageLabelerOptions *options;
   MLKAutoMLImageLabelerRemoteModel *remoteModel =
-      [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
+      (MLKAutoMLImageLabelerRemoteModel *)[self remoteModel];
+
   if ([self.modelManager isModelDownloaded:remoteModel]) {
     NSLog(@"Use AutoML remote model.");
     options = [[MLKAutoMLImageLabelerOptions alloc] initWithRemoteModel:remoteModel];
@@ -379,35 +362,36 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   visionImage.orientation = image.imageOrientation;
 
   // [START detect_automl_label]
+  __weak typeof(self) weakSelf = self;
   [autoMLImageLabeler
       processImage:visionImage
         completion:^(NSArray<MLKImageLabel *> *_Nullable labels, NSError *_Nullable error) {
+          __strong typeof(weakSelf) strongSelf = weakSelf;
           if (!labels || labels.count == 0) {
             // [START_EXCLUDE]
             NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
-            [self.resultsText
+            [strongSelf.resultsText
                 appendFormat:@"AutoML On-Device label detection failed with error: %@",
                              errorString];
-            [self showResults];
+            [strongSelf showResults];
             // [END_EXCLUDE]
             return;
           }
 
           // [START_EXCLUDE]
-          [self.resultsText setString:@""];
+          [strongSelf.resultsText setString:@""];
           for (MLKImageLabel *label in labels) {
-            [self.resultsText
+            [strongSelf.resultsText
                 appendFormat:@"Label: %@, Confidence: %f\n", label.text, label.confidence];
           }
-          [self showResults];
+          [strongSelf showResults];
           // [END_EXCLUDE]
         }];
   // [END detect_automl_label]
 }
 
 - (void)requestAutoMLRemoteModelIfNeeded {
-  MLKAutoMLImageLabelerRemoteModel *remoteModel =
-      [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
+  MLKRemoteModel *remoteModel = [self remoteModel];
   if ([self.modelManager isModelDownloaded:remoteModel]) {
     return;
   }
@@ -420,13 +404,15 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
                                              name:MLKModelDownloadDidFailNotification
                                            object:nil];
 
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
-    self.downloadProgressView.hidden = NO;
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    strongSelf.downloadProgressView.hidden = NO;
     MLKModelDownloadConditions *conditions =
         [[MLKModelDownloadConditions alloc] initWithAllowsCellularAccess:YES
                                              allowsBackgroundDownloading:YES];
-    self.downloadProgressView.observedProgress = [self.modelManager downloadModel:remoteModel
-                                                                       conditions:conditions];
+    strongSelf.downloadProgressView.observedProgress =
+        [strongSelf.modelManager downloadModel:remoteModel conditions:conditions];
     NSLog(@"Start downloading AutoML remote model.");
   });
 }
@@ -434,36 +420,40 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 #pragma mark - Notifications
 
 - (void)remoteModelDownloadDidSucceed:(NSNotification *)notification {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
-    self.downloadProgressView.hidden = YES;
-    self.downloadOrDeleteModelButton.image = [UIImage imageNamed:@"delete"];
-    MLKAutoMLImageLabelerRemoteModel *remotemodel =
-        notification.userInfo[MLKModelDownloadUserInfoKeyRemoteModel];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    strongSelf.downloadProgressView.hidden = YES;
+    strongSelf.downloadOrDeleteModelButton.image = [UIImage imageNamed:@"delete"];
+    MLKRemoteModel *remotemodel = notification.userInfo[MLKModelDownloadUserInfoKeyRemoteModel];
     if (remotemodel == nil) {
-      [self.resultsText appendString:@"MLKitModelDownloadDidSucceed notification posted "
-                                     @"without a RemoteModel instance."];
+      [strongSelf.resultsText appendString:@"MLKitModelDownloadDidSucceed notification posted "
+                                           @"without a RemoteModel instance."];
       return;
     }
-    [self.resultsText appendFormat:@"Successfully downloaded the remote model with name: %@. The "
-                                   @"model is ready for detection.",
-                                   remotemodel.name];
+    [strongSelf.resultsText
+        appendFormat:@"Successfully downloaded the remote model with name: %@. The "
+                     @"model is ready for detection.",
+                     remotemodel.name];
     NSLog(@"Successfully downloaded AutoML remote model.");
   });
 }
 
 - (void)remoteModelDownloadDidFail:(NSNotification *)notification {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
-    self.downloadProgressView.hidden = YES;
-    MLKAutoMLImageLabelerRemoteModel *remoteModel =
-        notification.userInfo[MLKModelDownloadUserInfoKeyRemoteModel];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    strongSelf.downloadProgressView.hidden = YES;
+    MLKRemoteModel *remoteModel = notification.userInfo[MLKModelDownloadUserInfoKeyRemoteModel];
     NSError *error = notification.userInfo[MLKModelDownloadUserInfoKeyError];
     if (error == nil) {
-      [self.resultsText appendString:@"MLKitModelDownloadDidFail notification posted without "
-                                     @"a RemoteModel instance or error."];
+      [strongSelf.resultsText appendString:@"MLKitModelDownloadDidFail notification posted without "
+                                           @"a RemoteModel instance or error."];
       return;
     }
-    [self.resultsText appendFormat:@"Failed to download the remote model with name: %@, error: %@.",
-                                   remoteModel, error.localizedDescription];
+    [strongSelf.resultsText
+        appendFormat:@"Failed to download the remote model with name: %@, error: %@.", remoteModel,
+                     error.localizedDescription];
     NSLog(@"Failed to download AutoML remote model.");
   });
 }

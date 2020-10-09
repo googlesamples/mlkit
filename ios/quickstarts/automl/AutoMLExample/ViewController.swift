@@ -147,10 +147,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
     clearResults()
     let remoteModel = AutoMLImageLabelerRemoteModel(name: Constants.remoteAutoMLModelName)
     if modelManager.isModelDownloaded(remoteModel) {
+      weak var weakSelf = self
       modelManager.deleteDownloadedModel(remoteModel) { error in
         guard error == nil else { preconditionFailure("Failed to delete the AutoML model.") }
         print("The downloaded remote model has been successfully deleted.\n")
-        self.downloadOrDeleteModelButton.image = #imageLiteral(resourceName: "cloud_download")
+        weakSelf?.downloadOrDeleteModelButton.image = #imageLiteral(resourceName: "cloud_download")
       }
     } else {
       downloadAutoMLRemoteModel(remoteModel)
@@ -210,8 +211,9 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
       )
       scaledImage = scaledImage ?? image
       guard let finalImage = scaledImage else { return }
+      weak var weakSelf = self
       DispatchQueue.main.async {
-        self.imageView.image = finalImage
+        weakSelf?.imageView.image = finalImage
       }
     }
   }
@@ -276,17 +278,22 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
   @objc
   private func remoteModelDownloadDidSucceed(_ notification: Notification) {
+    weak var weakSelf = self
     let notificationHandler = {
-      self.downloadProgressView.isHidden = true
-      self.downloadOrDeleteModelButton.image = #imageLiteral(resourceName: "delete")
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.downloadProgressView.isHidden = true
+      strongSelf.downloadOrDeleteModelButton.image = #imageLiteral(resourceName: "delete")
       guard let userInfo = notification.userInfo,
         let remoteModel = userInfo[ModelDownloadUserInfoKey.remoteModel.rawValue] as? RemoteModel
       else {
-        self.resultsText +=
+        strongSelf.resultsText +=
           "MLKitModelDownloadDidSucceed notification posted without a RemoteModel instance."
         return
       }
-      self.resultsText +=
+      strongSelf.resultsText +=
         "Successfully downloaded the remote model with name: \(remoteModel.name). The model is ready for detection."
       print("Sucessfully downloaded AutoML remote model.")
     }
@@ -299,17 +306,22 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
   @objc
   private func remoteModelDownloadDidFail(_ notification: Notification) {
+    weak var weakSelf = self
     let notificationHandler = {
-      self.downloadProgressView.isHidden = true
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.downloadProgressView.isHidden = true
       guard let userInfo = notification.userInfo,
         let remoteModel = userInfo[ModelDownloadUserInfoKey.remoteModel.rawValue] as? RemoteModel,
         let error = userInfo[ModelDownloadUserInfoKey.error.rawValue] as? NSError
       else {
-        self.resultsText +=
+        strongSelf.resultsText +=
           "MLKitModelDownloadDidFail notification posted without a RemoteModel instance or error."
         return
       }
-      self.resultsText +=
+      strongSelf.resultsText +=
         "Failed to download the remote model with name: \(remoteModel.name), error: \(error)."
       print("Failed to download AutoML remote model.")
     }
@@ -416,21 +428,26 @@ extension ViewController {
     visionImage.orientation = image.imageOrientation
 
     // [START detect_automl_label]
+    weak var weakSelf = self
     autoMLImageLabeler.process(visionImage) { labels, error in
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       guard error == nil, let labels = labels, !labels.isEmpty else {
         // [START_EXCLUDE]
         let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
-        self.resultsText = "AutoML image classification failed with error: \(errorString)"
-        self.showResults()
+        strongSelf.resultsText = "AutoML image classification failed with error: \(errorString)"
+        strongSelf.showResults()
         // [END_EXCLUDE]
         return
       }
 
       // [START_EXCLUDE]
-      self.resultsText = labels.map { label -> String in
+      strongSelf.resultsText = labels.map { label -> String in
         return "Label: \(label.text), Confidence: \(label.confidence ?? 0)"
       }.joined(separator: "\n")
-      self.showResults()
+      strongSelf.showResults()
       // [END_EXCLUDE]
     }
     // [END detect_automl_label]
@@ -439,7 +456,7 @@ extension ViewController {
 
 // MARK: - Enums
 
-fileprivate enum DetectorPickerRow: Int {
+private enum DetectorPickerRow: Int {
   case detectImageLabelsAutoML = 0
 
   static let rowsCount = 1
@@ -453,7 +470,7 @@ fileprivate enum DetectorPickerRow: Int {
   }
 }
 
-fileprivate enum Constants {
+private enum Constants {
   static let images = [
     "daisy.jpeg", "dandelion.jpg", "roses.jpeg", "sunflower.jpg",
     "tulips.jpeg",
@@ -479,14 +496,14 @@ fileprivate enum Constants {
 }
 
 // Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(
+private func convertFromUIImagePickerControllerInfoKeyDictionary(
   _ input: [UIImagePickerController.InfoKey: Any]
 ) -> [String: Any] {
   return Dictionary(uniqueKeysWithValues: input.map { key, value in (key.rawValue, value) })
 }
 
 // Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey)
+private func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey)
   -> String
 {
   return input.rawValue

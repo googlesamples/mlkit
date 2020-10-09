@@ -15,9 +15,10 @@
 //
 
 #import "CameraViewController.h"
-#import "UIUtilities.h"
 #import <AVFoundation/AVFoundation.h>
+#import <CoreImage/CoreImage.h>
 #import <CoreVideo/CoreVideo.h>
+#import "UIUtilities.h"
 
 @import MLKit;
 
@@ -111,9 +112,9 @@ static const int kResultsLabelLines = 5;
   [self requestAutoMLRemoteModelIfNeeded];
 
   // [START config_automl_label]
-  MLKAutoMLImageLabelerOptions *options;
+  MLKCommonImageLabelerOptions *options;
   MLKAutoMLImageLabelerRemoteModel *remoteModel =
-      [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
+      (MLKAutoMLImageLabelerRemoteModel *)[self remoteModel];
   if ([self.modelManager isModelDownloaded:remoteModel]) {
     NSLog(@"Use AutoML remote model.");
     options = [[MLKAutoMLImageLabelerOptions alloc] initWithRemoteModel:remoteModel];
@@ -135,19 +136,21 @@ static const int kResultsLabelLines = 5;
   // [END config_automl_label]
 
   // [START init_automl_label]
-  MLKImageLabeler  *autoMLImageLabeler = [MLKImageLabeler  imageLabelerWithOptions:options];
+  MLKImageLabeler *autoMLImageLabeler = [MLKImageLabeler imageLabelerWithOptions:options];
   // [END init_automl_label]
 
   dispatch_group_t group = dispatch_group_create();
   dispatch_group_enter(group);
 
   // [START detect_automl_label]
+  __weak typeof(self) weakSelf = self;
   [autoMLImageLabeler
       processImage:image
         completion:^(NSArray<MLKImageLabel *> *_Nullable labels, NSError *_Nullable error) {
+          __strong typeof(weakSelf) strongSelf = weakSelf;
           // [START_EXCLUDE]
-          [self updatePreviewOverlayView];
-          [self removeDetectionAnnotations];
+          [strongSelf updatePreviewOverlayView];
+          [strongSelf removeDetectionAnnotations];
           // [END_EXCLUDE]
           if (error != nil) {
             // [START_EXCLUDE]
@@ -165,7 +168,7 @@ static const int kResultsLabelLines = 5;
           }
 
           // [START_EXCLUDE]
-          CGRect annotationFrame = self.annotationOverlayView.frame;
+          CGRect annotationFrame = strongSelf.annotationOverlayView.frame;
           CGRect resultsRect =
               CGRectMake(annotationFrame.origin.x + kLayoutPadding,
                          annotationFrame.size.height - kLayoutPadding - kResultsLabelHeight,
@@ -180,7 +183,7 @@ static const int kResultsLabelLines = 5;
           resultsLabel.text = [labelStrings componentsJoinedByString:@"\n"];
           resultsLabel.adjustsFontSizeToFitWidth = YES;
           resultsLabel.numberOfLines = kResultsLabelLines;
-          [self.annotationOverlayView addSubview:resultsLabel];
+          [strongSelf.annotationOverlayView addSubview:resultsLabel];
           dispatch_group_leave(group);
           // [END_EXCLUDE]
         }];
@@ -189,8 +192,7 @@ static const int kResultsLabelLines = 5;
 }
 
 - (void)requestAutoMLRemoteModelIfNeeded {
-  MLKAutoMLImageLabelerRemoteModel *remoteModel =
-      [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
+  MLKRemoteModel *remoteModel = [self remoteModel];
   if ([self.modelManager isModelDownloaded:remoteModel]) {
     return;
   }
@@ -204,13 +206,15 @@ static const int kResultsLabelLines = 5;
                                              name:MLKModelDownloadDidFailNotification
                                            object:nil];
 
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
-    self.downloadProgressView.hidden = NO;
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    strongSelf.downloadProgressView.hidden = NO;
     MLKModelDownloadConditions *conditions =
         [[MLKModelDownloadConditions alloc] initWithAllowsCellularAccess:YES
                                              allowsBackgroundDownloading:YES];
-    self.downloadProgressView.observedProgress =
-        [self.modelManager downloadModel:remoteModel conditions:conditions];
+    strongSelf.downloadProgressView.observedProgress =
+        [strongSelf.modelManager downloadModel:remoteModel conditions:conditions];
     NSLog(@"Start downloading AutoML remote model.");
   });
 }
@@ -218,10 +222,11 @@ static const int kResultsLabelLines = 5;
 #pragma mark - Notifications
 
 - (void)remoteModelDownloadDidSucceed:(NSNotification *)notification {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
-    self.downloadProgressView.hidden = YES;
-    MLKAutoMLImageLabelerRemoteModel *remotemodel =
-        notification.userInfo[MLKModelDownloadUserInfoKeyRemoteModel];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    strongSelf.downloadProgressView.hidden = YES;
+    MLKRemoteModel *remotemodel = notification.userInfo[MLKModelDownloadUserInfoKeyRemoteModel];
     if (remotemodel == nil) {
       NSLog(@"MLKitModelDownloadDidSucceed notification posted without a RemoteModel instance.");
       return;
@@ -233,10 +238,11 @@ static const int kResultsLabelLines = 5;
 }
 
 - (void)remoteModelDownloadDidFail:(NSNotification *)notification {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
-    self.downloadProgressView.hidden = YES;
-    MLKAutoMLImageLabelerRemoteModel *remoteModel =
-        notification.userInfo[MLKModelDownloadUserInfoKeyRemoteModel];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    strongSelf.downloadProgressView.hidden = YES;
+    MLKRemoteModel *remoteModel = notification.userInfo[MLKModelDownloadUserInfoKeyRemoteModel];
     NSError *error = notification.userInfo[MLKModelDownloadUserInfoKeyError];
     if (error == nil) {
       NSLog(@"MLKitModelDownloadDidFail notification posted without a RemoteModel instance or "
@@ -250,12 +256,18 @@ static const int kResultsLabelLines = 5;
 
 #pragma mark - Private
 
+- (MLKRemoteModel *)remoteModel {
+  return [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
+}
+
 - (void)setUpCaptureSessionOutput {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(_sessionQueue, ^{
-    [self->_captureSession beginConfiguration];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf->_captureSession beginConfiguration];
     // When performing latency tests to determine ideal capture settings,
     // run the app in 'release' mode to get accurate performance metrics
-    self->_captureSession.sessionPreset = AVCaptureSessionPresetMedium;
+    strongSelf->_captureSession.sessionPreset = AVCaptureSessionPresetMedium;
 
     AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
     output.videoSettings = @{
@@ -263,10 +275,10 @@ static const int kResultsLabelLines = 5;
       kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]
     };
     dispatch_queue_t outputQueue = dispatch_queue_create(videoDataOutputQueueLabel.UTF8String, nil);
-    [output setSampleBufferDelegate:self queue:outputQueue];
-    if ([self.captureSession canAddOutput:output]) {
-      [self.captureSession addOutput:output];
-      [self.captureSession commitConfiguration];
+    [output setSampleBufferDelegate:strongSelf queue:outputQueue];
+    if ([strongSelf.captureSession canAddOutput:output]) {
+      [strongSelf.captureSession addOutput:output];
+      [strongSelf.captureSession commitConfiguration];
     } else {
       NSLog(@"%@", @"Failed to add capture session output.");
     }
@@ -274,15 +286,17 @@ static const int kResultsLabelLines = 5;
 }
 
 - (void)setUpCaptureSessionInput {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(_sessionQueue, ^{
+    __strong typeof(weakSelf) strongSelf = weakSelf;
     AVCaptureDevicePosition cameraPosition =
-        self.isUsingFrontCamera ? AVCaptureDevicePositionFront : AVCaptureDevicePositionBack;
-    AVCaptureDevice *device = [self captureDeviceForPosition:cameraPosition];
+        strongSelf.isUsingFrontCamera ? AVCaptureDevicePositionFront : AVCaptureDevicePositionBack;
+    AVCaptureDevice *device = [strongSelf captureDeviceForPosition:cameraPosition];
     if (device) {
-      [self->_captureSession beginConfiguration];
-      NSArray<AVCaptureInput *> *currentInputs = self.captureSession.inputs;
+      [strongSelf->_captureSession beginConfiguration];
+      NSArray<AVCaptureInput *> *currentInputs = strongSelf.captureSession.inputs;
       for (AVCaptureInput *input in currentInputs) {
-        [self.captureSession removeInput:input];
+        [strongSelf.captureSession removeInput:input];
       }
       NSError *error;
       AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device
@@ -291,13 +305,13 @@ static const int kResultsLabelLines = 5;
         NSLog(@"Failed to create capture device input: %@", error.localizedDescription);
         return;
       } else {
-        if ([self.captureSession canAddInput:input]) {
-          [self.captureSession addInput:input];
+        if ([strongSelf.captureSession canAddInput:input]) {
+          [strongSelf.captureSession addInput:input];
         } else {
           NSLog(@"%@", @"Failed to add capture session input.");
         }
       }
-      [self.captureSession commitConfiguration];
+      [strongSelf.captureSession commitConfiguration];
     } else {
       NSLog(@"Failed to get capture device for camera position: %ld", cameraPosition);
     }
@@ -305,14 +319,18 @@ static const int kResultsLabelLines = 5;
 }
 
 - (void)startSession {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(_sessionQueue, ^{
-    [self->_captureSession startRunning];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf->_captureSession startRunning];
   });
 }
 
 - (void)stopSession {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(_sessionQueue, ^{
-    [self->_captureSession stopRunning];
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf->_captureSession stopRunning];
   });
 }
 

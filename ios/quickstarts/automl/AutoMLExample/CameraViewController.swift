@@ -119,11 +119,15 @@ class CameraViewController: UIViewController {
     let group = DispatchGroup()
     group.enter()
 
+    weak var weakSelf = self
     autoMLImageLabeler.process(visionImage) { detectedLabels, error in
       defer { group.leave() }
-
-      self.updatePreviewOverlayView()
-      self.removeDetectionAnnotations()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.updatePreviewOverlayView()
+      strongSelf.removeDetectionAnnotations()
 
       if let error = error {
         print("Failed to detect labels with error: \(error.localizedDescription).")
@@ -134,7 +138,7 @@ class CameraViewController: UIViewController {
         return
       }
 
-      let annotationFrame = self.annotationOverlayView.frame
+      let annotationFrame = strongSelf.annotationOverlayView.frame
       let resultsRect = CGRect(
         x: annotationFrame.origin.x + Constant.padding,
         y: annotationFrame.size.height - Constant.padding - Constant.resultsLabelHeight,
@@ -148,7 +152,7 @@ class CameraViewController: UIViewController {
       }.joined(separator: "\n")
       resultsLabel.adjustsFontSizeToFitWidth = true
       resultsLabel.numberOfLines = Constant.resultsLabelLines
-      self.annotationOverlayView.addSubview(resultsLabel)
+      strongSelf.annotationOverlayView.addSubview(resultsLabel)
     }
 
     group.wait()
@@ -171,12 +175,17 @@ class CameraViewController: UIViewController {
       name: .mlkitModelDownloadDidFail,
       object: nil
     )
+    weak var weakSelf = self
     DispatchQueue.main.async {
-      self.downloadProgressView.isHidden = false
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.downloadProgressView.isHidden = false
       let conditions = ModelDownloadConditions(
         allowsCellularAccess: true,
         allowsBackgroundDownloading: true)
-      self.downloadProgressView.observedProgress = self.modelManager.download(
+      strongSelf.downloadProgressView.observedProgress = strongSelf.modelManager.download(
         remoteModel,
         conditions: conditions)
     }
@@ -188,8 +197,13 @@ class CameraViewController: UIViewController {
 
   @objc
   private func remoteModelDownloadDidSucceed(_ notification: Notification) {
+    weak var weakSelf = self
     let notificationHandler = {
-      self.downloadProgressView.isHidden = true
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.downloadProgressView.isHidden = true
       guard let userInfo = notification.userInfo,
         let remoteModel = userInfo[ModelDownloadUserInfoKey.remoteModel.rawValue] as? RemoteModel
       else {
@@ -210,8 +224,13 @@ class CameraViewController: UIViewController {
 
   @objc
   private func remoteModelDownloadDidFail(_ notification: Notification) {
+    weak var weakSelf = self
     let notificationHandler = {
-      self.downloadProgressView.isHidden = true
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.downloadProgressView.isHidden = true
       guard let userInfo = notification.userInfo,
         let remoteModel = userInfo[ModelDownloadUserInfoKey.remoteModel.rawValue] as? RemoteModel,
         let error = userInfo[ModelDownloadUserInfoKey.error.rawValue] as? NSError
@@ -233,48 +252,58 @@ class CameraViewController: UIViewController {
   // MARK: - Private
 
   private func setUpCaptureSessionOutput() {
+    weak var weakSelf = self
     sessionQueue.async {
-      self.captureSession.beginConfiguration()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.captureSession.beginConfiguration()
       // When performing latency tests to determine ideal capture settings,
       // run the app in 'release' mode to get accurate performance metrics
-      self.captureSession.sessionPreset = AVCaptureSession.Preset.medium
+      strongSelf.captureSession.sessionPreset = AVCaptureSession.Preset.medium
 
       let output = AVCaptureVideoDataOutput()
       output.videoSettings = [
-        (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA,
+        (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA
       ]
       let outputQueue = DispatchQueue(label: Constant.videoDataOutputQueueLabel)
       output.setSampleBufferDelegate(self, queue: outputQueue)
-      guard self.captureSession.canAddOutput(output) else {
+      guard strongSelf.captureSession.canAddOutput(output) else {
         print("Failed to add capture session output.")
         return
       }
-      self.captureSession.addOutput(output)
-      self.captureSession.commitConfiguration()
+      strongSelf.captureSession.addOutput(output)
+      strongSelf.captureSession.commitConfiguration()
     }
   }
 
   private func setUpCaptureSessionInput() {
+    weak var weakSelf = self
     sessionQueue.async {
-      let cameraPosition: AVCaptureDevice.Position = self.isUsingFrontCamera ? .front : .back
-      guard let device = self.captureDevice(forPosition: cameraPosition) else {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      let cameraPosition: AVCaptureDevice.Position = strongSelf.isUsingFrontCamera ? .front : .back
+      guard let device = strongSelf.captureDevice(forPosition: cameraPosition) else {
         print("Failed to get capture device for camera position: \(cameraPosition)")
         return
       }
       do {
-        self.captureSession.beginConfiguration()
-        let currentInputs = self.captureSession.inputs
+        strongSelf.captureSession.beginConfiguration()
+        let currentInputs = strongSelf.captureSession.inputs
         for input in currentInputs {
-          self.captureSession.removeInput(input)
+          strongSelf.captureSession.removeInput(input)
         }
 
         let input = try AVCaptureDeviceInput(device: device)
-        guard self.captureSession.canAddInput(input) else {
+        guard strongSelf.captureSession.canAddInput(input) else {
           print("Failed to add capture session input.")
           return
         }
-        self.captureSession.addInput(input)
-        self.captureSession.commitConfiguration()
+        strongSelf.captureSession.addInput(input)
+        strongSelf.captureSession.commitConfiguration()
       } catch {
         print("Failed to create capture device input: \(error.localizedDescription)")
       }
@@ -282,14 +311,16 @@ class CameraViewController: UIViewController {
   }
 
   private func startSession() {
+    weak var weakSelf = self
     sessionQueue.async {
-      self.captureSession.startRunning()
+      weakSelf?.captureSession.startRunning()
     }
   }
 
   private func stopSession() {
+    weak var weakSelf = self
     sessionQueue.async {
-      self.captureSession.stopRunning()
+      weakSelf?.captureSession.stopRunning()
     }
   }
 
@@ -385,7 +416,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 // MARK: - Constants
 
-fileprivate enum Constant {
+private enum Constant {
   static let videoDataOutputQueueLabel = "com.google.mlkit.automl.VideoDataOutputQueue"
   static let sessionQueueLabel = "com.google.mlkit.automl.SessionQueue"
   static let noResultsMessage = "No Results"
