@@ -35,7 +35,7 @@ static NSString *const MLKLocalAutoMLModelName = @"local_automl_model";
 static NSString *const MLKRemoteAutoMLModelName = @"remote_automl_model";
 
 /** Filename of AutoML local model manifest in the main resource bundle. */
-static NSString *const MLKAutoMLImageLabelerLocalModelManifestFilename = @"automl_labeler_manifest";
+static NSString *const MLKAutoMLLocalModelManifestFilename = @"automl_labeler_manifest";
 
 /** File type of AutoML local model manifest in the main resource bundle. */
 static NSString *const MLKAutoMLManifestFileType = @"json";
@@ -44,7 +44,7 @@ static float const labelConfidenceThreshold = 0.75;
 static CGColorRef lineColor;
 static CGColorRef fillColor;
 
-static int const rowsCount = 1;
+static int const rowsCount = 5;
 static int const componentsCount = 1;
 
 /**
@@ -52,8 +52,16 @@ static int const componentsCount = 1;
  * Defines the MLKit detector types.
  */
 typedef NS_ENUM(NSInteger, DetectorPickerRow) {
-  /** On-Device vision AutoML image label detector. */
+  /** AutoML image label detector. */
   DetectorPickerRowDetectImageLabelsAutoML,
+  /** AutoML object detector, single, only tracking. */
+  DetectorPickerRowDetectObjectsAutoMLSingleNoClassifier,
+  /** AutoML object detector, single, with classification. */
+  DetectorPickerRowDetectObjectsAutoMLSingleWithClassifier,
+  /** AutoML object detector, multiple, only tracking. */
+  DetectorPickerRowDetectObjectsAutoMLMultipleNoClassifier,
+  /** AutoML object detector, multiple, with classification. */
+  DetectorPickerRowDetectObjectsAutoMLMultipleWithClassifier,
 };
 
 @interface ViewController () <UINavigationControllerDelegate,
@@ -90,7 +98,15 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 - (NSString *)stringForDetectorPickerRow:(DetectorPickerRow)detectorPickerRow {
   switch (detectorPickerRow) {
     case DetectorPickerRowDetectImageLabelsAutoML:
-      return @"AutoML Image Classification";
+      return @"AutoML Image Labeling";
+    case DetectorPickerRowDetectObjectsAutoMLSingleNoClassifier:
+      return @"AutoML ODT, single, no labeling";
+    case DetectorPickerRowDetectObjectsAutoMLSingleWithClassifier:
+      return @"AutoML ODT, single, labeling";
+    case DetectorPickerRowDetectObjectsAutoMLMultipleNoClassifier:
+      return @"AutoML ODT, multiple, no labeling";
+    case DetectorPickerRowDetectObjectsAutoMLMultipleWithClassifier:
+      return @"AutoML ODT, multiple, labeling";
   }
 }
 
@@ -107,31 +123,31 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   lineColor = UIColor.yellowColor.CGColor;
   fillColor = UIColor.clearColor.CGColor;
 
-  _modelManager = [MLKModelManager modelManager];
-  MLKAutoMLImageLabelerRemoteModel *remoteModel =
-      (MLKAutoMLImageLabelerRemoteModel *)[self remoteModel];
+  self.modelManager = [MLKModelManager modelManager];
+  MLKRemoteModel *remoteModel = [self remoteModel];
   NSString *buttonImage =
       [self.modelManager isModelDownloaded:remoteModel] ? @"delete" : @"cloud_download";
   self.downloadOrDeleteModelButton.image = [UIImage imageNamed:buttonImage];
 
   self.imagePicker = [UIImagePickerController new];
   self.resultsText = [NSMutableString new];
-  _currentImage = 0;
-  _imageView.image = [UIImage imageNamed:images[_currentImage]];
-  _annotationOverlayView = [[UIView alloc] initWithFrame:CGRectZero];
-  _annotationOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
-  [_imageView addSubview:_annotationOverlayView];
+  self.currentImage = 0;
+  self.imageView.image = [UIImage imageNamed:images[self.currentImage]];
+  self.annotationOverlayView = [[UIView alloc] initWithFrame:CGRectZero];
+  self.annotationOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
+  [self.imageView addSubview:self.annotationOverlayView];
   [NSLayoutConstraint activateConstraints:@[
-    [_annotationOverlayView.topAnchor constraintEqualToAnchor:_imageView.topAnchor],
-    [_annotationOverlayView.leadingAnchor constraintEqualToAnchor:_imageView.leadingAnchor],
-    [_annotationOverlayView.trailingAnchor constraintEqualToAnchor:_imageView.trailingAnchor],
-    [_annotationOverlayView.bottomAnchor constraintEqualToAnchor:_imageView.bottomAnchor]
+    [self.annotationOverlayView.topAnchor constraintEqualToAnchor:self.imageView.topAnchor],
+    [self.annotationOverlayView.leadingAnchor constraintEqualToAnchor:self.imageView.leadingAnchor],
+    [self.annotationOverlayView.trailingAnchor
+        constraintEqualToAnchor:self.imageView.trailingAnchor],
+    [self.annotationOverlayView.bottomAnchor constraintEqualToAnchor:self.imageView.bottomAnchor]
   ]];
-  _imagePicker.delegate = self;
-  _imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+  self.imagePicker.delegate = self;
+  self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
 
-  _detectorPicker.delegate = self;
-  _detectorPicker.dataSource = self;
+  self.detectorPicker.delegate = self;
+  self.detectorPicker.dataSource = self;
 
   BOOL isCameraAvailable =
       [UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront] ||
@@ -140,12 +156,12 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     // `CameraViewController` uses `AVCaptureDeviceDiscoverySession` which is only supported for
     // iOS 10 or newer.
     if (@available(iOS 10, *)) {
-      [_videoCameraButton setEnabled:YES];
+      [self.videoCameraButton setEnabled:YES];
     }
   } else {
-    [_photoCameraButton setEnabled:NO];
+    [self.photoCameraButton setEnabled:NO];
   }
-  [_detectorPicker selectRow:0 inComponent:0 animated:NO];
+  [self.detectorPicker selectRow:0 inComponent:0 animated:NO];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -160,12 +176,31 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 - (IBAction)detect:(id)sender {
   [self clearResults];
-  [self detectImageLabelsInImage:_imageView.image];
+  NSInteger rowIndex = [self.detectorPicker selectedRowInComponent:0];
+  BOOL shouldEnableClassification =
+      rowIndex == DetectorPickerRowDetectObjectsAutoMLSingleWithClassifier ||
+      rowIndex == DetectorPickerRowDetectObjectsAutoMLMultipleWithClassifier;
+  BOOL shouldEnableMultipleObjects =
+      rowIndex == DetectorPickerRowDetectObjectsAutoMLMultipleNoClassifier ||
+      rowIndex == DetectorPickerRowDetectObjectsAutoMLMultipleWithClassifier;
+  switch (rowIndex) {
+    case DetectorPickerRowDetectImageLabelsAutoML:
+      [self detectImageLabelsInImage:self.imageView.image];
+      break;
+    case DetectorPickerRowDetectObjectsAutoMLSingleNoClassifier:
+    case DetectorPickerRowDetectObjectsAutoMLSingleWithClassifier:
+    case DetectorPickerRowDetectObjectsAutoMLMultipleNoClassifier:
+    case DetectorPickerRowDetectObjectsAutoMLMultipleWithClassifier:
+      [self detectObjectsInImage:self.imageView.image
+           shouldEnableClassification:shouldEnableClassification
+          shouldEnableMultipleObjects:shouldEnableMultipleObjects];
+      break;
+  }
 }
 
 - (IBAction)openPhotoLibrary:(id)sender {
-  _imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-  [self presentViewController:_imagePicker animated:YES completion:nil];
+  self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+  [self presentViewController:self.imagePicker animated:YES completion:nil];
 }
 
 - (IBAction)openCamera:(id)sender {
@@ -173,14 +208,14 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       ![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
     return;
   }
-  _imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-  [self presentViewController:_imagePicker animated:YES completion:nil];
+  self.imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+  [self presentViewController:self.imagePicker animated:YES completion:nil];
 }
 
 - (IBAction)changeImage:(id)sender {
   [self clearResults];
-  self.currentImage = (_currentImage + 1) % images.count;
-  _imageView.image = [UIImage imageNamed:images[_currentImage]];
+  self.currentImage = (self.currentImage + 1) % images.count;
+  self.imageView.image = [UIImage imageNamed:images[self.currentImage]];
 }
 
 - (IBAction)downloadOrDeleteModel:(id)sender {
@@ -200,23 +235,27 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
                      strongSelf.downloadOrDeleteModelButton.image =
                          [UIImage imageNamed:@"cloud_download"];
                    }];
+  } else {
+    [self requestAutoMLRemoteModelIfNeeded];
   }
 }
 
 #pragma mark - Private
 
 - (MLKRemoteModel *)remoteModel {
-  return [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
+  MLKFirebaseModelSource *firebaseModelSource =
+      [[MLKFirebaseModelSource alloc] initWithName:MLKRemoteAutoMLModelName];
+  return [[MLKCustomRemoteModel alloc] initWithRemoteModelSource:firebaseModelSource];
 }
 
-/// Removes the detection annotations from the annotation overlay view.
+/** Removes the detection annotations from the annotation overlay view. */
 - (void)removeDetectionAnnotations {
-  for (UIView *annotationView in _annotationOverlayView.subviews) {
+  for (UIView *annotationView in self.annotationOverlayView.subviews) {
     [annotationView removeFromSuperview];
   }
 }
 
-/// Clears the results text view and removes any frames that are visible.
+/** Clears the results text view and removes any frames that are visible. */
 - (void)clearResults {
   [self removeDetectionAnnotations];
   self.resultsText = [NSMutableString new];
@@ -234,14 +273,18 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
                                          [resultsAlertController dismissViewControllerAnimated:YES
                                                                                     completion:nil];
                                        }]];
-  resultsAlertController.message = _resultsText;
-  resultsAlertController.popoverPresentationController.barButtonItem = _detectButton;
+  resultsAlertController.message = self.resultsText;
+  resultsAlertController.popoverPresentationController.barButtonItem = self.detectButton;
   resultsAlertController.popoverPresentationController.sourceView = self.view;
   [self presentViewController:resultsAlertController animated:YES completion:nil];
-  NSLog(@"%@", _resultsText);
+  NSLog(@"%@", self.resultsText);
 }
 
-/// Updates the image view with a scaled version of the given image.
+/**
+ * Updates the image view with a scaled version of the given image.
+ *
+ * @param image The image to scale and use for updating the image view.
+ */
 - (void)updateImageViewWithImage:(UIImage *)image {
   CGFloat scaledImageWidth = 0.0;
   CGFloat scaledImageHeight = 0.0;
@@ -249,13 +292,13 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     case UIInterfaceOrientationPortrait:
     case UIInterfaceOrientationPortraitUpsideDown:
     case UIInterfaceOrientationUnknown:
-      scaledImageWidth = _imageView.bounds.size.width;
+      scaledImageWidth = self.imageView.bounds.size.width;
       scaledImageHeight = image.size.height * scaledImageWidth / image.size.width;
       break;
     case UIInterfaceOrientationLandscapeLeft:
     case UIInterfaceOrientationLandscapeRight:
       scaledImageWidth = image.size.width * scaledImageHeight / image.size.height;
-      scaledImageHeight = _imageView.bounds.size.height;
+      scaledImageHeight = self.imageView.bounds.size.height;
       break;
   }
 
@@ -272,7 +315,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     }
     dispatch_async(dispatch_get_main_queue(), ^{
       __strong typeof(weakSelf) strongSelf = weakSelf;
-      strongSelf->_imageView.image = scaledImage;
+      strongSelf.imageView.image = scaledImage;
     });
   });
 }
@@ -300,7 +343,6 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       didSelectRow:(NSInteger)row
        inComponent:(NSInteger)component {
   [self clearResults];
-  self.downloadOrDeleteModelButton.enabled = row == DetectorPickerRowDetectImageLabelsAutoML;
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -315,11 +357,14 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - Vision On-Device Detection
+#pragma mark - AutoML Detections
 
-/// Detects labels on the specified image using AutoML On-Device label API.
-///
-/// - Parameter image: The image.
+/**
+ * Detects labels on the specified image using image classification models trained by AutoML via
+ * Custom Image Labeling API.
+ *
+ * @param image The input image.
+ */
 - (void)detectImageLabelsInImage:(UIImage *)image {
   if (!image) {
     return;
@@ -328,33 +373,31 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
   // [START config_automl_label]
   MLKCommonImageLabelerOptions *options;
-  MLKAutoMLImageLabelerRemoteModel *remoteModel =
-      (MLKAutoMLImageLabelerRemoteModel *)[self remoteModel];
+  MLKCustomRemoteModel *remoteModel = (MLKCustomRemoteModel *)[self remoteModel];
 
   if ([self.modelManager isModelDownloaded:remoteModel]) {
     NSLog(@"Use AutoML remote model.");
-    options = [[MLKAutoMLImageLabelerOptions alloc] initWithRemoteModel:remoteModel];
+    options = [[MLKCustomImageLabelerOptions alloc] initWithRemoteModel:remoteModel];
   } else {
     NSLog(@"Use AutoML local model.");
     NSString *localModelFilePath =
-        [[NSBundle mainBundle] pathForResource:MLKAutoMLImageLabelerLocalModelManifestFilename
+        [[NSBundle mainBundle] pathForResource:MLKAutoMLLocalModelManifestFilename
                                         ofType:MLKAutoMLManifestFileType];
     if (localModelFilePath == nil) {
       self.resultsText =
           [NSMutableString stringWithFormat:@"Failed to find AutoML local model manifest file: %@",
-                                            MLKAutoMLImageLabelerLocalModelManifestFilename];
+                                            MLKAutoMLLocalModelManifestFilename];
       [self showResults];
       return;
     }
-    MLKAutoMLImageLabelerLocalModel *localModel =
-        [[MLKAutoMLImageLabelerLocalModel alloc] initWithManifestPath:localModelFilePath];
-    options = [[MLKAutoMLImageLabelerOptions alloc] initWithLocalModel:localModel];
+    MLKLocalModel *localModel = [[MLKLocalModel alloc] initWithManifestPath:localModelFilePath];
+    options = [[MLKCustomImageLabelerOptions alloc] initWithLocalModel:localModel];
   }
   options.confidenceThreshold = @(labelConfidenceThreshold);
   // [END config_automl_label]
 
   // [START init_automl_label]
-  MLKImageLabeler *autoMLImageLabeler = [MLKImageLabeler imageLabelerWithOptions: options];
+  MLKImageLabeler *autoMLImageLabeler = [MLKImageLabeler imageLabelerWithOptions:options];
   // [END init_automl_label]
 
   // Initialize a VisionImage object with the given UIImage.
@@ -371,8 +414,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
             // [START_EXCLUDE]
             NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
             [strongSelf.resultsText
-                appendFormat:@"AutoML On-Device label detection failed with error: %@",
-                             errorString];
+                appendFormat:@"AutoML image labeling failed with error: %@", errorString];
             [strongSelf showResults];
             // [END_EXCLUDE]
             return;
@@ -388,6 +430,115 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
           // [END_EXCLUDE]
         }];
   // [END detect_automl_label]
+}
+
+/**
+ * Detects objects on the specified image using image classification models trained by AutoML via
+ * Custom Object Detection API.
+ *
+ * @param image The input image.
+ * @param shouldEnableClassification Whether image classification should be enabled.
+ * @param shouldEnableMultipleObjects Whether multi-object detection should be enabled.
+ */
+- (void)detectObjectsInImage:(UIImage *)image
+     shouldEnableClassification:(BOOL)shouldEnableClassification
+    shouldEnableMultipleObjects:(BOOL)shouldEnableMultipleObjects {
+  if (!image) {
+    return;
+  }
+  [self requestAutoMLRemoteModelIfNeeded];
+
+  MLKCustomRemoteModel *remoteModel = (MLKCustomRemoteModel *)[self remoteModel];
+  MLKCustomObjectDetectorOptions *options;
+
+  if ([self.modelManager isModelDownloaded:remoteModel]) {
+    NSLog(@"Use AutoML remote model.");
+    options = [[MLKCustomObjectDetectorOptions alloc] initWithRemoteModel:remoteModel];
+  } else {
+    NSLog(@"Use AutoML local model.");
+    NSString *localModelFilePath =
+        [[NSBundle mainBundle] pathForResource:MLKAutoMLLocalModelManifestFilename
+                                        ofType:MLKAutoMLManifestFileType];
+    if (localModelFilePath == nil) {
+      self.resultsText =
+          [NSMutableString stringWithFormat:@"Failed to find AutoML local model manifest file: %@",
+                                            MLKAutoMLLocalModelManifestFilename];
+      [self showResults];
+      return;
+    }
+    MLKLocalModel *localModel = [[MLKLocalModel alloc] initWithManifestPath:localModelFilePath];
+    options = [[MLKCustomObjectDetectorOptions alloc] initWithLocalModel:localModel];
+  }
+  options.shouldEnableClassification = shouldEnableClassification;
+  options.shouldEnableMultipleObjects = shouldEnableMultipleObjects;
+  options.detectorMode = MLKObjectDetectorModeSingleImage;
+
+  MLKObjectDetector *autoMLObjectDetector = [MLKObjectDetector objectDetectorWithOptions:options];
+
+  // Initialize a VisionImage object with the given UIImage.
+  MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
+  visionImage.orientation = image.imageOrientation;
+
+  __weak typeof(self) weakSelf = self;
+  [autoMLObjectDetector
+      processImage:visionImage
+        completion:^(NSArray<MLKObject *> *_Nullable objects, NSError *_Nullable error) {
+          __strong typeof(weakSelf) strongSelf = weakSelf;
+          if (!objects || objects.count == 0) {
+            NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
+            [strongSelf.resultsText
+                appendFormat:@"AutoML object detection failed with error: %@", errorString];
+            [strongSelf showResults];
+            return;
+          }
+
+          [strongSelf.resultsText setString:@""];
+          for (MLKObject *object in objects) {
+            CGAffineTransform transform = [self transformMatrix];
+            CGRect transformedRect = CGRectApplyAffineTransform(object.frame, transform);
+            [UIUtilities addRectangle:transformedRect
+                               toView:self.annotationOverlayView
+                                color:UIColor.greenColor];
+            [strongSelf.resultsText appendFormat:@"Frame: %@\nObject ID: %@\nLabels:\n",
+                                                 NSStringFromCGRect(object.frame),
+                                                 object.trackingID];
+            int i = 0;
+            for (MLKObjectLabel *l in object.labels) {
+              NSString *labelString =
+                  [NSString stringWithFormat:@"Label %d: %@, %f, %lu\n", i++, l.text, l.confidence,
+                                             (unsigned long)l.index];
+              [strongSelf.resultsText appendString:labelString];
+            }
+          }
+          [strongSelf showResults];
+        }];
+}
+
+- (CGAffineTransform)transformMatrix {
+  UIImage *image = self.imageView.image;
+  if (!image) {
+    return CGAffineTransformMake(0, 0, 0, 0, 0, 0);
+  }
+  CGFloat imageViewWidth = self.imageView.frame.size.width;
+  CGFloat imageViewHeight = self.imageView.frame.size.height;
+  CGFloat imageWidth = image.size.width;
+  CGFloat imageHeight = image.size.height;
+
+  CGFloat imageViewAspectRatio = imageViewWidth / imageViewHeight;
+  CGFloat imageAspectRatio = imageWidth / imageHeight;
+  CGFloat scale = (imageViewAspectRatio > imageAspectRatio) ? imageViewHeight / imageHeight
+                                                            : imageViewWidth / imageWidth;
+
+  // Image view's `contentMode` is `scaleAspectFit`, which scales the image to fit the size of the
+  // image view by maintaining the aspect ratio. Multiple by `scale` to get image's original size.
+  CGFloat scaledImageWidth = imageWidth * scale;
+  CGFloat scaledImageHeight = imageHeight * scale;
+  CGFloat xValue = (imageViewWidth - scaledImageWidth) / 2.0;
+  CGFloat yValue = (imageViewHeight - scaledImageHeight) / 2.0;
+
+  CGAffineTransform transform =
+      CGAffineTransformTranslate(CGAffineTransformIdentity, xValue, yValue);
+  return CGAffineTransformScale(transform, scale, scale);
 }
 
 - (void)requestAutoMLRemoteModelIfNeeded {

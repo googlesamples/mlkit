@@ -24,6 +24,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static NSString *const alertControllerTitle = @"Vision Detectors";
+static NSString *const alertControllerMessage = @"Select a detector";
+static NSString *const cancelActionTitleText = @"Cancel";
 static NSString *const videoDataOutputQueueLabel = @"com.google.mlkit.automl.VideoDataOutputQueue";
 static NSString *const sessionQueueLabel = @"com.google.mlkit.automl.SessionQueue";
 static NSString *const noResultsMessage = @"No Results";
@@ -45,6 +48,21 @@ static const int kResultsLabelLines = 5;
 
 @interface CameraViewController () <AVCaptureVideoDataOutputSampleBufferDelegate>
 
+typedef NS_ENUM(NSInteger, Detector) {
+  /** AutoML image label detector. */
+  DetectorImageLabelsAutoML,
+  /** AutoML object detector, single, only tracking. */
+  DetectorObjectsAutoMLSingleNoClassifier,
+  /** AutoML object detector, single, with classification. */
+  DetectorObjectsAutoMLSingleWithClassifier,
+  /** AutoML object detector, multiple, only tracking. */
+  DetectorObjectsAutoMLMultipleNoClassifier,
+  /** AutoML object detector, multiple, with classification. */
+  DetectorObjectsAutoMLMultipleWithClassifier,
+};
+
+@property(nonatomic) NSArray *detectors;
+@property(nonatomic) Detector currentDetector;
 @property(nonatomic) bool isUsingFrontCamera;
 @property(nonatomic, nonnull) AVCaptureVideoPreviewLayer *previewLayer;
 @property(nonatomic) AVCaptureSession *captureSession;
@@ -61,19 +79,40 @@ static const int kResultsLabelLines = 5;
 
 @implementation CameraViewController
 
+- (NSString *)stringForDetector:(Detector)detector {
+  switch (detector) {
+    case DetectorImageLabelsAutoML:
+      return @"AutoML Image Labeling";
+    case DetectorObjectsAutoMLSingleNoClassifier:
+      return @"AutoML ODT, single, no labeling";
+    case DetectorObjectsAutoMLSingleWithClassifier:
+      return @"AutoML ODT, single, labeling";
+    case DetectorObjectsAutoMLMultipleNoClassifier:
+      return @"AutoML ODT, multiple, no labeling";
+    case DetectorObjectsAutoMLMultipleWithClassifier:
+      return @"AutoML ODT, multiple, labeling";
+  }
+}
+
 - (void)viewDidLoad {
   [super viewDidLoad];
-  _isUsingFrontCamera = YES;
-  _captureSession = [[AVCaptureSession alloc] init];
-  _sessionQueue = dispatch_queue_create(sessionQueueLabel.UTF8String, nil);
-  _modelManager = [MLKModelManager modelManager];
-  _previewOverlayView = [[UIImageView alloc] initWithFrame:CGRectZero];
-  _previewOverlayView.contentMode = UIViewContentModeScaleAspectFill;
-  _previewOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
-  _annotationOverlayView = [[UIView alloc] initWithFrame:CGRectZero];
-  _annotationOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
+  self.detectors = @[
+    @(DetectorImageLabelsAutoML),
+    @(DetectorObjectsAutoMLSingleNoClassifier), @(DetectorObjectsAutoMLSingleWithClassifier),
+    @(DetectorObjectsAutoMLMultipleNoClassifier), @(DetectorObjectsAutoMLMultipleWithClassifier),
+  ];
+  self.currentDetector = DetectorImageLabelsAutoML;
+  self.isUsingFrontCamera = YES;
+  self.captureSession = [[AVCaptureSession alloc] init];
+  self.sessionQueue = dispatch_queue_create(sessionQueueLabel.UTF8String, nil);
+  self.modelManager = [MLKModelManager modelManager];
+  self.previewOverlayView = [[UIImageView alloc] initWithFrame:CGRectZero];
+  self.previewOverlayView.contentMode = UIViewContentModeScaleAspectFill;
+  self.previewOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
+  self.annotationOverlayView = [[UIView alloc] initWithFrame:CGRectZero];
+  self.annotationOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
 
-  self.previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:_captureSession];
+  self.previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
   [self setUpPreviewOverlayView];
   [self setUpAnnotationOverlayView];
   [self setUpCaptureSessionOutput];
@@ -92,32 +131,35 @@ static const int kResultsLabelLines = 5;
 
 - (void)viewDidLayoutSubviews {
   [super viewDidLayoutSubviews];
-  _previewLayer.frame = _cameraView.frame;
+  self.previewLayer.frame = self.cameraView.frame;
+}
+
+- (IBAction)selectDetector:(id)sender {
+  [self presentDetectorsAlertController];
 }
 
 - (IBAction)switchCamera:(id)sender {
-  self.isUsingFrontCamera = !_isUsingFrontCamera;
+  self.isUsingFrontCamera = !self.isUsingFrontCamera;
   [self removeDetectionAnnotations];
   [self setUpCaptureSessionInput];
 }
 
-#pragma mark - AutoML Image Classification
+#pragma mark - AutoML Image Labeling
 
-/// Detects labels on the specified image using AutoML Image Classification API.
-///
-/// - Parameter image: The image.
-- (void)detectImageLabelsInImage:(MLKVisionImage *)image
-                           width:(CGFloat)width
-                          height:(CGFloat)height {
+/**
+ * Detects labels on the specified image using AutoML-trained models via Custom Image Labeling API.
+ *
+ * @param image The input image.
+ */
+- (void)detectImageLabelsInImage:(MLKVisionImage *)image {
   [self requestAutoMLRemoteModelIfNeeded];
 
   // [START config_automl_label]
   MLKCommonImageLabelerOptions *options;
-  MLKAutoMLImageLabelerRemoteModel *remoteModel =
-      (MLKAutoMLImageLabelerRemoteModel *)[self remoteModel];
+  MLKCustomRemoteModel *remoteModel = (MLKCustomRemoteModel *)[self remoteModel];
   if ([self.modelManager isModelDownloaded:remoteModel]) {
     NSLog(@"Use AutoML remote model.");
-    options = [[MLKAutoMLImageLabelerOptions alloc] initWithRemoteModel:remoteModel];
+    options = [[MLKCustomImageLabelerOptions alloc] initWithRemoteModel:remoteModel];
   } else {
     NSLog(@"Use AutoML local model.");
     NSString *localModelFilePath =
@@ -128,9 +170,8 @@ static const int kResultsLabelLines = 5;
             MLKAutoMLLocalModelManifestFilename);
       return;
     }
-    MLKAutoMLImageLabelerLocalModel *localModel =
-        [[MLKAutoMLImageLabelerLocalModel alloc] initWithManifestPath:localModelFilePath];
-    options = [[MLKAutoMLImageLabelerOptions alloc] initWithLocalModel:localModel];
+    MLKLocalModel *localModel = [[MLKLocalModel alloc] initWithManifestPath:localModelFilePath];
+    options = [[MLKCustomImageLabelerOptions alloc] initWithLocalModel:localModel];
   }
   options.confidenceThreshold = @(kLabelConfidenceThreshold);
   // [END config_automl_label]
@@ -139,56 +180,127 @@ static const int kResultsLabelLines = 5;
   MLKImageLabeler *autoMLImageLabeler = [MLKImageLabeler imageLabelerWithOptions:options];
   // [END init_automl_label]
 
-  dispatch_group_t group = dispatch_group_create();
-  dispatch_group_enter(group);
-
   // [START detect_automl_label]
+  NSError *error;
+  NSArray<MLKImageLabel *> *labels = [autoMLImageLabeler resultsInImage:image error:&error];
+
+  // [START_EXCLUDE]
   __weak typeof(self) weakSelf = self;
-  [autoMLImageLabeler
-      processImage:image
-        completion:^(NSArray<MLKImageLabel *> *_Nullable labels, NSError *_Nullable error) {
-          __strong typeof(weakSelf) strongSelf = weakSelf;
-          // [START_EXCLUDE]
-          [strongSelf updatePreviewOverlayView];
-          [strongSelf removeDetectionAnnotations];
-          // [END_EXCLUDE]
-          if (error != nil) {
-            // [START_EXCLUDE]
-            NSLog(@"Failed to detect labels with error: %@.", error.localizedDescription);
-            dispatch_group_leave(group);
-            // [END_EXCLUDE]
-            return;
-          }
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf updatePreviewOverlayView];
+    [strongSelf removeDetectionAnnotations];
+    // [END_EXCLUDE]
+    if (error != nil) {
+      // [START_EXCLUDE]
+      NSLog(@"Failed to detect labels with error: %@.", error.localizedDescription);
+      // [END_EXCLUDE]
+      return;
+    }
 
-          if (!labels || labels.count == 0) {
-            // [START_EXCLUDE]
-            dispatch_group_leave(group);
-            // [END_EXCLUDE]
-            return;
-          }
+    if (labels.count == 0) {
+      return;
+    }
 
-          // [START_EXCLUDE]
-          CGRect annotationFrame = strongSelf.annotationOverlayView.frame;
-          CGRect resultsRect =
-              CGRectMake(annotationFrame.origin.x + kLayoutPadding,
-                         annotationFrame.size.height - kLayoutPadding - kResultsLabelHeight,
-                         annotationFrame.size.width - 2 * kLayoutPadding, kResultsLabelHeight);
-          UILabel *resultsLabel = [[UILabel alloc] initWithFrame:resultsRect];
-          resultsLabel.textColor = UIColor.yellowColor;
-          NSMutableArray *labelStrings = [NSMutableArray arrayWithCapacity:labels.count];
-          for (MLKImageLabel *label in labels) {
-            [labelStrings addObject:[NSString stringWithFormat:@"Label: %@, Confidence: %f",
-                                                               label.text, label.confidence]];
-          }
-          resultsLabel.text = [labelStrings componentsJoinedByString:@"\n"];
-          resultsLabel.adjustsFontSizeToFitWidth = YES;
-          resultsLabel.numberOfLines = kResultsLabelLines;
-          [strongSelf.annotationOverlayView addSubview:resultsLabel];
-          dispatch_group_leave(group);
-          // [END_EXCLUDE]
-        }];
+    // [START_EXCLUDE]
+    CGRect annotationFrame = strongSelf.annotationOverlayView.frame;
+    CGRect resultsRect =
+        CGRectMake(annotationFrame.origin.x + kLayoutPadding,
+                   annotationFrame.size.height - kLayoutPadding - kResultsLabelHeight,
+                   annotationFrame.size.width - 2 * kLayoutPadding, kResultsLabelHeight);
+    UILabel *resultsLabel = [[UILabel alloc] initWithFrame:resultsRect];
+    resultsLabel.textColor = UIColor.yellowColor;
+    NSMutableArray *labelStrings = [NSMutableArray arrayWithCapacity:labels.count];
+    for (MLKImageLabel *label in labels) {
+      [labelStrings addObject:[NSString stringWithFormat:@"Label: %@, Confidence: %f", label.text,
+                                                         label.confidence]];
+    }
+    resultsLabel.text = [labelStrings componentsJoinedByString:@"\n"];
+    resultsLabel.adjustsFontSizeToFitWidth = YES;
+    resultsLabel.numberOfLines = kResultsLabelLines;
+    [strongSelf.annotationOverlayView addSubview:resultsLabel];
+  });
+  // [END_EXCLUDE]
   // [END detect_automl_label]
-  dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+}
+
+- (void)detectObjectsInImage:(MLKVisionImage *)image
+                          width:(CGFloat)width
+                         height:(CGFloat)height
+     shouldEnableClassification:(BOOL)shouldEnableClassification
+    shouldEnableMultipleObjects:(BOOL)shouldEnableMultipleObjects {
+  [self requestAutoMLRemoteModelIfNeeded];
+
+  MLKCustomRemoteModel *remoteModel = (MLKCustomRemoteModel *)[self remoteModel];
+  MLKCustomObjectDetectorOptions *options;
+
+  if ([self.modelManager isModelDownloaded:remoteModel]) {
+    NSLog(@"Use AutoML remote model.");
+    options = [[MLKCustomObjectDetectorOptions alloc] initWithRemoteModel:remoteModel];
+  } else {
+    NSLog(@"Use AutoML local model.");
+    NSString *localModelFilePath =
+        [[NSBundle mainBundle] pathForResource:MLKAutoMLLocalModelManifestFilename
+                                        ofType:MLKAutoMLManifestFileType];
+    if (localModelFilePath == nil) {
+      NSLog(@"Failed to find AutoML local model manifest file: %@",
+            MLKAutoMLLocalModelManifestFilename);
+      return;
+    }
+    MLKLocalModel *localModel = [[MLKLocalModel alloc] initWithManifestPath:localModelFilePath];
+    options = [[MLKCustomObjectDetectorOptions alloc] initWithLocalModel:localModel];
+  }
+
+  options.shouldEnableClassification = shouldEnableClassification;
+  options.shouldEnableMultipleObjects = shouldEnableMultipleObjects;
+  options.detectorMode = MLKObjectDetectorModeStream;
+  // Due to the UI space, We will only display one label per detected object.
+  options.maxPerObjectLabelCount = 1;
+
+  MLKObjectDetector *autoMLObjectDetector = [MLKObjectDetector objectDetectorWithOptions:options];
+  NSError *error;
+  NSArray<MLKObject *> *objects = [autoMLObjectDetector resultsInImage:image error:&error];
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf updatePreviewOverlayView];
+    [strongSelf removeDetectionAnnotations];
+    if (error != nil) {
+      NSLog(@"Failed to detect object with error: %@", error.localizedDescription);
+      return;
+    }
+    if (objects.count == 0) {
+      NSLog(@"Object detector returned no results.");
+      return;
+    }
+    for (MLKObject *object in objects) {
+      NSMutableString *description = [[NSMutableString alloc] init];
+      CGRect normalizedRect =
+          CGRectMake(object.frame.origin.x / width, object.frame.origin.y / height,
+                     object.frame.size.width / width, object.frame.size.height / height);
+      CGRect standardizedRect = CGRectStandardize(
+          [strongSelf.previewLayer rectForMetadataOutputRectOfInterest:normalizedRect]);
+      [UIUtilities addRectangle:standardizedRect
+                         toView:strongSelf.annotationOverlayView
+                          color:UIColor.greenColor];
+      UILabel *label = [[UILabel alloc] initWithFrame:standardizedRect];
+      if (object.trackingID != nil) {
+        [description appendFormat:@"Object ID: %@\n", object.trackingID];
+      }
+
+      [description appendString:@"Labels:\n"];
+      int i = 0;
+      for (MLKObjectLabel *l in object.labels) {
+        NSString *labelString = [NSString stringWithFormat:@"Label %d: %@, %f, %lu\n", i++, l.text,
+                                                           l.confidence, (unsigned long)l.index];
+        [description appendString:labelString];
+      }
+      label.text = description;
+      label.numberOfLines = 0;
+      label.adjustsFontSizeToFitWidth = YES;
+      [strongSelf.annotationOverlayView addSubview:label];
+    }
+  });
 }
 
 - (void)requestAutoMLRemoteModelIfNeeded {
@@ -257,17 +369,19 @@ static const int kResultsLabelLines = 5;
 #pragma mark - Private
 
 - (MLKRemoteModel *)remoteModel {
-  return [[MLKAutoMLImageLabelerRemoteModel alloc] initWithName:MLKRemoteAutoMLModelName];
+  MLKFirebaseModelSource *firebaseModelSource =
+      [[MLKFirebaseModelSource alloc] initWithName:MLKRemoteAutoMLModelName];
+  return [[MLKCustomRemoteModel alloc] initWithRemoteModelSource:firebaseModelSource];
 }
 
 - (void)setUpCaptureSessionOutput {
   __weak typeof(self) weakSelf = self;
-  dispatch_async(_sessionQueue, ^{
+  dispatch_async(self.sessionQueue, ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
-    [strongSelf->_captureSession beginConfiguration];
+    [strongSelf.captureSession beginConfiguration];
     // When performing latency tests to determine ideal capture settings,
     // run the app in 'release' mode to get accurate performance metrics
-    strongSelf->_captureSession.sessionPreset = AVCaptureSessionPresetMedium;
+    strongSelf.captureSession.sessionPreset = AVCaptureSessionPresetMedium;
 
     AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
     output.videoSettings = @{
@@ -287,13 +401,13 @@ static const int kResultsLabelLines = 5;
 
 - (void)setUpCaptureSessionInput {
   __weak typeof(self) weakSelf = self;
-  dispatch_async(_sessionQueue, ^{
+  dispatch_async(self.sessionQueue, ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
     AVCaptureDevicePosition cameraPosition =
         strongSelf.isUsingFrontCamera ? AVCaptureDevicePositionFront : AVCaptureDevicePositionBack;
     AVCaptureDevice *device = [strongSelf captureDeviceForPosition:cameraPosition];
     if (device) {
-      [strongSelf->_captureSession beginConfiguration];
+      [strongSelf.captureSession beginConfiguration];
       NSArray<AVCaptureInput *> *currentInputs = strongSelf.captureSession.inputs;
       for (AVCaptureInput *input in currentInputs) {
         [strongSelf.captureSession removeInput:input];
@@ -320,36 +434,38 @@ static const int kResultsLabelLines = 5;
 
 - (void)startSession {
   __weak typeof(self) weakSelf = self;
-  dispatch_async(_sessionQueue, ^{
+  dispatch_async(self.sessionQueue, ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
-    [strongSelf->_captureSession startRunning];
+    [strongSelf.captureSession startRunning];
   });
 }
 
 - (void)stopSession {
   __weak typeof(self) weakSelf = self;
-  dispatch_async(_sessionQueue, ^{
+  dispatch_async(self.sessionQueue, ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
-    [strongSelf->_captureSession stopRunning];
+    [strongSelf.captureSession stopRunning];
   });
 }
 
 - (void)setUpPreviewOverlayView {
-  [_cameraView addSubview:_previewOverlayView];
+  [self.cameraView addSubview:self.previewOverlayView];
   [NSLayoutConstraint activateConstraints:@[
-    [_previewOverlayView.centerYAnchor constraintEqualToAnchor:_cameraView.centerYAnchor],
-    [_previewOverlayView.centerXAnchor constraintEqualToAnchor:_cameraView.centerXAnchor],
-    [_previewOverlayView.leadingAnchor constraintEqualToAnchor:_cameraView.leadingAnchor],
-    [_previewOverlayView.trailingAnchor constraintEqualToAnchor:_cameraView.trailingAnchor]
+    [self.previewOverlayView.centerYAnchor constraintEqualToAnchor:self.cameraView.centerYAnchor],
+    [self.previewOverlayView.centerXAnchor constraintEqualToAnchor:self.cameraView.centerXAnchor],
+    [self.previewOverlayView.leadingAnchor constraintEqualToAnchor:self.cameraView.leadingAnchor],
+    [self.previewOverlayView.trailingAnchor constraintEqualToAnchor:self.cameraView.trailingAnchor]
   ]];
 }
 - (void)setUpAnnotationOverlayView {
-  [_cameraView addSubview:_annotationOverlayView];
+  [self.cameraView addSubview:self.annotationOverlayView];
   [NSLayoutConstraint activateConstraints:@[
-    [_annotationOverlayView.topAnchor constraintEqualToAnchor:_cameraView.topAnchor],
-    [_annotationOverlayView.leadingAnchor constraintEqualToAnchor:_cameraView.leadingAnchor],
-    [_annotationOverlayView.trailingAnchor constraintEqualToAnchor:_cameraView.trailingAnchor],
-    [_annotationOverlayView.bottomAnchor constraintEqualToAnchor:_cameraView.bottomAnchor]
+    [self.annotationOverlayView.topAnchor constraintEqualToAnchor:self.cameraView.topAnchor],
+    [self.annotationOverlayView.leadingAnchor
+        constraintEqualToAnchor:self.cameraView.leadingAnchor],
+    [self.annotationOverlayView.trailingAnchor
+        constraintEqualToAnchor:self.cameraView.trailingAnchor],
+    [self.annotationOverlayView.bottomAnchor constraintEqualToAnchor:self.cameraView.bottomAnchor]
   ]];
 }
 
@@ -368,14 +484,41 @@ static const int kResultsLabelLines = 5;
   return nil;
 }
 
+- (void)presentDetectorsAlertController {
+  UIAlertController *alertController =
+      [UIAlertController alertControllerWithTitle:alertControllerTitle
+                                          message:alertControllerMessage
+                                   preferredStyle:UIAlertControllerStyleAlert];
+  for (NSNumber *detectorType in self.detectors) {
+    NSInteger detector = detectorType.integerValue;
+    __weak typeof(self) weakSelf = self;
+    UIAlertAction *action = [UIAlertAction actionWithTitle:[self stringForDetector:detector]
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction *_Nonnull action) {
+                                                     __strong typeof(weakSelf) strongSelf =
+                                                         weakSelf;
+                                                     strongSelf.currentDetector = detector;
+                                                     [strongSelf removeDetectionAnnotations];
+                                                   }];
+    if (detector == self.currentDetector) {
+      [action setEnabled:NO];
+    }
+    [alertController addAction:action];
+  }
+  [alertController addAction:[UIAlertAction actionWithTitle:cancelActionTitleText
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+  [self presentViewController:alertController animated:YES completion:nil];
+}
+
 - (void)removeDetectionAnnotations {
-  for (UIView *annotationView in _annotationOverlayView.subviews) {
+  for (UIView *annotationView in self.annotationOverlayView.subviews) {
     [annotationView removeFromSuperview];
   }
 }
 
 - (void)updatePreviewOverlayView {
-  CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(_lastFrame);
+  CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(self.lastFrame);
   if (imageBuffer == nil) {
     return;
   }
@@ -388,7 +531,7 @@ static const int kResultsLabelLines = 5;
   UIImage *rotatedImage = [UIImage imageWithCGImage:cgImage
                                               scale:kImageScale
                                         orientation:UIImageOrientationRight];
-  if (_isUsingFrontCamera) {
+  if (self.isUsingFrontCamera) {
     CGImageRef rotatedCGImage = rotatedImage.CGImage;
     if (rotatedCGImage == nil) {
       return;
@@ -396,9 +539,9 @@ static const int kResultsLabelLines = 5;
     UIImage *mirroredImage = [UIImage imageWithCGImage:rotatedCGImage
                                                  scale:kImageScale
                                            orientation:UIImageOrientationLeftMirrored];
-    _previewOverlayView.image = mirroredImage;
+    self.previewOverlayView.image = mirroredImage;
   } else {
-    _previewOverlayView.image = rotatedImage;
+    self.previewOverlayView.image = rotatedImage;
   }
   CGImageRelease(cgImage);
 }
@@ -410,7 +553,7 @@ static const int kResultsLabelLines = 5;
   for (NSValue *point in points) {
     CGPoint cgPointValue = point.CGPointValue;
     CGPoint normalizedPoint = CGPointMake(cgPointValue.x / width, cgPointValue.y / height);
-    CGPoint cgPoint = [_previewLayer pointForCaptureDevicePointOfInterest:normalizedPoint];
+    CGPoint cgPoint = [self.previewLayer pointForCaptureDevicePointOfInterest:normalizedPoint];
     [result addObject:[NSValue valueWithCGPoint:cgPoint]];
   }
   return result;
@@ -422,19 +565,55 @@ static const int kResultsLabelLines = 5;
     didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
            fromConnection:(AVCaptureConnection *)connection {
   CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-  if (imageBuffer) {
-    _lastFrame = sampleBuffer;
-    MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithBuffer:sampleBuffer];
-    UIImageOrientation orientation = [UIUtilities
-        imageOrientationFromDevicePosition:_isUsingFrontCamera ? AVCaptureDevicePositionFront
-                                                               : AVCaptureDevicePositionBack];
-
-    visionImage.orientation = orientation;
-    CGFloat imageWidth = CVPixelBufferGetWidth(imageBuffer);
-    CGFloat imageHeight = CVPixelBufferGetHeight(imageBuffer);
-    [self detectImageLabelsInImage:visionImage width:imageWidth height:imageHeight];
-  } else {
+  if (imageBuffer == nil) {
     NSLog(@"%@", @"Failed to get image buffer from sample buffer.");
+    return;
+  }
+
+  // Evaluate `self.currentDetector` once to ensure consistency throughout this method since it
+  // can be concurrently modified from the main thread.
+  Detector activeDetector = self.currentDetector;
+  self.lastFrame = sampleBuffer;
+  MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithBuffer:sampleBuffer];
+  UIImageOrientation orientation = [UIUtilities
+      imageOrientationFromDevicePosition:self.isUsingFrontCamera ? AVCaptureDevicePositionFront
+                                                                 : AVCaptureDevicePositionBack];
+
+  visionImage.orientation = orientation;
+  CGFloat imageWidth = CVPixelBufferGetWidth(imageBuffer);
+  CGFloat imageHeight = CVPixelBufferGetHeight(imageBuffer);
+
+  BOOL shouldEnableClassification = NO;
+  BOOL shouldEnableMultipleObjects = NO;
+  switch (activeDetector) {
+    case DetectorObjectsAutoMLSingleWithClassifier:
+    case DetectorObjectsAutoMLMultipleWithClassifier:
+      shouldEnableClassification = YES;
+    default:
+      break;
+  }
+  switch (activeDetector) {
+    case DetectorObjectsAutoMLMultipleNoClassifier:
+    case DetectorObjectsAutoMLMultipleWithClassifier:
+      shouldEnableMultipleObjects = YES;
+    default:
+      break;
+  }
+
+  switch (activeDetector) {
+    case DetectorImageLabelsAutoML:
+      [self detectImageLabelsInImage:visionImage];
+      break;
+    case DetectorObjectsAutoMLSingleNoClassifier:
+    case DetectorObjectsAutoMLSingleWithClassifier:
+    case DetectorObjectsAutoMLMultipleNoClassifier:
+    case DetectorObjectsAutoMLMultipleWithClassifier:
+      [self detectObjectsInImage:visionImage
+                                width:imageWidth
+                               height:imageHeight
+           shouldEnableClassification:shouldEnableClassification
+          shouldEnableMultipleObjects:shouldEnableMultipleObjects];
+      break;
   }
 }
 

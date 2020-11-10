@@ -57,9 +57,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    let remoteModel = AutoMLImageLabelerRemoteModel(name: Constants.remoteAutoMLModelName)
     downloadOrDeleteModelButton.image =
-      modelManager.isModelDownloaded(remoteModel)
+      modelManager.isModelDownloaded(remoteModel())
       ? #imageLiteral(resourceName: "delete") : #imageLiteral(resourceName: "cloud_download")
     imageView.image = UIImage(named: Constants.images[currentImage])
     imageView.addSubview(annotationOverlayView)
@@ -110,10 +109,21 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
   @IBAction func detect(_ sender: Any) {
     clearResults()
     let row = detectorPicker.selectedRow(inComponent: 0)
+      let shouldEnableClassification =
+        row == DetectorPickerRow.detectorObjectsSingleWithClassifier.rawValue
+        || row == DetectorPickerRow.detectorObjectsMultipleWithClassifier.rawValue
+      let shouldEnableMultipleObjects =
+        row == DetectorPickerRow.detectorObjectsMultipleNoClassifier.rawValue
+        || row == DetectorPickerRow.detectorObjectsMultipleWithClassifier.rawValue
+
     if let rowIndex = DetectorPickerRow(rawValue: row) {
       switch rowIndex {
-      case .detectImageLabelsAutoML:
-        detectImageLabelsAutoML(image: imageView.image)
+      case .detectorImageLabels: detectImageLabels(image: imageView.image)
+        case .detectorObjectsSingleNoClassifier, .detectorObjectsSingleWithClassifier,
+          .detectorObjectsMultipleNoClassifier, .detectorObjectsMultipleWithClassifier:
+          detectObjects(
+            image: imageView.image, shouldEnableClassification: shouldEnableClassification,
+            shouldEnableMultipleObjects: shouldEnableMultipleObjects)
       }
     } else {
       print("No such item at row \(row) in detector picker.")
@@ -145,7 +155,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
   @IBAction func downloadOrDeleteModel(_ sender: Any) {
     clearResults()
-    let remoteModel = AutoMLImageLabelerRemoteModel(name: Constants.remoteAutoMLModelName)
+    let remoteModel = self.remoteModel()
     if modelManager.isModelDownloaded(remoteModel) {
       weak var weakSelf = self
       modelManager.deleteDownloadedModel(remoteModel) { error in
@@ -159,6 +169,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
   }
 
   // MARK: - Private
+
+  private func remoteModel() -> RemoteModel {
+      let firebaseModelSource = FirebaseModelSource(name: Constants.remoteAutoMLModelName)
+      return CustomRemoteModel(remoteModelSource: firebaseModelSource)
+  }
 
   /// Removes the detection annotations from the annotation overlay view.
   private func removeDetectionAnnotations() {
@@ -218,33 +233,33 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
     }
   }
 
-  private func transformMatrix() -> CGAffineTransform {
-    guard let image = imageView.image else { return CGAffineTransform() }
-    let imageViewWidth = imageView.frame.size.width
-    let imageViewHeight = imageView.frame.size.height
-    let imageWidth = image.size.width
-    let imageHeight = image.size.height
+    private func transformMatrix() -> CGAffineTransform {
+      guard let image = imageView.image else { return CGAffineTransform() }
+      let imageViewWidth = imageView.frame.size.width
+      let imageViewHeight = imageView.frame.size.height
+      let imageWidth = image.size.width
+      let imageHeight = image.size.height
 
-    let imageViewAspectRatio = imageViewWidth / imageViewHeight
-    let imageAspectRatio = imageWidth / imageHeight
-    let scale =
-      (imageViewAspectRatio > imageAspectRatio)
-      ? imageViewHeight / imageHeight : imageViewWidth / imageWidth
+      let imageViewAspectRatio = imageViewWidth / imageViewHeight
+      let imageAspectRatio = imageWidth / imageHeight
+      let scale =
+        (imageViewAspectRatio > imageAspectRatio)
+        ? imageViewHeight / imageHeight : imageViewWidth / imageWidth
 
-    // Image view's `contentMode` is `scaleAspectFit`, which scales the image to fit the size of the
-    // image view by maintaining the aspect ratio. Multiple by `scale` to get image's original size.
-    let scaledImageWidth = imageWidth * scale
-    let scaledImageHeight = imageHeight * scale
-    let xValue = (imageViewWidth - scaledImageWidth) / CGFloat(2.0)
-    let yValue = (imageViewHeight - scaledImageHeight) / CGFloat(2.0)
+      // Image view's `contentMode` is `scaleAspectFit`, which scales the image to fit the size of the
+      // image view by maintaining the aspect ratio. Multiple by `scale` to get image's original size.
+      let scaledImageWidth = imageWidth * scale
+      let scaledImageHeight = imageHeight * scale
+      let xValue = (imageViewWidth - scaledImageWidth) / CGFloat(2.0)
+      let yValue = (imageViewHeight - scaledImageHeight) / CGFloat(2.0)
 
-    var transform = CGAffineTransform.identity.translatedBy(x: xValue, y: yValue)
-    transform = transform.scaledBy(x: scale, y: scale)
-    return transform
-  }
+      var transform = CGAffineTransform.identity.translatedBy(x: xValue, y: yValue)
+      transform = transform.scaledBy(x: scale, y: scale)
+      return transform
+    }
 
   private func requestAutoMLRemoteModelIfNeeded() {
-    let remoteModel = AutoMLImageLabelerRemoteModel(name: Constants.remoteAutoMLModelName)
+    let remoteModel = self.remoteModel()
     if modelManager.isModelDownloaded(remoteModel) {
       return
     }
@@ -294,7 +309,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         return
       }
       strongSelf.resultsText +=
-        "Successfully downloaded the remote model with name: \(remoteModel.name). The model is ready for detection."
+        "Successfully downloaded the remote model with name: \(remoteModel.name)."
+      strongSelf.resultsText += "The model is ready for detection."
       print("Sucessfully downloaded AutoML remote model.")
     }
     if Thread.isMainThread {
@@ -357,9 +373,6 @@ extension ViewController: UIPickerViewDataSource, UIPickerViewDelegate {
 
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
     clearResults()
-    downloadOrDeleteModelButton.isEnabled =
-      row
-      == DetectorPickerRow.detectImageLabelsAutoML.rawValue
   }
 }
 
@@ -386,20 +399,20 @@ extension ViewController: UIImagePickerControllerDelegate {
   }
 }
 
-/// Extension of ViewController for AutoML image classification.
+/// Extension of ViewController for AutoML image labeling.
 extension ViewController {
 
-  // MARK: - AutoML Image Classification
+  // MARK: - AutoML Image Labeling
 
-  /// Detects labels on the specified image using AutoML Image Classification API.
+  /// Detects labels on the specified image using AutoML Image Labeling API.
   ///
   /// - Parameter image: The image.
-  func detectImageLabelsAutoML(image: UIImage?) {
+  func detectImageLabels(image: UIImage?) {
     guard let image = image else { return }
     requestAutoMLRemoteModelIfNeeded()
 
     // [START config_automl_label]
-    let remoteModel = AutoMLImageLabelerRemoteModel(name: Constants.remoteAutoMLModelName)
+    let remoteModel = self.remoteModel()
     guard
       let localModelFilePath = Bundle.main.path(
         forResource: Constants.localModelManifestFileName,
@@ -409,12 +422,13 @@ extension ViewController {
       print("Failed to find AutoML local model manifest file.")
       return
     }
-    let localModel = AutoMLImageLabelerLocalModel(manifestPath: localModelFilePath)
     let isModelDownloaded = modelManager.isModelDownloaded(remoteModel)
-    let options =
-      isModelDownloaded
-      ? AutoMLImageLabelerOptions(remoteModel: remoteModel)
-      : AutoMLImageLabelerOptions(localModel: localModel)
+    var options: CommonImageLabelerOptions!
+      guard let localModel = LocalModel(manifestPath: localModelFilePath) else { return }
+      options =
+        isModelDownloaded
+        ? CustomImageLabelerOptions(remoteModel: remoteModel as! CustomRemoteModel)
+        : CustomImageLabelerOptions(localModel: localModel)
     print("Use AutoML \(isModelDownloaded ? "remote" : "local") in detector picker.")
     options.confidenceThreshold = NSNumber(value: Constants.labelConfidenceThreshold)
     // [END config_automl_label]
@@ -437,7 +451,7 @@ extension ViewController {
       guard error == nil, let labels = labels, !labels.isEmpty else {
         // [START_EXCLUDE]
         let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
-        strongSelf.resultsText = "AutoML image classification failed with error: \(errorString)"
+        strongSelf.resultsText = "AutoML image labeling failed with error: \(errorString)"
         strongSelf.showResults()
         // [END_EXCLUDE]
         return
@@ -445,35 +459,125 @@ extension ViewController {
 
       // [START_EXCLUDE]
       strongSelf.resultsText = labels.map { label -> String in
-        return "Label: \(label.text), Confidence: \(label.confidence ?? 0)"
+        return "Label: \(label.text), Confidence: \(label.confidence)"
       }.joined(separator: "\n")
       strongSelf.showResults()
       // [END_EXCLUDE]
     }
     // [END detect_automl_label]
   }
+
+
+    /// Detects objects on the specified image using image classification models trained by AutoML
+    /// via Custom Object Detection API.
+    ///
+    /// - Parameter image: The image.
+    /// - Parameter shouldEnableClassification: Whether image classification should be enabled.
+    /// - Parameter shouldEnableMultipleObjects: Whether multi-object detection should be enabled.
+    func detectObjects(
+      image: UIImage?, shouldEnableClassification: Bool, shouldEnableMultipleObjects: Bool
+    ) {
+      guard let image = image else { return }
+      requestAutoMLRemoteModelIfNeeded()
+
+      let remoteModel = self.remoteModel()
+      var options: CustomObjectDetectorOptions!
+      if modelManager.isModelDownloaded(remoteModel) {
+        print("Use AutoML remote model.")
+        options = CustomObjectDetectorOptions(remoteModel: remoteModel as! CustomRemoteModel)
+      } else {
+        print("Use AutoML local model.")
+        guard
+          let localModelFilePath = Bundle.main.path(
+            forResource: Constants.localModelManifestFileName,
+            ofType: Constants.autoMLManifestFileType
+          )
+        else {
+          print(
+            "Failed to find AutoML local model manifest file: \(Constants.localModelManifestFileName)"
+          )
+          return
+        }
+        guard let localModel = LocalModel(manifestPath: localModelFilePath) else { return }
+        options = CustomObjectDetectorOptions(localModel: localModel)
+      }
+      options.shouldEnableClassification = shouldEnableClassification
+      options.shouldEnableMultipleObjects = shouldEnableMultipleObjects
+      options.detectorMode = .singleImage
+
+      let autoMLObjectDetector = ObjectDetector.objectDetector(options: options)
+
+      // Initialize a VisionImage object with the given UIImage.
+      let visionImage = VisionImage(image: image)
+      visionImage.orientation = image.imageOrientation
+
+      weak var weakSelf = self
+      autoMLObjectDetector.process(visionImage) { objects, error in
+        guard let strongSelf = weakSelf else {
+          print("Self is nil!")
+          return
+        }
+        guard error == nil, let objects = objects, !objects.isEmpty else {
+          let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
+          strongSelf.resultsText = "AutoML object detection failed with error: \(errorString)"
+          strongSelf.showResults()
+          return
+        }
+
+        strongSelf.resultsText = objects.map { object -> String in
+          let transform = strongSelf.transformMatrix()
+          let transformedRect = object.frame.applying(transform)
+          UIUtilities.addRectangle(
+            transformedRect, to: strongSelf.annotationOverlayView, color: .green)
+          let labels = object.labels.enumerated().map { (index, label) -> String in
+            return "Label \(index): \(label.text), \(label.confidence), \(label.index)"
+          }.joined(separator: "\n")
+          return
+            "Frame: \(object.frame)\nObject ID: \(String(describing: object.trackingID))\nLabels:\(labels)"
+        }.joined(separator: "\n")
+        strongSelf.showResults()
+      }
+    }
+
+
 }
 
 // MARK: - Enums
 
 private enum DetectorPickerRow: Int {
-  case detectImageLabelsAutoML = 0
+  // AutoML image label detector.
+  case detectorImageLabels
+    // AutoML object detector, single, only tracking.
+    case detectorObjectsSingleNoClassifier
+    // AutoML object detector, single, with classification.
+    case detectorObjectsSingleWithClassifier
+    // AutoML object detector, multiple, only tracking.
+    case detectorObjectsMultipleNoClassifier
+    // AutoML object detector, multiple, with classification.
+    case detectorObjectsMultipleWithClassifier
 
-  static let rowsCount = 1
+    static let rowsCount = 5
   static let componentsCount = 1
 
   public var description: String {
     switch self {
-    case .detectImageLabelsAutoML:
-      return "AutoML Image Classification"
+    case .detectorImageLabels:
+      return "AutoML Image Labeling"
+      case .detectorObjectsSingleNoClassifier:
+        return "AutoML ODT, single, no labeling"
+      case .detectorObjectsSingleWithClassifier:
+        return "AutoML ODT, single, labeling"
+      case .detectorObjectsMultipleNoClassifier:
+        return "AutoML ODT, multiple, no labeling"
+      case .detectorObjectsMultipleWithClassifier:
+        return "AutoML ODT, multiple, labeling"
     }
   }
 }
 
 private enum Constants {
   static let images = [
-    "daisy.jpeg", "dandelion.jpg", "roses.jpeg", "sunflower.jpg",
-    "tulips.jpeg",
+    "daisy.jpeg", "dandelion.jpg", "roses.jpeg", "sunflower.jpg", "tulips.jpeg",
   ]
 
   static let modelExtension = "tflite"

@@ -2,8 +2,9 @@ platform :ios, '10.0'
 use_frameworks!
 
 pod 'GoogleMLKit/Common'
-pod 'GoogleMLKit/ImageLabelingAutoML'
+pod 'GoogleMLKit/ImageLabelingCustom'
 pod 'GoogleMLKit/LinkFirebase'
+pod 'GoogleMLKit/ObjectDetectionCustom'
 pod 'GoogleMLKit/Vision'
 
 target 'AutoMLExample' do
