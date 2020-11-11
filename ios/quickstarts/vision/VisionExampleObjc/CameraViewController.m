@@ -33,8 +33,13 @@ static NSString *const noResultsMessage = @"No Results";
 static NSString *const localModelFileName = @"bird";
 static NSString *const localModelFileType = @"tflite";
 
+static float const MLKImageLabelConfidenceThreshold = 0.75;
 static const CGFloat MLKSmallDotRadius = 4.0;
 static const CGFloat MLKconstantScale = 1.0;
+static const CGFloat MLKImageLabelResultFrameX = 0.4;
+static const CGFloat MLKImageLabelResultFrameY = 0.1;
+static const CGFloat MLKImageLabelResultFrameWidth = 0.5;
+static const CGFloat MLKImageLabelResultFrameHeight = 0.8;
 
 @interface CameraViewController () <AVCaptureVideoDataOutputSampleBufferDelegate>
 
@@ -42,6 +47,8 @@ typedef NS_ENUM(NSInteger, Detector) {
   DetectorOnDeviceBarcode,
   DetectorOnDeviceFace,
   DetectorOnDeviceText,
+  DetectorOnDeviceImageLabels,
+  DetectorOnDeviceImageLabelsCustom,
   DetectorOnDeviceObjectProminentNoClassifier,
   DetectorOnDeviceObjectProminentWithClassifier,
   DetectorOnDeviceObjectMultipleNoClassifier,
@@ -85,6 +92,10 @@ typedef NS_ENUM(NSInteger, Detector) {
       return @"Barcode Scanning";
     case DetectorOnDeviceFace:
       return @"Face Detection";
+    case DetectorOnDeviceImageLabels:
+      return @"Image Labeling";
+    case DetectorOnDeviceImageLabelsCustom:
+      return @"Image Labeling Custom";
     case DetectorOnDeviceText:
       return @"Text Recognition";
     case DetectorOnDeviceObjectProminentNoClassifier:
@@ -116,6 +127,8 @@ typedef NS_ENUM(NSInteger, Detector) {
     @(DetectorOnDeviceBarcode),
     @(DetectorOnDeviceFace),
     @(DetectorOnDeviceText),
+    @(DetectorOnDeviceImageLabels),
+    @(DetectorOnDeviceImageLabelsCustom),
     @(DetectorOnDeviceObjectProminentNoClassifier),
     @(DetectorOnDeviceObjectProminentWithClassifier),
     @(DetectorOnDeviceObjectMultipleNoClassifier),
@@ -261,6 +274,55 @@ typedef NS_ENUM(NSInteger, Detector) {
         }
       }
     }
+  });
+}
+
+- (void)detectLabelsInImage:(MLKVisionImage *)image useCustomModel:(BOOL)useCustomModel {
+  MLKCommonImageLabelerOptions *options;
+  if (useCustomModel) {
+    NSString *localModelPath = [[NSBundle mainBundle] pathForResource:localModelFileName
+                                                               ofType:localModelFileType];
+    MLKLocalModel *localModel = [[MLKLocalModel alloc] initWithPath:localModelPath];
+    options = [[MLKCustomImageLabelerOptions alloc] initWithLocalModel:localModel];
+  } else {
+    options = [[MLKImageLabelerOptions alloc] init];
+  }
+  options.confidenceThreshold = @(MLKImageLabelConfidenceThreshold);
+  NSError *error;
+  MLKImageLabeler *onDeviceLabeler = [MLKImageLabeler imageLabelerWithOptions:options];
+  NSArray<MLKImageLabel *> *labels = [onDeviceLabeler resultsInImage:image error:&error];
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf updatePreviewOverlayView];
+    [strongSelf removeDetectionAnnotations];
+    if (labels.count == 0) {
+      NSString *errorString = error != nil ? error.localizedDescription : noResultsMessage;
+      NSLog(@"On-Device label detection failed with error: %@", errorString);
+      return;
+    }
+    NSMutableString *description = [[NSMutableString alloc] init];
+    CGRect normalizedRect =
+        CGRectMake(MLKImageLabelResultFrameX, MLKImageLabelResultFrameY,
+                   MLKImageLabelResultFrameWidth, MLKImageLabelResultFrameHeight);
+    CGRect standardizedRect = CGRectStandardize(
+        [strongSelf.previewLayer rectForMetadataOutputRectOfInterest:normalizedRect]);
+    [UIUtilities addRectangle:standardizedRect
+                       toView:strongSelf.annotationOverlayView
+                        color:UIColor.grayColor];
+    UILabel *uiLabel = [[UILabel alloc] initWithFrame:standardizedRect];
+
+    [description appendString:@"Labels:\n"];
+    for (MLKImageLabel *label in labels) {
+      NSString *labelString =
+          [NSString stringWithFormat:@"Label: %@, Confidence: %f, Index: %lu\n", label.text,
+                                     label.confidence, (unsigned long)label.index];
+      [description appendString:labelString];
+    }
+    uiLabel.text = description;
+    uiLabel.numberOfLines = 0;
+    uiLabel.adjustsFontSizeToFitWidth = YES;
+    [strongSelf.annotationOverlayView addSubview:uiLabel];
   });
 }
 
@@ -781,6 +843,12 @@ typedef NS_ENUM(NSInteger, Detector) {
         break;
       case DetectorOnDeviceText:
         [self recognizeTextOnDeviceInImage:visionImage width:imageWidth height:imageHeight];
+        break;
+      case DetectorOnDeviceImageLabels:
+        [self detectLabelsInImage:visionImage useCustomModel:NO];
+        break;
+      case DetectorOnDeviceImageLabelsCustom:
+        [self detectLabelsInImage:visionImage useCustomModel:YES];
         break;
       case DetectorPose:
       case DetectorPoseAccurate:

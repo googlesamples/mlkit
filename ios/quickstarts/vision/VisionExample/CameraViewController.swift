@@ -21,9 +21,11 @@ import MLKit
 @objc(CameraViewController)
 class CameraViewController: UIViewController {
   private let detectors: [Detector] = [
-    .onDeviceBarcode,
     .onDeviceFace,
     .onDeviceText,
+    .onDeviceBarcode,
+    .onDeviceImageLabel,
+    .onDeviceImageLabelsCustom,
     .onDeviceObjectProminentNoClassifier,
     .onDeviceObjectProminentWithClassifier,
     .onDeviceObjectMultipleNoClassifier,
@@ -129,15 +131,24 @@ class CameraViewController: UIViewController {
       print("Failed to scan barcodes with error: \(error.localizedDescription).")
       return
     }
+    weak var weakSelf = self
     DispatchQueue.main.sync {
-      self.updatePreviewOverlayView()
-      self.removeDetectionAnnotations()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.updatePreviewOverlayView()
+      strongSelf.removeDetectionAnnotations()
     }
     guard !barcodes.isEmpty else {
       print("Barcode scanner returrned no results.")
       return
     }
     DispatchQueue.main.sync {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       for barcode in barcodes {
         let normalizedRect = CGRect(
           x: barcode.frame.origin.x / width,
@@ -145,18 +156,18 @@ class CameraViewController: UIViewController {
           width: barcode.frame.size.width / width,
           height: barcode.frame.size.height / height
         )
-        let convertedRect = self.previewLayer.layerRectConverted(
+        let convertedRect = strongSelf.previewLayer.layerRectConverted(
           fromMetadataOutputRect: normalizedRect
         )
         UIUtilities.addRectangle(
           convertedRect,
-          to: self.annotationOverlayView,
+          to: strongSelf.annotationOverlayView,
           color: UIColor.green
         )
         let label = UILabel(frame: convertedRect)
         label.text = barcode.rawValue
         label.adjustsFontSizeToFitWidth = true
-        self.annotationOverlayView.addSubview(label)
+        strongSelf.annotationOverlayView.addSubview(label)
       }
     }
   }
@@ -177,15 +188,24 @@ class CameraViewController: UIViewController {
       print("Failed to detect faces with error: \(error.localizedDescription).")
       return
     }
+    weak var weakSelf = self
     DispatchQueue.main.sync {
-      self.updatePreviewOverlayView()
-      self.removeDetectionAnnotations()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.updatePreviewOverlayView()
+      strongSelf.removeDetectionAnnotations()
     }
     guard !faces.isEmpty else {
       print("On-Device face detector returned no results.")
       return
     }
     DispatchQueue.main.sync {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       for face in faces {
         let normalizedRect = CGRect(
           x: face.frame.origin.x / width,
@@ -193,15 +213,15 @@ class CameraViewController: UIViewController {
           width: face.frame.size.width / width,
           height: face.frame.size.height / height
         )
-        let standardizedRect = self.previewLayer.layerRectConverted(
+        let standardizedRect = strongSelf.previewLayer.layerRectConverted(
           fromMetadataOutputRect: normalizedRect
         ).standardized
         UIUtilities.addRectangle(
           standardizedRect,
-          to: self.annotationOverlayView,
+          to: strongSelf.annotationOverlayView,
           color: UIColor.green
         )
-        self.addContours(for: face, width: width, height: height)
+        strongSelf.addContours(for: face, width: width, height: height)
       }
     }
   }
@@ -215,15 +235,24 @@ class CameraViewController: UIViewController {
         print("Failed to detect poses with error: \(error.localizedDescription).")
         return
       }
+      weak var weakSelf = self
       DispatchQueue.main.sync {
-        self.updatePreviewOverlayView()
-        self.removeDetectionAnnotations()
+        guard let strongSelf = weakSelf else {
+          print("Self is nil!")
+          return
+        }
+        strongSelf.updatePreviewOverlayView()
+        strongSelf.removeDetectionAnnotations()
       }
       guard !poses.isEmpty else {
         print("Pose detector returned no results.")
         return
       }
       DispatchQueue.main.sync {
+        guard let strongSelf = weakSelf else {
+          print("Self is nil!")
+          return
+        }
         // Pose detected. Currently, only single person detection is supported.
         poses.forEach { pose in
           for (startLandmarkType, endLandmarkTypesArray) in UIUtilities.poseConnections() {
@@ -237,7 +266,7 @@ class CameraViewController: UIViewController {
               UIUtilities.addLineSegment(
                 fromPoint: startLandmarkPoint,
                 toPoint: endLandmarkPoint,
-                inView: self.annotationOverlayView,
+                inView: strongSelf.annotationOverlayView,
                 color: UIColor.green,
                 width: Constant.lineWidth
               )
@@ -248,7 +277,7 @@ class CameraViewController: UIViewController {
               fromVisionPoint: landmark.position, width: width, height: height)
             UIUtilities.addCircle(
               atPoint: landmarkPoint,
-              to: self.annotationOverlayView,
+              to: strongSelf.annotationOverlayView,
               color: UIColor.blue,
               radius: Constant.smallDotRadius
             )
@@ -266,25 +295,32 @@ class CameraViewController: UIViewController {
       print("Failed to recognize text with error: \(error.localizedDescription).")
       return
     }
+    weak var weakSelf = self
     DispatchQueue.main.sync {
-      self.updatePreviewOverlayView()
-      self.removeDetectionAnnotations()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.updatePreviewOverlayView()
+      strongSelf.removeDetectionAnnotations()
 
       // Blocks.
       for block in recognizedText.blocks {
-        let points = self.convertedPoints(from: block.cornerPoints, width: width, height: height)
+        let points = strongSelf.convertedPoints(
+          from: block.cornerPoints, width: width, height: height)
         UIUtilities.addShape(
           withPoints: points,
-          to: self.annotationOverlayView,
+          to: strongSelf.annotationOverlayView,
           color: UIColor.purple
         )
 
         // Lines.
         for line in block.lines {
-          let points = self.convertedPoints(from: line.cornerPoints, width: width, height: height)
+          let points = strongSelf.convertedPoints(
+            from: line.cornerPoints, width: width, height: height)
           UIUtilities.addShape(
             withPoints: points,
-            to: self.annotationOverlayView,
+            to: strongSelf.annotationOverlayView,
             color: UIColor.orange
           )
 
@@ -296,21 +332,88 @@ class CameraViewController: UIViewController {
               width: element.frame.size.width / width,
               height: element.frame.size.height / height
             )
-            let convertedRect = self.previewLayer.layerRectConverted(
+            let convertedRect = strongSelf.previewLayer.layerRectConverted(
               fromMetadataOutputRect: normalizedRect
             )
             UIUtilities.addRectangle(
               convertedRect,
-              to: self.annotationOverlayView,
+              to: strongSelf.annotationOverlayView,
               color: UIColor.green
             )
             let label = UILabel(frame: convertedRect)
             label.text = element.text
             label.adjustsFontSizeToFitWidth = true
-            self.annotationOverlayView.addSubview(label)
+            strongSelf.annotationOverlayView.addSubview(label)
           }
         }
       }
+    }
+  }
+
+  private func detectLabels(
+    in visionImage: VisionImage,
+    width: CGFloat,
+    height: CGFloat,
+    shouldUseCustomModel: Bool
+  ) {
+    var options: CommonImageLabelerOptions!
+    if shouldUseCustomModel {
+      guard
+        let localModelFilePath = Bundle.main.path(
+          forResource: Constant.localModelFile.name,
+          ofType: Constant.localModelFile.type
+        )
+      else {
+        print("On-Device label detection failed because custom model was not found.")
+        return
+      }
+      let localModel = LocalModel(path: localModelFilePath)
+      options = CustomImageLabelerOptions(localModel: localModel)
+    } else {
+      options = ImageLabelerOptions()
+    }
+    options.confidenceThreshold = NSNumber(floatLiteral: Constant.labelConfidenceThreshold)
+    let onDeviceLabeler = ImageLabeler.imageLabeler(options: options)
+    weak var weakSelf = self
+    let labels: [ImageLabel]
+    do {
+      labels = try onDeviceLabeler.results(in: visionImage)
+    } catch let error {
+      let errorString = error.localizedDescription
+      print("On-Device label detection failed with error: \(errorString)")
+      return
+    }
+    let resultsText = labels.map { label -> String in
+      return "Label: \(label.text), Confidence: \(label.confidence), Index: \(label.index)"
+    }.joined(separator: "\n")
+
+    DispatchQueue.main.sync {
+      weakSelf?.updatePreviewOverlayView()
+      weakSelf?.removeDetectionAnnotations()
+    }
+    guard resultsText.count != 0 else { return }
+
+    DispatchQueue.main.sync {
+      guard let frame = weakSelf?.view.frame else { return }
+      let normalizedRect = CGRect(
+        x: Constant.imageLabelResultFrameX,
+        y: Constant.imageLabelResultFrameY,
+        width: Constant.imageLabelResultFrameWidth,
+        height: Constant.imageLabelResultFrameHeight
+      )
+      let standardizedRect = self.previewLayer.layerRectConverted(
+        fromMetadataOutputRect: normalizedRect
+      ).standardized
+      UIUtilities.addRectangle(
+        standardizedRect,
+        to: self.annotationOverlayView,
+        color: UIColor.gray
+      )
+      let uiLabel = UILabel(frame: standardizedRect)
+      uiLabel.text = resultsText
+      uiLabel.numberOfLines = 0
+      uiLabel.adjustsFontSizeToFitWidth = true
+      self.annotationOverlayView.addSubview(uiLabel)
     }
   }
 
@@ -328,9 +431,14 @@ class CameraViewController: UIViewController {
       print("Failed to detect objects with error: \(error.localizedDescription).")
       return
     }
+    weak var weakSelf = self
     DispatchQueue.main.sync {
-      self.updatePreviewOverlayView()
-      self.removeDetectionAnnotations()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.updatePreviewOverlayView()
+      strongSelf.removeDetectionAnnotations()
     }
     guard !objects.isEmpty else {
       print("On-Device object detector returned no results.")
@@ -338,6 +446,10 @@ class CameraViewController: UIViewController {
     }
 
     DispatchQueue.main.sync {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       for object in objects {
         let normalizedRect = CGRect(
           x: object.frame.origin.x / width,
@@ -345,12 +457,12 @@ class CameraViewController: UIViewController {
           width: object.frame.size.width / width,
           height: object.frame.size.height / height
         )
-        let standardizedRect = self.previewLayer.layerRectConverted(
+        let standardizedRect = strongSelf.previewLayer.layerRectConverted(
           fromMetadataOutputRect: normalizedRect
         ).standardized
         UIUtilities.addRectangle(
           standardizedRect,
-          to: self.annotationOverlayView,
+          to: strongSelf.annotationOverlayView,
           color: UIColor.green
         )
         let label = UILabel(frame: standardizedRect)
@@ -365,7 +477,7 @@ class CameraViewController: UIViewController {
         label.text = description
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
-        self.annotationOverlayView.addSubview(label)
+        strongSelf.annotationOverlayView.addSubview(label)
       }
     }
   }
@@ -373,49 +485,59 @@ class CameraViewController: UIViewController {
   // MARK: - Private
 
   private func setUpCaptureSessionOutput() {
+    weak var weakSelf = self
     sessionQueue.async {
-      self.captureSession.beginConfiguration()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.captureSession.beginConfiguration()
       // When performing latency tests to determine ideal capture settings,
       // run the app in 'release' mode to get accurate performance metrics
-      self.captureSession.sessionPreset = AVCaptureSession.Preset.medium
+      strongSelf.captureSession.sessionPreset = AVCaptureSession.Preset.medium
 
       let output = AVCaptureVideoDataOutput()
       output.videoSettings = [
-        (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA,
+        (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA
       ]
       output.alwaysDiscardsLateVideoFrames = true
       let outputQueue = DispatchQueue(label: Constant.videoDataOutputQueueLabel)
-      output.setSampleBufferDelegate(self, queue: outputQueue)
-      guard self.captureSession.canAddOutput(output) else {
+      output.setSampleBufferDelegate(strongSelf, queue: outputQueue)
+      guard strongSelf.captureSession.canAddOutput(output) else {
         print("Failed to add capture session output.")
         return
       }
-      self.captureSession.addOutput(output)
-      self.captureSession.commitConfiguration()
+      strongSelf.captureSession.addOutput(output)
+      strongSelf.captureSession.commitConfiguration()
     }
   }
 
   private func setUpCaptureSessionInput() {
+    weak var weakSelf = self
     sessionQueue.async {
-      let cameraPosition: AVCaptureDevice.Position = self.isUsingFrontCamera ? .front : .back
-      guard let device = self.captureDevice(forPosition: cameraPosition) else {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      let cameraPosition: AVCaptureDevice.Position = strongSelf.isUsingFrontCamera ? .front : .back
+      guard let device = strongSelf.captureDevice(forPosition: cameraPosition) else {
         print("Failed to get capture device for camera position: \(cameraPosition)")
         return
       }
       do {
-        self.captureSession.beginConfiguration()
-        let currentInputs = self.captureSession.inputs
+        strongSelf.captureSession.beginConfiguration()
+        let currentInputs = strongSelf.captureSession.inputs
         for input in currentInputs {
-          self.captureSession.removeInput(input)
+          strongSelf.captureSession.removeInput(input)
         }
 
         let input = try AVCaptureDeviceInput(device: device)
-        guard self.captureSession.canAddInput(input) else {
+        guard strongSelf.captureSession.canAddInput(input) else {
           print("Failed to add capture session input.")
           return
         }
-        self.captureSession.addInput(input)
-        self.captureSession.commitConfiguration()
+        strongSelf.captureSession.addInput(input)
+        strongSelf.captureSession.commitConfiguration()
       } catch {
         print("Failed to create capture device input: \(error.localizedDescription)")
       }
@@ -423,14 +545,24 @@ class CameraViewController: UIViewController {
   }
 
   private func startSession() {
+    weak var weakSelf = self
     sessionQueue.async {
-      self.captureSession.startRunning()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.captureSession.startRunning()
     }
   }
 
   private func stopSession() {
+    weak var weakSelf = self
     sessionQueue.async {
-      self.captureSession.stopRunning()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.captureSession.stopRunning()
     }
   }
 
@@ -473,13 +605,18 @@ class CameraViewController: UIViewController {
       message: Constant.alertControllerMessage,
       preferredStyle: .alert
     )
+    weak var weakSelf = self
     detectors.forEach { detectorType in
       let action = UIAlertAction(title: detectorType.rawValue, style: .default) {
         [unowned self] (action) in
         guard let value = action.title else { return }
         guard let detector = Detector(rawValue: value) else { return }
-        self.currentDetector = detector
-        self.removeDetectionAnnotations()
+        guard let strongSelf = weakSelf else {
+          print("Self is nil!")
+          return
+        }
+        strongSelf.currentDetector = detector
+        strongSelf.removeDetectionAnnotations()
       }
       if detectorType.rawValue == self.currentDetector.rawValue { action.isEnabled = false }
       alertController.addAction(action)
@@ -704,10 +841,10 @@ class CameraViewController: UIViewController {
   private func resetManagedLifecycleDetectors(activeDetector: Detector) {
     if activeDetector == self.lastDetector {
       // Same row as before, no need to reset any detectors.
-      return;
+      return
     }
     // Clear the old detector, if applicable.
-    switch (self.lastDetector) {
+    switch self.lastDetector {
     case .pose, .poseAccurate:
       self.poseDetector = nil
       break
@@ -715,7 +852,7 @@ class CameraViewController: UIViewController {
       break
     }
     // Initialize the new detector, if applicable.
-    switch (activeDetector) {
+    switch activeDetector {
     case .pose, .poseAccurate:
       let options = activeDetector == .pose ? PoseDetectorOptions() : AccuratePoseDetectorOptions()
       options.detectorMode = .stream
@@ -743,7 +880,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     // Evaluate `self.currentDetector` once to ensure consistency throughout this method since it
     // can be concurrently modified from the main thread.
-    let activeDetector = self.currentDetector;
+    let activeDetector = self.currentDetector
     resetManagedLifecycleDetectors(activeDetector: activeDetector)
 
     lastFrame = sampleBuffer
@@ -779,6 +916,12 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
       detectFacesOnDevice(in: visionImage, width: imageWidth, height: imageHeight)
     case .onDeviceText:
       recognizeTextOnDevice(in: visionImage, width: imageWidth, height: imageHeight)
+    case .onDeviceImageLabel:
+      detectLabels(
+        in: visionImage, width: imageWidth, height: imageHeight, shouldUseCustomModel: false)
+    case .onDeviceImageLabelsCustom:
+      detectLabels(
+        in: visionImage, width: imageWidth, height: imageHeight, shouldUseCustomModel: true)
     case .onDeviceObjectProminentNoClassifier, .onDeviceObjectProminentWithClassifier,
       .onDeviceObjectMultipleNoClassifier, .onDeviceObjectMultipleWithClassifier:
       let options = ObjectDetectorOptions()
@@ -824,6 +967,8 @@ public enum Detector: String {
   case onDeviceBarcode = "Barcode Scanning"
   case onDeviceFace = "Face Detection"
   case onDeviceText = "Text Recognition"
+  case onDeviceImageLabel = "Image Labeling"
+  case onDeviceImageLabelsCustom = "Image Labeling Custom"
   case onDeviceObjectProminentNoClassifier = "ODT, single, no labeling"
   case onDeviceObjectProminentWithClassifier = "ODT, single, labeling"
   case onDeviceObjectMultipleNoClassifier = "ODT, multiple, no labeling"
@@ -844,11 +989,15 @@ private enum Constant {
   static let sessionQueueLabel = "com.google.mlkit.visiondetector.SessionQueue"
   static let noResultsMessage = "No Results"
   static let localModelFile = (name: "bird", type: "tflite")
-  static let labelConfidenceThreshold: Float = 0.75
+  static let labelConfidenceThreshold = 0.75
   static let smallDotRadius: CGFloat = 4.0
   static let lineWidth: CGFloat = 3.0
   static let originalScale: CGFloat = 1.0
   static let padding: CGFloat = 10.0
   static let resultsLabelHeight: CGFloat = 200.0
   static let resultsLabelLines = 5
+  static let imageLabelResultFrameX = 0.4
+  static let imageLabelResultFrameY = 0.1
+  static let imageLabelResultFrameWidth = 0.5
+  static let imageLabelResultFrameHeight = 0.8
 }

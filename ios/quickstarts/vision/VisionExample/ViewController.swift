@@ -240,6 +240,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
     @unknown default:
       fatalError()
     }
+    weak var weakSelf = self
     DispatchQueue.global(qos: .userInitiated).async {
       // Scale image while maintaining aspect ratio so it displays better in the UIImageView.
       var scaledImage = image.scaledImage(
@@ -248,7 +249,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
       scaledImage = scaledImage ?? image
       guard let finalImage = scaledImage else { return }
       DispatchQueue.main.async {
-        self.imageView.image = finalImage
+        weakSelf?.imageView.image = finalImage
       }
     }
   }
@@ -549,48 +550,53 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
   }
 
   private func process(_ visionImage: VisionImage, with textRecognizer: TextRecognizer?) {
+    weak var weakSelf = self
     textRecognizer?.process(visionImage) { text, error in
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       guard error == nil, let text = text else {
         let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
-        self.resultsText = "Text recognizer failed with error: \(errorString)"
-        self.showResults()
+        strongSelf.resultsText = "Text recognizer failed with error: \(errorString)"
+        strongSelf.showResults()
         return
       }
       // Blocks.
       for block in text.blocks {
-        let transformedRect = block.frame.applying(self.transformMatrix())
+        let transformedRect = block.frame.applying(strongSelf.transformMatrix())
         UIUtilities.addRectangle(
           transformedRect,
-          to: self.annotationOverlayView,
+          to: strongSelf.annotationOverlayView,
           color: UIColor.purple
         )
 
         // Lines.
         for line in block.lines {
-          let transformedRect = line.frame.applying(self.transformMatrix())
+          let transformedRect = line.frame.applying(strongSelf.transformMatrix())
           UIUtilities.addRectangle(
             transformedRect,
-            to: self.annotationOverlayView,
+            to: strongSelf.annotationOverlayView,
             color: UIColor.orange
           )
 
           // Elements.
           for element in line.elements {
-            let transformedRect = element.frame.applying(self.transformMatrix())
+            let transformedRect = element.frame.applying(strongSelf.transformMatrix())
             UIUtilities.addRectangle(
               transformedRect,
-              to: self.annotationOverlayView,
+              to: strongSelf.annotationOverlayView,
               color: UIColor.green
             )
             let label = UILabel(frame: transformedRect)
             label.text = element.text
             label.adjustsFontSizeToFitWidth = true
-            self.annotationOverlayView.addSubview(label)
+            strongSelf.annotationOverlayView.addSubview(label)
           }
         }
       }
-      self.resultsText += "\(text.text)\n"
-      self.showResults()
+      strongSelf.resultsText += "\(text.text)\n"
+      strongSelf.showResults()
     }
   }
 }
@@ -675,12 +681,17 @@ extension ViewController {
     visionImage.orientation = image.imageOrientation
 
     // [START detect_faces]
+    weak var weakSelf = self
     faceDetector.process(visionImage) { faces, error in
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       guard error == nil, let faces = faces, !faces.isEmpty else {
         // [START_EXCLUDE]
         let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
-        self.resultsText = "On-Device face detection failed with error: \(errorString)"
-        self.showResults()
+        strongSelf.resultsText = "On-Device face detection failed with error: \(errorString)"
+        strongSelf.showResults()
         // [END_EXCLUDE]
         return
       }
@@ -688,17 +699,17 @@ extension ViewController {
       // Faces detected
       // [START_EXCLUDE]
       faces.forEach { face in
-        let transform = self.transformMatrix()
+        let transform = strongSelf.transformMatrix()
         let transformedRect = face.frame.applying(transform)
         UIUtilities.addRectangle(
           transformedRect,
-          to: self.annotationOverlayView,
+          to: strongSelf.annotationOverlayView,
           color: UIColor.green
         )
-        self.addLandmarks(forFace: face, transform: transform)
-        self.addContours(forFace: face, transform: transform)
+        strongSelf.addLandmarks(forFace: face, transform: transform)
+        strongSelf.addContours(forFace: face, transform: transform)
       }
-      self.resultsText = faces.map { face in
+      strongSelf.resultsText = faces.map { face in
         let headEulerAngleX = face.hasHeadEulerAngleX ? face.headEulerAngleX.description : "NA"
         let headEulerAngleY = face.hasHeadEulerAngleY ? face.headEulerAngleY.description : "NA"
         let headEulerAngleZ = face.hasHeadEulerAngleZ ? face.headEulerAngleZ.description : "NA"
@@ -722,7 +733,7 @@ extension ViewController {
           """
         return "\(output)"
       }.joined(separator: "\n")
-      self.showResults()
+      strongSelf.showResults()
       // [END_EXCLUDE]
     }
     // [END detect_faces]
@@ -807,30 +818,35 @@ extension ViewController {
     visionImage.orientation = image.imageOrientation
 
     // [START detect_barcodes]
+    weak var weakSelf = self
     barcodeScanner.process(visionImage) { features, error in
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       guard error == nil, let features = features, !features.isEmpty else {
         // [START_EXCLUDE]
         let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
-        self.resultsText = "On-Device barcode detection failed with error: \(errorString)"
-        self.showResults()
+        strongSelf.resultsText = "On-Device barcode detection failed with error: \(errorString)"
+        strongSelf.showResults()
         // [END_EXCLUDE]
         return
       }
 
       // [START_EXCLUDE]
       features.forEach { feature in
-        let transformedRect = feature.frame.applying(self.transformMatrix())
+        let transformedRect = feature.frame.applying(strongSelf.transformMatrix())
         UIUtilities.addRectangle(
           transformedRect,
-          to: self.annotationOverlayView,
+          to: strongSelf.annotationOverlayView,
           color: UIColor.green
         )
       }
-      self.resultsText = features.map { feature in
+      strongSelf.resultsText = features.map { feature in
         return "DisplayValue: \(feature.displayValue ?? ""), RawValue: "
           + "\(feature.rawValue ?? ""), Frame: \(feature.frame)"
       }.joined(separator: "\n")
-      self.showResults()
+      strongSelf.showResults()
       // [END_EXCLUDE]
     }
     // [END detect_barcodes]
@@ -873,21 +889,26 @@ extension ViewController {
     visionImage.orientation = image.imageOrientation
 
     // [START detect_label]
+    weak var weakSelf = self
     onDeviceLabeler.process(visionImage) { labels, error in
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       guard error == nil, let labels = labels, !labels.isEmpty else {
         // [START_EXCLUDE]
         let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
-        self.resultsText = "On-Device label detection failed with error: \(errorString)"
-        self.showResults()
+        strongSelf.resultsText = "On-Device label detection failed with error: \(errorString)"
+        strongSelf.showResults()
         // [END_EXCLUDE]
         return
       }
 
       // [START_EXCLUDE]
-      self.resultsText = labels.map { label -> String in
-        return "Label: \(label.text), Confidence: \(label.confidence)"
+      strongSelf.resultsText = labels.map { label -> String in
+        return "Label: \(label.text), Confidence: \(label.confidence), Index: \(label.index)"
       }.joined(separator: "\n")
-      self.showResults()
+      strongSelf.showResults()
       // [END_EXCLUDE]
     }
     // [END detect_label]
@@ -929,37 +950,42 @@ extension ViewController {
     // [END init_object_detector]
 
     // [START detect_object]
+    weak var weakSelf = self
     detector.process(visionImage) { objects, error in
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       guard error == nil else {
         // [START_EXCLUDE]
         let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
-        self.resultsText = "Object detection failed with error: \(errorString)"
-        self.showResults()
+        strongSelf.resultsText = "Object detection failed with error: \(errorString)"
+        strongSelf.showResults()
         // [END_EXCLUDE]
         return
       }
       guard let objects = objects, !objects.isEmpty else {
         // [START_EXCLUDE]
-        self.resultsText = "On-Device object detector returned no results."
-        self.showResults()
+        strongSelf.resultsText = "On-Device object detector returned no results."
+        strongSelf.showResults()
         // [END_EXCLUDE]
         return
       }
 
       objects.forEach { object in
         // [START_EXCLUDE]
-        let transform = self.transformMatrix()
+        let transform = strongSelf.transformMatrix()
         let transformedRect = object.frame.applying(transform)
         UIUtilities.addRectangle(
           transformedRect,
-          to: self.annotationOverlayView,
+          to: strongSelf.annotationOverlayView,
           color: .green
         )
         // [END_EXCLUDE]
       }
 
       // [START_EXCLUDE]
-      self.resultsText = objects.map { object in
+      strongSelf.resultsText = objects.map { object in
         var description = "Frame: \(object.frame)\n"
         if let trackingID = object.trackingID {
           description += "Object ID: " + trackingID.stringValue + "\n"
@@ -970,7 +996,7 @@ extension ViewController {
         return description
       }.joined(separator: "\n")
 
-      self.showResults()
+      strongSelf.showResults()
       // [END_EXCLUDE]
     }
     // [END detect_object]
@@ -984,10 +1010,10 @@ extension ViewController {
   private func resetManagedLifecycleDetectors(activeDetectorRow: DetectorPickerRow) {
     if activeDetectorRow == self.lastDetectorRow {
       // Same row as before, no need to reset any detectors.
-      return;
+      return
     }
     // Clear the old detector, if applicable.
-    switch (self.lastDetectorRow) {
+    switch self.lastDetectorRow {
     case .detectPose, .detectPoseAccurate:
       self.poseDetector = nil
       break
@@ -995,10 +1021,12 @@ extension ViewController {
       break
     }
     // Initialize the new detector, if applicable.
-    switch (activeDetectorRow) {
+    switch activeDetectorRow {
     case .detectPose, .detectPoseAccurate:
-      let options = activeDetectorRow == .detectPose ? PoseDetectorOptions()
-                                                     : AccuratePoseDetectorOptions()
+      let options =
+        activeDetectorRow == .detectPose
+        ? PoseDetectorOptions()
+        : AccuratePoseDetectorOptions()
       options.detectorMode = .singleImage
       self.poseDetector = PoseDetector.poseDetector(options: options)
       break
@@ -1087,14 +1115,14 @@ private enum Constants {
 }
 
 // Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(
+private func convertFromUIImagePickerControllerInfoKeyDictionary(
   _ input: [UIImagePickerController.InfoKey: Any]
 ) -> [String: Any] {
   return Dictionary(uniqueKeysWithValues: input.map { key, value in (key.rawValue, value) })
 }
 
 // Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey)
+private func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey)
   -> String
 {
   return input.rawValue
