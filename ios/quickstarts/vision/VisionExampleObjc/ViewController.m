@@ -343,6 +343,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       break;
   }
 
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
     // Scale image while maintaining aspect ratio so it displays better in the UIImageView.
     UIImage *scaledImage =
@@ -354,7 +355,8 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       return;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-      self->_imageView.image = scaledImage;
+      __strong typeof(weakSelf) strongSelf = weakSelf;
+      strongSelf->_imageView.image = scaledImage;
     });
   });
 }
@@ -625,16 +627,18 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 - (void)process:(MLKVisionImage *)visionImage
     withTextRecognizer:(MLKTextRecognizer *)textRecognizer {
+  __weak typeof(self) weakSelf = self;
   // [START recognize_text]
   [textRecognizer
       processImage:visionImage
         completion:^(MLKText *_Nullable text, NSError *_Nullable error) {
+          __strong typeof(weakSelf) strongSelf = weakSelf;
           if (text == nil) {
             // [START_EXCLUDE]
-            self.resultsText = [NSMutableString
+            strongSelf.resultsText = [NSMutableString
                 stringWithFormat:@"Text recognizer failed with error: %@",
                                  error ? error.localizedDescription : detectionNoResultsMessage];
-            [self showResults];
+            [strongSelf showResults];
             // [END_EXCLUDE]
             return;
           }
@@ -643,7 +647,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
           // Blocks.
           for (MLKTextBlock *block in text.blocks) {
             CGRect transformedRect =
-                CGRectApplyAffineTransform(block.frame, [self transformMatrix]);
+                CGRectApplyAffineTransform(block.frame, [strongSelf transformMatrix]);
             [UIUtilities addRectangle:transformedRect
                                toView:self.annotationOverlayView
                                 color:UIColor.purpleColor];
@@ -651,27 +655,27 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
             // Lines.
             for (MLKTextLine *line in block.lines) {
               CGRect transformedRect =
-                  CGRectApplyAffineTransform(line.frame, [self transformMatrix]);
+                  CGRectApplyAffineTransform(line.frame, [strongSelf transformMatrix]);
               [UIUtilities addRectangle:transformedRect
-                                 toView:self.annotationOverlayView
+                                 toView:strongSelf.annotationOverlayView
                                   color:UIColor.orangeColor];
 
               // Elements.
               for (MLKTextElement *element in line.elements) {
                 CGRect transformedRect =
-                    CGRectApplyAffineTransform(element.frame, [self transformMatrix]);
+                    CGRectApplyAffineTransform(element.frame, [strongSelf transformMatrix]);
                 [UIUtilities addRectangle:transformedRect
-                                   toView:self.annotationOverlayView
+                                   toView:strongSelf.annotationOverlayView
                                     color:UIColor.greenColor];
                 UILabel *label = [[UILabel alloc] initWithFrame:transformedRect];
                 label.text = element.text;
                 label.adjustsFontSizeToFitWidth = YES;
-                [self.annotationOverlayView addSubview:label];
+                [strongSelf.annotationOverlayView addSubview:label];
               }
             }
           }
-          [self.resultsText appendFormat:@"%@\n", text.text];
-          [self showResults];
+          [strongSelf.resultsText appendFormat:@"%@\n", text.text];
+          [strongSelf showResults];
           // [END_EXCLUDE]
         }];
   // [END recognize_text]
@@ -745,31 +749,33 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   visionImage.orientation = image.imageOrientation;
 
   // [START detect_faces]
+  __weak typeof(self) weakSelf = self;
   [faceDetector
       processImage:visionImage
         completion:^(NSArray<MLKFace *> *_Nullable faces, NSError *_Nullable error) {
+          __strong typeof(weakSelf) strongSelf = weakSelf;
           if (!faces || faces.count == 0) {
             // [START_EXCLUDE]
             NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
-            self.resultsText = [NSMutableString
+            strongSelf.resultsText = [NSMutableString
                 stringWithFormat:@"On-Device face detection failed with error: %@", errorString];
-            [self showResults];
+            [strongSelf showResults];
             // [END_EXCLUDE]
             return;
           }
 
           // Faces detected
           // [START_EXCLUDE]
-          [self.resultsText setString:@""];
+          [strongSelf.resultsText setString:@""];
           for (MLKFace *face in faces) {
-            CGAffineTransform transform = [self transformMatrix];
+            CGAffineTransform transform = [strongSelf transformMatrix];
             CGRect transformedRect = CGRectApplyAffineTransform(face.frame, transform);
             [UIUtilities addRectangle:transformedRect
-                               toView:self.annotationOverlayView
+                               toView:strongSelf.annotationOverlayView
                                 color:UIColor.greenColor];
-            [self addLandmarksForFace:face transform:transform];
-            [self addContoursForFace:face transform:transform];
-            [self.resultsText appendFormat:@"Frame: %@\n", NSStringFromCGRect(face.frame)];
+            [strongSelf addLandmarksForFace:face transform:transform];
+            [strongSelf addContoursForFace:face transform:transform];
+            [strongSelf.resultsText appendFormat:@"Frame: %@\n", NSStringFromCGRect(face.frame)];
             NSString *headEulerAngleX =
                 face.hasHeadEulerAngleX ? [NSString stringWithFormat:@"%.2f", face.headEulerAngleX]
                                         : @"NA";
@@ -791,16 +797,16 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
                 face.hasSmilingProbability
                     ? [NSString stringWithFormat:@"%.2f", face.smilingProbability]
                     : @"NA";
-            [self.resultsText appendFormat:@"Head Euler Angle X: %@\n", headEulerAngleX];
-            [self.resultsText appendFormat:@"Head Euler Angle Y: %@\n", headEulerAngleY];
-            [self.resultsText appendFormat:@"Head Euler Angle Z: %@\n", headEulerAngleZ];
-            [self.resultsText
+            [strongSelf.resultsText appendFormat:@"Head Euler Angle X: %@\n", headEulerAngleX];
+            [strongSelf.resultsText appendFormat:@"Head Euler Angle Y: %@\n", headEulerAngleY];
+            [strongSelf.resultsText appendFormat:@"Head Euler Angle Z: %@\n", headEulerAngleZ];
+            [strongSelf.resultsText
                 appendFormat:@"Left Eye Open Probability: %@\n", leftEyeOpenProbability];
-            [self.resultsText
+            [strongSelf.resultsText
                 appendFormat:@"Right Eye Open Probability: %@\n", rightEyeOpenProbability];
-            [self.resultsText appendFormat:@"Smiling Probability: %@\n", smilingProbability];
+            [strongSelf.resultsText appendFormat:@"Smiling Probability: %@\n", smilingProbability];
           }
-          [self showResults];
+          [strongSelf showResults];
           // [END_EXCLUDE]
         }];
   // [END detect_faces]
@@ -834,32 +840,34 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   visionImage.orientation = image.imageOrientation;
 
   // [START detect_barcodes]
+  __weak typeof(self) weakSelf = self;
   [barcodeScanner
       processImage:visionImage
         completion:^(NSArray<MLKBarcode *> *_Nullable barcodes, NSError *_Nullable error) {
+          __strong typeof(weakSelf) strongSelf = weakSelf;
           if (!barcodes || barcodes.count == 0) {
             // [START_EXCLUDE]
             NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
-            self.resultsText = [NSMutableString
+            strongSelf.resultsText = [NSMutableString
                 stringWithFormat:@"On-Device barcode detection failed with error: %@", errorString];
-            [self showResults];
+            [strongSelf showResults];
             // [END_EXCLUDE]
             return;
           }
 
           // [START_EXCLUDE]
-          [self.resultsText setString:@""];
+          [strongSelf.resultsText setString:@""];
           for (MLKBarcode *barcode in barcodes) {
-            CGAffineTransform transform = [self transformMatrix];
+            CGAffineTransform transform = [strongSelf transformMatrix];
             CGRect transformedRect = CGRectApplyAffineTransform(barcode.frame, transform);
             [UIUtilities addRectangle:transformedRect
-                               toView:self.annotationOverlayView
+                               toView:strongSelf.annotationOverlayView
                                 color:UIColor.greenColor];
-            [self.resultsText appendFormat:@"DisplayValue: %@, RawValue: %@, Frame: %@\n",
-                                           barcode.displayValue, barcode.rawValue,
-                                           NSStringFromCGRect(barcode.frame)];
+            [strongSelf.resultsText appendFormat:@"DisplayValue: %@, RawValue: %@, Frame: %@\n",
+                                                 barcode.displayValue, barcode.rawValue,
+                                                 NSStringFromCGRect(barcode.frame)];
           }
-          [self showResults];
+          [strongSelf showResults];
           // [END_EXCLUDE]
         }];
   // [END detect_barcodes]
@@ -969,26 +977,29 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   visionImage.orientation = image.imageOrientation;
 
   // [START detect_label]
+  __weak typeof(self) weakSelf = self;
   [onDeviceLabeler
       processImage:visionImage
         completion:^(NSArray<MLKImageLabel *> *_Nullable labels, NSError *_Nullable error) {
-          if (!labels || labels.count == 0) {
+          __strong typeof(weakSelf) strongSelf = weakSelf;
+          if (labels.count == 0) {
             // [START_EXCLUDE]
-            NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
-            [self.resultsText
+            NSString *errorString =
+                error != nil ? error.localizedDescription : detectionNoResultsMessage;
+            [strongSelf.resultsText
                 appendFormat:@"On-Device label detection failed with error: %@", errorString];
-            [self showResults];
+            [strongSelf showResults];
             // [END_EXCLUDE]
             return;
           }
 
           // [START_EXCLUDE]
-          [self.resultsText setString:@""];
+          [strongSelf.resultsText setString:@""];
           for (MLKImageLabel *label in labels) {
-            [self.resultsText
+            [strongSelf.resultsText
                 appendFormat:@"Label: %@, Confidence: %f\n", label.text, label.confidence];
           }
-          [self showResults];
+          [strongSelf showResults];
           // [END_EXCLUDE]
         }];
   // [END detect_label]
@@ -1037,27 +1048,30 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   visionImage.orientation = image.imageOrientation;
 
   // [START detect_object]
+  __weak typeof(self) weakSelf = self;
   [detector
       processImage:visionImage
         completion:^(NSArray<MLKObject *> *_Nullable objects, NSError *_Nullable error) {
+          __strong typeof(weakSelf) strongSelf = weakSelf;
           if (error != nil) {
             // [START_EXCLUDE]
             NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
-            self.resultsText = [NSMutableString
+            strongSelf.resultsText = [NSMutableString
                 stringWithFormat:@"Object detection failed with error: %@", errorString];
-            [self showResults];
+            [strongSelf showResults];
             // [END_EXCLUDE]
           }
           if (!objects || objects.count == 0) {
             // [START_EXCLUDE]
-            self.resultsText = [@"On-Device object detector returned no results." mutableCopy];
-            [self showResults];
+            strongSelf.resultsText =
+                [@"On-Device object detector returned no results." mutableCopy];
+            [strongSelf showResults];
             // [END_EXCLUDE]
             return;
           }
 
           // [START_EXCLUDE]
-          [self.resultsText setString:@""];
+          [strongSelf.resultsText setString:@""];
           for (MLKObject *object in objects) {
             CGAffineTransform transform = [self transformMatrix];
             CGRect transformedRect = CGRectApplyAffineTransform(object.frame, transform);
@@ -1065,17 +1079,18 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
                                toView:self.annotationOverlayView
                                 color:UIColor.greenColor];
 
-            [self.resultsText appendFormat:@"Frame: %@\nObject ID: %@\nLabels:\n",
-                                           NSStringFromCGRect(object.frame), object.trackingID];
+            [strongSelf.resultsText appendFormat:@"Frame: %@\nObject ID: %@\nLabels:\n",
+                                                 NSStringFromCGRect(object.frame),
+                                                 object.trackingID];
             int i = 0;
             for (MLKObjectLabel *l in object.labels) {
               NSString *labelString =
                   [NSString stringWithFormat:@"Label %d: %@, %f, %lu\n", i++, l.text, l.confidence,
                                              (unsigned long)l.index];
-              [self.resultsText appendString:labelString];
+              [strongSelf.resultsText appendString:labelString];
             }
           }
-          [self showResults];
+          [strongSelf showResults];
           // [END_EXCLUDE]
         }];
   // [END detect_object]
