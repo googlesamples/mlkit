@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  <TextView
+      android:id="@+id/myTextView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/models_view"
+      android:textStyle="bold"
+      android:textSize="24sp"
+      android:gravity="center"
+      android:paddingVertical="16dp" />
+
+  <ListView
+      android:id="@+id/models_list_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+</LinearLayout>

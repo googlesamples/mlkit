@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <item
+      android:id="@+id/action_btn"
+      android:icon="@drawable/ic_baseline_get_app_white_32"
+      android:title="@string/choose_model_btn"
+      app:showAsAction="always" />
+
+</menu>

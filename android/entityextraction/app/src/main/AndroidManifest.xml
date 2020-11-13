@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.mlkit.samples.nl.entityextraction">
+
+  <application
+      android:allowBackup="true"
+      android:icon="@drawable/logo_mlkit"
+      android:label="@string/app_name"
+      android:theme="@style/AppTheme">
+
+    <activity
+        android:name=".EntryChoiceActivity"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+
+    <activity
+        android:name=".java.MainActivityJava"
+        android:exported="true" />
+
+    <activity
+        android:name=".java.ModelsActivityJava"
+        android:exported="true" />
+
+    <activity
+        android:name=".kotlin.MainActivityKotlin"
+        android:exported="true" />
+
+    <activity
+        android:name=".kotlin.ModelsActivityKotlin"
+        android:exported="true" />
+
+  </application>
+
+</manifest>
+

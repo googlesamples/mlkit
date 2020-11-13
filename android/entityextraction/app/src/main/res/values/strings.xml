@@ -1,0 +1,79 @@
+<resources>
+  <!-- Application name -->
+  <string name="app_name">MLKit-EntityExtraction</string>
+  <string name="current_model">Current model: %s</string>
+  <!-- String to show current locale [CHAR_LIMIT=NONE] -->
+  <string name="current_locale">Current locale: %s</string>
+  <!-- Placeholder for input box -->
+  <string name="input">Enter your input</string>
+  <!-- Action string for entity extraction button -->
+  <string name="entity_extraction_trigger_btn">Trigger Entity Extraction</string>
+  <!-- Message to be displayed for EE triggered with empty input -->
+  <string name="empty_input">Please enter a text.</string>
+  <!-- Placeholder for EE error -->
+  <string name="entity_extraction_error">Annotation failed.</string>
+  <!-- Waiting message for the output box once EE is triggered -->
+  <string name="wait_message">Working…</string>
+  <!-- String of info to be displayed for a money type entity -->
+  <string name="money_entity_info">Money entity detected: %1$s.
+    \nCurrency: %2$s, integer: %3$d, decimal: %4$d.\n</string>
+  <!-- String of info to be displayed for a flight number type entity -->
+  <string name="flight_number_entity_info">Flight number entity detected: %1$s.
+    \nAirline code: %2$s, flight number: %3$s.\n</string>
+  <!-- String of info to be displayed for an IBAN type entity -->
+  <string name="iban_entity_info">Iban entity detected: %1$s.
+    \nIban country code: %2$s, iban: %3$s.\n</string>
+  <!-- String of info to be displayed for an ISBN type entity -->
+  <string name="isbn_entity_info">Isbn entity detected: %1$s.\nIsbn:  %2$s.\n</string>
+  <!-- String of info to be displayed for a payment card type entity -->
+  <string name="payment_card_entity_info">Payment card entity detected: %1$s.\n
+    Payment card network: %2$d, payment card number: %3$s.\n</string>
+  <!-- String of info to be displayed for a tracking number type entity -->
+  <string name="tracking_number_entity_info">Tracking number entity detected: %1$s.\n
+    Parcel carrier: %2$d, tracking number: %3$s.\n</string>
+  <!-- String of info to be displayed for a date time type entity -->
+  <string name="date_time_entity_info">Date_time entity detected: %1$s.
+    \n%2$s (granularity: %3$s).\n</string>
+  <!-- String of info to be displayed for an address type entity -->
+  <string name="address_entity_info">Address entity detected: %1$s.\n</string>
+  <!-- String of info to be displayed for a phone number type entity -->
+  <string name="phone_entity_info">Phone number entity detected: %1$s.\n</string>
+  <!-- String of info to be displayed for a phone number type entity, including formatted phone number -->
+  <string name="phone_entity_info_formatted">Phone number entity detected: %1$s (formatted by libphonenumber: %2$s).\n</string>
+  <!-- String of info to be displayed for no entities detected -->
+  <string name="no_entity_detected">There are no entities detected.\n</string>
+  <!-- String of info to be displayed for a URL type entity -->
+  <string name="url_entity_info">URL entity detected: %1$s.\n</string>
+  <!-- String of info to be displayed for an email type entity -->
+  <string name="email_entity_info">Email entity detected: %1$s.\n</string>
+  <!-- String of info to be displayed for an unknown type entity -->
+  <string name="unknown_entity_info">Unknown entity detected: %1$s.\n</string>
+  <!-- Message to be displayed when entities are detected -->
+  <string name="entities_detected">Entities detected:</string>
+  <!-- String representing unknown granularity type, used to construct date_time entity info-->
+  <string name="granularity_unknown">Unknown</string>
+  <!-- String representing year granularity type, used to construct date_time entity info-->
+  <string name="granularity_year">Year</string>
+  <!-- String representing month granularity type, used to construct date_time entity info-->
+  <string name="granularity_month">Month</string>
+  <!-- String representing week granularity type, used to construct date_time entity info-->
+  <string name="granularity_week">Week</string>
+  <!-- String representing day granularity type, used to construct date_time entity info-->
+  <string name="granularity_day">Day</string>
+  <!-- String representing hour granularity type, used to construct date_time entity info-->
+  <string name="granularity_hour">Hour</string>
+  <!-- String representing minute granularity type, used to construct date_time entity info-->
+  <string name="granularity_minute">Minute</string>
+  <!-- String representing second granularity type, used to construct date_time entity info-->
+  <string name="granularity_second">Second</string>
+  <!-- String title for action button that opens models screen-->
+  <string name="choose_model_btn">Choose a model</string>
+  <!-- String title for models list-->
+  <string name="models_view">Choose a model from the list:</string>
+  <!-- String used to display the downloading models list in a snackbar-->
+  <plurals name="snackbar_message">
+    <item quantity="one">Downloading model %1$s</item>
+    <item quantity="other">Downloading models %1$s</item>
+  </plurals>
+</resources>
+
