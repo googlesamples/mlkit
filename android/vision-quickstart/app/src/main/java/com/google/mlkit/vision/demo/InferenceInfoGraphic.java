@@ -29,16 +29,21 @@ public class InferenceInfoGraphic extends GraphicOverlay.Graphic {
 
   private final Paint textPaint;
   private final GraphicOverlay overlay;
-  private final double latency;
+  private final long frameLatency;
+  private final long detectorLatency;
 
   // Only valid when a stream of input images is being processed. Null for single image mode.
   @Nullable private final Integer framesPerSecond;
 
   public InferenceInfoGraphic(
-      GraphicOverlay overlay, double latency, @Nullable Integer framesPerSecond) {
+      GraphicOverlay overlay,
+      long frameLatency,
+      long detectorLatency,
+      @Nullable Integer framesPerSecond) {
     super(overlay);
     this.overlay = overlay;
-    this.latency = latency;
+    this.frameLatency = frameLatency;
+    this.detectorLatency = detectorLatency;
     this.framesPerSecond = framesPerSecond;
     textPaint = new Paint();
     textPaint.setColor(TEXT_COLOR);
@@ -60,9 +65,16 @@ public class InferenceInfoGraphic extends GraphicOverlay.Graphic {
     // Draw FPS (if valid) and inference latency
     if (framesPerSecond != null) {
       canvas.drawText(
-          "FPS: " + framesPerSecond + ", latency: " + latency + " ms", x, y + TEXT_SIZE, textPaint);
+          "FPS: " + framesPerSecond + ", Frame latency: " + frameLatency + " ms",
+          x,
+          y + TEXT_SIZE,
+          textPaint);
+      canvas.drawText(
+          "Detector latency: " + detectorLatency + " ms", x, y + TEXT_SIZE * 2, textPaint);
     } else {
-      canvas.drawText("Latency: " + latency + " ms", x, y + TEXT_SIZE, textPaint);
+      canvas.drawText("Frame latency: " + frameLatency + " ms", x, y + TEXT_SIZE, textPaint);
+      canvas.drawText(
+          "Detector latency: " + detectorLatency + " ms", x, y + TEXT_SIZE * 2, textPaint);
     }
   }
 }

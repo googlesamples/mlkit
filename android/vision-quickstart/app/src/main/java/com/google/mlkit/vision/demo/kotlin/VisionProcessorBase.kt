@@ -66,9 +66,12 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
 
   // Used to calculate latency, running in the same thread, no sync needed.
   private var numRuns = 0
-  private var totalRunMs: Long = 0
-  private var maxRunMs: Long = 0
-  private var minRunMs = Long.MAX_VALUE
+  private var totalFrameMs = 0L
+  private var maxFrameMs = 0L
+  private var minFrameMs = Long.MAX_VALUE
+  private var totalDetectorMs = 0L
+  private var maxDetectorMs = 0L
+  private var minDetectorMs = Long.MAX_VALUE
 
   // Frame count that have been processed so far in an one second interval to calculate FPS.
   private var frameProcessedInOneSecondInterval = 0
@@ -100,11 +103,13 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
 
   // -----------------Code for processing single still image----------------------------------------
   override fun processBitmap(bitmap: Bitmap?, graphicOverlay: GraphicOverlay) {
+    val frameStartMs = SystemClock.elapsedRealtime()
     requestDetectInImage(
       InputImage.fromBitmap(bitmap!!, 0),
       graphicOverlay, /* originalCameraImage= */
       null, /* shouldShowFps= */
-      false
+      false,
+      frameStartMs
     )
   }
 
@@ -138,6 +143,7 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
     frameMetadata: FrameMetadata,
     graphicOverlay: GraphicOverlay
   ) {
+    val frameStartMs = SystemClock.elapsedRealtime()
     // If live viewport is on (that is the underneath surface view takes care of the camera preview
     // drawing), skip the unnecessary bitmap creation that used for the manual preview drawing.
     val bitmap =
@@ -153,7 +159,8 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
       ),
       graphicOverlay,
       bitmap, /* shouldShowFps= */
-      true
+      true,
+      frameStartMs
     )
       .addOnSuccessListener(executor) { processLatestImage(graphicOverlay) }
   }
@@ -162,6 +169,7 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
   @RequiresApi(VERSION_CODES.KITKAT)
   @ExperimentalGetImage
   override fun processImageProxy(image: ImageProxy, graphicOverlay: GraphicOverlay) {
+    val frameStartMs = SystemClock.elapsedRealtime()
     if (isShutdown) {
       return
     }
@@ -173,7 +181,8 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
       InputImage.fromMediaImage(image.image!!, image.imageInfo.rotationDegrees),
       graphicOverlay, /* originalCameraImage= */
       bitmap, /* shouldShowFps= */
-      true
+      true,
+      frameStartMs
     )
       // When the image is from CameraX analysis use case, must call image.close() on received
       // images when finished using them. Otherwise, new images may not be received or the camera
@@ -186,32 +195,41 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
     image: InputImage,
     graphicOverlay: GraphicOverlay,
     originalCameraImage: Bitmap?,
-    shouldShowFps: Boolean
+    shouldShowFps: Boolean,
+    frameStartMs: Long
   ): Task<T> {
-    val startMs = SystemClock.elapsedRealtime()
+    val detectorStartMs = SystemClock.elapsedRealtime()
     return detectInImage(image).addOnSuccessListener(executor) { results: T ->
-      val currentLatencyMs = SystemClock.elapsedRealtime() - startMs
+      val endMs = SystemClock.elapsedRealtime()
+      val currentFrameLatencyMs = endMs - frameStartMs
+      val currentDetectorLatencyMs = endMs - detectorStartMs
       numRuns++
       frameProcessedInOneSecondInterval++
-      totalRunMs += currentLatencyMs
-      maxRunMs = Math.max(currentLatencyMs, maxRunMs)
-      minRunMs = Math.min(currentLatencyMs, minRunMs)
+      totalFrameMs += currentFrameLatencyMs
+      maxFrameMs = Math.max(currentFrameLatencyMs, maxFrameMs)
+      minFrameMs = Math.min(currentFrameLatencyMs, minFrameMs)
+      totalDetectorMs += currentDetectorLatencyMs
+      maxDetectorMs = Math.max(currentDetectorLatencyMs, maxDetectorMs)
+      minDetectorMs = Math.min(currentDetectorLatencyMs, minDetectorMs)
+
       // Only log inference info once per second. When frameProcessedInOneSecondInterval is
       // equal to 1, it means this is the first frame processed during the current second.
       if (frameProcessedInOneSecondInterval == 1) {
-        Log.d(TAG, "Max latency is: $maxRunMs")
-        Log.d(TAG, "Min latency is: $minRunMs")
+        Log.d(TAG, "Num of Runs: $numRuns")
         Log.d(
           TAG,
-          "Num of Runs: " + numRuns + ", Avg latency is: " + totalRunMs / numRuns
+          "Frame latency: max=$maxFrameMs, min=$minFrameMs, avg=" +
+            (totalFrameMs / numRuns)
+        )
+        Log.d(
+          TAG,
+          "Detector latency: max=$maxDetectorMs, min=$minDetectorMs, avg=" +
+            (totalDetectorMs / numRuns)
         )
         val mi = ActivityManager.MemoryInfo()
         activityManager.getMemoryInfo(mi)
         val availableMegs = mi.availMem / 0x100000L
-        Log.d(
-          TAG,
-          "Memory available in system: $availableMegs MB"
-        )
+        Log.d(TAG, "Memory available in system: $availableMegs MB")
       }
       graphicOverlay.clear()
       if (originalCameraImage != null) {
@@ -225,7 +243,8 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
       graphicOverlay.add(
         InferenceInfoGraphic(
           graphicOverlay,
-          currentLatencyMs.toDouble(),
+          currentFrameLatencyMs,
+          currentDetectorLatencyMs,
           if (shouldShowFps) framesPerSecond else null
         )
       )
@@ -253,7 +272,8 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
     executor.shutdown()
     isShutdown = true
     numRuns = 0
-    totalRunMs = 0
+    totalFrameMs = 0
+    totalDetectorMs = 0
     fpsTimer.cancel()
   }
 

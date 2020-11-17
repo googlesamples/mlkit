@@ -16,6 +16,9 @@
 
 package com.google.mlkit.vision.demo.java;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
 import android.content.Context;
@@ -66,9 +69,12 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
   // Used to calculate latency, running in the same thread, no sync needed.
   private int numRuns = 0;
-  private long totalRunMs = 0;
-  private long maxRunMs = 0;
-  private long minRunMs = Long.MAX_VALUE;
+  private long totalFrameMs = 0;
+  private long maxFrameMs = 0;
+  private long minFrameMs = Long.MAX_VALUE;
+  private long totalDetectorMs = 0;
+  private long maxDetectorMs = 0;
+  private long minDetectorMs = Long.MAX_VALUE;
 
   // Frame count that have been processed so far in an one second interval to calculate FPS.
   private int frameProcessedInOneSecondInterval = 0;
@@ -105,11 +111,13 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
   // -----------------Code for processing single still image----------------------------------------
   @Override
   public void processBitmap(Bitmap bitmap, final GraphicOverlay graphicOverlay) {
+    long frameStartMs = SystemClock.elapsedRealtime();
     requestDetectInImage(
         InputImage.fromBitmap(bitmap, 0),
         graphicOverlay,
         /* originalCameraImage= */ null,
-        /* shouldShowFps= */ false);
+        /* shouldShowFps= */ false,
+        frameStartMs);
   }
 
   // -----------------Code for processing live preview frame from Camera1 API-----------------------
@@ -135,6 +143,8 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
   private void processImage(
       ByteBuffer data, final FrameMetadata frameMetadata, final GraphicOverlay graphicOverlay) {
+    long frameStartMs = SystemClock.elapsedRealtime();
+
     // If live viewport is on (that is the underneath surface view takes care of the camera preview
     // drawing), skip the unnecessary bitmap creation that used for the manual preview drawing.
     Bitmap bitmap =
@@ -151,7 +161,8 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
                 InputImage.IMAGE_FORMAT_NV21),
             graphicOverlay,
             bitmap,
-            /* shouldShowFps= */ true)
+            /* shouldShowFps= */ true,
+            frameStartMs)
         .addOnSuccessListener(executor, results -> processLatestImage(graphicOverlay));
   }
 
@@ -160,6 +171,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
   @RequiresApi(VERSION_CODES.KITKAT)
   @ExperimentalGetImage
   public void processImageProxy(ImageProxy image, GraphicOverlay graphicOverlay) {
+    long frameStartMs = SystemClock.elapsedRealtime();
     if (isShutdown) {
       image.close();
       return;
@@ -174,7 +186,8 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
             InputImage.fromMediaImage(image.getImage(), image.getImageInfo().getRotationDegrees()),
             graphicOverlay,
             /* originalCameraImage= */ bitmap,
-            /* shouldShowFps= */ true)
+            /* shouldShowFps= */ true,
+            frameStartMs)
         // When the image is from CameraX analysis use case, must call image.close() on received
         // images when finished using them. Otherwise, new images may not be received or the camera
         // may stall.
@@ -186,25 +199,45 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
       final InputImage image,
       final GraphicOverlay graphicOverlay,
       @Nullable final Bitmap originalCameraImage,
-      boolean shouldShowFps) {
-    final long startMs = SystemClock.elapsedRealtime();
+      boolean shouldShowFps,
+      long frameStartMs) {
+    final long detectorStartMs = SystemClock.elapsedRealtime();
     return detectInImage(image)
         .addOnSuccessListener(
             executor,
             results -> {
-              long currentLatencyMs = SystemClock.elapsedRealtime() - startMs;
+              long endMs = SystemClock.elapsedRealtime();
+              long currentFrameLatencyMs = endMs - frameStartMs;
+              long currentDetectorLatencyMs = endMs - detectorStartMs;
               numRuns++;
               frameProcessedInOneSecondInterval++;
-              totalRunMs += currentLatencyMs;
-              maxRunMs = Math.max(currentLatencyMs, maxRunMs);
-              minRunMs = Math.min(currentLatencyMs, minRunMs);
+              totalFrameMs += currentFrameLatencyMs;
+              maxFrameMs = max(currentFrameLatencyMs, maxFrameMs);
+              minFrameMs = min(currentFrameLatencyMs, minFrameMs);
+              totalDetectorMs += currentDetectorLatencyMs;
+              maxDetectorMs = max(currentDetectorLatencyMs, maxDetectorMs);
+              minDetectorMs = min(currentDetectorLatencyMs, minDetectorMs);
 
               // Only log inference info once per second. When frameProcessedInOneSecondInterval is
               // equal to 1, it means this is the first frame processed during the current second.
               if (frameProcessedInOneSecondInterval == 1) {
-                Log.d(TAG, "Max latency is: " + maxRunMs);
-                Log.d(TAG, "Min latency is: " + minRunMs);
-                Log.d(TAG, "Num of Runs: " + numRuns + ", Avg latency is: " + totalRunMs / numRuns);
+                Log.d(TAG, "Num of Runs: " + numRuns);
+                Log.d(
+                    TAG,
+                    "Frame latency: max="
+                        + maxFrameMs
+                        + ", min="
+                        + minFrameMs
+                        + ", avg="
+                        + totalFrameMs / numRuns);
+                Log.d(
+                    TAG,
+                    "Detector latency: max="
+                        + maxDetectorMs
+                        + ", min="
+                        + minDetectorMs
+                        + ", avg="
+                        + totalDetectorMs / numRuns);
                 MemoryInfo mi = new MemoryInfo();
                 activityManager.getMemoryInfo(mi);
                 long availableMegs = mi.availMem / 0x100000L;
@@ -217,7 +250,10 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
               }
               graphicOverlay.add(
                   new InferenceInfoGraphic(
-                      graphicOverlay, currentLatencyMs, shouldShowFps ? framesPerSecond : null));
+                      graphicOverlay,
+                      currentFrameLatencyMs,
+                      currentDetectorLatencyMs,
+                      shouldShowFps ? framesPerSecond : null));
               VisionProcessorBase.this.onSuccess(results, graphicOverlay);
               graphicOverlay.postInvalidate();
             })
@@ -243,7 +279,8 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
     executor.shutdown();
     isShutdown = true;
     numRuns = 0;
-    totalRunMs = 0;
+    totalFrameMs = 0;
+    totalDetectorMs = 0;
     fpsTimer.cancel();
   }
 

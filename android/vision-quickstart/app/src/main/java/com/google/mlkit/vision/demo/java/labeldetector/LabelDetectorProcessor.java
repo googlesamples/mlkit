@@ -27,7 +27,6 @@ import com.google.mlkit.vision.label.ImageLabel;
 import com.google.mlkit.vision.label.ImageLabeler;
 import com.google.mlkit.vision.label.ImageLabelerOptionsBase;
 import com.google.mlkit.vision.label.ImageLabeling;
-import java.io.IOException;
 import java.util.List;
 
 /** Custom InputImage Classifier Demo. */
@@ -45,11 +44,7 @@ public class LabelDetectorProcessor extends VisionProcessorBase<List<ImageLabel>
   @Override
   public void stop() {
     super.stop();
-    try {
-      imageLabeler.close();
-    } catch (IOException e) {
-      Log.e(TAG, "Exception thrown while trying to close ImageLabelerClient: " + e);
-    }
+    imageLabeler.close();
   }
 
   @Override

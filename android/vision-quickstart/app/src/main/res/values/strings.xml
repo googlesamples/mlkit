@@ -107,7 +107,7 @@
     <string name="pref_entry_values_pose_detector_performance_mode_accurate" translatable="false">2</string>
 
     <!-- Strings for pose detector showInFrameLikelihood preference. -->
-    <string name="pref_title_pose_detector_show_in_frame_likelihood">Show In-Frame Likelihood </string>
+    <string name="pref_title_pose_detector_show_in_frame_likelihood">Show in-frame likelihood </string>
     <string name="pref_key_live_preview_pose_detector_show_in_frame_likelihood" translatable="false">lppdsifl</string>
     <string name="pref_key_still_image_pose_detector_show_in_frame_likelihood" translatable="false">sipdsifl</string>
 </resources>

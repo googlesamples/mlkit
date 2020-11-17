@@ -53,8 +53,6 @@ import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
 import com.google.mlkit.vision.demo.preference.SettingsActivity.LaunchSource
-import com.google.mlkit.vision.label.automl.AutoMLImageLabelerLocalModel
-import com.google.mlkit.vision.label.automl.AutoMLImageLabelerOptions
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import java.io.IOException
@@ -178,13 +176,15 @@ class StillImageActivity : AppCompatActivity() {
     val options: MutableList<String> = ArrayList()
     options.add(OBJECT_DETECTION)
     options.add(OBJECT_DETECTION_CUSTOM)
+    options.add(CUSTOM_AUTOML_OBJECT_DETECTION)
     options.add(FACE_DETECTION)
     options.add(BARCODE_SCANNING)
     options.add(TEXT_RECOGNITION)
     options.add(IMAGE_LABELING)
     options.add(IMAGE_LABELING_CUSTOM)
-    options.add(AUTOML_LABELING)
+    options.add(CUSTOM_AUTOML_LABELING)
     options.add(POSE_DETECTION)
+
     // Creating adapter for featureSpinner
     val dataAdapter =
       ArrayAdapter(this, R.layout.spinner_style, options)
@@ -411,6 +411,22 @@ class StillImageActivity : AppCompatActivity() {
               customObjectDetectorOptions
             )
         }
+        CUSTOM_AUTOML_OBJECT_DETECTION -> {
+          Log.i(
+            TAG,
+            "Using Custom AutoML Object Detector Processor"
+          )
+          val customAutoMLODTLocalModel = LocalModel.Builder()
+            .setAssetManifestFilePath("automl/manifest.json")
+            .build()
+          val customAutoMLODTOptions = PreferenceUtils
+            .getCustomObjectDetectorOptionsForStillImage(this, customAutoMLODTLocalModel)
+          imageProcessor =
+            ObjectDetectorProcessor(
+              this,
+              customAutoMLODTOptions
+            )
+        }
         FACE_DETECTION ->
           imageProcessor =
             FaceDetectorProcessor(this, null)
@@ -442,22 +458,22 @@ class StillImageActivity : AppCompatActivity() {
               customImageLabelerOptions
             )
         }
-        AUTOML_LABELING -> {
+        CUSTOM_AUTOML_LABELING -> {
           Log.i(
             TAG,
-            "Using AutoML Image Label Detector Processor"
+            "Using Custom AutoML Image Label Detector Processor"
           )
-          val autoMLLocalModel = AutoMLImageLabelerLocalModel.Builder()
-            .setAssetFilePath("automl/manifest.json")
+          val customAutoMLLabelLocalModel = LocalModel.Builder()
+            .setAssetManifestFilePath("automl/manifest.json")
             .build()
-          val autoMLOptions = AutoMLImageLabelerOptions
-            .Builder(autoMLLocalModel)
+          val customAutoMLLabelOptions = CustomImageLabelerOptions
+            .Builder(customAutoMLLabelLocalModel)
             .setConfidenceThreshold(0f)
             .build()
           imageProcessor =
             LabelDetectorProcessor(
               this,
-              autoMLOptions
+              customAutoMLLabelOptions
             )
         }
         POSE_DETECTION -> {
@@ -493,13 +509,15 @@ class StillImageActivity : AppCompatActivity() {
     private const val TAG = "StillImageActivity"
     private const val OBJECT_DETECTION = "Object Detection"
     private const val OBJECT_DETECTION_CUSTOM = "Custom Object Detection (Birds)"
+    private const val CUSTOM_AUTOML_OBJECT_DETECTION = "Custom AutoML Object Detection (Flower)"
     private const val FACE_DETECTION = "Face Detection"
     private const val BARCODE_SCANNING = "Barcode Scanning"
     private const val TEXT_RECOGNITION = "Text Recognition"
     private const val IMAGE_LABELING = "Image Labeling"
     private const val IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Birds)"
-    private const val AUTOML_LABELING = "AutoML Labeling"
+    private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"
     private const val POSE_DETECTION = "Pose Detection"
+
     private const val SIZE_SCREEN = "w:screen" // Match screen width
     private const val SIZE_1024_768 = "w:1024" // ~1024*768 in a normal ratio
     private const val SIZE_640_480 = "w:640" // ~640*480 in a normal ratio

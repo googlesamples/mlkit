@@ -27,7 +27,6 @@ import com.google.mlkit.vision.objects.DetectedObject;
 import com.google.mlkit.vision.objects.ObjectDetection;
 import com.google.mlkit.vision.objects.ObjectDetector;
 import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase;
-import java.io.IOException;
 import java.util.List;
 
 /** A processor to run object detector. */
@@ -45,11 +44,7 @@ public class ObjectDetectorProcessor extends VisionProcessorBase<List<DetectedOb
   @Override
   public void stop() {
     super.stop();
-    try {
-      detector.close();
-    } catch (IOException e) {
-      Log.e(TAG, "Exception thrown while trying to close object detector!", e);
-    }
+    detector.close();
   }
 
   @Override

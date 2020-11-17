@@ -53,8 +53,6 @@ import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
 import com.google.mlkit.vision.demo.preference.SettingsActivity.LaunchSource;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
-import com.google.mlkit.vision.label.automl.AutoMLImageLabelerLocalModel;
-import com.google.mlkit.vision.label.automl.AutoMLImageLabelerOptions;
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
@@ -71,13 +69,15 @@ public final class LivePreviewActivity extends AppCompatActivity
         OnItemSelectedListener,
         CompoundButton.OnCheckedChangeListener {
   private static final String OBJECT_DETECTION = "Object Detection";
-  private static final String OBJECT_DETECTION_CUSTOM = "Custom Object Detection (Birds)";
+  private static final String OBJECT_DETECTION_CUSTOM = "Custom Object Detection (Bird)";
+  private static final String CUSTOM_AUTOML_OBJECT_DETECTION =
+      "Custom AutoML Object Detection (Flower)";
   private static final String FACE_DETECTION = "Face Detection";
   private static final String TEXT_RECOGNITION = "Text Recognition";
   private static final String BARCODE_SCANNING = "Barcode Scanning";
   private static final String IMAGE_LABELING = "Image Labeling";
-  private static final String IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Birds)";
-  private static final String AUTOML_LABELING = "AutoML Image Labeling";
+  private static final String IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Bird)";
+  private static final String CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)";
   private static final String POSE_DETECTION = "Pose Detection";
 
   private static final String TAG = "LivePreviewActivity";
@@ -108,13 +108,15 @@ public final class LivePreviewActivity extends AppCompatActivity
     List<String> options = new ArrayList<>();
     options.add(OBJECT_DETECTION);
     options.add(OBJECT_DETECTION_CUSTOM);
+    options.add(CUSTOM_AUTOML_OBJECT_DETECTION);
     options.add(FACE_DETECTION);
     options.add(TEXT_RECOGNITION);
     options.add(BARCODE_SCANNING);
     options.add(IMAGE_LABELING);
     options.add(IMAGE_LABELING_CUSTOM);
-    options.add(AUTOML_LABELING);
+    options.add(CUSTOM_AUTOML_LABELING);
     options.add(POSE_DETECTION);
+
     // Creating adapter for spinner
     ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_style, options);
     // Drop down layout style - list view with radio button
@@ -220,6 +222,16 @@ public final class LivePreviewActivity extends AppCompatActivity
           cameraSource.setMachineLearningFrameProcessor(
               new ObjectDetectorProcessor(this, customObjectDetectorOptions));
           break;
+        case CUSTOM_AUTOML_OBJECT_DETECTION:
+          Log.i(TAG, "Using Custom AutoML Object Detector Processor");
+          LocalModel customAutoMLODTLocalModel =
+              new LocalModel.Builder().setAssetManifestFilePath("automl/manifest.json").build();
+          CustomObjectDetectorOptions customAutoMLODTOptions =
+              PreferenceUtils.getCustomObjectDetectorOptionsForLivePreview(
+                  this, customAutoMLODTLocalModel);
+          cameraSource.setMachineLearningFrameProcessor(
+              new ObjectDetectorProcessor(this, customAutoMLODTOptions));
+          break;
         case TEXT_RECOGNITION:
           Log.i(TAG, "Using on-device Text recognition Processor");
           cameraSource.setMachineLearningFrameProcessor(new TextRecognitionProcessor(this));
@@ -251,18 +263,16 @@ public final class LivePreviewActivity extends AppCompatActivity
           cameraSource.setMachineLearningFrameProcessor(
               new LabelDetectorProcessor(this, customImageLabelerOptions));
           break;
-        case AUTOML_LABELING:
-          Log.i(TAG, "Using AutoML Image Label Detector Processor");
-          AutoMLImageLabelerLocalModel autoMLLocalModel =
-              new AutoMLImageLabelerLocalModel.Builder()
-                  .setAssetFilePath("automl/manifest.json")
-                  .build();
-          AutoMLImageLabelerOptions autoMLOptions =
-              new AutoMLImageLabelerOptions.Builder(autoMLLocalModel)
+        case CUSTOM_AUTOML_LABELING:
+          Log.i(TAG, "Using Custom AutoML Image Label Detector Processor");
+          LocalModel customAutoMLLabelLocalModel =
+              new LocalModel.Builder().setAssetManifestFilePath("automl/manifest.json").build();
+          CustomImageLabelerOptions customAutoMLLabelOptions =
+              new CustomImageLabelerOptions.Builder(customAutoMLLabelLocalModel)
                   .setConfidenceThreshold(0)
                   .build();
           cameraSource.setMachineLearningFrameProcessor(
-              new LabelDetectorProcessor(this, autoMLOptions));
+              new LabelDetectorProcessor(this, customAutoMLLabelOptions));
           break;
         case POSE_DETECTION:
           PoseDetectorOptionsBase poseDetectorOptions =
@@ -276,7 +286,7 @@ public final class LivePreviewActivity extends AppCompatActivity
         default:
           Log.e(TAG, "Unknown model: " + model);
       }
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       Log.e(TAG, "Can not create image processor: " + model, e);
       Toast.makeText(
               getApplicationContext(),
