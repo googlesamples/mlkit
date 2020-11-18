@@ -112,8 +112,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)receiveModelLoadingDidCompleteNotification:(NSNotification *)notification {
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
-    [self refresh];
+    [weakSelf refresh];
   });
 }
 

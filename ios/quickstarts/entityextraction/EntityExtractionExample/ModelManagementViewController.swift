@@ -91,14 +91,17 @@ class ModelManagementViewController: UITableViewController {
     let language = languages[indexPath.row]
     let model = EntityExtractorRemoteModel.entityExtractorRemoteModel(identifier: language)
     if downloadedLanguages.contains(language) {
+      weak var weakSelf = self
       modelManager.deleteDownloadedModel(model) {
-        [weak self]
         error in
-        guard let self = self else { return }
-        if error != nil {
-          self.showError(title: "Deleting model failed", message: error!.localizedDescription)
+        guard let strongSelf = weakSelf else {
+          print("Self is nil!")
+          return
         }
-        self.refresh()
+        if error != nil {
+          strongSelf.showError(title: "Deleting model failed", message: error!.localizedDescription)
+        }
+        strongSelf.refresh()
       }
     } else {
       let conditions = ModelDownloadConditions(
@@ -111,13 +114,14 @@ class ModelManagementViewController: UITableViewController {
 
   @objc
   func receiveModelLoadingDidCompleteNotification(notification: NSNotification!) {
+    weak var weakSelf = self
     if notification.name == NSNotification.Name.mlkitModelDownloadDidFail {
       let userInfo = notification.userInfo!
       let error = userInfo[ModelDownloadUserInfoKey.error.rawValue] as! NSError
       DispatchQueue.main.async {
-        self.showError(title: "Downloading model failed", message: error.localizedDescription)
+        weakSelf?.showError(title: "Downloading model failed", message: error.localizedDescription)
       }
     }
-    DispatchQueue.main.async { self.refresh() }
+    DispatchQueue.main.async { weakSelf?.refresh() }
   }
 }

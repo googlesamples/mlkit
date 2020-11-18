@@ -51,7 +51,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  NSLocale *currentLocale = NSLocale.currentLocale;
   self.languages = MLKEntityExtractionAllModelIdentifiersSorted();
   self.colorPalette = [self.class simplePalette];
   self.modelForExtractor = @"";
