@@ -112,6 +112,9 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDataSour
 
   func handleDownloadDelete(picker: UIPickerView, button: UIButton) {
     let language = allLanguages[picker.selectedRow(inComponent: 0)]
+    if language == .english {
+      return
+    }
     button.setTitle("working...", for: .normal)
     let model = self.model(forLanguage: language)
     let modelManager = ModelManager.modelManager()
@@ -159,17 +162,22 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDataSour
     else {
       return
     }
+    weak var weakSelf = self
     DispatchQueue.main.async {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
       let languageName = Locale.current.localizedString(
         forLanguageCode: remoteModel.language.rawValue)!
       if notification.name == .mlkitModelDownloadDidSucceed {
-        self.statusTextView.text =
+        strongSelf.statusTextView.text =
           "Download succeeded for \(languageName)"
       } else {
-        self.statusTextView.text =
+        strongSelf.statusTextView.text =
           "Download failed for \(languageName)"
       }
-      self.setDownloadDeleteButtonLabels()
+      strongSelf.setDownloadDeleteButtonLabels()
     }
   }
 
@@ -181,11 +189,13 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDataSour
     } else {
       self.sourceDownloadDeleteButton.setTitle("Download model", for: .normal)
     }
+    self.sourceDownloadDeleteButton.isHidden = inputLanguage == .english
     if self.isLanguageDownloaded(outputLanguage) {
       self.targetDownloadDeleteButton.setTitle("Delete model", for: .normal)
     } else {
       self.targetDownloadDeleteButton.setTitle("Download model", for: .normal)
     }
+    self.targetDownloadDeleteButton.isHidden = inputLanguage == .english
   }
 
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

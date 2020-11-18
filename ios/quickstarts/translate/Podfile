@@ -2,6 +2,8 @@ use_frameworks!
 
 platform :ios, '10.0'
 
+project 'TranslateExample.xcodeproj'
+
 pod 'GoogleMLKit/Translate'
 
 target 'TranslateExample' do
