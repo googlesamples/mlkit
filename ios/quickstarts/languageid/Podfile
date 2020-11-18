@@ -1,6 +1,8 @@
 use_frameworks!
 platform :ios, '10.0'
 
+project 'LanguageIDExample.xcodeproj'
+
 pod 'GoogleMLKit/LanguageID'
 
 target 'LanguageIDExample' do
