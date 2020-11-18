@@ -33,6 +33,7 @@ public class UIUtilities {
     let xCoord = point.x - radius / divisor
     let yCoord = point.y - radius / divisor
     let circleRect = CGRect(x: xCoord, y: yCoord, width: radius, height: radius)
+    guard circleRect.isValid() else { return }
     let circleView = UIView(frame: circleRect)
     circleView.layer.cornerRadius = radius / divisor
     circleView.alpha = Constants.circleViewAlpha
@@ -58,7 +59,7 @@ public class UIUtilities {
   }
 
   public static func addRectangle(_ rectangle: CGRect, to view: UIView, color: UIColor) {
-    guard !rectangle.isNaN() else { return }
+    guard rectangle.isValid() else { return }
     let rectangleView = UIView(frame: rectangle)
     rectangleView.layer.cornerRadius = Constants.rectangleViewCornerRadius
     rectangleView.alpha = Constants.rectangleViewAlpha
@@ -207,8 +208,10 @@ private enum Constants {
 // MARK: - Extension
 
 extension CGRect {
-  /// Returns a `Bool` indicating whether the rectangle has any value that is `NaN`.
-  func isNaN()  -> Bool {
-    return origin.x.isNaN || origin.y.isNaN || width.isNaN || height.isNaN
+  /// Returns a `Bool` indicating whether the rectangle's values are valid`.
+  func isValid() -> Bool {
+    return
+      !(origin.x.isNaN || origin.y.isNaN || width.isNaN || height.isNaN || width < 0 || height < 0
+      || origin.x < 0 || origin.y < 0)
   }
 }
