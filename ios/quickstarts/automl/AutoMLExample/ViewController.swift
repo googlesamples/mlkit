@@ -574,7 +574,7 @@ private enum DetectorPickerRow: Int {
 
 private enum Constants {
   static let images = [
-    "daisy.jpeg", "dandelion.jpg", "roses.jpeg", "sunflower.jpg", "tulips.jpeg",
+    "dandelion.jpg", "sunflower.jpg", "tulips.jpeg", "daisy.jpeg", "roses.jpeg",
   ]
 
   static let modelExtension = "tflite"
