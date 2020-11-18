@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="OvN-fm-fpv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="OvN-fm-fpv">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -36,22 +35,21 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Write here e.g. Let's meet at 1:30pm at Maggies tomorrow. Call me at 917-000-0000." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="CU6-Hv-afs" userLabel="Input Text View">
-                                <rect key="frame" x="10" y="5" width="355" height="200.5"/>
+                                <rect key="frame" x="10" y="5" width="355" height="200"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Overall language" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4a3-sa-Vl0" userLabel="Language Label">
-                                <rect key="frame" x="10" y="213.5" width="177.5" height="20.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Overall language" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4a3-sa-Vl0" userLabel="Language Label">
+                                <rect key="frame" x="10" y="214" width="349" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <pickerView contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13G-zM-sBK">
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="13G-zM-sBK">
                                 <rect key="frame" x="10" y="234" width="355" height="150"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="150" id="O3G-WY-Hvc"/>
-                                    <constraint firstAttribute="width" constant="177.5" id="gA0-yr-VHY"/>
                                 </constraints>
                             </pickerView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Dxc-dV-fix" userLabel="Output Text View">
@@ -65,17 +63,17 @@
                         <constraints>
                             <constraint firstItem="Dxc-dV-fix" firstAttribute="bottom" secondItem="0kN-5k-7zN" secondAttribute="bottom" constant="-5" id="0KU-Ju-0LQ"/>
                             <constraint firstItem="CU6-Hv-afs" firstAttribute="top" secondItem="0kN-5k-7zN" secondAttribute="top" constant="5" id="9g8-hP-5XR"/>
+                            <constraint firstItem="13G-zM-sBK" firstAttribute="trailing" secondItem="4a3-sa-Vl0" secondAttribute="trailing" id="AJ8-7e-7Ln"/>
                             <constraint firstItem="CU6-Hv-afs" firstAttribute="leading" secondItem="2S1-xQ-hsT" secondAttribute="leading" constant="10" id="BID-N1-6HE"/>
-                            <constraint firstItem="13G-zM-sBK" firstAttribute="width" secondItem="0kN-5k-7zN" secondAttribute="width" multiplier="0.5" constant="-10" id="CvM-WT-yui"/>
                             <constraint firstItem="CU6-Hv-afs" firstAttribute="trailing" secondItem="2S1-xQ-hsT" secondAttribute="trailing" constant="-10" id="FvQ-Kl-bGj"/>
                             <constraint firstItem="CU6-Hv-afs" firstAttribute="bottom" secondItem="4a3-sa-Vl0" secondAttribute="top" constant="-8" id="GHL-pP-0cX"/>
                             <constraint firstItem="Dxc-dV-fix" firstAttribute="trailing" secondItem="2S1-xQ-hsT" secondAttribute="trailing" constant="-10" id="GPK-NP-iex"/>
                             <constraint firstItem="13G-zM-sBK" firstAttribute="centerY" secondItem="2S1-xQ-hsT" secondAttribute="centerY" id="KhG-k6-G5q"/>
                             <constraint firstItem="Dxc-dV-fix" firstAttribute="leading" secondItem="2S1-xQ-hsT" secondAttribute="leading" constant="10" id="LSd-4b-PPO"/>
-                            <constraint firstItem="13G-zM-sBK" firstAttribute="leading" secondItem="CU6-Hv-afs" secondAttribute="leading" id="MWy-KH-Ixl"/>
                             <constraint firstItem="Dxc-dV-fix" firstAttribute="top" secondItem="13G-zM-sBK" secondAttribute="bottom" constant="8" symbolic="YES" id="OYa-WE-jN3"/>
-                            <constraint firstItem="4a3-sa-Vl0" firstAttribute="trailing" secondItem="13G-zM-sBK" secondAttribute="trailing" id="RDt-fn-hRr"/>
+                            <constraint firstItem="4a3-sa-Vl0" firstAttribute="trailing" secondItem="0kN-5k-7zN" secondAttribute="trailing" constant="-10" id="RDt-fn-hRr"/>
                             <constraint firstItem="4a3-sa-Vl0" firstAttribute="leading" secondItem="0kN-5k-7zN" secondAttribute="leading" constant="10" id="jBE-1A-72J"/>
+                            <constraint firstItem="13G-zM-sBK" firstAttribute="leading" secondItem="4a3-sa-Vl0" secondAttribute="leading" id="ybp-P5-00w"/>
                             <constraint firstItem="13G-zM-sBK" firstAttribute="top" secondItem="4a3-sa-Vl0" secondAttribute="bottom" id="zr8-ab-Bay"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="0kN-5k-7zN"/>
@@ -112,7 +110,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="square.and.arrow.down.on.square" catalog="system" width="60" height="64"/>
-        <image name="square.and.pencil" catalog="system" width="64" height="58"/>
+        <image name="square.and.arrow.down.on.square" catalog="system" width="122" height="128"/>
+        <image name="square.and.pencil" catalog="system" width="128" height="118"/>
     </resources>
 </document>
