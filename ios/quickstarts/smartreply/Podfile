@@ -1,6 +1,8 @@
 use_frameworks!
 platform :ios, '10.0'
 
+project 'SmartReplyExample.xcodeproj'
+
 # [START smartreply_pod]
 pod 'GoogleMLKit/SmartReply'
 # [END smartreply_pod]
