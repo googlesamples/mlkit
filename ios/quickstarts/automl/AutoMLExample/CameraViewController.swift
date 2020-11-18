@@ -21,13 +21,13 @@ import UIKit
 
 @objc(CameraViewController)
 class CameraViewController: UIViewController {
-    private let detectors: [DetectorType] = [
-      .detectorImageLabels,
-      .detectorObjectsSingleNoClassifier,
-      .detectorObjectsSingleWithClassifier,
-      .detectorObjectsMultipleNoClassifier,
-      .detectorObjectsMultipleWithClassifier,
-    ]
+  private let detectors: [DetectorType] = [
+    .detectorImageLabels,
+    .detectorObjectsSingleNoClassifier,
+    .detectorObjectsSingleWithClassifier,
+    .detectorObjectsMultipleNoClassifier,
+    .detectorObjectsMultipleWithClassifier,
+  ]
 
   private var currentDetector: DetectorType = .detectorImageLabels
   private var isUsingFrontCamera = true
@@ -101,102 +101,100 @@ class CameraViewController: UIViewController {
 
   // MARK: - AutoML Detections
 
+  func detectObjects(
+    in visionImage: VisionImage,
+    width: CGFloat,
+    height: CGFloat,
+    shouldEnableClassification: Bool,
+    shouldEnableMultipleObjects: Bool
+  ) {
+    requestAutoMLRemoteModelIfNeeded()
 
-    func detectObjects(
-      in visionImage: VisionImage,
-      width: CGFloat,
-      height: CGFloat,
-      shouldEnableClassification: Bool,
-      shouldEnableMultipleObjects: Bool
-    ) {
-      requestAutoMLRemoteModelIfNeeded()
-
-      let remoteModel = self.remoteModel()
-      var options: CustomObjectDetectorOptions!
-      if modelManager.isModelDownloaded(remoteModel) {
-        print("Use AutoML remote model.")
-        options = CustomObjectDetectorOptions(remoteModel: remoteModel as! CustomRemoteModel)
-      } else {
-        print("Use AutoML local model.")
-        guard
-          let localModelFilePath = Bundle.main.path(
-            forResource: Constants.localModelManifestFileName,
-            ofType: Constants.autoMLManifestFileType
-          )
-        else {
-          print(
-            "Failed to find AutoML local model manifest file: \(Constants.localModelManifestFileName)"
-          )
-          return
-        }
-        guard let localModel = LocalModel(manifestPath: localModelFilePath) else { return }
-        options = CustomObjectDetectorOptions(localModel: localModel)
-      }
-      options.shouldEnableClassification = shouldEnableClassification
-      options.shouldEnableMultipleObjects = shouldEnableMultipleObjects
-      // Due to the UI space, We will only display one label per detected object.
-      options.maxPerObjectLabelCount = 1
-      options.detectorMode = .stream
-
-      let objectDetector = ObjectDetector.objectDetector(options: options)
-      var objects: [Object]
-      do {
-        objects = try objectDetector.results(in: visionImage)
-      } catch let error {
-        print("Failed to detect objects with error: \(error.localizedDescription).")
+    let remoteModel = self.remoteModel()
+    var options: CustomObjectDetectorOptions!
+    if modelManager.isModelDownloaded(remoteModel) {
+      print("Use AutoML remote model.")
+      options = CustomObjectDetectorOptions(remoteModel: remoteModel as! CustomRemoteModel)
+    } else {
+      print("Use AutoML local model.")
+      guard
+        let localModelFilePath = Bundle.main.path(
+          forResource: Constants.localModelManifestFileName,
+          ofType: Constants.autoMLManifestFileType
+        )
+      else {
+        print(
+          "Failed to find AutoML local model manifest file: \(Constants.localModelManifestFileName)"
+        )
         return
       }
-      weak var weakSelf = self
-      DispatchQueue.main.sync {
-        guard let strongSelf = weakSelf else {
-          print("Self is nil!")
-          return
-        }
-        strongSelf.updatePreviewOverlayView()
-        strongSelf.removeDetectionAnnotations()
-      }
-      guard !objects.isEmpty else {
-        print("Object detector returned no results.")
+      guard let localModel = LocalModel(manifestPath: localModelFilePath) else { return }
+      options = CustomObjectDetectorOptions(localModel: localModel)
+    }
+    options.shouldEnableClassification = shouldEnableClassification
+    options.shouldEnableMultipleObjects = shouldEnableMultipleObjects
+    // Due to the UI space, We will only display one label per detected object.
+    options.maxPerObjectLabelCount = 1
+    options.detectorMode = .stream
+
+    let objectDetector = ObjectDetector.objectDetector(options: options)
+    var objects: [Object]
+    do {
+      objects = try objectDetector.results(in: visionImage)
+    } catch let error {
+      print("Failed to detect objects with error: \(error.localizedDescription).")
+      return
+    }
+    weak var weakSelf = self
+    DispatchQueue.main.sync {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
         return
       }
-
-      DispatchQueue.main.sync {
-        guard let strongSelf = weakSelf else {
-          print("Self is nil!")
-          return
-        }
-        for object in objects {
-          let normalizedRect = CGRect(
-            x: object.frame.origin.x / width,
-            y: object.frame.origin.y / height,
-            width: object.frame.size.width / width,
-            height: object.frame.size.height / height
-          )
-          let standardizedRect = strongSelf.previewLayer.layerRectConverted(
-            fromMetadataOutputRect: normalizedRect
-          ).standardized
-          UIUtilities.addRectangle(
-            standardizedRect,
-            to: strongSelf.annotationOverlayView,
-            color: UIColor.green
-          )
-          let label = UILabel(frame: standardizedRect)
-          var description = ""
-          if let trackingID = object.trackingID {
-            description += "Object ID: " + trackingID.stringValue + "\n"
-          }
-          description += object.labels.enumerated().map { (index, label) in
-            "Label \(index): \(label.text), \(label.confidence), \(label.index)"
-          }.joined(separator: "\n")
-
-          label.text = description
-          label.numberOfLines = 0
-          label.adjustsFontSizeToFitWidth = true
-          strongSelf.annotationOverlayView.addSubview(label)
-        }
-      }
+      strongSelf.updatePreviewOverlayView()
+      strongSelf.removeDetectionAnnotations()
+    }
+    guard !objects.isEmpty else {
+      print("Object detector returned no results.")
+      return
     }
 
+    DispatchQueue.main.sync {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      for object in objects {
+        let normalizedRect = CGRect(
+          x: object.frame.origin.x / width,
+          y: object.frame.origin.y / height,
+          width: object.frame.size.width / width,
+          height: object.frame.size.height / height
+        )
+        let standardizedRect = strongSelf.previewLayer.layerRectConverted(
+          fromMetadataOutputRect: normalizedRect
+        ).standardized
+        UIUtilities.addRectangle(
+          standardizedRect,
+          to: strongSelf.annotationOverlayView,
+          color: UIColor.green
+        )
+        let label = UILabel(frame: standardizedRect)
+        var description = ""
+        if let trackingID = object.trackingID {
+          description += "Object ID: " + trackingID.stringValue + "\n"
+        }
+        description += object.labels.enumerated().map { (index, label) in
+          "Label \(index): \(label.text), \(label.confidence), \(label.index)"
+        }.joined(separator: "\n")
+
+        label.text = description
+        label.numberOfLines = 0
+        label.adjustsFontSizeToFitWidth = true
+        strongSelf.annotationOverlayView.addSubview(label)
+      }
+    }
+  }
 
   private func detectImageLabels(
     in visionImage: VisionImage,
@@ -217,11 +215,11 @@ class CameraViewController: UIViewController {
     }
     let isModelDownloaded = modelManager.isModelDownloaded(remoteModel)
     var options: CommonImageLabelerOptions!
-      guard let localModel = LocalModel(manifestPath: localModelFilePath) else { return }
-      options =
-        isModelDownloaded
-        ? CustomImageLabelerOptions(remoteModel: remoteModel as! CustomRemoteModel)
-        : CustomImageLabelerOptions(localModel: localModel)
+    guard let localModel = LocalModel(manifestPath: localModelFilePath) else { return }
+    options =
+      isModelDownloaded
+      ? CustomImageLabelerOptions(remoteModel: remoteModel as! CustomRemoteModel)
+      : CustomImageLabelerOptions(localModel: localModel)
     print("Use AutoML \(isModelDownloaded ? "remote" : "local") model.")
     options.confidenceThreshold = NSNumber(value: Constants.labelConfidenceThreshold)
     let autoMLImageLabeler = ImageLabeler.imageLabeler(options: options)
@@ -363,8 +361,8 @@ class CameraViewController: UIViewController {
   // MARK: - Private
 
   private func remoteModel() -> RemoteModel {
-      let firebaseModelSource = FirebaseModelSource(name: Constants.remoteAutoMLModelName)
-      return CustomRemoteModel(remoteModelSource: firebaseModelSource)
+    let firebaseModelSource = FirebaseModelSource(name: Constants.remoteAutoMLModelName)
+    return CustomRemoteModel(remoteModelSource: firebaseModelSource)
   }
 
   private func setUpCaptureSessionOutput() {
@@ -556,22 +554,22 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     let imageWidth = CGFloat(CVPixelBufferGetWidth(imageBuffer))
     let imageHeight = CGFloat(CVPixelBufferGetHeight(imageBuffer))
 
-      let shouldEnableClassification =
-        activeDetector == .detectorObjectsSingleWithClassifier
-        || activeDetector == .detectorObjectsMultipleWithClassifier
-      let shouldEnableMultipleObjects =
-        activeDetector == .detectorObjectsMultipleNoClassifier
-        || activeDetector == .detectorObjectsMultipleWithClassifier
+    let shouldEnableClassification =
+      activeDetector == .detectorObjectsSingleWithClassifier
+      || activeDetector == .detectorObjectsMultipleWithClassifier
+    let shouldEnableMultipleObjects =
+      activeDetector == .detectorObjectsMultipleNoClassifier
+      || activeDetector == .detectorObjectsMultipleWithClassifier
 
     switch activeDetector {
     case .detectorImageLabels:
       detectImageLabels(in: visionImage, width: imageWidth, height: imageHeight)
-      case .detectorObjectsSingleNoClassifier, .detectorObjectsSingleWithClassifier,
-        .detectorObjectsMultipleNoClassifier, .detectorObjectsMultipleWithClassifier:
-        detectObjects(
-          in: visionImage, width: imageWidth, height: imageHeight,
-          shouldEnableClassification: shouldEnableClassification,
-          shouldEnableMultipleObjects: shouldEnableMultipleObjects)
+    case .detectorObjectsSingleNoClassifier, .detectorObjectsSingleWithClassifier,
+      .detectorObjectsMultipleNoClassifier, .detectorObjectsMultipleWithClassifier:
+      detectObjects(
+        in: visionImage, width: imageWidth, height: imageHeight,
+        shouldEnableClassification: shouldEnableClassification,
+        shouldEnableMultipleObjects: shouldEnableMultipleObjects)
     }
   }
 }
@@ -580,10 +578,10 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 private enum DetectorType: String {
   case detectorImageLabels = "AutoML Image Labeling"
-    case detectorObjectsSingleNoClassifier = "AutoML ODT, single, no labeling"
-    case detectorObjectsSingleWithClassifier = "AutoML ODT, single, labeling"
-    case detectorObjectsMultipleNoClassifier = "AutoML ODT, multiple, no labeling"
-    case detectorObjectsMultipleWithClassifier = "AutoML ODT, multiple, labeling"
+  case detectorObjectsSingleNoClassifier = "AutoML ODT, single, no labeling"
+  case detectorObjectsSingleWithClassifier = "AutoML ODT, single, labeling"
+  case detectorObjectsMultipleNoClassifier = "AutoML ODT, multiple, no labeling"
+  case detectorObjectsMultipleWithClassifier = "AutoML ODT, multiple, labeling"
 }
 
 private enum Constants {

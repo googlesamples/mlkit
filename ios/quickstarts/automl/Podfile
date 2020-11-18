@@ -1,6 +1,8 @@
 platform :ios, '10.0'
 use_frameworks!
 
+project 'AutoMLExample.xcodeproj'
+
 pod 'GoogleMLKit/Common'
 pod 'GoogleMLKit/ImageLabelingCustom'
 pod 'GoogleMLKit/LinkFirebase'

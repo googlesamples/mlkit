@@ -98,8 +98,10 @@ typedef NS_ENUM(NSInteger, Detector) {
   [super viewDidLoad];
   self.detectors = @[
     @(DetectorImageLabelsAutoML),
-    @(DetectorObjectsAutoMLSingleNoClassifier), @(DetectorObjectsAutoMLSingleWithClassifier),
-    @(DetectorObjectsAutoMLMultipleNoClassifier), @(DetectorObjectsAutoMLMultipleWithClassifier),
+    @(DetectorObjectsAutoMLSingleNoClassifier),
+    @(DetectorObjectsAutoMLSingleWithClassifier),
+    @(DetectorObjectsAutoMLMultipleNoClassifier),
+    @(DetectorObjectsAutoMLMultipleWithClassifier),
   ];
   self.currentDetector = DetectorImageLabelsAutoML;
   self.isUsingFrontCamera = YES;
