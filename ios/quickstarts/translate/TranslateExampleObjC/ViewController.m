@@ -78,7 +78,9 @@ NS_ASSUME_NONNULL_BEGIN
   return 1;
 }
 
-- (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+- (nullable NSString *)pickerView:(UIPickerView *)pickerView
+                      titleForRow:(NSInteger)row
+                     forComponent:(NSInteger)component {
   return [NSLocale.currentLocale localizedStringForLanguageCode:self.allLanguages[row]];
 }
 
@@ -104,13 +106,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (IBAction)didTapSwap {
   NSInteger inputSelectedRow = [self.inputPicker selectedRowInComponent:0];
-  [self.inputPicker selectRow:[self.outputPicker selectedRowInComponent:0] inComponent:0 animated:NO];
+  [self.inputPicker selectRow:[self.outputPicker selectedRowInComponent:0]
+                  inComponent:0
+                     animated:NO];
   [self.outputPicker selectRow:inputSelectedRow inComponent:0 animated:NO];
   self.inputTextView.text = self.outputTextView.text;
   [self pickerView:self.inputPicker didSelectRow:0 inComponent:0];
 }
 
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+- (void)pickerView:(UIPickerView *)pickerView
+      didSelectRow:(NSInteger)row
+       inComponent:(NSInteger)component {
   MLKTranslatorOptions *options = [[MLKTranslatorOptions alloc]
       initWithSourceLanguage:self.allLanguages[[self.inputPicker selectedRowInComponent:0]]
               targetLanguage:self.allLanguages[[self.outputPicker selectedRowInComponent:0]]];
@@ -121,40 +127,47 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)translate {
   MLKTranslator *translatorForDownload = self.translator;
+  __weak typeof(self) weakSelf = self;
   [self.translator downloadModelIfNeededWithCompletion:^(NSError *_Nullable error) {
+    __strong typeof(weakSelf) strongSelf = weakSelf;
     if (error != nil) {
-      self.outputTextView.text =
+      strongSelf.outputTextView.text =
           [NSString stringWithFormat:@"Failed to ensure model downloaded with error %@",
                                      error.localizedDescription];
       return;
     }
-    [self updateDownloadDeleteButtonLabels];
-    NSString *text = self.inputTextView.text;
+    [strongSelf updateDownloadDeleteButtonLabels];
+    NSString *text = strongSelf.inputTextView.text;
     if (text == nil) {
       text = @"";
     }
-    self.outputTextView.text = @"";
+    strongSelf.outputTextView.text = @"";
     if (translatorForDownload != self.translator) {
       return;
     }
-    [self.translator translateText:text
-                        completion:^(NSString *_Nullable result, NSError *_Nullable error) {
-                          if (error != nil) {
-                            self.outputTextView.text = [NSString
-                                stringWithFormat:@"Failed to ensure model downloaded with error %@",
-                                                 error.localizedDescription];
-                            return;
-                          }
-                          if (translatorForDownload != self.translator) {
-                            return;
-                          }
-                          self.outputTextView.text = result;
-                        }];
+    [strongSelf.translator
+        translateText:text
+           completion:^(NSString *_Nullable result, NSError *_Nullable error) {
+             __strong typeof(weakSelf) strongSelf2 = weakSelf;
+             if (error != nil) {
+               strongSelf2.outputTextView.text =
+                   [NSString stringWithFormat:@"Failed to ensure model downloaded with error %@",
+                                              error.localizedDescription];
+               return;
+             }
+             if (translatorForDownload != strongSelf2.translator) {
+               return;
+             }
+             strongSelf2.outputTextView.text = result;
+           }];
   }];
 }
 
 - (void)handleDownloadDeleteWithPicker:(UIPickerView *)picker button:(UIButton *)button {
   MLKTranslateLanguage language = self.allLanguages[[picker selectedRowInComponent:0]];
+  if (language == MLKTranslateLanguageEnglish) {
+    return;
+  }
   NSString *languageName = [NSLocale.currentLocale localizedStringForLanguageCode:language];
 
   [button setTitle:@"Working..." forState:UIControlStateNormal];
@@ -189,11 +202,13 @@ NS_ASSUME_NONNULL_BEGIN
   } else {
     [self.sourceDownloadDeleteButton setTitle:@"Download Model" forState:UIControlStateNormal];
   }
+  self.sourceDownloadDeleteButton.hidden = inputLanguage == MLKTranslateLanguageEnglish;
   if ([self isLanguageDownloaded:outputLanguage]) {
     [self.targetDownloadDeleteButton setTitle:@"Delete Model" forState:UIControlStateNormal];
   } else {
     [self.targetDownloadDeleteButton setTitle:@"Download Model" forState:UIControlStateNormal];
   }
+  self.targetDownloadDeleteButton.hidden = inputLanguage == MLKTranslateLanguageEnglish;
 }
 
 - (BOOL)isLanguageDownloaded:(MLKTranslateLanguage)language {
@@ -235,14 +250,17 @@ NS_ASSUME_NONNULL_BEGIN
   }
   NSString *languageName = [NSLocale.currentLocale localizedStringForLanguageCode:model.language];
 
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
+    __strong typeof(weakSelf) strongSelf = weakSelf;
     if (notification.name == MLKModelDownloadDidSucceedNotification) {
-      self.statusTextView.text =
+      strongSelf.statusTextView.text =
           [NSString stringWithFormat:@"Download succeeded for %@", languageName];
     } else {
-      self.statusTextView.text = [NSString stringWithFormat:@"Download failed for%@", languageName];
+      strongSelf.statusTextView.text =
+          [NSString stringWithFormat:@"Download failed for%@", languageName];
     }
-    [self updateDownloadDeleteButtonLabels];
+    [strongSelf updateDownloadDeleteButtonLabels];
   });
 }
 
