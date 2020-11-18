@@ -1,6 +1,8 @@
 platform :ios, '10.0'
 use_frameworks!
 
+project 'VisionExample.xcodeproj'
+
 pod 'GoogleMLKit/BarcodeScanning'
 pod 'GoogleMLKit/FaceDetection'
 pod 'GoogleMLKit/ImageLabeling'
