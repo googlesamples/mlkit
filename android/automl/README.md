@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This ML Kit Quickstart App demonstrates how to label images with an AutoML Vision Edge trained model, and also how to download models that are hosted within Firebase.
+This ML Kit Quickstart App demonstrates how to label images and objects with an AutoML Vision Edge trained model, and also how to download models that are hosted within Firebase.
 * [Read more about training an image classification model using AutoML Vision Edge model](https://firebase.google.com/docs/ml/automl-image-labeling)
 * [Read more about hosting models with Firebase Model deployment](https://firebase.google.com/docs/ml/manage-hosted-models)
 
@@ -14,7 +14,7 @@ Features that are included in this demo app:
 
 ## Getting Started
 
-* In order to setup this app to run, you need to create a Firebase project as outlined [here](https://firebase.google.com/docs/android/setup). 
+* In order to setup this app to run, you need to create a Firebase project as outlined [here](https://firebase.google.com/docs/android/setup).
 * Run the sample code on your Android device or emulator
 * Try extending the code to add new features and functionality
 * Ensure your device is connected to the internet to download the remote model
@@ -29,7 +29,7 @@ This mode uses the camera preview as input and allows you to label images using 
     * Enable live viewport -- Prevent the live camera preview from being blocked by API rendering speed.
 * AutoML Image Labeling
     * AutoML Remote Model Name -- Allows you to specify an AutoML VisionEdge model to remotely download from the Firebase Console
-    
+
 ### Static Image Scenario
 The static image scenario is identical to the live camera scenario, but instead relies on images fed into the app through the gallery.
 

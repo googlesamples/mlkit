@@ -23,168 +23,163 @@ import android.preference.ListPreference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
-
 import androidx.annotation.StringRes;
-
 import com.google.mlkit.vision.automl.demo.CameraSource;
 import com.google.mlkit.vision.automl.demo.CameraSource.SizePair;
 import com.google.mlkit.vision.automl.demo.R;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Configures live preview demo settings.
- */
+/** Configures live preview demo settings. */
 public class LivePreviewPreferenceFragment extends PreferenceFragment {
 
-    protected boolean isCameraXSetting;
+  protected boolean isCameraXSetting;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.preference_live_preview);
-        setUpCameraPreferences();
-        setUpRemoteModelNamePreferences();
+    addPreferencesFromResource(R.xml.preference_live_preview_automl);
+    setUpCameraPreferences();
+    setUpRemoteModelNamePreferences();
+  }
+
+  private void setUpCameraPreferences() {
+    PreferenceCategory cameraPreference =
+        (PreferenceCategory) findPreference(getString(R.string.pref_category_key_camera));
+
+    if (isCameraXSetting) {
+      cameraPreference.removePreference(
+          findPreference(getString(R.string.pref_key_rear_camera_preview_size)));
+      cameraPreference.removePreference(
+          findPreference(getString(R.string.pref_key_front_camera_preview_size)));
+      setUpCameraXTargetAnalysisSizePreference();
+    } else {
+      cameraPreference.removePreference(
+          findPreference(getString(R.string.pref_key_camerax_target_resolution)));
+      setUpCameraPreviewSizePreference(
+          R.string.pref_key_rear_camera_preview_size,
+          R.string.pref_key_rear_camera_picture_size,
+          CameraSource.CAMERA_FACING_BACK);
+      setUpCameraPreviewSizePreference(
+          R.string.pref_key_front_camera_preview_size,
+          R.string.pref_key_front_camera_picture_size,
+          CameraSource.CAMERA_FACING_FRONT);
     }
+  }
 
-    private void setUpCameraPreferences() {
-        PreferenceCategory cameraPreference =
-                (PreferenceCategory) findPreference(getString(R.string.pref_category_key_camera));
+  private void setUpCameraPreviewSizePreference(
+      @StringRes int previewSizePrefKeyId, @StringRes int pictureSizePrefKeyId, int cameraId) {
+    ListPreference previewSizePreference =
+        (ListPreference) findPreference(getString(previewSizePrefKeyId));
 
-        if (isCameraXSetting) {
-            cameraPreference.removePreference(
-                    findPreference(getString(R.string.pref_key_rear_camera_preview_size)));
-            cameraPreference.removePreference(
-                    findPreference(getString(R.string.pref_key_front_camera_preview_size)));
-            setUpCameraXTargetAnalysisSizePreference();
-        } else {
-            cameraPreference.removePreference(
-                    findPreference(getString(R.string.pref_key_camerax_target_analysis_size)));
-            setUpCameraPreviewSizePreference(
-                    R.string.pref_key_rear_camera_preview_size,
-                    R.string.pref_key_rear_camera_picture_size,
-                    CameraSource.CAMERA_FACING_BACK);
-            setUpCameraPreviewSizePreference(
-                    R.string.pref_key_front_camera_preview_size,
-                    R.string.pref_key_front_camera_picture_size,
-                    CameraSource.CAMERA_FACING_FRONT);
+    Camera camera = null;
+    try {
+      camera = Camera.open(cameraId);
+
+      List<SizePair> previewSizeList = CameraSource.generateValidPreviewSizeList(camera);
+      String[] previewSizeStringValues = new String[previewSizeList.size()];
+      Map<String, String> previewToPictureSizeStringMap = new HashMap<>();
+      for (int i = 0; i < previewSizeList.size(); i++) {
+        SizePair sizePair = previewSizeList.get(i);
+        previewSizeStringValues[i] = sizePair.preview.toString();
+        if (sizePair.picture != null) {
+          previewToPictureSizeStringMap.put(
+              sizePair.preview.toString(), sizePair.picture.toString());
         }
+      }
+      previewSizePreference.setEntries(previewSizeStringValues);
+      previewSizePreference.setEntryValues(previewSizeStringValues);
+
+      if (previewSizePreference.getEntry() == null) {
+        // First time of opening the Settings page.
+        SizePair sizePair =
+            CameraSource.selectSizePair(
+                camera,
+                CameraSource.DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH,
+                CameraSource.DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT);
+        String previewSizeString = sizePair.preview.toString();
+        previewSizePreference.setValue(previewSizeString);
+        previewSizePreference.setSummary(previewSizeString);
+        PreferenceUtils.saveString(
+            getActivity(),
+            pictureSizePrefKeyId,
+            sizePair.picture != null ? sizePair.picture.toString() : null);
+      } else {
+        previewSizePreference.setSummary(previewSizePreference.getEntry());
+      }
+
+      previewSizePreference.setOnPreferenceChangeListener(
+          (preference, newValue) -> {
+            String newPreviewSizeStringValue = (String) newValue;
+            previewSizePreference.setSummary(newPreviewSizeStringValue);
+            PreferenceUtils.saveString(
+                getActivity(),
+                pictureSizePrefKeyId,
+                previewToPictureSizeStringMap.get(newPreviewSizeStringValue));
+            return true;
+          });
+
+    } catch (RuntimeException e) {
+      // If there's no camera for the given camera id, hide the corresponding preference.
+      ((PreferenceCategory) findPreference(getString(R.string.pref_category_key_camera)))
+          .removePreference(previewSizePreference);
+    } finally {
+      if (camera != null) {
+        camera.release();
+      }
     }
+  }
 
-    private void setUpCameraPreviewSizePreference(
-            @StringRes int previewSizePrefKeyId, @StringRes int pictureSizePrefKeyId, int cameraId) {
-        ListPreference previewSizePreference =
-                (ListPreference) findPreference(getString(previewSizePrefKeyId));
+  private void setUpCameraXTargetAnalysisSizePreference() {
+    ListPreference pref =
+        (ListPreference) findPreference(getString(R.string.pref_key_camerax_target_resolution));
+    String[] entries = new String[] {
+        "2000x2000",
+        "1600x1600",
+        "1200x1200",
+        "1000x1000",
+        "800x800",
+        "600x600",
+        "400x400",
+        "200x200",
+        "100x100",
+    };
+    pref.setEntries(entries);
+    pref.setEntryValues(entries);
+    pref.setSummary(pref.getEntry() == null ? "Default" : pref.getEntry());
+    pref.setOnPreferenceChangeListener(
+        (preference, newValue) -> {
+          String newStringValue = (String) newValue;
+          pref.setSummary(newStringValue);
+          PreferenceUtils.saveString(
+              getActivity(),
+              R.string.pref_key_camerax_target_resolution,
+              newStringValue);
+          return true;
+        });
+  }
 
-        Camera camera = null;
-        try {
-            camera = Camera.open(cameraId);
+  private void setUpRemoteModelNamePreferences() {
+    EditTextPreference autoMLRemoteModelNamePref =
+        (EditTextPreference)
+            findPreference(getString(R.string.pref_key_live_preview_automl_remote_model_name));
+    autoMLRemoteModelNamePref.setSummary(autoMLRemoteModelNamePref.getText());
+    autoMLRemoteModelNamePref.setOnPreferenceChangeListener(
+        (preference, newValue) -> {
+          String modelName = (String) newValue;
+          if (!modelName.isEmpty()) {
+            autoMLRemoteModelNamePref.setSummary((String) newValue);
+            return true;
+          }
 
-            List<SizePair> previewSizeList = CameraSource.generateValidPreviewSizeList(camera);
-            String[] previewSizeStringValues = new String[previewSizeList.size()];
-            Map<String, String> previewToPictureSizeStringMap = new HashMap<>();
-            for (int i = 0; i < previewSizeList.size(); i++) {
-                SizePair sizePair = previewSizeList.get(i);
-                previewSizeStringValues[i] = sizePair.preview.toString();
-                if (sizePair.picture != null) {
-                    previewToPictureSizeStringMap.put(
-                            sizePair.preview.toString(), sizePair.picture.toString());
-                }
-            }
-            previewSizePreference.setEntries(previewSizeStringValues);
-            previewSizePreference.setEntryValues(previewSizeStringValues);
-
-            if (previewSizePreference.getEntry() == null) {
-                // First time of opening the Settings page.
-                SizePair sizePair =
-                        CameraSource.selectSizePair(
-                                camera,
-                                CameraSource.DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH,
-                                CameraSource.DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT);
-                String previewSizeString = sizePair.preview.toString();
-                previewSizePreference.setValue(previewSizeString);
-                previewSizePreference.setSummary(previewSizeString);
-                PreferenceUtils.saveString(
-                        getActivity(),
-                        pictureSizePrefKeyId,
-                        sizePair.picture != null ? sizePair.picture.toString() : null);
-            } else {
-                previewSizePreference.setSummary(previewSizePreference.getEntry());
-            }
-
-            previewSizePreference.setOnPreferenceChangeListener(
-                    (preference, newValue) -> {
-                        String newPreviewSizeStringValue = (String) newValue;
-                        previewSizePreference.setSummary(newPreviewSizeStringValue);
-                        PreferenceUtils.saveString(
-                                getActivity(),
-                                pictureSizePrefKeyId,
-                                previewToPictureSizeStringMap.get(newPreviewSizeStringValue));
-                        return true;
-                    });
-
-        } catch (Exception e) {
-            // If there's no camera for the given camera id, hide the corresponding preference.
-            ((PreferenceCategory) findPreference(getString(R.string.pref_category_key_camera)))
-                    .removePreference(previewSizePreference);
-        } finally {
-            if (camera != null) {
-                camera.release();
-            }
-        }
-    }
-
-    private void setUpCameraXTargetAnalysisSizePreference() {
-        ListPreference pref =
-                (ListPreference) findPreference(getString(R.string.pref_key_camerax_target_analysis_size));
-        String[] entries = new String[]{
-                "2000x2000",
-                "1600x1600",
-                "1200x1200",
-                "1000x1000",
-                "800x800",
-                "600x600",
-                "400x400",
-                "200x200",
-                "100x100",
-        };
-        pref.setEntries(entries);
-        pref.setEntryValues(entries);
-        pref.setSummary(pref.getEntry() == null ? "Default" : pref.getEntry());
-        pref.setOnPreferenceChangeListener(
-                (preference, newValue) -> {
-                    String newStringValue = (String) newValue;
-                    pref.setSummary(newStringValue);
-                    PreferenceUtils.saveString(
-                            getActivity(),
-                            R.string.pref_key_camerax_target_analysis_size,
-                            newStringValue);
-                    return true;
-                });
-    }
-
-    private void setUpRemoteModelNamePreferences() {
-        EditTextPreference autoMLRemoteModelNamePref =
-                (EditTextPreference)
-                        findPreference(getString(R.string.pref_key_live_preview_automl_remote_model_name));
-        autoMLRemoteModelNamePref.setSummary(autoMLRemoteModelNamePref.getText());
-        autoMLRemoteModelNamePref.setOnPreferenceChangeListener(
-                (preference, newValue) -> {
-                    String modelName = (String) newValue;
-                    if (!modelName.isEmpty()) {
-                        autoMLRemoteModelNamePref.setSummary((String) newValue);
-                        return true;
-                    }
-
-                    Toast.makeText(
-                            getActivity(),
-                            R.string.pref_key_live_preview_automl_remote_model_name,
-                            Toast.LENGTH_LONG)
-                            .show();
-                    return false;
-                });
-    }
+          Toast.makeText(
+                  getActivity(),
+                  R.string.pref_key_live_preview_automl_remote_model_name,
+                  Toast.LENGTH_LONG)
+              .show();
+          return false;
+        });
+  }
 }

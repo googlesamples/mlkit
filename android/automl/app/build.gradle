@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
@@ -9,12 +8,27 @@ android {
         minSdkVersion 16
         multiDexEnabled true
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        // Version code for next release (version 9 is now in Play Store)
+        versionCode 11
+        versionName "1.11"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        setProperty("archivesBaseName", "vision-automl-remote-model-quickstart")
     }
     buildTypes {
+        proguard {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard.cfg'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro', 'proguard.cfg'
+            signingConfig signingConfigs.proguard
+        }
+        testBuildType "proguard"
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         debug {
             minifyEnabled false
             proguardFiles 'proguard-rules.pro'
@@ -30,19 +44,24 @@ android {
     aaptOptions {
         noCompress "tflite"
     }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
 }
 
 repositories {
     maven { url 'https://google.bintray.com/tensorflow' }
     // Depending on AndroidX Snapshot Builds to get the latest CameraX libs.
-    // See https://g3doc.corp.google.com/company/teams/androidx/onboarding.md?cl=head#library-snapshots
-    maven { url 'https://androidx.dev/snapshots/builds/6483197/artifacts/repository/' }
+    maven { url 'https://androidx.dev/snapshots/builds/6787662/artifacts/repository/' }
 }
 
 dependencies {
     // Image labeling with AutoML model support
-    implementation 'com.google.mlkit:image-labeling-automl:16.2.1'
-    implementation 'com.google.mlkit:linkfirebase:16.0.1'
+    implementation 'com.google.mlkit:image-labeling-custom:16.3.0'
+    implementation 'com.google.mlkit:object-detection-custom:16.3.0'
+    implementation 'com.google.mlkit:linkfirebase:16.1.0'
 
     implementation 'androidx.multidex:multidex:2.0.1'
     // -------------------------------------------------------
