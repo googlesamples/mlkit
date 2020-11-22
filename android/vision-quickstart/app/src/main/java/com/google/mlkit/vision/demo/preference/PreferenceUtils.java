@@ -166,7 +166,7 @@ public class PreferenceUtils {
       builder.enableMultipleObjects();
     }
     if (enableClassification) {
-      builder.enableClassification();
+      builder.enableClassification().setMaxPerObjectLabelCount(1);
     }
     return builder.build();
   }
