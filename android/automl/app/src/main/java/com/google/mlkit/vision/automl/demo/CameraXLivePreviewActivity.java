@@ -324,6 +324,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
                   .setDetectorMode(CustomObjectDetectorOptions.STREAM_MODE)
                   .enableClassification()
                   .setClassificationConfidenceThreshold(0)
+                  .setMaxPerObjectLabelCount(1)
                   .build();
           imageProcessor =
               new ObjectDetectorProcessor(this, customODTRemoteModel, customAutoMLODTOptions);

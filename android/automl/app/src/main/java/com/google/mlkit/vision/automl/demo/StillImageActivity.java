@@ -357,6 +357,7 @@ public final class StillImageActivity extends AppCompatActivity {
                   .setDetectorMode(CustomObjectDetectorOptions.SINGLE_IMAGE_MODE)
                   .enableClassification()
                   .setClassificationConfidenceThreshold(0)
+                  .setMaxPerObjectLabelCount(1)
                   .build();
           imageProcessor =
               new ObjectDetectorProcessor(this, customODTRemoteModel, customAutoMLODTOptions);

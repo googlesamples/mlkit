@@ -203,6 +203,7 @@ public final class LivePreviewActivity extends AppCompatActivity
                   .setDetectorMode(CustomObjectDetectorOptions.STREAM_MODE)
                   .enableClassification()
                   .setClassificationConfidenceThreshold(0)
+                  .setMaxPerObjectLabelCount(1)
                   .build();
           cameraSource.setMachineLearningFrameProcessor(
               new ObjectDetectorProcessor(this, customODTRemoteModel, customAutoMLODTOptions));
