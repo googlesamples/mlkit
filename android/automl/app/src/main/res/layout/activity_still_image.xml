@@ -66,4 +66,12 @@
     </LinearLayout>
   </LinearLayout>
 
+  <include
+      layout="@layout/settings_style"
+      android:id="@+id/settings_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintRight_toRightOf="@id/root"
+      app:layout_constraintTop_toTopOf="@id/root"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

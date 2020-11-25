@@ -42,6 +42,6 @@
 
   <!-- Strings for automl remote model name preference. -->
   <string name="pref_title_automl_remote_model_name">AutoML Remote Model Name</string>
-  <string name="pref_key_live_preview_automl_remote_model_name" translatable="false">lparmn</string>
+  <string name="pref_key_automl_remote_model_name" translatable="false">armn</string>
   <string name="pref_dialog_message_automl_remote_model_name">Remote model name in the Firebase Console.</string>
 </resources>

@@ -28,8 +28,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Size;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -60,7 +58,6 @@ import com.google.mlkit.vision.automl.demo.automl.AutoMLImageLabelerProcessor.Mo
 import com.google.mlkit.vision.automl.demo.object.ObjectDetectorProcessor;
 import com.google.mlkit.vision.automl.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.automl.demo.preference.SettingsActivity;
-import com.google.mlkit.vision.automl.demo.preference.SettingsActivity.LaunchSource;
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
 import java.util.ArrayList;
@@ -217,24 +214,6 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
             "This device does not have lens with facing: " + newLensFacing,
             Toast.LENGTH_SHORT)
         .show();
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.live_preview_menu, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == R.id.settings) {
-      Intent intent = new Intent(this, SettingsActivity.class);
-      intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, LaunchSource.CAMERAX_LIVE_PREVIEW);
-      startActivity(intent);
-      return true;
-    }
-
-    return super.onOptionsItemSelected(item);
   }
 
   @Override

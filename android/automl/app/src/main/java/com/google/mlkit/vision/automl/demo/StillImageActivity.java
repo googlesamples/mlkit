@@ -28,7 +28,6 @@ import android.provider.MediaStore;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -46,6 +45,8 @@ import com.google.mlkit.vision.automl.demo.automl.AutoMLImageLabelerProcessor;
 import com.google.mlkit.vision.automl.demo.automl.AutoMLImageLabelerProcessor.Mode;
 import com.google.mlkit.vision.automl.demo.object.ObjectDetectorProcessor;
 import com.google.mlkit.vision.automl.demo.preference.PreferenceUtils;
+import com.google.mlkit.vision.automl.demo.preference.SettingsActivity;
+import com.google.mlkit.vision.automl.demo.preference.SettingsActivity.LaunchSource;
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
 import java.io.IOException;
@@ -137,6 +138,14 @@ public final class StillImageActivity extends AppCompatActivity {
         }
       }
     });
+
+    ImageView settingsButton = findViewById(R.id.settings_button);
+    settingsButton.setOnClickListener(
+        v -> {
+          Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+          intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, LaunchSource.STILL_IMAGE);
+          startActivity(intent);
+        });
   }
 
   @Override
@@ -145,12 +154,6 @@ public final class StillImageActivity extends AppCompatActivity {
     Log.d(TAG, "onResume");
     createImageProcessor();
     tryReloadAndDetectInImage();
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.still_image_menu, menu);
-    return true;
   }
 
   private void populateFeatureSelector() {

@@ -18,11 +18,9 @@ package com.google.mlkit.vision.automl.demo.preference;
 
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.widget.Toast;
 import androidx.annotation.StringRes;
 import com.google.mlkit.vision.automl.demo.CameraSource;
 import com.google.mlkit.vision.automl.demo.CameraSource.SizePair;
@@ -42,7 +40,7 @@ public class LivePreviewPreferenceFragment extends PreferenceFragment {
 
     addPreferencesFromResource(R.xml.preference_live_preview_automl);
     setUpCameraPreferences();
-    setUpRemoteModelNamePreferences();
+    PreferenceUtils.setUpRemoteModelNamePreferences(this);
   }
 
   private void setUpCameraPreferences() {
@@ -158,28 +156,6 @@ public class LivePreviewPreferenceFragment extends PreferenceFragment {
               R.string.pref_key_camerax_target_resolution,
               newStringValue);
           return true;
-        });
-  }
-
-  private void setUpRemoteModelNamePreferences() {
-    EditTextPreference autoMLRemoteModelNamePref =
-        (EditTextPreference)
-            findPreference(getString(R.string.pref_key_live_preview_automl_remote_model_name));
-    autoMLRemoteModelNamePref.setSummary(autoMLRemoteModelNamePref.getText());
-    autoMLRemoteModelNamePref.setOnPreferenceChangeListener(
-        (preference, newValue) -> {
-          String modelName = (String) newValue;
-          if (!modelName.isEmpty()) {
-            autoMLRemoteModelNamePref.setSummary((String) newValue);
-            return true;
-          }
-
-          Toast.makeText(
-                  getActivity(),
-                  R.string.pref_key_live_preview_automl_remote_model_name,
-                  Toast.LENGTH_LONG)
-              .show();
-          return false;
         });
   }
 }

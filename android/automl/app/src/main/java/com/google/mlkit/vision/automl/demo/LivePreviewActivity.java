@@ -23,8 +23,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -45,7 +43,6 @@ import com.google.mlkit.vision.automl.demo.automl.AutoMLImageLabelerProcessor.Mo
 import com.google.mlkit.vision.automl.demo.object.ObjectDetectorProcessor;
 import com.google.mlkit.vision.automl.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.automl.demo.preference.SettingsActivity;
-import com.google.mlkit.vision.automl.demo.preference.SettingsActivity.LaunchSource;
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
 import java.io.IOException;
@@ -115,24 +112,6 @@ public final class LivePreviewActivity extends AppCompatActivity
     } else {
       getRuntimePermissions();
     }
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.live_preview_menu, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == R.id.settings) {
-      Intent intent = new Intent(this, SettingsActivity.class);
-      intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, LaunchSource.LIVE_PREVIEW);
-      startActivity(intent);
-      return true;
-    }
-
-    return super.onOptionsItemSelected(item);
   }
 
   @Override

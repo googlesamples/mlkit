@@ -19,7 +19,10 @@ package com.google.mlkit.vision.automl.demo.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build.VERSION_CODES;
+import android.preference.EditTextPreference;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
@@ -84,14 +87,36 @@ public final class PreferenceUtils {
 
   public static String getAutoMLRemoteModelName(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    String modelNamePrefKey =
-        context.getString(R.string.pref_key_live_preview_automl_remote_model_name);
+    String modelNamePrefKey = context.getString(R.string.pref_key_automl_remote_model_name);
     String defaultModelName = "mlkit_flowers";
     String remoteModelName = sharedPreferences.getString(modelNamePrefKey, defaultModelName);
     if (remoteModelName.isEmpty()) {
       remoteModelName = defaultModelName;
     }
     return remoteModelName;
+  }
+
+  public static void setUpRemoteModelNamePreferences(PreferenceFragment preferenceFragment) {
+    EditTextPreference autoMLRemoteModelNamePref =
+        (EditTextPreference)
+            preferenceFragment.findPreference(
+                preferenceFragment.getString(R.string.pref_key_automl_remote_model_name));
+    autoMLRemoteModelNamePref.setSummary(autoMLRemoteModelNamePref.getText());
+    autoMLRemoteModelNamePref.setOnPreferenceChangeListener(
+        (preference, newValue) -> {
+          String modelName = (String) newValue;
+          if (!modelName.isEmpty()) {
+            autoMLRemoteModelNamePref.setSummary((String) newValue);
+            return true;
+          }
+
+          Toast.makeText(
+                  preferenceFragment.getActivity(),
+                  R.string.pref_key_automl_remote_model_name,
+                  Toast.LENGTH_LONG)
+              .show();
+          return false;
+        });
   }
 
   private PreferenceUtils() {}
