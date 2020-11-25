@@ -27,7 +27,6 @@ import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.util.Pair
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
@@ -151,24 +150,6 @@ class StillImageActivity : AppCompatActivity() {
     Log.d(TAG, "onResume")
     createImageProcessor()
     tryReloadAndDetectInImage()
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.still_image_menu, menu)
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    if (item.itemId == R.id.settings) {
-      val intent = Intent(this, SettingsActivity::class.java)
-      intent.putExtra(
-        SettingsActivity.EXTRA_LAUNCH_SOURCE,
-        LaunchSource.STILL_IMAGE
-      )
-      startActivity(intent)
-      return true
-    }
-    return super.onOptionsItemSelected(item)
   }
 
   private fun populateFeatureSelector() {

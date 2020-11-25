@@ -26,8 +26,6 @@ import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -224,24 +222,6 @@ class CameraXLivePreviewActivity :
       Toast.LENGTH_SHORT
     )
       .show()
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.live_preview_menu, menu)
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    if (item.itemId == R.id.settings) {
-      val intent = Intent(this, SettingsActivity::class.java)
-      intent.putExtra(
-        SettingsActivity.EXTRA_LAUNCH_SOURCE,
-        LaunchSource.CAMERAX_LIVE_PREVIEW
-      )
-      startActivity(intent)
-      return true
-    }
-    return super.onOptionsItemSelected(item)
   }
 
   public override fun onResume() {
