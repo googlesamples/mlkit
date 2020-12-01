@@ -208,7 +208,7 @@ NS_ASSUME_NONNULL_BEGIN
   } else {
     [self.targetDownloadDeleteButton setTitle:@"Download Model" forState:UIControlStateNormal];
   }
-  self.targetDownloadDeleteButton.hidden = inputLanguage == MLKTranslateLanguageEnglish;
+  self.targetDownloadDeleteButton.hidden = outputLanguage == MLKTranslateLanguageEnglish;
 }
 
 - (BOOL)isLanguageDownloaded:(MLKTranslateLanguage)language {

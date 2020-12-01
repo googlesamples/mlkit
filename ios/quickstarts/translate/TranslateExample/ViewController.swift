@@ -195,7 +195,7 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDataSour
     } else {
       self.targetDownloadDeleteButton.setTitle("Download model", for: .normal)
     }
-    self.targetDownloadDeleteButton.isHidden = inputLanguage == .english
+    self.targetDownloadDeleteButton.isHidden = outputLanguage == .english
   }
 
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
