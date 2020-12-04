@@ -239,8 +239,8 @@ class ViewController: UIViewController, StrokeManagerDelegate, UIPickerViewDeleg
     ctx.addLine(to: currentPoint)
     ctx.setLineCap(CGLineCap.round)
     ctx.setLineWidth(kBrushWidth)
-    // Unrecognized strokes are drawn in black.
-    ctx.setStrokeColor(red: 0, green: 0, blue: 0, alpha: 1)
+    // Unrecognized strokes are drawn in blue.
+    ctx.setStrokeColor(red: 0, green: 0, blue: 1, alpha: 1)
     ctx.setBlendMode(CGBlendMode.normal)
     ctx.strokePath()
     ctx.flush()

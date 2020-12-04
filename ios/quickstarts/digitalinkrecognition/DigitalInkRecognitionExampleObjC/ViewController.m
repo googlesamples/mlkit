@@ -250,8 +250,8 @@ static const CGFloat kBrushWidth = 2.0;
   CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), currentPoint.x, currentPoint.y);
   CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
   CGContextSetLineWidth(UIGraphicsGetCurrentContext(), kBrushWidth);
-  // Unrecognized strokes are drawn in black.
-  CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 0, 0, 0, 1);
+  // Unrecognized strokes are drawn in blue.
+  CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 0, 0, 1, 1);
   CGContextSetBlendMode(UIGraphicsGetCurrentContext(), kCGBlendModeNormal);
   CGContextStrokePath(UIGraphicsGetCurrentContext());
   CGContextFlush(UIGraphicsGetCurrentContext());
