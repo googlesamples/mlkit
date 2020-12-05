@@ -8,7 +8,8 @@ This ML Kit Quickstart App demonstrates how to label images and objects with an 
 
 ## Feature List
 Features that are included in this demo app:
-* [AutoML Image labeling](https://developers.google.com/ml-kit/vision/image-labeling/automl/android) - Label images using an AutoML VisionEdge trained model, both for a local and a model that is downloaded from Firebase.
+* [Custom Image labeling](https://developers.google.com/ml-kit/vision/image-labeling/custom-models/android) - Label images using a custom AutoML VisionEdge trained model that is downloaded from Firebase.
+* [Custom Object Detection and Tracking](https://developers.google.com/ml-kit/vision/object-detection/custom-models/android) - Detect and label object using a custom AutoML VisionEdge trained model that is downloaded from Firebase.
 
 <img src="../screenshots/automl-quickstart.png" width="256"/>
 
@@ -17,7 +18,7 @@ Features that are included in this demo app:
 * In order to setup this app to run, you need to create a Firebase project as outlined [here](https://firebase.google.com/docs/android/setup).
 * Run the sample code on your Android device or emulator
 * Try extending the code to add new features and functionality
-* Ensure your device is connected to the internet to download the remote model
+* Ensure your device is connected to the Internet to download the remote model
 
 ## How to use the app
 This app supports three usage scenarios: Live Camera, Static Image, and CameraX enabled live camera.
