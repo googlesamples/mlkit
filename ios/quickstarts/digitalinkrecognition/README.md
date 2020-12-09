@@ -1,14 +1,14 @@
 ML Kit Digital Ink Recognition Quickstart
 =======================
 
-The ML Kit Digital Ink Recognition iOS Quickstart app demonstrates how to use
-the Digital Ink Recognition feature of ML Kit to perform digital ink recognition
-in your application.
+- [Read more about ML Kit Digital Ink Recognition](https://developers.google.com/ml-kit/vision/digital-ink-recognition/ios)
 
 Introduction
 ------------
 
-- [Read more about ML Kit Digital Ink Recognition](https://developers.google.com/ml-kit/vision/digital-ink-recognition/ios)
+The ML Kit Digital Ink Recognition iOS Quickstart app demonstrates how to use
+the Digital Ink Recognition feature of ML Kit to perform digital ink recognition
+in your application.
 
 Getting Started
 ---------------
