@@ -1,13 +1,17 @@
 # ML Kit AutoML Remote Model Quickstart Sample App
 
-## Introduction
-
-This ML Kit Quickstart App demonstrates how to label images and objects with an AutoML Vision Edge trained model, and also how to download models that are hosted within Firebase.
 * [Read more about training an image classification model using AutoML Vision Edge model](https://firebase.google.com/docs/ml/automl-image-labeling)
 * [Read more about hosting models with Firebase Model deployment](https://firebase.google.com/docs/ml/manage-hosted-models)
 
+## Introduction
+
+This ML Kit Quickstart App demonstrates how to label images and objects with an
+AutoML Vision Edge trained model, and also how to download models that are
+hosted within Firebase.
+
 ## Feature List
 Features that are included in this demo app:
+
 * [Custom Image labeling](https://developers.google.com/ml-kit/vision/image-labeling/custom-models/android) - Label images using a custom AutoML VisionEdge trained model that is downloaded from Firebase.
 * [Custom Object Detection and Tracking](https://developers.google.com/ml-kit/vision/object-detection/custom-models/android) - Detect and label object using a custom AutoML VisionEdge trained model that is downloaded from Firebase.
 
@@ -15,27 +19,38 @@ Features that are included in this demo app:
 
 ## Getting Started
 
-* In order to setup this app to run, you need to create a Firebase project as outlined [here](https://firebase.google.com/docs/android/setup).
+* In order to setup this app to run, you need to create a Firebase project as
+outlined [here](https://firebase.google.com/docs/android/setup).
 * Run the sample code on your Android device or emulator
 * Try extending the code to add new features and functionality
 * Ensure your device is connected to the Internet to download the remote model
 
 ## How to use the app
-This app supports three usage scenarios: Live Camera, Static Image, and CameraX enabled live camera.
+This app supports three usage scenarios: Live Camera, Static Image, and CameraX
+enabled live camera.
 
 ### Live Camera Scenario
-This mode uses the camera preview as input and allows you to label images using a remotely downloaded AutoML Vision Edge model. There is also a settings page that allows you to configure several options:
+This mode uses the camera preview as input and allows you to label images using
+a remotely downloaded AutoML Vision Edge model. There is also a settings page
+that allows you to configure several options:
+
 * Camera
-    * Preview Size -- Specify the preview size of rear camera manually (Default size is chose appropriately based on screen size)
-    * Enable live viewport -- Prevent the live camera preview from being blocked by API rendering speed.
+    * Preview Size -- Specify the preview size of rear camera manually (Default
+    size is chose appropriately based on screen size)
+    * Enable live viewport -- Prevent the live camera preview from being blocked
+    by API rendering speed.
 * AutoML Image Labeling
-    * AutoML Remote Model Name -- Allows you to specify an AutoML VisionEdge model to remotely download from the Firebase Console
+    * AutoML Remote Model Name -- Allows you to specify an AutoML VisionEdge
+    model to remotely download from the Firebase Console
 
 ### Static Image Scenario
-The static image scenario is identical to the live camera scenario, but instead relies on images fed into the app through the gallery.
+The static image scenario is identical to the live camera scenario, but instead
+relies on images fed into the app through the gallery.
 
 ### CameraX Live Preview scenario
-The CameraX live preview scenario is very similar to the native live camera scenario, but instead relies on CameraX live preview instead of the Camera2 live preview. Note: CameraX is only supported on API level 21+.
+The CameraX live preview scenario is very similar to the native live camera
+scenario, but instead relies on CameraX live preview instead of the Camera2 live
+preview. Note: CameraX is only supported on API level 21+.
 
 
 ## Support
