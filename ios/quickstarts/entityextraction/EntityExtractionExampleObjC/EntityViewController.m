@@ -17,7 +17,6 @@
 #import "EntityViewController.h"
 #import "MLKEntityExtractionModelIdentifier+Extensions.h"
 
-// TODO(mikie/bauerb): migrate to MLKit umbrella header on public release.
 @import MLKitCommon;
 @import MLKitEntityExtraction;
 

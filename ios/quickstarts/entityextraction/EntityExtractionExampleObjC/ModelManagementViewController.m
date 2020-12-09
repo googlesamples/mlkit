@@ -82,15 +82,15 @@ NS_ASSUME_NONNULL_BEGIN
   MLKEntityExtractionModelIdentifier language = self.languages[indexPath.row];
   NSString *code = MLKEntityExtractionLanguageTagForModelIdentifier(language);
   cell.textLabel.text = [NSLocale.currentLocale localizedStringForLanguageCode:code];
-#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
-  if ([self.downloadedLanguages containsObject:language]) {
-    cell.imageView.image = [UIImage systemImageNamed:@"trash.circle"];
+  if (@available(iOS 13.0, *)) {
+    if ([self.downloadedLanguages containsObject:language]) {
+      cell.imageView.image = [UIImage systemImageNamed:@"trash.circle"];
+    } else {
+      cell.imageView.image = [UIImage systemImageNamed:@"icloud.and.arrow.down"];
+    }
   } else {
-    cell.imageView.image = [UIImage systemImageNamed:@"icloud.and.arrow.down"];
+    // TODO(mikie): status indicator on iOS < 13
   }
-#else   // __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_13_0
-  // TODO(mikie): status indicator on iOS < 13
-#endif  // __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
   return cell;
 }
 
