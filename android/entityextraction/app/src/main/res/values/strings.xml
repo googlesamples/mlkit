@@ -13,7 +13,7 @@
   <!-- Placeholder for EE error -->
   <string name="entity_extraction_error">Annotation failed.</string>
   <!-- Waiting message for the output box once EE is triggered -->
-  <string name="wait_message">Working…</string>
+  <string name="wait_message">Working…\nMake sure network is on for the first time to download model</string>
   <!-- String of info to be displayed for a money type entity -->
   <string name="money_entity_info">Money entity detected: %1$s.
     \nCurrency: %2$s, integer: %3$d, decimal: %4$d.\n</string>
