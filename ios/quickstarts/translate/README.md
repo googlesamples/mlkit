@@ -1,14 +1,17 @@
 # ML Kit Translate Quickstart Sample App
 
+* [Read more about ML Kit Translate](https://developers.google.com/ml-kit/language/translation)
+
 ## Introduction
 
-The ML Kit Translate iOS Quickstart app demonstrates how to use the Translate feature of ML Kit to translate text in your application.
-* [Read more about ML Kit Translate](https://developers.google.com/ml-kit/language/translation)
+The ML Kit Translate iOS Quickstart app demonstrates how to use the Translate
+feature of ML Kit to translate text in your application.
 
 ## Feature List
 
 Features that are included in this demo app:
-* [Translate](https://developers.google.com/ml-kit/language/translate/ios) - Translate Text with ML Kit on iOS
+
+* [Translate](https://developers.google.com/ml-kit/language/translation/ios) - Translate Text with ML Kit on iOS
 
 <img src="../../screenshots/translate.jpg" width="256"/>
 
