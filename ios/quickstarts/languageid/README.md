@@ -1,14 +1,16 @@
 # ML Kit Language ID Quickstart Sample App
 
+* [Read more about ML Kit LanguageID](https://developers.google.com/ml-kit/language/identification)
+
 ## Introduction
 
-The ML Kit Language ID iOS Quickstart app demonstrates how to use the Language ID feature of ML Kit to identify the language of entered text in your application.
-
-* [Read more about ML Kit LanguageID](https://developers.google.com/ml-kit/language/identification)
+The ML Kit Language ID iOS Quickstart app demonstrates how to use the Language
+ID feature of ML Kit to identify the language of entered text in your application.
 
 ## Feature List
 
 Features that are included in this demo app:
+
 * [Language Identification](https://developers.google.com/ml-kit/language/identification/ios) - Identify the language of text with ML Kit on iOS
 
 <img src="../../screenshots/langid.jpg" width="256"/>
