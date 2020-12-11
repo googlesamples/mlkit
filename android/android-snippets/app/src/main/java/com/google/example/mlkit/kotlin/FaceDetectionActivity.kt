@@ -25,7 +25,7 @@ class FaceDetectionActivity : AppCompatActivity() {
     private fun detectFaces(image: InputImage) {
         // [START set_detector_options]
         val options = FaceDetectorOptions.Builder()
-                .setClassificationMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
                 .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
                 .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
                 .setMinFaceSize(0.15f)
