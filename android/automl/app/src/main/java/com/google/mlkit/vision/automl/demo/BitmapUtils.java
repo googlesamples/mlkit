@@ -18,6 +18,7 @@ package com.google.mlkit.vision.automl.demo;
 
 import static java.lang.Math.min;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -79,6 +80,7 @@ public final class BitmapUtils {
         .setRotation(image.getImageInfo().getRotationDegrees())
         .build();
 
+    @SuppressLint("UnsafeExperimentalUsageError")
     ByteBuffer nv21Buffer = yuv420ThreePlanesToNV21(
         image.getImage().getPlanes(), image.getWidth(), image.getHeight());
     return getBitmap(nv21Buffer, frameMetadata);
