@@ -94,7 +94,7 @@ public class BarcodeScanningActivity extends AppCompatActivity {
                         // Task failed with an exception
                         // ...
                     }
-                        });
+                });
         // [END run_detector]
     }
 
