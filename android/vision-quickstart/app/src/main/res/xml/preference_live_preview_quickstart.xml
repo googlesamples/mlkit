@@ -17,9 +17,15 @@
         android:title="@string/pref_title_front_camera_preview_size"/>
 
     <ListPreference
-        android:key="@string/pref_key_camerax_target_resolution"
+        android:key="@string/pref_key_camerax_rear_camera_target_resolution"
         android:persistent="true"
-        android:title="@string/pref_title_camerax_target_resolution"/>
+        android:title="@string/pref_title_camerax_rear_camera_target_resolution"/>
+
+        <ListPreference
+        android:key="@string/pref_key_camerax_front_camera_target_resolution"
+        android:persistent="true"
+        android:title="@string/pref_title_camerax_front_camera_target_resolution"/>
+
 
     <SwitchPreference
         android:defaultValue="false"

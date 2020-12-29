@@ -456,21 +456,22 @@ public class CameraSource {
     // rates.
     int desiredPreviewFpsScaled = (int) (desiredPreviewFps * 1000.0f);
 
-    // The method for selecting the best range is to minimize the sum of the differences between
-    // the desired value and the upper and lower bounds of the range.  This may select a range
-    // that the desired value is outside of, but this is often preferred.  For example, if the
-    // desired frame rate is 29.97, the range (30, 30) is probably more desirable than the
-    // range (15, 30).
+    // Selects a range with whose upper bound is as close as possible to the desired fps while its
+    // lower bound is as small as possible to properly expose frames in low light conditions. Note
+    // that this may select a range that the desired value is outside of. For example, if the
+    // desired frame rate is 30.5, the range (30, 30) is probably more desirable than (30, 40).
     int[] selectedFpsRange = null;
-    int minDiff = Integer.MAX_VALUE;
+    int minUpperBoundDiff = Integer.MAX_VALUE;
+    int minLowerBound = Integer.MAX_VALUE;
     List<int[]> previewFpsRangeList = camera.getParameters().getSupportedPreviewFpsRange();
     for (int[] range : previewFpsRangeList) {
-      int deltaMin = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
-      int deltaMax = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX];
-      int diff = Math.abs(deltaMin) + Math.abs(deltaMax);
-      if (diff < minDiff) {
+      int upperBoundDiff =
+          Math.abs(desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
+      int lowerBound = range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
+      if (upperBoundDiff <= minUpperBoundDiff && lowerBound <= minLowerBound) {
         selectedFpsRange = range;
-        minDiff = diff;
+        minUpperBoundDiff = upperBoundDiff;
+        minLowerBound = lowerBound;
       }
     }
     return selectedFpsRange;

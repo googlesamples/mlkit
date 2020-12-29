@@ -38,7 +38,9 @@ public class PoseDetectorProcessor extends VisionProcessorBase<Pose> {
   private final boolean showInFrameLikelihood;
 
   public PoseDetectorProcessor(
-      Context context, PoseDetectorOptionsBase options, boolean showInFrameLikelihood) {
+      Context context,
+      PoseDetectorOptionsBase options,
+      boolean showInFrameLikelihood) {
     super(context);
     this.showInFrameLikelihood = showInFrameLikelihood;
     detector = PoseDetection.getClient(options);
@@ -57,7 +59,8 @@ public class PoseDetectorProcessor extends VisionProcessorBase<Pose> {
 
   @Override
   protected void onSuccess(@NonNull Pose pose, @NonNull GraphicOverlay graphicOverlay) {
-    graphicOverlay.add(new PoseGraphic(graphicOverlay, pose, showInFrameLikelihood));
+    graphicOverlay.add(
+        new PoseGraphic(graphicOverlay, pose, showInFrameLikelihood));
   }
 
   @Override

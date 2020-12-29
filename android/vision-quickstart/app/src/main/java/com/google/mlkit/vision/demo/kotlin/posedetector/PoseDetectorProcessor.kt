@@ -48,7 +48,8 @@ class PoseDetectorProcessor(
     pose: Pose,
     graphicOverlay: GraphicOverlay
   ) {
-    graphicOverlay.add(PoseGraphic(graphicOverlay, pose, showInFrameLikelihood))
+    graphicOverlay.add(
+      PoseGraphic(graphicOverlay, pose, showInFrameLikelihood))
   }
 
   override fun onFailure(e: Exception) {

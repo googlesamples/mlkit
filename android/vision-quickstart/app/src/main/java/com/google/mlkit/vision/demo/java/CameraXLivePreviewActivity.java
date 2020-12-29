@@ -287,7 +287,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
     }
 
     Preview.Builder builder = new Preview.Builder();
-    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this);
+    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this, lensFacing);
     if (targetResolution != null) {
       builder.setTargetResolution(targetResolution);
     }
@@ -378,7 +378,8 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
           boolean shouldShowInFrameLikelihood =
               PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodLivePreview(this);
           imageProcessor =
-              new PoseDetectorProcessor(this, poseDetectorOptions, shouldShowInFrameLikelihood);
+              new PoseDetectorProcessor(
+                  this, poseDetectorOptions, shouldShowInFrameLikelihood);
           break;
         default:
           throw new IllegalStateException("Invalid model name");
@@ -394,7 +395,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
     }
 
     ImageAnalysis.Builder builder = new ImageAnalysis.Builder();
-    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this);
+    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this, lensFacing);
     if (targetResolution != null) {
       builder.setTargetResolution(targetResolution);
     }

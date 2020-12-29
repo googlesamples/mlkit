@@ -256,11 +256,12 @@ public final class LivePreviewActivity extends AppCompatActivity
         case POSE_DETECTION:
           PoseDetectorOptionsBase poseDetectorOptions =
               PreferenceUtils.getPoseDetectorOptionsForLivePreview(this);
+          Log.i(TAG, "Using Pose Detector with options " + poseDetectorOptions);
           boolean shouldShowInFrameLikelihood =
               PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodLivePreview(this);
-          Log.i(TAG, "Using Pose Detector with options " + poseDetectorOptions);
           cameraSource.setMachineLearningFrameProcessor(
-              new PoseDetectorProcessor(this, poseDetectorOptions, shouldShowInFrameLikelihood));
+              new PoseDetectorProcessor(
+                  this, poseDetectorOptions, shouldShowInFrameLikelihood));
           break;
         default:
           Log.e(TAG, "Unknown model: " + model);

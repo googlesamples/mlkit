@@ -264,11 +264,12 @@ class LivePreviewActivity :
         POSE_DETECTION -> {
           val poseDetectorOptions =
             PreferenceUtils.getPoseDetectorOptionsForLivePreview(this)
+          Log.i(TAG, "Using Pose Detector with options $poseDetectorOptions")
           val shouldShowInFrameLikelihood =
             PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodLivePreview(this)
-          Log.i(TAG, "Using Pose Detector with options $poseDetectorOptions")
           cameraSource!!.setMachineLearningFrameProcessor(
-            PoseDetectorProcessor(this, poseDetectorOptions, shouldShowInFrameLikelihood)
+            PoseDetectorProcessor(
+              this, poseDetectorOptions, shouldShowInFrameLikelihood)
           )
         }
         else -> Log.e(TAG, "Unknown model: $model")

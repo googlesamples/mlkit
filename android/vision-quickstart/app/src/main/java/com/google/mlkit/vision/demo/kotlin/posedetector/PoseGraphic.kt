@@ -19,10 +19,11 @@ package com.google.mlkit.vision.demo.kotlin.posedetector
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PointF
 import com.google.mlkit.vision.demo.GraphicOverlay
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseLandmark
+import java.lang.Math.max
+import java.lang.Math.min
 import java.util.Locale
 
 /** Draw the detected pose in preview.  */
@@ -35,6 +36,7 @@ class PoseGraphic internal constructor(
   private val leftPaint: Paint
   private val rightPaint: Paint
   private val whitePaint: Paint
+
   override fun draw(canvas: Canvas) {
     val landmarks =
       pose.allPoseLandmarks
@@ -43,7 +45,7 @@ class PoseGraphic internal constructor(
     }
     // Draw all the points
     for (landmark in landmarks) {
-      drawPoint(canvas, landmark.position, whitePaint)
+      drawPoint(canvas, landmark, whitePaint)
       if (showInFrameLikelihood) {
         canvas.drawText(
           String.format(Locale.US, "%.2f", landmark.inFrameLikelihood),
@@ -97,55 +99,52 @@ class PoseGraphic internal constructor(
       pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX)
     val rightFootIndex =
       pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX)
-    drawLine(canvas, leftShoulder!!.position, rightShoulder!!.position, whitePaint)
-    drawLine(canvas, leftHip!!.position, rightHip!!.position, whitePaint)
+    drawLine(canvas, leftShoulder!!, rightShoulder!!, whitePaint)
+    drawLine(canvas, leftHip!!, rightHip!!, whitePaint)
     // Left body
-    drawLine(canvas, leftShoulder.position, leftElbow!!.position, leftPaint)
-    drawLine(canvas, leftElbow.position, leftWrist!!.position, leftPaint)
-    drawLine(canvas, leftShoulder.position, leftHip.position, leftPaint)
-    drawLine(canvas, leftHip.position, leftKnee!!.position, leftPaint)
-    drawLine(canvas, leftKnee.position, leftAnkle!!.position, leftPaint)
-    drawLine(canvas, leftWrist.position, leftThumb!!.position, leftPaint)
-    drawLine(canvas, leftWrist.position, leftPinky!!.position, leftPaint)
-    drawLine(canvas, leftWrist.position, leftIndex!!.position, leftPaint)
-    drawLine(canvas, leftAnkle.position, leftHeel!!.position, leftPaint)
-    drawLine(canvas, leftHeel.position, leftFootIndex!!.position, leftPaint)
+    drawLine(canvas, leftShoulder, leftElbow!!, leftPaint)
+    drawLine(canvas, leftElbow, leftWrist!!, leftPaint)
+    drawLine(canvas, leftShoulder, leftHip, leftPaint)
+    drawLine(canvas, leftHip, leftKnee!!, leftPaint)
+    drawLine(canvas, leftKnee, leftAnkle!!, leftPaint)
+    drawLine(canvas, leftWrist, leftThumb!!, leftPaint)
+    drawLine(canvas, leftWrist, leftPinky!!, leftPaint)
+    drawLine(canvas, leftWrist, leftIndex!!, leftPaint)
+    drawLine(canvas, leftAnkle, leftHeel!!, leftPaint)
+    drawLine(canvas, leftHeel, leftFootIndex!!, leftPaint)
     // Right body
-    drawLine(canvas, rightShoulder.position, rightElbow!!.position, rightPaint)
-    drawLine(canvas, rightElbow.position, rightWrist!!.position, rightPaint)
-    drawLine(canvas, rightShoulder.position, rightHip.position, rightPaint)
-    drawLine(canvas, rightHip.position, rightKnee!!.position, rightPaint)
-    drawLine(canvas, rightKnee.position, rightAnkle!!.position, rightPaint)
-    drawLine(canvas, rightWrist.position, rightThumb!!.position, rightPaint)
-    drawLine(canvas, rightWrist.position, rightPinky!!.position, rightPaint)
-    drawLine(canvas, rightWrist.position, rightIndex!!.position, rightPaint)
-    drawLine(canvas, rightAnkle.position, rightHeel!!.position, rightPaint)
-    drawLine(canvas, rightHeel.position, rightFootIndex!!.position, rightPaint)
+    drawLine(canvas, rightShoulder, rightElbow!!, rightPaint)
+    drawLine(canvas, rightElbow, rightWrist!!, rightPaint)
+    drawLine(canvas, rightShoulder, rightHip, rightPaint)
+    drawLine(canvas, rightHip, rightKnee!!, rightPaint)
+    drawLine(canvas, rightKnee, rightAnkle!!, rightPaint)
+    drawLine(canvas, rightWrist, rightThumb!!, rightPaint)
+    drawLine(canvas, rightWrist, rightPinky!!, rightPaint)
+    drawLine(canvas, rightWrist, rightIndex!!, rightPaint)
+    drawLine(canvas, rightAnkle, rightHeel!!, rightPaint)
+    drawLine(canvas, rightHeel, rightFootIndex!!, rightPaint)
   }
 
-  fun drawPoint(canvas: Canvas, point: PointF?, paint: Paint?) {
-    if (point == null) {
-      return
-    }
+  fun drawPoint(canvas: Canvas, landmark: PoseLandmark, paint: Paint) {
+    val point = landmark.position
     canvas.drawCircle(
       translateX(point.x),
       translateY(point.y),
       DOT_RADIUS,
-      paint!!
+      paint
     )
   }
 
   fun drawLine(
     canvas: Canvas,
-    start: PointF?,
-    end: PointF?,
-    paint: Paint?
+    startLandmark: PoseLandmark,
+    endLandmark: PoseLandmark,
+    paint: Paint
   ) {
-    if (start == null || end == null) {
-      return
-    }
+    val start = startLandmark.position
+    val end = endLandmark.position
     canvas.drawLine(
-      translateX(start.x), translateY(start.y), translateX(end.x), translateY(end.y), paint!!
+      translateX(start.x), translateY(start.y), translateX(end.x), translateY(end.y), paint
     )
   }
 

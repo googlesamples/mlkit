@@ -460,11 +460,12 @@ class StillImageActivity : AppCompatActivity() {
         POSE_DETECTION -> {
           val poseDetectorOptions =
             PreferenceUtils.getPoseDetectorOptionsForStillImage(this)
+          Log.i(TAG, "Using Pose Detector with options $poseDetectorOptions")
           val shouldShowInFrameLikelihood =
             PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodStillImage(this)
-          Log.i(TAG, "Using Pose Detector with options $poseDetectorOptions")
           imageProcessor =
-            PoseDetectorProcessor(this, poseDetectorOptions, shouldShowInFrameLikelihood)
+            PoseDetectorProcessor(
+              this, poseDetectorOptions, shouldShowInFrameLikelihood)
         }
         else -> Log.e(
           TAG,

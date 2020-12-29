@@ -265,7 +265,7 @@ class CameraXLivePreviewActivity :
     }
 
     val builder = Preview.Builder()
-    val targetResolution = PreferenceUtils.getCameraXTargetResolution(this)
+    val targetResolution = PreferenceUtils.getCameraXTargetResolution(this, lensFacing)
     if (targetResolution != null) {
       builder.setTargetResolution(targetResolution)
     }
@@ -412,7 +412,7 @@ class CameraXLivePreviewActivity :
     }
 
     val builder = ImageAnalysis.Builder()
-    val targetResolution = PreferenceUtils.getCameraXTargetResolution(this)
+    val targetResolution = PreferenceUtils.getCameraXTargetResolution(this, lensFacing)
     if (targetResolution != null) {
       builder.setTargetResolution(targetResolution)
     }

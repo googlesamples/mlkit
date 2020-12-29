@@ -20,7 +20,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import androidx.annotation.Nullable;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.GraphicOverlay.Graphic;
 import com.google.mlkit.vision.pose.Pose;
@@ -36,11 +35,15 @@ public class PoseGraphic extends Graphic {
 
   private final Pose pose;
   private final boolean showInFrameLikelihood;
+
   private final Paint leftPaint;
   private final Paint rightPaint;
   private final Paint whitePaint;
 
-  PoseGraphic(GraphicOverlay overlay, Pose pose, boolean showInFrameLikelihood) {
+  PoseGraphic(
+      GraphicOverlay overlay,
+      Pose pose,
+      boolean showInFrameLikelihood) {
     super(overlay);
 
     this.pose = pose;
@@ -63,7 +66,7 @@ public class PoseGraphic extends Graphic {
     }
     // Draw all the points
     for (PoseLandmark landmark : landmarks) {
-      drawPoint(canvas, landmark.getPosition(), whitePaint);
+      drawPoint(canvas, landmark, whitePaint);
       if (showInFrameLikelihood) {
         canvas.drawText(
             String.format(Locale.US, "%.2f", landmark.getInFrameLikelihood()),
@@ -96,45 +99,42 @@ public class PoseGraphic extends Graphic {
     PoseLandmark leftFootIndex = pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX);
     PoseLandmark rightFootIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX);
 
-    drawLine(canvas, leftShoulder.getPosition(), rightShoulder.getPosition(), whitePaint);
-    drawLine(canvas, leftHip.getPosition(), rightHip.getPosition(), whitePaint);
+    drawLine(canvas, leftShoulder, rightShoulder, whitePaint);
+    drawLine(canvas, leftHip, rightHip, whitePaint);
 
     // Left body
-    drawLine(canvas, leftShoulder.getPosition(), leftElbow.getPosition(), leftPaint);
-    drawLine(canvas, leftElbow.getPosition(), leftWrist.getPosition(), leftPaint);
-    drawLine(canvas, leftShoulder.getPosition(), leftHip.getPosition(), leftPaint);
-    drawLine(canvas, leftHip.getPosition(), leftKnee.getPosition(), leftPaint);
-    drawLine(canvas, leftKnee.getPosition(), leftAnkle.getPosition(), leftPaint);
-    drawLine(canvas, leftWrist.getPosition(), leftThumb.getPosition(), leftPaint);
-    drawLine(canvas, leftWrist.getPosition(), leftPinky.getPosition(), leftPaint);
-    drawLine(canvas, leftWrist.getPosition(), leftIndex.getPosition(), leftPaint);
-    drawLine(canvas, leftAnkle.getPosition(), leftHeel.getPosition(), leftPaint);
-    drawLine(canvas, leftHeel.getPosition(), leftFootIndex.getPosition(), leftPaint);
+    drawLine(canvas, leftShoulder, leftElbow, leftPaint);
+    drawLine(canvas, leftElbow, leftWrist, leftPaint);
+    drawLine(canvas, leftShoulder, leftHip, leftPaint);
+    drawLine(canvas, leftHip, leftKnee, leftPaint);
+    drawLine(canvas, leftKnee, leftAnkle, leftPaint);
+    drawLine(canvas, leftWrist, leftThumb, leftPaint);
+    drawLine(canvas, leftWrist, leftPinky, leftPaint);
+    drawLine(canvas, leftWrist, leftIndex, leftPaint);
+    drawLine(canvas, leftAnkle, leftHeel, leftPaint);
+    drawLine(canvas, leftHeel, leftFootIndex, leftPaint);
 
     // Right body
-    drawLine(canvas, rightShoulder.getPosition(), rightElbow.getPosition(), rightPaint);
-    drawLine(canvas, rightElbow.getPosition(), rightWrist.getPosition(), rightPaint);
-    drawLine(canvas, rightShoulder.getPosition(), rightHip.getPosition(), rightPaint);
-    drawLine(canvas, rightHip.getPosition(), rightKnee.getPosition(), rightPaint);
-    drawLine(canvas, rightKnee.getPosition(), rightAnkle.getPosition(), rightPaint);
-    drawLine(canvas, rightWrist.getPosition(), rightThumb.getPosition(), rightPaint);
-    drawLine(canvas, rightWrist.getPosition(), rightPinky.getPosition(), rightPaint);
-    drawLine(canvas, rightWrist.getPosition(), rightIndex.getPosition(), rightPaint);
-    drawLine(canvas, rightAnkle.getPosition(), rightHeel.getPosition(), rightPaint);
-    drawLine(canvas, rightHeel.getPosition(), rightFootIndex.getPosition(), rightPaint);
+    drawLine(canvas, rightShoulder, rightElbow, rightPaint);
+    drawLine(canvas, rightElbow, rightWrist, rightPaint);
+    drawLine(canvas, rightShoulder, rightHip, rightPaint);
+    drawLine(canvas, rightHip, rightKnee, rightPaint);
+    drawLine(canvas, rightKnee, rightAnkle, rightPaint);
+    drawLine(canvas, rightWrist, rightThumb, rightPaint);
+    drawLine(canvas, rightWrist, rightPinky, rightPaint);
+    drawLine(canvas, rightWrist, rightIndex, rightPaint);
+    drawLine(canvas, rightAnkle, rightHeel, rightPaint);
+    drawLine(canvas, rightHeel, rightFootIndex, rightPaint);
   }
 
-  void drawPoint(Canvas canvas, @Nullable PointF point, Paint paint) {
-    if (point == null) {
-      return;
-    }
+  void drawPoint(Canvas canvas, PoseLandmark landmark, Paint paint) {
+    PointF point = landmark.getPosition();
     canvas.drawCircle(translateX(point.x), translateY(point.y), DOT_RADIUS, paint);
   }
 
-  void drawLine(Canvas canvas, @Nullable PointF start, @Nullable PointF end, Paint paint) {
-    if (start == null || end == null) {
-      return;
-    }
+  void drawLine(Canvas canvas, PoseLandmark startLandmark, PoseLandmark endLandmark, Paint paint) {
+    PointF start = startLandmark.getPosition();
+    PointF end = endLandmark.getPosition();
     canvas.drawLine(
         translateX(start.x), translateY(start.y), translateX(end.x), translateY(end.y), paint);
   }
