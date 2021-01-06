@@ -31,11 +31,13 @@
   <string name="pref_key_rear_camera_picture_size" translatable="false">rcpts</string>
   <string name="pref_key_front_camera_preview_size" translatable="false">fcpvs</string>
   <string name="pref_key_front_camera_picture_size" translatable="false">fcpts</string>
-  <string name="pref_key_camerax_target_resolution" translatable="false">ctas</string>
+  <string name="pref_key_camerax_rear_camera_target_resolution" translatable="false">crctas</string>
+  <string name="pref_key_camerax_front_camera_target_resolution" translatable="false">cfctas</string>
   <string name="pref_key_camera_live_viewport" translatable="false">clv</string>
   <string name="pref_title_rear_camera_preview_size">Rear camera preview size</string>
   <string name="pref_title_front_camera_preview_size">Front camera preview size</string>
-  <string name="pref_title_camerax_target_resolution">CameraX target resolution</string>
+  <string name="pref_title_camerax_rear_camera_target_resolution">CameraX rear camera target resolution</string>
+  <string name="pref_title_camerax_front_camera_target_resolution">CameraX front camera target resolution</string>
   <string name="pref_title_camera_live_viewport">Enable live viewport</string>
   <string name="pref_summary_camera_live_viewport">Do not block camera preview drawing on detection</string>
 

@@ -32,8 +32,6 @@ import java.util.Map;
 /** Configures live preview demo settings. */
 public class LivePreviewPreferenceFragment extends PreferenceFragment {
 
-  protected boolean isCameraXSetting;
-
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -43,19 +41,13 @@ public class LivePreviewPreferenceFragment extends PreferenceFragment {
     PreferenceUtils.setUpRemoteModelNamePreferences(this);
   }
 
-  private void setUpCameraPreferences() {
+  void setUpCameraPreferences() {
     PreferenceCategory cameraPreference =
         (PreferenceCategory) findPreference(getString(R.string.pref_category_key_camera));
-
-    if (isCameraXSetting) {
-      cameraPreference.removePreference(
-          findPreference(getString(R.string.pref_key_rear_camera_preview_size)));
-      cameraPreference.removePreference(
-          findPreference(getString(R.string.pref_key_front_camera_preview_size)));
-      setUpCameraXTargetAnalysisSizePreference();
-    } else {
-      cameraPreference.removePreference(
-          findPreference(getString(R.string.pref_key_camerax_target_resolution)));
+    cameraPreference.removePreference(
+        findPreference(getString(R.string.pref_key_camerax_rear_camera_target_resolution)));
+    cameraPreference.removePreference(
+        findPreference(getString(R.string.pref_key_camerax_front_camera_target_resolution)));
       setUpCameraPreviewSizePreference(
           R.string.pref_key_rear_camera_preview_size,
           R.string.pref_key_rear_camera_picture_size,
@@ -64,7 +56,6 @@ public class LivePreviewPreferenceFragment extends PreferenceFragment {
           R.string.pref_key_front_camera_preview_size,
           R.string.pref_key_front_camera_picture_size,
           CameraSource.CAMERA_FACING_FRONT);
-    }
   }
 
   private void setUpCameraPreviewSizePreference(
@@ -128,34 +119,5 @@ public class LivePreviewPreferenceFragment extends PreferenceFragment {
         camera.release();
       }
     }
-  }
-
-  private void setUpCameraXTargetAnalysisSizePreference() {
-    ListPreference pref =
-        (ListPreference) findPreference(getString(R.string.pref_key_camerax_target_resolution));
-    String[] entries = new String[] {
-        "2000x2000",
-        "1600x1600",
-        "1200x1200",
-        "1000x1000",
-        "800x800",
-        "600x600",
-        "400x400",
-        "200x200",
-        "100x100",
-    };
-    pref.setEntries(entries);
-    pref.setEntryValues(entries);
-    pref.setSummary(pref.getEntry() == null ? "Default" : pref.getEntry());
-    pref.setOnPreferenceChangeListener(
-        (preference, newValue) -> {
-          String newStringValue = (String) newValue;
-          pref.setSummary(newStringValue);
-          PreferenceUtils.saveString(
-              getActivity(),
-              R.string.pref_key_camerax_target_resolution,
-              newStringValue);
-          return true;
-        });
   }
 }

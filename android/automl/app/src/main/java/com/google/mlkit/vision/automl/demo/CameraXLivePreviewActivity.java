@@ -255,7 +255,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
     }
 
     Preview.Builder builder = new Preview.Builder();
-    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this);
+    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this, lensFacing);
     if (targetResolution != null) {
       builder.setTargetResolution(targetResolution);
     }
@@ -322,7 +322,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
     }
 
     ImageAnalysis.Builder builder = new ImageAnalysis.Builder();
-    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this);
+    Size targetResolution = PreferenceUtils.getCameraXTargetResolution(this, lensFacing);
     if (targetResolution != null) {
       builder.setTargetResolution(targetResolution);
     }
