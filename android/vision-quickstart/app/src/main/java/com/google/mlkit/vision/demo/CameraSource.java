@@ -33,7 +33,6 @@ import android.view.WindowManager;
 import com.google.android.gms.common.images.Size;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import java.io.IOException;
-import java.lang.Thread.State;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -128,7 +127,6 @@ public class CameraSource {
   public void release() {
     synchronized (processorLock) {
       stop();
-      processingRunnable.release();
       cleanScreen();
 
       if (frameProcessor != null) {
@@ -594,15 +592,6 @@ public class CameraSource {
     private ByteBuffer pendingFrameData;
 
     FrameProcessingRunnable() {}
-
-    /**
-     * Releases the underlying receiver. This is only safe to do after the associated thread has
-     * completed, which is managed in camera source's release method above.
-     */
-    @SuppressLint("Assert")
-    void release() {
-      assert (processingThread.getState() == State.TERMINATED);
-    }
 
     /** Marks the runnable as active/not active. Signals any blocked threads to continue. */
     void setActive(boolean active) {
