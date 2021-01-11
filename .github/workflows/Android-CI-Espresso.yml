@@ -107,7 +107,7 @@ jobs:
       - name: Code checks
         run: cd android && ./gradlew check
       - name: Archive Lint report
-        uses: actions/upload-artifact@v2.2.1
+        uses: actions/upload-artifact@v2.2.2
         if: ${{ always() }}
         with:
           name: MLKit-Lint-report
