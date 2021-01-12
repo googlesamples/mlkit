@@ -117,11 +117,181 @@ public class UIUtilities {
     }
   }
 
+  /// Creates a pose overlay view for visualizing a given `pose`.
+  ///
+  /// - Parameters:
+  ///   - pose: The pose which will be visualized.
+  ///   - bounds: The bounds of the view to which this overlay will be added. The overlay view's
+  ///         bounds will match this value.
+  ///   - lineWidth: The width of the lines connecting the landmark dots.
+  ///   - dotRadius: The radius of the landmark dots.
+  ///   - positionTransformationClosure: Closure which transforms a landmark `position` to the
+  ///         `UIView` `CGPoint` coordinate where it should be shown on-screen.
+  /// - Returns: The pose overlay view.
+  public static func createPoseOverlayView(
+    forPose pose: Pose, inViewWithBounds bounds: CGRect, lineWidth: CGFloat, dotRadius: CGFloat,
+    positionTransformationClosure: (VisionPoint) -> CGPoint
+  ) -> UIView {
+    let overlayView = UIView(frame: bounds)
+
+    let lowerBodyHeight: CGFloat =
+      UIUtilities.distance(
+        fromPoint: pose.landmark(ofType: PoseLandmarkType.leftAnkle).position,
+        toPoint: pose.landmark(ofType: PoseLandmarkType.leftKnee).position)
+      + UIUtilities.distance(
+        fromPoint: pose.landmark(ofType: PoseLandmarkType.leftKnee).position,
+        toPoint: pose.landmark(ofType: PoseLandmarkType.leftHip).position)
+
+    // Pick arbitrary z extents to form a range of z values mapped to our colors. Red = close, blue
+    // = far. Assume that the z values will roughly follow physical extents of the human body, but
+    // apply an adjustment ratio to increase this color-coded z-range because this is not always the
+    // case.
+    let adjustmentRatio: CGFloat = 1.2
+    let nearZExtent: CGFloat = -lowerBodyHeight * adjustmentRatio
+    let farZExtent: CGFloat = lowerBodyHeight * adjustmentRatio
+    let zColorRange: CGFloat = farZExtent - nearZExtent
+    let nearZColor = UIColor.red
+    let farZColor = UIColor.blue
+
+    for (startLandmarkType, endLandmarkTypesArray) in UIUtilities.poseConnections() {
+      let startLandmark = pose.landmark(ofType: startLandmarkType)
+      for endLandmarkType in endLandmarkTypesArray {
+        let endLandmark = pose.landmark(ofType: endLandmarkType)
+        let startLandmarkPoint = positionTransformationClosure(startLandmark.position)
+        let endLandmarkPoint = positionTransformationClosure(endLandmark.position)
+
+        let landmarkZRatio = (startLandmark.position.z - nearZExtent) / zColorRange
+        let connectedLandmarkZRatio = (endLandmark.position.z - nearZExtent) / zColorRange
+
+        let startColor = UIUtilities.interpolatedColor(
+          fromColor: nearZColor, toColor: farZColor, ratio: landmarkZRatio)
+        let endColor = UIUtilities.interpolatedColor(
+          fromColor: nearZColor, toColor: farZColor, ratio: connectedLandmarkZRatio)
+
+        UIUtilities.addLineSegment(
+          fromPoint: startLandmarkPoint,
+          toPoint: endLandmarkPoint,
+          inView: overlayView,
+          colors: [startColor, endColor],
+          width: lineWidth)
+      }
+    }
+    for landmark in pose.landmarks {
+      let landmarkPoint = positionTransformationClosure(landmark.position)
+      UIUtilities.addCircle(
+        atPoint: landmarkPoint,
+        to: overlayView,
+        color: UIColor.blue,
+        radius: dotRadius
+      )
+    }
+    return overlayView
+  }
+
+  /// Adds a gradient-colored line segment subview in a given `view`.
+  ///
+  /// - Parameters:
+  ///   - fromPoint: The starting point of the line, in the view's coordinate space.
+  ///   - toPoint: The end point of the line, in the view's coordinate space.
+  ///   - inView: The view to which the line should be added as a subview.
+  ///   - colors: The colors that the gradient should traverse over. Must be non-empty.
+  ///   - width: The width of the line segment.
+  private static func addLineSegment(
+    fromPoint: CGPoint, toPoint: CGPoint, inView: UIView, colors: [UIColor], width: CGFloat
+  ) {
+    let viewWidth = inView.bounds.width
+    let viewHeight = inView.bounds.height
+    if viewWidth == 0.0 || viewHeight == 0.0 {
+      return
+    }
+    let path = UIBezierPath()
+    path.move(to: fromPoint)
+    path.addLine(to: toPoint)
+    let lineMaskLayer = CAShapeLayer()
+    lineMaskLayer.path = path.cgPath
+    lineMaskLayer.strokeColor = UIColor.black.cgColor
+    lineMaskLayer.fillColor = nil
+    lineMaskLayer.opacity = 1.0
+    lineMaskLayer.lineWidth = width
+
+    let gradientLayer = CAGradientLayer()
+    gradientLayer.startPoint = CGPoint(x: fromPoint.x / viewWidth, y: fromPoint.y / viewHeight)
+    gradientLayer.endPoint = CGPoint(x: toPoint.x / viewWidth, y: toPoint.y / viewHeight)
+    gradientLayer.frame = inView.bounds
+    var CGColors = [CGColor]()
+    for color in colors {
+      CGColors.append(color.cgColor)
+    }
+    if CGColors.count == 1 {
+      // Single-colored lines must still supply a start and end color for the gradient layer to
+      // render anything. Just add the single color to the colors list again to fulfill this
+      // requirement.
+      CGColors.append(colors[0].cgColor)
+    }
+    gradientLayer.colors = CGColors
+    gradientLayer.mask = lineMaskLayer
+
+    let lineView = UIView(frame: inView.bounds)
+    lineView.layer.addSublayer(gradientLayer)
+    inView.addSubview(lineView)
+  }
+
+  /// Returns a color interpolated between to other colors.
+  ///
+  /// - Parameters:
+  ///   - fromColor: The start color of the interpolation.
+  ///   - toColor: The end color of the interpolation.
+  ///   - ratio: The ratio in range [0, 1] by which the colors should be interpolated. Passing 0
+  ///         results in `fromColor` and passing 1 results in `toColor`, whereas passing 0.5 results
+  ///         in a color that is half-way between `fromColor` and `startColor`. Values are clamped
+  ///         between 0 and 1.
+  /// - Returns: The interpolated color.
+  private static func interpolatedColor(
+    fromColor: UIColor, toColor: UIColor, ratio: CGFloat
+  ) -> UIColor {
+    var fromR: CGFloat = 0
+    var fromG: CGFloat = 0
+    var fromB: CGFloat = 0
+    var fromA: CGFloat = 0
+    fromColor.getRed(&fromR, green: &fromG, blue: &fromB, alpha: &fromA)
+
+    var toR: CGFloat = 0
+    var toG: CGFloat = 0
+    var toB: CGFloat = 0
+    var toA: CGFloat = 0
+    toColor.getRed(&toR, green: &toG, blue: &toB, alpha: &toA)
+
+    let clampedRatio = max(0.0, min(ratio, 1.0))
+
+    let interpolatedR = fromR + (toR - fromR) * clampedRatio
+    let interpolatedG = fromG + (toG - fromG) * clampedRatio
+    let interpolatedB = fromB + (toB - fromB) * clampedRatio
+    let interpolatedA = fromA + (toA - fromA) * clampedRatio
+
+    return UIColor(
+      red: interpolatedR, green: interpolatedG, blue: interpolatedB, alpha: interpolatedA)
+  }
+
+  /// Returns the distance between two 3D points.
+  ///
+  /// - Parameters:
+  ///   - fromPoint: The starting point.
+  ///   - endPoint: The end point.
+  /// - Returns: The distance.
+  private static func distance(fromPoint: Vision3DPoint, toPoint: Vision3DPoint) -> CGFloat {
+    let xDiff = fromPoint.x - toPoint.x
+    let yDiff = fromPoint.y - toPoint.y
+    let zDiff = fromPoint.z - toPoint.z
+    return CGFloat(sqrt(xDiff * xDiff + yDiff * yDiff + zDiff * zDiff))
+  }
+
+  // MARK: - Private
+
   /// Returns the minimum subset of all connected pose landmarks. Each key represents a start
   /// landmark, and each value in the key's value array represents an end landmark which is
   /// connected to the start landmark. These connections may be used for visualizing the landmark
   /// positions on a pose object.
-  public static func poseConnections() -> [PoseLandmarkType: [PoseLandmarkType]] {
+  private static func poseConnections() -> [PoseLandmarkType: [PoseLandmarkType]] {
     struct PoseConnectionsHolder {
       static var connections: [PoseLandmarkType: [PoseLandmarkType]] = [
         PoseLandmarkType.leftEar: [PoseLandmarkType.leftEyeOuter],
@@ -167,8 +337,6 @@ public class UIUtilities {
     }
     return PoseConnectionsHolder.connections
   }
-
-  // MARK: - Private
 
   private static func currentUIOrientation() -> UIDeviceOrientation {
     let deviceOrientation = { () -> UIDeviceOrientation in

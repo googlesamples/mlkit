@@ -16,6 +16,8 @@
 
 #import "UIUtilities.h"
 
+@import MLKit;
+
 static CGFloat const circleViewAlpha = 0.7;
 static CGFloat const rectangleViewAlpha = 0.3;
 static CGFloat const shapeViewAlpha = 0.3;
@@ -149,6 +151,170 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
++ (UIView *)poseOverlayViewForPose:(MLKPose *)pose
+                  inViewWithBounds:(CGRect)bounds
+                         lineWidth:(CGFloat)lineWidth
+                         dotRadius:(CGFloat)dotRadius
+       positionTransformationBlock:
+           (CGPoint (^)(MLKVisionPoint *position))positionTransformationBlock {
+  UIView *overlayView = [[UIView alloc] initWithFrame:bounds];
+
+  CGFloat lowerBodyHeight =
+      [UIUtilities distanceFromPoint:[pose landmarkOfType:MLKPoseLandmarkTypeLeftAnkle].position
+                             toPoint:[pose landmarkOfType:MLKPoseLandmarkTypeLeftKnee].position] +
+      [UIUtilities distanceFromPoint:[pose landmarkOfType:MLKPoseLandmarkTypeLeftKnee].position
+                             toPoint:[pose landmarkOfType:MLKPoseLandmarkTypeLeftHip].position];
+
+  // Pick arbitrary z extents to form a range of z values mapped to our colors. Red = close, blue
+  // = far. Assume that the z values will roughly follow physical extents of the human body, but
+  // apply an adjustment ratio to increase this color-coded z-range because this is not always the
+  // case.
+  static const CGFloat kAdjustmentRatio = 1.2f;
+  CGFloat nearZExtent = -lowerBodyHeight * kAdjustmentRatio;
+  CGFloat farZExtent = lowerBodyHeight * kAdjustmentRatio;
+  CGFloat zColorRange = farZExtent - nearZExtent;
+  UIColor *nearZColor = UIColor.redColor;
+  UIColor *farZColor = UIColor.blueColor;
+
+  NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *connections =
+      [UIUtilities poseConnections];
+
+  for (MLKPoseLandmarkType landmarkType in connections) {
+    for (MLKPoseLandmarkType connectedLandmarkType in connections[landmarkType]) {
+      MLKPoseLandmark *landmark = [pose landmarkOfType:landmarkType];
+      MLKPoseLandmark *connectedLandmark = [pose landmarkOfType:connectedLandmarkType];
+      CGPoint landmarkPosition = positionTransformationBlock(landmark.position);
+      CGPoint connectedLandmarkPosition = positionTransformationBlock(connectedLandmark.position);
+
+      CGFloat landmarkZRatio = (landmark.position.z - nearZExtent) / zColorRange;
+      CGFloat connectedLandmarkZRatio = (connectedLandmark.position.z - nearZExtent) / zColorRange;
+
+      UIColor *startColor = [UIUtilities colorInterpolatedFromColor:nearZColor
+                                                            toColor:farZColor
+                                                              ratio:landmarkZRatio];
+      UIColor *endColor = [UIUtilities colorInterpolatedFromColor:nearZColor
+                                                          toColor:farZColor
+                                                            ratio:connectedLandmarkZRatio];
+      [UIUtilities addLineSegmentFromPoint:landmarkPosition
+                                   toPoint:connectedLandmarkPosition
+                                    inView:overlayView
+                                    colors:@[ startColor, endColor ]
+                                     width:lineWidth];
+    }
+  }
+  for (MLKPoseLandmark *landmark in pose.landmarks) {
+    CGPoint position = positionTransformationBlock(landmark.position);
+    [UIUtilities addCircleAtPoint:position
+                           toView:overlayView
+                            color:UIColor.blueColor
+                           radius:dotRadius];
+  }
+  return overlayView;
+}
+
+/**
+ * Adds a gradient-colored line segment subview in a given `view`.
+ *
+ * @param fromPoint The starting point of the line, in the view's coordinate space.
+ * @param toPoint The end point of the line, in the view's coordinate space.
+ * @param view The view to which the line should be added as a subview.
+ * @param colors The colors that the gradient should traverse over. Must be non-empty.
+ * @param width The width of the line segment.
+ */
++ (void)addLineSegmentFromPoint:(CGPoint)fromPoint
+                        toPoint:(CGPoint)toPoint
+                         inView:(UIView *)view
+                         colors:(NSArray<UIColor *> *)colors
+                          width:(CGFloat)width {
+  CGFloat viewWidth = CGRectGetWidth(view.bounds);
+  CGFloat viewHeight = CGRectGetHeight(view.bounds);
+  if (viewWidth == 0.0f || viewHeight == 0.0f) {
+    return;
+  }
+
+  UIBezierPath *path = [UIBezierPath bezierPath];
+  [path moveToPoint:fromPoint];
+  [path addLineToPoint:toPoint];
+  CAShapeLayer *lineMaskLayer = [CAShapeLayer layer];
+  lineMaskLayer.path = path.CGPath;
+  lineMaskLayer.strokeColor = UIColor.blackColor.CGColor;
+  lineMaskLayer.fillColor = nil;
+  lineMaskLayer.opacity = 1.0f;
+  lineMaskLayer.lineWidth = width;
+
+  CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+  gradientLayer.startPoint = CGPointMake(fromPoint.x / viewWidth, fromPoint.y / viewHeight);
+  gradientLayer.endPoint = CGPointMake(toPoint.x / viewWidth, toPoint.y / viewHeight);
+  gradientLayer.frame = view.bounds;
+  NSMutableArray<id> *CGColors = [NSMutableArray arrayWithCapacity:colors.count];
+  for (UIColor *color in colors) {
+    [CGColors addObject:(id)color.CGColor];
+  }
+  if (colors.count == 1) {
+    // Single-colored lines must still supply a start and end color for the gradient layer to render
+    // anything. Just add the single color to the colors list again to fulfill this requirement.
+    [CGColors addObject:(id)colors.firstObject.CGColor];
+  }
+  gradientLayer.colors = CGColors;
+  gradientLayer.mask = lineMaskLayer;
+
+  UIView *lineView = [[UIView alloc] initWithFrame:view.bounds];
+  [lineView.layer addSublayer:gradientLayer];
+  [view addSubview:lineView];
+}
+
+/**
+ * Returns a color interpolated between two other colors.
+ *
+ * @param fromColor The start color of the interpolation.
+ * @param toColor The end color of the interpolation.
+ * @param ratio The ratio in range [0, 1] by which the colors should be interpolated. Passing 0
+ *     results in `fromColor` and passing 1 results in `toColor`, whereas passing 0.5 results in a
+ *     color that is half-way between `fromColor` and `startColor`. Values are clamped between 0 and
+ *     1.
+ */
++ (UIColor *)colorInterpolatedFromColor:(UIColor *)fromColor
+                                toColor:(UIColor *)toColor
+                                  ratio:(CGFloat)ratio {
+  CGFloat fromR, fromG, fromB, fromA;
+  [fromColor getRed:&fromR green:&fromG blue:&fromB alpha:&fromA];
+
+  CGFloat toR, toG, toB, toA;
+  [toColor getRed:&toR green:&toG blue:&toB alpha:&toA];
+
+  // Clamp ratio to [0, 1]
+  ratio = MAX(0.0, MIN(ratio, 1.0));
+
+  CGFloat interpolatedR = fromR + (toR - fromR) * ratio;
+  CGFloat interpolatedG = fromG + (toG - fromG) * ratio;
+  CGFloat interpolatedB = fromB + (toB - fromB) * ratio;
+  CGFloat interpolatedA = fromA + (toA - fromA) * ratio;
+
+  return [UIColor colorWithRed:interpolatedR
+                         green:interpolatedG
+                          blue:interpolatedB
+                         alpha:interpolatedA];
+}
+
+/**
+ * Returns the distance between two 3D points.
+ *
+ * @param fromPoint The start point.
+ * @param toPoint The end point.
+ */
++ (CGFloat)distanceFromPoint:(MLKVision3DPoint *)fromPoint toPoint:(MLKVision3DPoint *)toPoint {
+  CGFloat xDiff = fromPoint.x - toPoint.x;
+  CGFloat yDiff = fromPoint.y - toPoint.y;
+  CGFloat zDiff = fromPoint.z - toPoint.z;
+  return sqrt(xDiff * xDiff + yDiff * yDiff + zDiff * zDiff);
+}
+
+/**
+ * Returns the minimum subset of all connected pose landmarks. Each key represents a start landmark,
+ * and each value in the key's value array represents an end landmark which is connected to the
+ * start landmark. These connections may be used for visualizing the landmark positions on a pose
+ * object.
+ */
 + (NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *)poseConnections {
   static dispatch_once_t onceToken;
   static NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *connections;

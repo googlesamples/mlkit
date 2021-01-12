@@ -43,12 +43,21 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIDeviceOrientation)currentUIOrientation;
 
 /**
- * Returns the minimum subset of all connected pose landmarks. Each key represents a start landmark,
- * and each value in the key's value array represents an end landmark which is connected to the
- * start landmark. These connections may be used for visualizing the landmark positions on a pose
- * object.
+ * Returns an overlay view for visualizing a given `pose`.
+ *
+ * @param pose The pose which will be visualized.
+ * @param bounds The bounds of the view to which this overlay will be added. The overlay view's
+ *     bounds will match this value.
+ * @param lineWidth The width of the lines connecting the landmark dots.
+ * @param dotRadius The radius of the landmark dots.
+ * @param positionTransformationBlock Block which transforms a landmark `position` to the
+ *     `UIView` `CGPoint` coordinate where it should be shown on-screen.
  */
-+ (NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *)poseConnections;
++ (UIView *)poseOverlayViewForPose:(MLKPose *)pose
+                  inViewWithBounds:(CGRect)bounds
+                         lineWidth:(CGFloat)lineWidth
+                         dotRadius:(CGFloat)dotRadius
+       positionTransformationBlock:(CGPoint (^)(MLKVisionPoint *))positionTransformationBlock;
 
 @end
 

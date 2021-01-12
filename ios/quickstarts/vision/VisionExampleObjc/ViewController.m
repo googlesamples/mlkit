@@ -654,7 +654,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
             // Lines.
             for (MLKTextLine *line in block.lines) {
-              CGRect transformedRect =
+              transformedRect =
                   CGRectApplyAffineTransform(line.frame, [strongSelf transformMatrix]);
               [UIUtilities addRectangle:transformedRect
                                  toView:strongSelf.annotationOverlayView
@@ -662,7 +662,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
               // Elements.
               for (MLKTextElement *element in line.elements) {
-                CGRect transformedRect =
+                transformedRect =
                     CGRectApplyAffineTransform(element.frame, [strongSelf transformMatrix]);
                 [UIUtilities addRectangle:transformedRect
                                    toView:strongSelf.annotationOverlayView
@@ -908,37 +908,16 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     // Pose detection currently only supports single pose.
     MLKPose *pose = poses.firstObject;
 
-    NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *connections =
-        [UIUtilities poseConnections];
+    UIView *poseOverlay = [UIUtilities
+             poseOverlayViewForPose:pose
+                   inViewWithBounds:self.annotationOverlayView.bounds
+                          lineWidth:3.0f
+                          dotRadius:smallDotRadius
+        positionTransformationBlock:^(MLKVisionPoint *position) {
+          return CGPointApplyAffineTransform([strongSelf pointFromVisionPoint:position], transform);
+        }];
 
-    for (MLKPoseLandmarkType landmarkType in connections) {
-      for (MLKPoseLandmarkType connectedLandmarkType in connections[landmarkType]) {
-        MLKPoseLandmark *landmark = [pose landmarkOfType:landmarkType];
-        MLKPoseLandmark *connectedLandmark = [pose landmarkOfType:connectedLandmarkType];
-
-        CGPoint transformedLandmarkPosition =
-            CGPointApplyAffineTransform([strongSelf pointFromVisionPoint:landmark.position],
-                                        transform);
-        CGPoint transformedConnectedLandmarkPosition = CGPointApplyAffineTransform(
-            [strongSelf pointFromVisionPoint:connectedLandmark.position], transform);
-        [UIUtilities addLineSegmentFromPoint:transformedLandmarkPosition
-                                     toPoint:transformedConnectedLandmarkPosition
-                                      inView:strongSelf.annotationOverlayView
-                                       color:UIColor.greenColor
-                                       width:3.0f];
-      }
-    }
-    for (MLKPoseLandmark *landmark in pose.landmarks) {
-      CGPoint transformedLandmarkPosition =
-          CGPointApplyAffineTransform([strongSelf pointFromVisionPoint:landmark.position],
-                                      transform);
-
-      [UIUtilities addCircleAtPoint:transformedLandmarkPosition
-                             toView:strongSelf.annotationOverlayView
-                              color:UIColor.blueColor
-                             radius:smallDotRadius];
-    }
-
+    [strongSelf.annotationOverlayView addSubview:poseOverlay];
     strongSelf.resultsText = [NSMutableString stringWithFormat:@"Pose Detected"];
     [strongSelf showResults];
   }];

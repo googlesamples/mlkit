@@ -250,9 +250,7 @@ typedef NS_ENUM(NSInteger, Detector) {
 
       // Lines.
       for (MLKTextLine *line in block.lines) {
-        NSArray<NSValue *> *points = [strongSelf convertedPointsFromPoints:line.cornerPoints
-                                                                     width:width
-                                                                    height:height];
+        points = [strongSelf convertedPointsFromPoints:line.cornerPoints width:width height:height];
         [UIUtilities addShapeWithPoints:points
                                  toView:strongSelf.annotationOverlayView
                                   color:UIColor.purpleColor];
@@ -345,36 +343,17 @@ typedef NS_ENUM(NSInteger, Detector) {
     // Pose detection currently only supports single pose.
     MLKPose *pose = poses.firstObject;
 
-    NSDictionary<MLKPoseLandmarkType, NSArray<MLKPoseLandmarkType> *> *connections =
-        [UIUtilities poseConnections];
+    UIView *poseOverlay = [UIUtilities poseOverlayViewForPose:pose
+                                             inViewWithBounds:self.annotationOverlayView.bounds
+                                                    lineWidth:3.0f
+                                                    dotRadius:MLKSmallDotRadius
+                                  positionTransformationBlock:^(MLKVisionPoint *position) {
+                                    return [strongSelf normalizedPointFromVisionPoint:position
+                                                                                width:width
+                                                                               height:height];
+                                  }];
 
-    for (MLKPoseLandmarkType landmarkType in connections) {
-      for (MLKPoseLandmarkType connectedLandmarkType in connections[landmarkType]) {
-        MLKPoseLandmark *landmark = [pose landmarkOfType:landmarkType];
-        MLKPoseLandmark *connectedLandmark = [pose landmarkOfType:connectedLandmarkType];
-        CGPoint landmarkPosition = [strongSelf normalizedPointFromVisionPoint:landmark.position
-                                                                        width:width
-                                                                       height:height];
-        CGPoint connectedLandmarkPosition =
-            [strongSelf normalizedPointFromVisionPoint:connectedLandmark.position
-                                                 width:width
-                                                height:height];
-        [UIUtilities addLineSegmentFromPoint:landmarkPosition
-                                     toPoint:connectedLandmarkPosition
-                                      inView:strongSelf.annotationOverlayView
-                                       color:UIColor.greenColor
-                                       width:3.0f];
-      }
-    }
-    for (MLKPoseLandmark *landmark in pose.landmarks) {
-      CGPoint position = [strongSelf normalizedPointFromVisionPoint:landmark.position
-                                                              width:width
-                                                             height:height];
-      [UIUtilities addCircleAtPoint:position
-                             toView:strongSelf.annotationOverlayView
-                              color:UIColor.blueColor
-                             radius:MLKSmallDotRadius];
-    }
+    [strongSelf.annotationOverlayView addSubview:poseOverlay];
   });
 }
 
@@ -597,7 +576,7 @@ typedef NS_ENUM(NSInteger, Detector) {
     NSInteger detector = detectorType.integerValue;
     UIAlertAction *action = [UIAlertAction actionWithTitle:[self stringForDetector:detector]
                                                      style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction *_Nonnull action) {
+                                                   handler:^(UIAlertAction *_Nonnull actionArg) {
                                                      self.currentDetector = detector;
                                                      [self removeDetectionAnnotations];
                                                    }];

@@ -255,33 +255,17 @@ class CameraViewController: UIViewController {
         }
         // Pose detected. Currently, only single person detection is supported.
         poses.forEach { pose in
-          for (startLandmarkType, endLandmarkTypesArray) in UIUtilities.poseConnections() {
-            let startLandmark = pose.landmark(ofType: startLandmarkType)
-            for endLandmarkType in endLandmarkTypesArray {
-              let endLandmark = pose.landmark(ofType: endLandmarkType)
-              let startLandmarkPoint = normalizedPoint(
-                fromVisionPoint: startLandmark.position, width: width, height: height)
-              let endLandmarkPoint = normalizedPoint(
-                fromVisionPoint: endLandmark.position, width: width, height: height)
-              UIUtilities.addLineSegment(
-                fromPoint: startLandmarkPoint,
-                toPoint: endLandmarkPoint,
-                inView: strongSelf.annotationOverlayView,
-                color: UIColor.green,
-                width: Constant.lineWidth
-              )
+          let poseOverlayView = UIUtilities.createPoseOverlayView(
+            forPose: pose,
+            inViewWithBounds: strongSelf.annotationOverlayView.bounds,
+            lineWidth: Constant.lineWidth,
+            dotRadius: Constant.smallDotRadius,
+            positionTransformationClosure: { (position) -> CGPoint in
+              return strongSelf.normalizedPoint(fromVisionPoint: position, width: width,
+                                                height: height)
             }
-          }
-          for landmark in pose.landmarks {
-            let landmarkPoint = normalizedPoint(
-              fromVisionPoint: landmark.position, width: width, height: height)
-            UIUtilities.addCircle(
-              atPoint: landmarkPoint,
-              to: strongSelf.annotationOverlayView,
-              color: UIColor.blue,
-              radius: Constant.smallDotRadius
-            )
-          }
+          )
+          strongSelf.annotationOverlayView.addSubview(poseOverlayView)
         }
       }
     }
