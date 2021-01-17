@@ -64,9 +64,7 @@ class ChatFragment : Fragment(), ReplyChipAdapter.ClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.chat_fragment, container, false)
-    }
+    ) = inflater.inflate(R.layout.chat_fragment, container, false)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
