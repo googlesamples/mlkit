@@ -18,6 +18,7 @@
 package com.google.mlkit.showcase.translate.util
 
 import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 
 /**
@@ -35,8 +36,10 @@ class SmoothedMutableLiveData<T>(private val duration: Long) : MutableLiveData<T
     override fun setValue(value: T) {
         if (value != pendingValue) {
             pendingValue = value
-            Handler().removeCallbacks(runnable)
-            Handler().postDelayed(runnable, duration)
+            Handler(Looper.getMainLooper()).apply {
+                removeCallbacks(runnable)
+                postDelayed(runnable, duration)
+            }
         }
     }
 }
