@@ -1,4 +1,5 @@
-# Contributing to the ML Kit Samples
+# متجر التطبيقات منصة شليله متجر
+# مجلّة في عينات ML Ki
 
 We'd love for you to contribute to our source code and to make the ML Kit samples even better than it is today! Here are the guidelines we'd like you to follow:
 
