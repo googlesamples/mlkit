@@ -36,13 +36,19 @@ public class PoseDetectorProcessor extends VisionProcessorBase<Pose> {
   private final PoseDetector detector;
 
   private final boolean showInFrameLikelihood;
+  private final boolean visualizeZ;
+  private final boolean rescaleZForVisualization;
 
   public PoseDetectorProcessor(
       Context context,
       PoseDetectorOptionsBase options,
-      boolean showInFrameLikelihood) {
+      boolean showInFrameLikelihood,
+      boolean visualizeZ,
+      boolean rescaleZForVisualization) {
     super(context);
     this.showInFrameLikelihood = showInFrameLikelihood;
+    this.visualizeZ = visualizeZ;
+    this.rescaleZForVisualization = rescaleZForVisualization;
     detector = PoseDetection.getClient(options);
   }
 
@@ -60,7 +66,8 @@ public class PoseDetectorProcessor extends VisionProcessorBase<Pose> {
   @Override
   protected void onSuccess(@NonNull Pose pose, @NonNull GraphicOverlay graphicOverlay) {
     graphicOverlay.add(
-        new PoseGraphic(graphicOverlay, pose, showInFrameLikelihood));
+        new PoseGraphic(
+            graphicOverlay, pose, showInFrameLikelihood, visualizeZ, rescaleZForVisualization));
   }
 
   @Override

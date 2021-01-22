@@ -377,9 +377,11 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
               PreferenceUtils.getPoseDetectorOptionsForLivePreview(this);
           boolean shouldShowInFrameLikelihood =
               PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodLivePreview(this);
+          boolean visualizeZ = PreferenceUtils.shouldPoseDetectionVisualizeZ(this);
+          boolean rescaleZ = PreferenceUtils.shouldPoseDetectionRescaleZForVisualization(this);
           imageProcessor =
               new PoseDetectorProcessor(
-                  this, poseDetectorOptions, shouldShowInFrameLikelihood);
+                  this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ);
           break;
         default:
           throw new IllegalStateException("Invalid model name");

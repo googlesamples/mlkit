@@ -16,10 +16,15 @@
 
 package com.google.mlkit.vision.demo.java.posedetector;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import com.google.common.primitives.Ints;
+import com.google.mlkit.vision.common.PointF3D;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.GraphicOverlay.Graphic;
 import com.google.mlkit.vision.pose.Pose;
@@ -32,9 +37,14 @@ public class PoseGraphic extends Graphic {
 
   private static final float DOT_RADIUS = 8.0f;
   private static final float IN_FRAME_LIKELIHOOD_TEXT_SIZE = 30.0f;
+  private static final float STROKE_WIDTH = 10.0f;
 
   private final Pose pose;
   private final boolean showInFrameLikelihood;
+  private final boolean visualizeZ;
+  private final boolean rescaleZForVisualization;
+  private float zMin = Float.MAX_VALUE;
+  private float zMax = Float.MIN_VALUE;
 
   private final Paint leftPaint;
   private final Paint rightPaint;
@@ -43,18 +53,24 @@ public class PoseGraphic extends Graphic {
   PoseGraphic(
       GraphicOverlay overlay,
       Pose pose,
-      boolean showInFrameLikelihood) {
+      boolean showInFrameLikelihood,
+      boolean visualizeZ,
+      boolean rescaleZForVisualization) {
     super(overlay);
-
     this.pose = pose;
     this.showInFrameLikelihood = showInFrameLikelihood;
+    this.visualizeZ = visualizeZ;
+    this.rescaleZForVisualization = rescaleZForVisualization;
 
     whitePaint = new Paint();
+    whitePaint.setStrokeWidth(STROKE_WIDTH);
     whitePaint.setColor(Color.WHITE);
     whitePaint.setTextSize(IN_FRAME_LIKELIHOOD_TEXT_SIZE);
     leftPaint = new Paint();
+    leftPaint.setStrokeWidth(STROKE_WIDTH);
     leftPaint.setColor(Color.GREEN);
     rightPaint = new Paint();
+    rightPaint.setStrokeWidth(STROKE_WIDTH);
     rightPaint.setColor(Color.YELLOW);
   }
 
@@ -64,17 +80,16 @@ public class PoseGraphic extends Graphic {
     if (landmarks.isEmpty()) {
       return;
     }
+
     // Draw all the points
     for (PoseLandmark landmark : landmarks) {
       drawPoint(canvas, landmark, whitePaint);
-      if (showInFrameLikelihood) {
-        canvas.drawText(
-            String.format(Locale.US, "%.2f", landmark.getInFrameLikelihood()),
-            translateX(landmark.getPosition().x),
-            translateY(landmark.getPosition().y),
-            whitePaint);
+      if (visualizeZ && rescaleZForVisualization) {
+        zMin = min(zMin, landmark.getPosition3D().getZ());
+        zMax = max(zMax, landmark.getPosition3D().getZ());
       }
     }
+
     PoseLandmark leftShoulder = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER);
     PoseLandmark rightShoulder = pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER);
     PoseLandmark leftElbow = pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW);
@@ -111,6 +126,7 @@ public class PoseGraphic extends Graphic {
     drawLine(canvas, leftWrist, leftThumb, leftPaint);
     drawLine(canvas, leftWrist, leftPinky, leftPaint);
     drawLine(canvas, leftWrist, leftIndex, leftPaint);
+    drawLine(canvas, leftIndex, leftPinky, leftPaint);
     drawLine(canvas, leftAnkle, leftHeel, leftPaint);
     drawLine(canvas, leftHeel, leftFootIndex, leftPaint);
 
@@ -123,8 +139,20 @@ public class PoseGraphic extends Graphic {
     drawLine(canvas, rightWrist, rightThumb, rightPaint);
     drawLine(canvas, rightWrist, rightPinky, rightPaint);
     drawLine(canvas, rightWrist, rightIndex, rightPaint);
+    drawLine(canvas, rightIndex, rightPinky, rightPaint);
     drawLine(canvas, rightAnkle, rightHeel, rightPaint);
     drawLine(canvas, rightHeel, rightFootIndex, rightPaint);
+
+    // Draw inFrameLikelihood for all points
+    if (showInFrameLikelihood) {
+      for (PoseLandmark landmark : landmarks) {
+        canvas.drawText(
+            String.format(Locale.US, "%.2f", landmark.getInFrameLikelihood()),
+            translateX(landmark.getPosition().x),
+            translateY(landmark.getPosition().y),
+            whitePaint);
+      }
+    }
   }
 
   void drawPoint(Canvas canvas, PoseLandmark landmark, Paint paint) {
@@ -133,9 +161,58 @@ public class PoseGraphic extends Graphic {
   }
 
   void drawLine(Canvas canvas, PoseLandmark startLandmark, PoseLandmark endLandmark, Paint paint) {
-    PointF start = startLandmark.getPosition();
-    PointF end = endLandmark.getPosition();
-    canvas.drawLine(
-        translateX(start.x), translateY(start.y), translateX(end.x), translateY(end.y), paint);
+    // When visualizeZ is true, sets up the paint to draw body line in different colors based on
+    // their z values.
+    if (visualizeZ) {
+      PointF3D start = startLandmark.getPosition3D();
+      PointF3D end = endLandmark.getPosition3D();
+
+      // Gets the range of z value.
+      float zLowerBoundInScreenPixel;
+      float zUpperBoundInScreenPixel;
+
+      if (rescaleZForVisualization) {
+        zLowerBoundInScreenPixel = min(-0.001f, scale(zMin));
+        zUpperBoundInScreenPixel = max(0.001f, scale(zMax));
+      } else {
+        // By default, assume the range of z value in screen pixel is [-canvasWidth, canvasWidth].
+        float defaultRangeFactor = 1f;
+        zLowerBoundInScreenPixel = -defaultRangeFactor * canvas.getWidth();
+        zUpperBoundInScreenPixel = defaultRangeFactor * canvas.getWidth();
+      }
+
+      // Gets average z for the current body line
+      float avgZInImagePixel = (start.getZ() + end.getZ()) / 2;
+      float zInScreenPixel = scale(avgZInImagePixel);
+
+      if (zInScreenPixel < 0) {
+        // Sets up the paint to draw the body line in red if it is in front of the z origin.
+        // Maps values within [zLowerBoundInScreenPixel, 0) to [255, 0) and use it to control the
+        // color. The larger the value is, the more red it will be.
+        int v = (int) (zInScreenPixel / zLowerBoundInScreenPixel * 255);
+        v = Ints.constrainToRange(v, 0, 255);
+        paint.setARGB(255, 255, 255 - v, 255 - v);
+      } else {
+        // Sets up the paint to draw the body line in blue if it is behind the z origin.
+        // Maps values within [0, zUpperBoundInScreenPixel] to [0, 255] and use it to control the
+        // color. The larger the value is, the more blue it will be.
+        int v = (int) (zInScreenPixel / zUpperBoundInScreenPixel * 255);
+        v = Ints.constrainToRange(v, 0, 255);
+        paint.setARGB(255, 255 - v, 255 - v, 255);
+      }
+
+      canvas.drawLine(
+          translateX(start.getX()),
+          translateY(start.getY()),
+          translateX(end.getX()),
+          translateY(end.getY()),
+          paint);
+
+    } else {
+      PointF start = startLandmark.getPosition();
+      PointF end = endLandmark.getPosition();
+      canvas.drawLine(
+          translateX(start.x), translateY(start.y), translateX(end.x), translateY(end.y), paint);
+    }
   }
 }

@@ -261,14 +261,26 @@ public class PreferenceUtils {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     String prefKey =
         context.getString(R.string.pref_key_live_preview_pose_detector_show_in_frame_likelihood);
-    return sharedPreferences.getBoolean(prefKey, false);
+    return sharedPreferences.getBoolean(prefKey, true);
   }
 
   public static boolean shouldShowPoseDetectionInFrameLikelihoodStillImage(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     String prefKey =
         context.getString(R.string.pref_key_still_image_pose_detector_show_in_frame_likelihood);
-    return sharedPreferences.getBoolean(prefKey, false);
+    return sharedPreferences.getBoolean(prefKey, true);
+  }
+
+  public static boolean shouldPoseDetectionVisualizeZ(Context context) {
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    String prefKey = context.getString(R.string.pref_key_pose_detector_visualize_z);
+    return sharedPreferences.getBoolean(prefKey, true);
+  }
+
+  public static boolean shouldPoseDetectionRescaleZForVisualization(Context context) {
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    String prefKey = context.getString(R.string.pref_key_pose_detector_rescale_z);
+    return sharedPreferences.getBoolean(prefKey, true);
   }
 
   /**

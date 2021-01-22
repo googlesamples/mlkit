@@ -423,9 +423,11 @@ public final class StillImageActivity extends AppCompatActivity {
           Log.i(TAG, "Using Pose Detector with options " + poseDetectorOptions);
           boolean shouldShowInFrameLikelihood =
               PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodStillImage(this);
+          boolean visualizeZ = PreferenceUtils.shouldPoseDetectionVisualizeZ(this);
+          boolean rescaleZ = PreferenceUtils.shouldPoseDetectionRescaleZForVisualization(this);
           imageProcessor =
-             new PoseDetectorProcessor(
-                this, poseDetectorOptions, shouldShowInFrameLikelihood);
+              new PoseDetectorProcessor(
+                  this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ);
           break;
         default:
           Log.e(TAG, "Unknown selectedMode: " + selectedMode);

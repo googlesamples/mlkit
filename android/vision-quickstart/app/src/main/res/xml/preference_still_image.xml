@@ -29,9 +29,19 @@
         android:summary="%s"/>
 
     <SwitchPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="@string/pref_key_still_image_pose_detector_show_in_frame_likelihood"
         android:persistent="true"
         android:title="@string/pref_title_pose_detector_show_in_frame_likelihood"/>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_key_pose_detector_visualize_z"
+        android:persistent="true"
+        android:title="@string/pref_title_pose_detector_visualize_z"/>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_key_pose_detector_rescale_z"
+        android:persistent="true"
+        android:title="@string/pref_title_pose_detector_rescale_z"/>
   </PreferenceCategory>
 </PreferenceScreen>

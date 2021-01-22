@@ -392,7 +392,11 @@ class CameraXLivePreviewActivity :
             PreferenceUtils.getPoseDetectorOptionsForLivePreview(this)
           val shouldShowInFrameLikelihood =
             PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodLivePreview(this)
-          PoseDetectorProcessor(this, poseDetectorOptions, shouldShowInFrameLikelihood)
+          val visualizeZ = PreferenceUtils.shouldPoseDetectionVisualizeZ(this)
+          val rescaleZ = PreferenceUtils.shouldPoseDetectionRescaleZForVisualization(this)
+          PoseDetectorProcessor(
+            this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ
+          )
         }
         else -> throw IllegalStateException("Invalid model name")
       }
