@@ -44,6 +44,8 @@ It uses the camera preview as input and contains these API workflows: Object det
 * Pose Detection
     * Performance mode -- Allows you to switch between "Fast" and "Accurate" operation mode
     * Show in-frame likelihood -- Displays InFrameLikelihood score for each landmark
+    * Visualize z value -- Uses different colors to indicate z difference (red: smaller z, blue: larger z)
+    * Rescale z value for visualization -- Maps the smallest z value to the most red and the largest z value to the most blue. This makes z difference more obvious
 
 ### Static Image scenario
 The static image scenario is identical to the live camera scenario, but instead relies on images fed into the app through the gallery.

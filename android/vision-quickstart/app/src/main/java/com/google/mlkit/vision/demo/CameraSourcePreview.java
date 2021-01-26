@@ -159,12 +159,6 @@ public class CameraSourcePreview extends ViewGroup {
       int verticalOffset = (int) (layoutWidth / previewAspectRatio - layoutHeight) / 2;
       surfaceView.layout(0, -verticalOffset, layoutWidth, layoutHeight + verticalOffset);
     }
-
-    try {
-      startIfReady();
-    } catch (IOException e) {
-      Log.e(TAG, "Could not start camera source.", e);
-    }
   }
 
   private boolean isPortraitMode() {
