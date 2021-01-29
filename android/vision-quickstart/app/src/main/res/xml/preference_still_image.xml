@@ -44,4 +44,5 @@
         android:persistent="true"
         android:title="@string/pref_title_pose_detector_rescale_z"/>
   </PreferenceCategory>
+
 </PreferenceScreen>
