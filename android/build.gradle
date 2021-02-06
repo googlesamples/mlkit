@@ -1,7 +1,7 @@
 import com.github.benmanes.gradle.versions.VersionsPlugin
 
 buildscript {
-    ext.kotlin_version = '1.4.21-2'
+    ext.kotlin_version = '1.4.30'
     repositories {
         mavenLocal()
         google()
