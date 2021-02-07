@@ -1,8 +1,9 @@
 package com.google.mlkit
 
 import android.os.Bundle
-import javax.annotation.Nonnull
+import android.widget.Toast
 import info.hannes.github.AppUpdateHelper
+import javax.annotation.Nonnull
 
 class MLMainActivity : NavigationActivity() {
     override fun onCreate(@Nonnull savedInstanceState: Bundle?) {
@@ -17,7 +18,8 @@ class MLMainActivity : NavigationActivity() {
                 this,
                 BuildConfig.GIT_USER,
                 BuildConfig.GIT_REPOSITORY,
-                BuildConfig.VERSION_NAME
+                BuildConfig.VERSION_NAME,
+                { msg -> Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
         )
     }
 }
