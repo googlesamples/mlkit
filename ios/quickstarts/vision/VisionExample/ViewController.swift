@@ -42,6 +42,9 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
   /// Initialized when one of the pose detector rows are chosen. Reset to `nil` when neither are.
   private var poseDetector: PoseDetector? = nil
 
+  /// Initialized when a segmentation row is chosen. Reset to `nil` otherwise.
+  private var segmenter: Segmenter? = nil
+
   /// The detector row with which detection was most recently run. Useful for inferring when to
   /// reset detector instances which use a conventional lifecyle paradigm.
   private var lastDetectorRow: DetectorPickerRow?
@@ -159,6 +162,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         detectObjectsOnDevice(in: imageView.image, options: options)
       case .detectPose, .detectPoseAccurate:
         detectPose(image: imageView.image)
+      case .detectSegmentationMaskSelfie:
+        detectSegmentationMask(image: imageView.image)
       }
     } else {
       print("No such item at row \(row) in detector picker.")
@@ -676,7 +681,7 @@ extension ViewController {
     let faceDetector = FaceDetector.faceDetector(options: options)
     // [END init_face]
 
-    // Initialize a VisionImage object with the given UIImage.
+    // Initialize a `VisionImage` object with the given `UIImage`.
     let visionImage = VisionImage(image: image)
     visionImage.orientation = image.imageOrientation
 
@@ -739,6 +744,53 @@ extension ViewController {
     // [END detect_faces]
   }
 
+  func detectSegmentationMask(image: UIImage?) {
+    guard let image = image else { return }
+
+    // Initialize a `VisionImage` object with the given `UIImage`.
+    let visionImage = VisionImage(image: image)
+    visionImage.orientation = image.imageOrientation
+
+    guard let segmenter = self.segmenter else {
+      return
+    }
+
+    weak var weakSelf = self
+    segmenter.process(visionImage) { mask, error in
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+
+      guard error == nil, let mask = mask else {
+        let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
+        strongSelf.resultsText = "Segmentation failed with error: \(errorString)"
+        strongSelf.showResults()
+        return
+      }
+
+      guard let imageBuffer = UIUtilities.createImageBuffer(from: image) else {
+        let errorString = "Failed to create image buffer from UIImage"
+        strongSelf.resultsText = "Segmentation failed with error: \(errorString)"
+        strongSelf.showResults()
+        return
+      }
+
+      UIUtilities.applySegmentationMask(
+        mask: mask, to: imageBuffer, backgroundColor: UIColor.blue, foregroundColor: nil)
+      let maskedImage = UIUtilities.createUIImage(from: imageBuffer, orientation: .up)
+
+      let imageView = UIImageView()
+      imageView.frame = strongSelf.annotationOverlayView.bounds
+      imageView.contentMode = .scaleAspectFit
+      imageView.image = maskedImage
+
+      strongSelf.annotationOverlayView.addSubview(imageView)
+      strongSelf.resultsText = "Segmentation succeeded"
+      strongSelf.showResults()
+    }
+  }
+
   /// Detects poses on the specified image and draw pose landmark points and line segments using
   /// the On-Device face API.
   ///
@@ -746,7 +798,7 @@ extension ViewController {
   func detectPose(image: UIImage?) {
     guard let image = image else { return }
 
-    // Initialize a VisionImage object with the given UIImage.
+    // Initialize a `VisionImage` object with the given `UIImage`.
     let visionImage = VisionImage(image: image)
     visionImage.orientation = image.imageOrientation
 
@@ -797,7 +849,7 @@ extension ViewController {
     let barcodeScanner = BarcodeScanner.barcodeScanner(options: barcodeOptions)
     // [END init_barcode]
 
-    // Initialize a VisionImage object with the given UIImage.
+    // Initialize a `VisionImage` object with the given `UIImage`.
     let visionImage = VisionImage(image: image)
     visionImage.orientation = image.imageOrientation
 
@@ -868,7 +920,7 @@ extension ViewController {
     let onDeviceLabeler = ImageLabeler.imageLabeler(options: options)
     // [END init_label]
 
-    // Initialize a VisionImage object with the given UIImage.
+    // Initialize a `VisionImage` object with the given `UIImage`.
     let visionImage = VisionImage(image: image)
     visionImage.orientation = image.imageOrientation
 
@@ -909,7 +961,7 @@ extension ViewController {
     let onDeviceTextRecognizer = TextRecognizer.textRecognizer()
     // [END init_text]
 
-    // Initialize a VisionImage object with the given UIImage.
+    // Initialize a `VisionImage` object with the given `UIImage`.
     let visionImage = VisionImage(image: image)
     visionImage.orientation = image.imageOrientation
 
@@ -924,7 +976,7 @@ extension ViewController {
   private func detectObjectsOnDevice(in image: UIImage?, options: CommonObjectDetectorOptions) {
     guard let image = image else { return }
 
-    // Initialize a VisionImage object with the given UIImage.
+    // Initialize a `VisionImage` object with the given `UIImage`.
     let visionImage = VisionImage(image: image)
     visionImage.orientation = image.imageOrientation
 
@@ -1001,6 +1053,9 @@ extension ViewController {
     case .detectPose, .detectPoseAccurate:
       self.poseDetector = nil
       break
+    case .detectSegmentationMaskSelfie:
+      self.segmenter = nil
+      break
     default:
       break
     }
@@ -1013,6 +1068,11 @@ extension ViewController {
         : AccuratePoseDetectorOptions()
       options.detectorMode = .singleImage
       self.poseDetector = PoseDetector.poseDetector(options: options)
+      break
+    case .detectSegmentationMaskSelfie:
+      let options = SelfieSegmenterOptions()
+      options.segmenterMode = .singleImage
+      self.segmenter = Segmenter.segmenter(options: options)
       break
     default:
       break
@@ -1040,9 +1100,10 @@ private enum DetectorPickerRow: Int {
     detectObjectsCustomMultipleNoClassifier,
     detectObjectsCustomMultipleWithClassifier,
     detectPose,
-    detectPoseAccurate
+    detectPoseAccurate,
+    detectSegmentationMaskSelfie
 
-  static let rowsCount = 15
+  static let rowsCount = 16
   static let componentsCount = 1
 
   public var description: String {
@@ -1077,6 +1138,8 @@ private enum DetectorPickerRow: Int {
       return "Pose Detection"
     case .detectPoseAccurate:
       return "Pose Detection, accurate"
+    case .detectSegmentationMaskSelfie:
+      return "Selfie Segmentation"
     }
   }
 }

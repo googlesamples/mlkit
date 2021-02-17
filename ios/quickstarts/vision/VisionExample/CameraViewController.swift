@@ -36,6 +36,7 @@ class CameraViewController: UIViewController {
     .onDeviceObjectCustomMultipleWithClassifier,
     .pose,
     .poseAccurate,
+    .segmentationSelfie,
   ]
 
   private var currentDetector: Detector = .onDeviceFace
@@ -63,6 +64,9 @@ class CameraViewController: UIViewController {
 
   /// Initialized when one of the pose detector rows are chosen. Reset to `nil` when neither are.
   private var poseDetector: PoseDetector? = nil
+
+  /// Initialized when a segmentation row is chosen. Reset to `nil` otherwise.
+  private var segmenter: Segmenter? = nil
 
   /// The detector mode with which detection was most recently run. Only used on the video output
   /// queue. Useful for inferring when to reset detector instances which use a conventional
@@ -137,7 +141,7 @@ class CameraViewController: UIViewController {
         print("Self is nil!")
         return
       }
-      strongSelf.updatePreviewOverlayView()
+      strongSelf.updatePreviewOverlayViewWithLastFrame()
       strongSelf.removeDetectionAnnotations()
     }
     guard !barcodes.isEmpty else {
@@ -167,6 +171,7 @@ class CameraViewController: UIViewController {
         let label = UILabel(frame: convertedRect)
         label.text = barcode.rawValue
         label.adjustsFontSizeToFitWidth = true
+        strongSelf.rotate(label, orientation: image.orientation)
         strongSelf.annotationOverlayView.addSubview(label)
       }
     }
@@ -194,7 +199,7 @@ class CameraViewController: UIViewController {
         print("Self is nil!")
         return
       }
-      strongSelf.updatePreviewOverlayView()
+      strongSelf.updatePreviewOverlayViewWithLastFrame()
       strongSelf.removeDetectionAnnotations()
     }
     guard !faces.isEmpty else {
@@ -241,7 +246,7 @@ class CameraViewController: UIViewController {
           print("Self is nil!")
           return
         }
-        strongSelf.updatePreviewOverlayView()
+        strongSelf.updatePreviewOverlayViewWithLastFrame()
         strongSelf.removeDetectionAnnotations()
       }
       guard !poses.isEmpty else {
@@ -261,14 +266,46 @@ class CameraViewController: UIViewController {
             lineWidth: Constant.lineWidth,
             dotRadius: Constant.smallDotRadius,
             positionTransformationClosure: { (position) -> CGPoint in
-              return strongSelf.normalizedPoint(fromVisionPoint: position, width: width,
-                                                height: height)
+              return strongSelf.normalizedPoint(
+                fromVisionPoint: position, width: width, height: height)
             }
           )
           strongSelf.annotationOverlayView.addSubview(poseOverlayView)
         }
       }
     }
+  }
+
+  private func detectSegmentationMask(in image: VisionImage, sampleBuffer: CMSampleBuffer) {
+    guard let segmenter = self.segmenter else {
+      return
+    }
+    var mask: SegmentationMask
+    do {
+      mask = try segmenter.results(in: image)
+    } catch let error {
+      print("Failed to perform segmentation with error: \(error.localizedDescription).")
+      return
+    }
+    weak var weakSelf = self
+    DispatchQueue.main.sync {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.removeDetectionAnnotations()
+
+      guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+        print("Failed to get image buffer from sample buffer.")
+        return
+      }
+
+      UIUtilities.applySegmentationMask(
+        mask: mask, to: imageBuffer, backgroundColor: UIColor.blue,
+        foregroundColor: nil)
+      strongSelf.updatePreviewOverlayViewWithImageBuffer(imageBuffer)
+    }
+
   }
 
   private func recognizeTextOnDevice(in image: VisionImage, width: CGFloat, height: CGFloat) {
@@ -285,7 +322,7 @@ class CameraViewController: UIViewController {
         print("Self is nil!")
         return
       }
-      strongSelf.updatePreviewOverlayView()
+      strongSelf.updatePreviewOverlayViewWithLastFrame()
       strongSelf.removeDetectionAnnotations()
 
       // Blocks.
@@ -327,6 +364,7 @@ class CameraViewController: UIViewController {
             let label = UILabel(frame: convertedRect)
             label.text = element.text
             label.adjustsFontSizeToFitWidth = true
+            strongSelf.rotate(label, orientation: image.orientation)
             strongSelf.annotationOverlayView.addSubview(label)
           }
         }
@@ -372,32 +410,41 @@ class CameraViewController: UIViewController {
     }.joined(separator: "\n")
 
     DispatchQueue.main.sync {
-      weakSelf?.updatePreviewOverlayView()
-      weakSelf?.removeDetectionAnnotations()
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      strongSelf.updatePreviewOverlayViewWithLastFrame()
+      strongSelf.removeDetectionAnnotations()
     }
     guard resultsText.count != 0 else { return }
 
     DispatchQueue.main.sync {
-      guard let frame = weakSelf?.view.frame else { return }
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+      let frame = strongSelf.view.frame
       let normalizedRect = CGRect(
         x: Constant.imageLabelResultFrameX,
         y: Constant.imageLabelResultFrameY,
         width: Constant.imageLabelResultFrameWidth,
         height: Constant.imageLabelResultFrameHeight
       )
-      let standardizedRect = self.previewLayer.layerRectConverted(
+      let standardizedRect = strongSelf.previewLayer.layerRectConverted(
         fromMetadataOutputRect: normalizedRect
       ).standardized
       UIUtilities.addRectangle(
         standardizedRect,
-        to: self.annotationOverlayView,
+        to: strongSelf.annotationOverlayView,
         color: UIColor.gray
       )
       let uiLabel = UILabel(frame: standardizedRect)
       uiLabel.text = resultsText
       uiLabel.numberOfLines = 0
       uiLabel.adjustsFontSizeToFitWidth = true
-      self.annotationOverlayView.addSubview(uiLabel)
+      strongSelf.rotate(uiLabel, orientation: visionImage.orientation)
+      strongSelf.annotationOverlayView.addSubview(uiLabel)
     }
   }
 
@@ -421,7 +468,7 @@ class CameraViewController: UIViewController {
         print("Self is nil!")
         return
       }
-      strongSelf.updatePreviewOverlayView()
+      strongSelf.updatePreviewOverlayViewWithLastFrame()
       strongSelf.removeDetectionAnnotations()
     }
     guard !objects.isEmpty else {
@@ -461,6 +508,7 @@ class CameraViewController: UIViewController {
         label.text = description
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
+        strongSelf.rotate(label, orientation: image.orientation)
         strongSelf.annotationOverlayView.addSubview(label)
       }
     }
@@ -615,28 +663,22 @@ class CameraViewController: UIViewController {
     }
   }
 
-  private func updatePreviewOverlayView() {
+  private func updatePreviewOverlayViewWithLastFrame() {
     guard let lastFrame = lastFrame,
       let imageBuffer = CMSampleBufferGetImageBuffer(lastFrame)
     else {
       return
     }
-    let ciImage = CIImage(cvPixelBuffer: imageBuffer)
-    let context = CIContext(options: nil)
-    guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
+    self.updatePreviewOverlayViewWithImageBuffer(imageBuffer)
+  }
+
+  private func updatePreviewOverlayViewWithImageBuffer(_ imageBuffer: CVImageBuffer?) {
+    guard let imageBuffer = imageBuffer else {
       return
     }
-    let rotatedImage = UIImage(cgImage: cgImage, scale: Constant.originalScale, orientation: .right)
-    if isUsingFrontCamera {
-      guard let rotatedCGImage = rotatedImage.cgImage else {
-        return
-      }
-      let mirroredImage = UIImage(
-        cgImage: rotatedCGImage, scale: Constant.originalScale, orientation: .leftMirrored)
-      previewOverlayView.image = mirroredImage
-    } else {
-      previewOverlayView.image = rotatedImage
-    }
+    let orientation: UIImage.Orientation = isUsingFrontCamera ? .leftMirrored : .right
+    let image = UIUtilities.createUIImage(from: imageBuffer, orientation: orientation)
+    previewOverlayView.image = image
   }
 
   private func convertedPoints(
@@ -832,20 +874,43 @@ class CameraViewController: UIViewController {
     case .pose, .poseAccurate:
       self.poseDetector = nil
       break
+    case .segmentationSelfie:
+      self.segmenter = nil
+      break
     default:
       break
     }
     // Initialize the new detector, if applicable.
     switch activeDetector {
     case .pose, .poseAccurate:
+      // The `options.detectorMode` defaults to `.stream`
       let options = activeDetector == .pose ? PoseDetectorOptions() : AccuratePoseDetectorOptions()
-      options.detectorMode = .stream
       self.poseDetector = PoseDetector.poseDetector(options: options)
+      break
+    case .segmentationSelfie:
+      // The `options.segmenterMode` defaults to `.stream`
+      let options = SelfieSegmenterOptions()
+      self.segmenter = Segmenter.segmenter(options: options)
       break
     default:
       break
     }
     self.lastDetector = activeDetector
+  }
+
+  private func rotate(_ view: UIView, orientation: UIImage.Orientation) {
+    var degree: CGFloat = 0.0
+    switch orientation {
+    case .up, .upMirrored:
+      degree = 90.0
+    case .rightMirrored, .left:
+      degree = 180.0
+    case .down, .downMirrored:
+      degree = 270.0
+    case .leftMirrored, .right:
+      degree = 0.0
+    }
+    view.transform = CGAffineTransform.init(rotationAngle: degree * 3.141592654 / 180)
   }
 }
 
@@ -908,10 +973,10 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         in: visionImage, width: imageWidth, height: imageHeight, shouldUseCustomModel: true)
     case .onDeviceObjectProminentNoClassifier, .onDeviceObjectProminentWithClassifier,
       .onDeviceObjectMultipleNoClassifier, .onDeviceObjectMultipleWithClassifier:
+      // The `options.detectorMode` defaults to `.stream`
       let options = ObjectDetectorOptions()
       options.shouldEnableClassification = shouldEnableClassification
       options.shouldEnableMultipleObjects = shouldEnableMultipleObjects
-      options.detectorMode = .stream
       detectObjectsOnDevice(
         in: visionImage,
         width: imageWidth,
@@ -929,10 +994,10 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         return
       }
       let localModel = LocalModel(path: localModelFilePath)
+      // The `options.detectorMode` defaults to `.stream`
       let options = CustomObjectDetectorOptions(localModel: localModel)
       options.shouldEnableClassification = shouldEnableClassification
       options.shouldEnableMultipleObjects = shouldEnableMultipleObjects
-      options.detectorMode = .stream
       detectObjectsOnDevice(
         in: visionImage,
         width: imageWidth,
@@ -941,6 +1006,8 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
     case .pose, .poseAccurate:
       detectPose(in: visionImage, width: imageWidth, height: imageHeight)
+    case .segmentationSelfie:
+      detectSegmentationMask(in: visionImage, sampleBuffer: sampleBuffer)
     }
   }
 }
@@ -963,6 +1030,7 @@ public enum Detector: String {
   case onDeviceObjectCustomMultipleWithClassifier = "ODT, custom, multiple, labeling"
   case pose = "Pose Detection"
   case poseAccurate = "Pose Detection, accurate"
+  case segmentationSelfie = "Selfie Segmentation"
 }
 
 private enum Constant {

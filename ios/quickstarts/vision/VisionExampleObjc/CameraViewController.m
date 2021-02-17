@@ -59,6 +59,7 @@ typedef NS_ENUM(NSInteger, Detector) {
   DetectorOnDeviceObjectCustomMultipleWithClassifier,
   DetectorPose,
   DetectorPoseAccurate,
+  DetectorSegmentationSelfie,
 };
 
 @property(nonatomic) NSArray *detectors;
@@ -74,6 +75,9 @@ typedef NS_ENUM(NSInteger, Detector) {
 
 /** Initialized when one of the pose detector rows are chosen. Reset to `nil` when neither are. */
 @property(nonatomic, nullable) MLKPoseDetector *poseDetector;
+
+/** Initialized when a segmentation detector row is chosen. Reset to `nil` otherwise. */
+@property(nonatomic, nullable) MLKSegmenter *segmenter;
 
 /**
  * The detector mode with which detection was most recently run. Only used on the video output
@@ -118,6 +122,8 @@ typedef NS_ENUM(NSInteger, Detector) {
       return @"Pose Detection";
     case DetectorPoseAccurate:
       return @"Pose Detection, accurate";
+    case DetectorSegmentationSelfie:
+      return @"Selfie Segmentation";
   }
 }
 
@@ -139,6 +145,7 @@ typedef NS_ENUM(NSInteger, Detector) {
     @(DetectorOnDeviceObjectCustomMultipleWithClassifier),
     @(DetectorPose),
     @(DetectorPoseAccurate),
+    @(DetectorSegmentationSelfie),
   ];
   self.currentDetector = DetectorOnDeviceFace;
   _isUsingFrontCamera = YES;
@@ -200,7 +207,7 @@ typedef NS_ENUM(NSInteger, Detector) {
   __weak typeof(self) weakSelf = self;
   dispatch_sync(dispatch_get_main_queue(), ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
-    [strongSelf updatePreviewOverlayView];
+    [strongSelf updatePreviewOverlayViewWithLastFrame];
     [strongSelf removeDetectionAnnotations];
     if (error != nil) {
       NSLog(@"Failed to detect faces with error: %@", error.localizedDescription);
@@ -234,7 +241,7 @@ typedef NS_ENUM(NSInteger, Detector) {
   dispatch_sync(dispatch_get_main_queue(), ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
     [strongSelf removeDetectionAnnotations];
-    [strongSelf updatePreviewOverlayView];
+    [strongSelf updatePreviewOverlayViewWithLastFrame];
     if (error != nil) {
       NSLog(@"Failed to recognize text with error: %@", error.localizedDescription);
       return;
@@ -268,6 +275,7 @@ typedef NS_ENUM(NSInteger, Detector) {
           UILabel *label = [[UILabel alloc] initWithFrame:convertedRect];
           label.text = element.text;
           label.adjustsFontSizeToFitWidth = YES;
+          [strongSelf rotateView:label orientation:image.orientation];
           [strongSelf.annotationOverlayView addSubview:label];
         }
       }
@@ -292,7 +300,7 @@ typedef NS_ENUM(NSInteger, Detector) {
   __weak typeof(self) weakSelf = self;
   dispatch_sync(dispatch_get_main_queue(), ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
-    [strongSelf updatePreviewOverlayView];
+    [strongSelf updatePreviewOverlayViewWithLastFrame];
     [strongSelf removeDetectionAnnotations];
     if (labels.count == 0) {
       NSString *errorString = error != nil ? error.localizedDescription : noResultsMessage;
@@ -320,6 +328,7 @@ typedef NS_ENUM(NSInteger, Detector) {
     uiLabel.text = description;
     uiLabel.numberOfLines = 0;
     uiLabel.adjustsFontSizeToFitWidth = YES;
+    [strongSelf rotateView:uiLabel orientation:image.orientation];
     [strongSelf.annotationOverlayView addSubview:uiLabel];
   });
 }
@@ -330,7 +339,7 @@ typedef NS_ENUM(NSInteger, Detector) {
   __weak typeof(self) weakSelf = self;
   dispatch_sync(dispatch_get_main_queue(), ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
-    [strongSelf updatePreviewOverlayView];
+    [strongSelf updatePreviewOverlayViewWithLastFrame];
     [strongSelf removeDetectionAnnotations];
 
     if (poses.count == 0) {
@@ -357,6 +366,29 @@ typedef NS_ENUM(NSInteger, Detector) {
   });
 }
 
+- (void)detectSegmentationMaskInImage:(MLKVisionImage *)image
+                         sampleBuffer:(CMSampleBufferRef)sampleBuffer {
+  NSError *error;
+  MLKSegmentationMask *mask = [self.segmenter resultsInImage:image error:&error];
+  CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+
+  if (mask != nil) {
+    [UIUtilities applySegmentationMask:mask
+                         toImageBuffer:imageBuffer
+                   withBackgroundColor:UIColor.blueColor
+                       foregroundColor:nil];
+  } else {
+    NSLog(@"Failed to segment image with error: %@", error.localizedDescription);
+  }
+
+  __weak __typeof(self) weakSelf = self;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [strongSelf updatePreviewOverlayViewWithImageBuffer:imageBuffer];
+    [strongSelf removeDetectionAnnotations];
+  });
+}
+
 - (void)scanBarcodesOnDeviceInImage:(MLKVisionImage *)image
                               width:(CGFloat)width
                              height:(CGFloat)height
@@ -368,7 +400,7 @@ typedef NS_ENUM(NSInteger, Detector) {
   dispatch_sync(dispatch_get_main_queue(), ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
     [strongSelf removeDetectionAnnotations];
-    [strongSelf updatePreviewOverlayView];
+    [strongSelf updatePreviewOverlayViewWithLastFrame];
     if (error != nil) {
       NSLog(@"Failed to scan barcodes with error: %@", error.localizedDescription);
       return;
@@ -392,8 +424,8 @@ typedef NS_ENUM(NSInteger, Detector) {
       NSMutableString *description = [NSMutableString new];
       [description appendString:barcode.rawValue];
       label.text = description;
-
       label.adjustsFontSizeToFitWidth = YES;
+      [strongSelf rotateView:label orientation:image.orientation];
       [strongSelf.annotationOverlayView addSubview:label];
     }
   });
@@ -410,7 +442,7 @@ typedef NS_ENUM(NSInteger, Detector) {
   __weak typeof(self) weakSelf = self;
   dispatch_sync(dispatch_get_main_queue(), ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
-    [strongSelf updatePreviewOverlayView];
+    [strongSelf updatePreviewOverlayViewWithLastFrame];
     [strongSelf removeDetectionAnnotations];
     if (error != nil) {
       NSLog(@"Failed to detect object with error: %@", error.localizedDescription);
@@ -445,6 +477,7 @@ typedef NS_ENUM(NSInteger, Detector) {
       label.text = description;
       label.numberOfLines = 0;
       label.adjustsFontSizeToFitWidth = YES;
+      [strongSelf rotateView:label orientation:image.orientation];
       [strongSelf.annotationOverlayView addSubview:label];
     }
   });
@@ -597,33 +630,19 @@ typedef NS_ENUM(NSInteger, Detector) {
   }
 }
 
-- (void)updatePreviewOverlayView {
+- (void)updatePreviewOverlayViewWithLastFrame {
   CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(_lastFrame);
+  [self updatePreviewOverlayViewWithImageBuffer:imageBuffer];
+}
+
+- (void)updatePreviewOverlayViewWithImageBuffer:(CVImageBufferRef)imageBuffer {
   if (imageBuffer == nil) {
     return;
   }
-  CIImage *ciImage = [CIImage imageWithCVPixelBuffer:imageBuffer];
-  CIContext *context = [[CIContext alloc] initWithOptions:nil];
-  CGImageRef cgImage = [context createCGImage:ciImage fromRect:ciImage.extent];
-  if (cgImage == nil) {
-    return;
-  }
-  UIImage *rotatedImage = [UIImage imageWithCGImage:cgImage
-                                              scale:MLKconstantScale
-                                        orientation:UIImageOrientationRight];
-  if (_isUsingFrontCamera) {
-    CGImageRef rotatedCGImage = rotatedImage.CGImage;
-    if (rotatedCGImage == nil) {
-      return;
-    }
-    UIImage *mirroredImage = [UIImage imageWithCGImage:rotatedCGImage
-                                                 scale:MLKconstantScale
-                                           orientation:UIImageOrientationLeftMirrored];
-    _previewOverlayView.image = mirroredImage;
-  } else {
-    _previewOverlayView.image = rotatedImage;
-  }
-  CGImageRelease(cgImage);
+  UIImageOrientation orientation =
+      _isUsingFrontCamera ? UIImageOrientationLeftMirrored : UIImageOrientationRight;
+  UIImage *image = [UIUtilities UIImageFromImageBuffer:imageBuffer orientation:orientation];
+  _previewOverlayView.image = image;
 }
 
 - (NSArray<NSValue *> *)convertedPointsFromPoints:(NSArray<NSValue *> *)points
@@ -766,6 +785,29 @@ typedef NS_ENUM(NSInteger, Detector) {
   }
 }
 
+- (void)rotateView:(UIView *)view orientation:(UIImageOrientation)orientation {
+  CGFloat degree = 0.0;
+  switch (orientation) {
+    case UIImageOrientationUp:
+    case UIImageOrientationUpMirrored:
+      degree = 90.0;
+      break;
+    case UIImageOrientationRightMirrored:
+    case UIImageOrientationLeft:
+      degree = 180.0;
+      break;
+    case UIImageOrientationDown:
+    case UIImageOrientationDownMirrored:
+      degree = 270.0;
+      break;
+    case UIImageOrientationLeftMirrored:
+    case UIImageOrientationRight:
+      degree = 0.0;
+      break;
+  }
+  view.transform = CGAffineTransformMakeRotation(degree * 3.141592654 / 180);
+}
+
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)output
@@ -833,14 +875,17 @@ typedef NS_ENUM(NSInteger, Detector) {
       case DetectorPoseAccurate:
         [self detectPoseInImage:visionImage width:imageWidth height:imageHeight];
         break;
+      case DetectorSegmentationSelfie:
+        [self detectSegmentationMaskInImage:visionImage sampleBuffer:_lastFrame];
+        break;
       case DetectorOnDeviceObjectProminentNoClassifier:
       case DetectorOnDeviceObjectProminentWithClassifier:
       case DetectorOnDeviceObjectMultipleNoClassifier:
       case DetectorOnDeviceObjectMultipleWithClassifier: {
+        // The `options.detectorMode` defaults to `MLKObjectDetectorModeStream`.
         MLKObjectDetectorOptions *options = [MLKObjectDetectorOptions new];
         options.shouldEnableClassification = shouldEnableClassification;
         options.shouldEnableMultipleObjects = shouldEnableMultipleObjects;
-        options.detectorMode = MLKObjectDetectorModeStream;
         [self detectObjectsOnDeviceInImage:visionImage
                                      width:imageWidth
                                     height:imageHeight
@@ -859,11 +904,11 @@ typedef NS_ENUM(NSInteger, Detector) {
           return;
         }
         MLKLocalModel *localModel = [[MLKLocalModel alloc] initWithPath:localModelFilePath];
+        // The `options.detectorMode` defaults to `MLKObjectDetectorModeStream`.
         MLKCustomObjectDetectorOptions *options =
             [[MLKCustomObjectDetectorOptions alloc] initWithLocalModel:localModel];
         options.shouldEnableClassification = shouldEnableClassification;
         options.shouldEnableMultipleObjects = shouldEnableMultipleObjects;
-        options.detectorMode = MLKObjectDetectorModeStream;
         [self detectObjectsOnDeviceInImage:visionImage
                                      width:imageWidth
                                     height:imageHeight
@@ -895,6 +940,8 @@ typedef NS_ENUM(NSInteger, Detector) {
     case DetectorPoseAccurate:
       self.poseDetector = nil;
       break;
+    case DetectorSegmentationSelfie:
+      self.segmenter = nil;
     default:
       break;
   }
@@ -902,10 +949,16 @@ typedef NS_ENUM(NSInteger, Detector) {
   switch (activeDetector) {
     case DetectorPose:
     case DetectorPoseAccurate: {
+      // The `options.detectorMode` defaults to `MLKPoseDetectorModeStream`.
       MLKCommonPoseDetectorOptions *options = activeDetector == DetectorPose
           ? [[MLKPoseDetectorOptions alloc] init] : [[MLKAccuratePoseDetectorOptions alloc] init];
-      options.detectorMode = MLKPoseDetectorModeStream;
       self.poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
+      break;
+    }
+    case DetectorSegmentationSelfie: {
+      // The `options.segmenterMode` defaults to `MLKSegmenterModeStream`.
+      MLKSelfieSegmenterOptions *options = [[MLKSelfieSegmenterOptions alloc] init];
+      self.segmenter = [MLKSegmenter segmenterWithOptions:options];
       break;
     }
     default:

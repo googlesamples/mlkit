@@ -11,6 +11,7 @@ pod 'GoogleMLKit/ObjectDetection'
 pod 'GoogleMLKit/ObjectDetectionCustom'
 pod 'GoogleMLKit/PoseDetection'
 pod 'GoogleMLKit/PoseDetectionAccurate'
+pod 'GoogleMLKit/SegmentationSelfie'
 pod 'GoogleMLKit/TextRecognition'
 
 target 'VisionExample' do

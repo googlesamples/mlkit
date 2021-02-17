@@ -15,6 +15,7 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import <CoreVideo/CoreVideo.h>
 #import <UIKit/UIKit.h>
 
 @import MLKit;
@@ -58,6 +59,42 @@ NS_ASSUME_NONNULL_BEGIN
                          lineWidth:(CGFloat)lineWidth
                          dotRadius:(CGFloat)dotRadius
        positionTransformationBlock:(CGPoint (^)(MLKVisionPoint *))positionTransformationBlock;
+
+/**
+ * Applies a segmentation mask to an image buffer by replacing colors in the segmented regions.
+ *
+ * @param The mask output from a segmentation operation.
+ * @param imageBuffer The image buffer on which segmentation was performed. Must have pixel format
+ *     type `kCVPixelFormatType_32BGRA`.
+ * @param backgroundColor Optional color to render into the background region (i.e. outside of the
+ *     segmented region of interest).
+ * @param foregroundColor Optional color to render into the foreground region (i.e. inside the
+ *     segmented region of interest).
+ */
++ (void)applySegmentationMask:(MLKSegmentationMask *)mask
+                toImageBuffer:(CVImageBufferRef)imageBuffer
+          withBackgroundColor:(nullable UIColor *)backgroundColor
+              foregroundColor:(nullable UIColor *)foregroundColor;
+
+/**
+ * Converts an image buffer to a `UIImage`.
+ *
+ * @param imageBuffer The image buffer which should be converted.
+ * @param orientation The orientation already applied to the image.
+ * @return A new `UIImage` instance.
+ */
++ (UIImage *)UIImageFromImageBuffer:(CVImageBufferRef)imageBuffer
+                        orientation:(UIImageOrientation)orientation;
+
+/**
+ * Converts a `UIImage` to an image buffer.
+ *
+ * @param image The `UIImage` which should be converted.
+ * @return The image buffer. Callers own the returned buffer and are responsible for releasing it
+ *     when it is no longer needed. Additionally, the image orientation will not be accounted for
+ *     in the returned buffer, so callers must keep track of the orientation separately.
+ */
++ (CVImageBufferRef)imageBufferFromUIImage:(UIImage *)image;
 
 @end
 

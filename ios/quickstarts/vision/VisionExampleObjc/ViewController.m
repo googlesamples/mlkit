@@ -18,7 +18,57 @@
 #import "UIImage+VisionDetection.h"
 #import "UIUtilities.h"
 
-@import MLKit;
+// LINT.IfChange
+#if COCOAPODS
+@import MLKitBarcodeScanning;
+@import MLKitCommon;
+@import MLKitFaceDetection;
+@import MLKitImageLabeling;
+@import MLKitImageLabelingCommon;
+@import MLKitImageLabelingCustom;
+@import MLKitObjectDetection;
+@import MLKitObjectDetectionCommon;
+@import MLKitObjectDetectionCustom;
+@import MLKitPoseDetection;
+@import MLKitPoseDetectionAccurate;
+@import MLKitSelfieSegmentation;
+@import MLKitTextRecognition;
+@import MLKitVision;
+#else
+#import "googlemac/iPhone/MLKit/Common/Public/MLKLocalModel.h"
+#import "googlemac/iPhone/MLKit/Vision/BarcodeScanning/Public/MLKBarcode.h"
+#import "googlemac/iPhone/MLKit/Vision/BarcodeScanning/Public/MLKBarcodeScanner.h"
+#import "googlemac/iPhone/MLKit/Vision/BarcodeScanning/Public/MLKBarcodeScannerOptions.h"
+#import "googlemac/iPhone/MLKit/Vision/FaceDetection/Public/MLKFace.h"
+#import "googlemac/iPhone/MLKit/Vision/FaceDetection/Public/MLKFaceDetector.h"
+#import "googlemac/iPhone/MLKit/Vision/FaceDetection/Public/MLKFaceDetectorOptions.h"
+#import "googlemac/iPhone/MLKit/Vision/ImageLabeling/Public/MLKImageLabelerOptions.h"
+#import "googlemac/iPhone/MLKit/Vision/ImageLabelingCommon/Public/MLKImageLabel.h"
+#import "googlemac/iPhone/MLKit/Vision/ImageLabelingCommon/Public/MLKImageLabeler.h"
+#import "googlemac/iPhone/MLKit/Vision/ImageLabelingCustom/Public/MLKCustomImageLabelerOptions.h"
+#import "googlemac/iPhone/MLKit/Vision/ObjectDetection/Public/MLKObjectDetectorOptions.h"
+#import "googlemac/iPhone/MLKit/Vision/ObjectDetectionCommon/Public/MLKObject.h"
+#import "googlemac/iPhone/MLKit/Vision/ObjectDetectionCommon/Public/MLKObjectDetector.h"
+#import "googlemac/iPhone/MLKit/Vision/ObjectDetectionCommon/Public/MLKObjectLabel.h"
+#import "googlemac/iPhone/MLKit/Vision/ObjectDetectionCustom/Public/MLKCustomObjectDetectorOptions.h"
+#import "googlemac/iPhone/MLKit/Vision/PoseDetection/Public/MLKPoseDetectorOptions.h"
+#import "googlemac/iPhone/MLKit/Vision/PoseDetectionAccurate/Public/MLKAccuratePoseDetectorOptions.h"
+#import "googlemac/iPhone/MLKit/Vision/PoseDetectionCommon/PublicLibHeaders_Generated/MLKPose.h"
+#import "googlemac/iPhone/MLKit/Vision/PoseDetectionCommon/PublicLibHeaders_Generated/MLKPoseDetector.h"
+#import "googlemac/iPhone/MLKit/Vision/PoseDetectionCommon/PublicLibHeaders_Generated/MLKPoseLandmark.h"
+#import "googlemac/iPhone/MLKit/Vision/Public/MLKVisionImage.h"
+#import "googlemac/iPhone/MLKit/Vision/Public/MLKVisionPoint.h"
+#import "googlemac/iPhone/MLKit/Vision/SegmentationCommon/PublicLibHeaders_Generated/MLKSegmentationMask.h"
+#import "googlemac/iPhone/MLKit/Vision/SegmentationCommon/PublicLibHeaders_Generated/MLKSegmenter.h"
+#import "googlemac/iPhone/MLKit/Vision/SegmentationSelfie/Public/MLKSelfieSegmenterOptions.h"
+#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKText.h"
+#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextBlock.h"
+#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextElement.h"
+#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextLine.h"
+#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextRecognizedLanguage.h"
+#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextRecognizer.h"
+#endif
+// LINT.ThenChange(//depot/google3/third_party/mlkit_quickstart_ios_sot_piper/vision/copy.bara.sky)
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,7 +87,7 @@ static CGFloat const largeDotRadius = 10.0;
 static CGColorRef lineColor;
 static CGColorRef fillColor;
 
-static int const rowsCount = 15;
+static int const rowsCount = 16;
 static int const componentsCount = 1;
 
 /**
@@ -75,6 +125,8 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   DetectorPickerRowDetectPose,
   /** Vision pose accurate detector. */
   DetectorPickerRowDetectPoseAccurate,
+  /** Vision selfie segmenter. */
+  DetectorPickerRowSegmentationSelfie,
 };
 
 @interface ViewController () <UINavigationControllerDelegate,
@@ -102,6 +154,9 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 /** Initialized when one of the pose detector rows are chosen. Reset to `nil` when neither are. */
 @property(nonatomic, nullable) MLKPoseDetector *poseDetector;
+
+/** Initialized when a segmentation row is chose. Reset to `nil` otherwise. */
+@property(nonatomic, nullable) MLKSegmenter *segmenter;
 
 /**
  * The detector row with which detection was most recently run. Useful for inferring when to reset
@@ -145,6 +200,8 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
       return @"Pose Detection";
     case DetectorPickerRowDetectPoseAccurate:
       return @"Pose Detection, accurate";
+    case DetectorPickerRowSegmentationSelfie:
+      return @"Selfie Segmentation";
   }
 }
 
@@ -269,6 +326,9 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     case DetectorPickerRowDetectPose:
     case DetectorPickerRowDetectPoseAccurate:
       [self detectPoseInImage:_imageView.image];
+      break;
+    case DetectorPickerRowSegmentationSelfie:
+      [self detectSegmentationMaskInImage:_imageView.image];
       break;
   }
 }
@@ -744,7 +804,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   MLKFaceDetector *faceDetector = [MLKFaceDetector faceDetectorWithOptions:options];
   // [END init_face]
 
-  // Initialize a VisionImage object with the given UIImage.
+  // Initialize a `VisionImage` object with the given `UIImage`.
   MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
   visionImage.orientation = image.imageOrientation;
 
@@ -835,7 +895,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   MLKBarcodeScanner *barcodeScanner = [MLKBarcodeScanner barcodeScannerWithOptions:barcodeOptions];
   // [END init_barcode]
 
-  // Initialize a VisionImage object with the given UIImage.
+  // Initialize a `VisionImage` object with the given `UIImage`.
   MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
   visionImage.orientation = image.imageOrientation;
 
@@ -884,7 +944,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     return;
   }
 
-  // Initialize a VisionImage object with the given UIImage.
+  // Initialize a `VisionImage` object with the given `UIImage`.
   MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
   visionImage.orientation = image.imageOrientation;
 
@@ -894,7 +954,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   [self.poseDetector processImage:visionImage completion:^(NSArray<MLKPose *> *_Nullable poses,
                                                            NSError *_Nullable error) {
     __strong typeof(weakSelf) strongSelf = weakSelf;
-    if (!strongSelf) {
+    if (strongSelf == nil) {
       return;
     }
     if (poses.count == 0) {
@@ -921,6 +981,50 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     strongSelf.resultsText = [NSMutableString stringWithFormat:@"Pose Detected"];
     [strongSelf showResults];
   }];
+}
+
+- (void)detectSegmentationMaskInImage:(UIImage *)image {
+  if (!image) {
+    return;
+  }
+
+  // Initialize a `VisionImage` object with the given `UIImage`.
+  MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
+  visionImage.orientation = image.imageOrientation;
+
+  __weak __typeof(self) weakSelf = self;
+  [self.segmenter
+      processImage:visionImage
+        completion:^(MLKSegmentationMask *_Nullable mask, NSError *_Nullable error) {
+          __strong __typeof(weakSelf) strongSelf = weakSelf;
+
+          if (mask == nil) {
+            NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
+            strongSelf.resultsText = [NSMutableString
+                stringWithFormat:@"Segmentation failed with error: %@", errorString];
+            [strongSelf showResults];
+            return;
+          }
+
+          CVPixelBufferRef imageBuffer = [UIUtilities imageBufferFromUIImage:image];
+          [UIUtilities applySegmentationMask:mask
+                               toImageBuffer:imageBuffer
+                         withBackgroundColor:UIColor.blueColor
+                             foregroundColor:nil];
+
+          UIImage *maskedImage = [UIUtilities UIImageFromImageBuffer:imageBuffer
+                                                         orientation:image.imageOrientation];
+          CVPixelBufferRelease(imageBuffer);
+
+          UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+          imageView.frame = strongSelf.annotationOverlayView.bounds;
+          imageView.contentMode = UIViewContentModeScaleAspectFit;
+          imageView.image = maskedImage;
+
+          [strongSelf.annotationOverlayView addSubview:imageView];
+          strongSelf.resultsText = [NSMutableString stringWithFormat:@"Segmentation Succeeded"];
+          [strongSelf showResults];
+        }];
 }
 
 /**
@@ -951,7 +1055,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   MLKImageLabeler *onDeviceLabeler = [MLKImageLabeler imageLabelerWithOptions:options];
   // [END init_label]
 
-  // Initialize a VisionImage object with the given UIImage.
+  // Initialize a `VisionImage` object with the given `UIImage`.
   MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
   visionImage.orientation = image.imageOrientation;
 
@@ -999,7 +1103,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   MLKTextRecognizer *onDeviceTextRecognizer = [MLKTextRecognizer textRecognizer];
   // [END init_text]
 
-  // Initialize a VisionImage object with the given UIImage.
+  // Initialize a `VisionImage` object with the given `UIImage`.
   MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
   visionImage.orientation = image.imageOrientation;
 
@@ -1022,7 +1126,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   MLKObjectDetector *detector = [MLKObjectDetector objectDetectorWithOptions:options];
   // [END init_object_detector]
 
-  // Initialize a VisionImage object with the given UIImage.
+  // Initialize a `VisionImage` object with the given `UIImage`.
   MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
   visionImage.orientation = image.imageOrientation;
 
@@ -1096,6 +1200,9 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     case DetectorPickerRowDetectPoseAccurate:
       self.poseDetector = nil;
       break;
+    case DetectorPickerRowSegmentationSelfie:
+      self.segmenter = nil;
+      break;
     default:
       break;
   }
@@ -1107,6 +1214,12 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
           ? [[MLKPoseDetectorOptions alloc] init] : [[MLKAccuratePoseDetectorOptions alloc] init];
       options.detectorMode = MLKPoseDetectorModeSingleImage;
       self.poseDetector = [MLKPoseDetector poseDetectorWithOptions:options];
+      break;
+    }
+    case DetectorPickerRowSegmentationSelfie: {
+      MLKSelfieSegmenterOptions *options = [[MLKSelfieSegmenterOptions alloc] init];
+      options.segmenterMode = MLKSegmenterModeSingleImage;
+      self.segmenter = [MLKSegmenter segmenterWithOptions:options];
       break;
     }
     default:

@@ -151,6 +151,123 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
++ (void)applySegmentationMask:(MLKSegmentationMask *)mask
+                toImageBuffer:(CVImageBufferRef)imageBuffer
+          withBackgroundColor:(nullable UIColor *)backgroundColor
+              foregroundColor:(nullable UIColor *)foregroundColor {
+  NSAssert(CVPixelBufferGetPixelFormatType(imageBuffer) == kCVPixelFormatType_32BGRA,
+           @"Image buffer must have 32BGRA pixel format type");
+  size_t width = CVPixelBufferGetWidth(mask.buffer);
+  size_t height = CVPixelBufferGetHeight(mask.buffer);
+  NSAssert(CVPixelBufferGetWidth(imageBuffer) == width, @"Height must match");
+  NSAssert(CVPixelBufferGetHeight(imageBuffer) == height, @"Width must match");
+
+  if (backgroundColor == nil && foregroundColor == nil) {
+    return;
+  }
+
+  CVPixelBufferLockBaseAddress(imageBuffer, 0);
+  CVPixelBufferLockBaseAddress(mask.buffer, kCVPixelBufferLock_ReadOnly);
+
+  float *maskAddress = (float *)CVPixelBufferGetBaseAddress(mask.buffer);
+  size_t maskBytesPerRow = CVPixelBufferGetBytesPerRow(mask.buffer);
+
+  unsigned char *imageAddress = (unsigned char *)CVPixelBufferGetBaseAddress(imageBuffer);
+  size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+  static const int kBGRABytesPerPixel = 4;
+
+  CGFloat redFG, greenFG, blueFG;
+  CGFloat redBG, greenBG, blueBG;
+  [foregroundColor getRed:&redFG green:&greenFG blue:&blueFG alpha:nil];
+  [backgroundColor getRed:&redBG green:&greenBG blue:&blueBG alpha:nil];
+
+  static const int kMaxColorComponentValue = 255;
+  redFG *= kMaxColorComponentValue;
+  greenFG *= kMaxColorComponentValue;
+  blueFG *= kMaxColorComponentValue;
+  redBG *= kMaxColorComponentValue;
+  greenBG *= kMaxColorComponentValue;
+  blueBG *= kMaxColorComponentValue;
+
+  for (int row = 0; row < height; ++row) {
+    for (int col = 0; col < width; ++col) {
+      int pixelOffset = col * kBGRABytesPerPixel;
+      int blueOffset = pixelOffset;
+      int greenOffset = pixelOffset + 1;
+      int redOffset = pixelOffset + 2;
+
+      float maskValue = maskAddress[col];
+      float backgroundRegionRatio = 1.0f - maskValue;
+      float foregroundRegionRatio = maskValue;
+
+      int originalPixelRed = imageAddress[redOffset];
+      int originalPixelGreen = imageAddress[greenOffset];
+      int originalPixelBlue = imageAddress[blueOffset];
+
+      float redBGComponent = backgroundColor != nil ? redBG : originalPixelRed;
+      float greenBGComponent = backgroundColor != nil ? greenBG : originalPixelGreen;
+      float blueBGComponent = backgroundColor != nil ? blueBG : originalPixelBlue;
+
+      float redFGComponent = foregroundColor != nil ? redFG : originalPixelRed;
+      float greenFGComponent = foregroundColor != nil ? greenFG : originalPixelGreen;
+      float blueFGComponent = foregroundColor != nil ? blueFG : originalPixelBlue;
+
+      imageAddress[blueOffset] =
+          blueBGComponent * backgroundRegionRatio + blueFGComponent * foregroundRegionRatio;
+      ;
+      imageAddress[greenOffset] =
+          greenBGComponent * backgroundRegionRatio + greenFGComponent * foregroundRegionRatio;
+      ;
+      imageAddress[redOffset] =
+          redBGComponent * backgroundRegionRatio + redFGComponent * foregroundRegionRatio;
+      ;
+    }
+    imageAddress += bytesPerRow / sizeof(unsigned char);
+    maskAddress += maskBytesPerRow / sizeof(float);
+  }
+
+  CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+  CVPixelBufferUnlockBaseAddress(mask.buffer, kCVPixelBufferLock_ReadOnly);
+}
+
++ (UIImage *)UIImageFromImageBuffer:(CVImageBufferRef)imageBuffer
+                        orientation:(UIImageOrientation)orientation {
+  CIImage *CIImg = [CIImage imageWithCVPixelBuffer:imageBuffer];
+  CIContext *context = [[CIContext alloc] initWithOptions:nil];
+  CGImageRef CGImg = [context createCGImage:CIImg fromRect:CIImg.extent];
+  UIImage *image = [UIImage imageWithCGImage:CGImg scale:1.0f orientation:orientation];
+  CGImageRelease(CGImg);
+  return image;
+}
+
++ (CVImageBufferRef)imageBufferFromUIImage:(UIImage *)image {
+  size_t width = CGImageGetWidth(image.CGImage);
+  size_t height = CGImageGetHeight(image.CGImage);
+
+  CVPixelBufferRef imageBuffer;
+  CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA,
+                      (__bridge CFDictionaryRef) @{}, &imageBuffer);
+
+  CVPixelBufferLockBaseAddress(imageBuffer, 0);
+
+  void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+  size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+  CGContextRef context = CGBitmapContextCreate(
+      baseAddress, width, height, /*bitsPerComponent=*/8, bytesPerRow, colorSpace,
+      kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+
+  CGRect rect = CGRectMake(0, 0, width, height);
+  CGContextClearRect(context, rect);
+  CGContextDrawImage(context, rect, image.CGImage);
+
+  CGContextRelease(context);
+  CGColorSpaceRelease(colorSpace);
+  CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+
+  return imageBuffer;
+}
+
 + (UIView *)poseOverlayViewForPose:(MLKPose *)pose
                   inViewWithBounds:(CGRect)bounds
                          lineWidth:(CGFloat)lineWidth

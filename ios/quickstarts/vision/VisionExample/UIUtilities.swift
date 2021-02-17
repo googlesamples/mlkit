@@ -15,6 +15,7 @@
 //
 
 import AVFoundation
+import CoreVideo
 import MLKit
 import UIKit
 
@@ -114,6 +115,165 @@ public class UIUtilities {
       return .up
     @unknown default:
       fatalError()
+    }
+  }
+
+  /// Applies a segmentation mask to an image buffer by replacing colors in the segmented regions.
+  ///
+  /// @param The mask output from a segmentation operation.
+  /// @param imageBuffer The image buffer on which segmentation was performed. Must have pixel
+  ///     format type `kCVPixelFormatType_32BGRA`.
+  /// @param backgroundColor Optional color to render into the background region (i.e. outside of
+  ///    the segmented region of interest).
+  /// @param foregroundColor Optional color to render into the foreground region (i.e. inside the
+  ///     segmented region of interest).
+  public static func applySegmentationMask(
+    mask: SegmentationMask, to imageBuffer: CVImageBuffer,
+    backgroundColor: UIColor?, foregroundColor: UIColor?
+  ) {
+    assert(
+      CVPixelBufferGetPixelFormatType(imageBuffer) == kCVPixelFormatType_32BGRA,
+      "Image buffer must have 32BGRA pixel format type")
+
+    let width = CVPixelBufferGetWidth(mask.buffer)
+    let height = CVPixelBufferGetHeight(mask.buffer)
+    assert(CVPixelBufferGetWidth(imageBuffer) == width, "Width must match")
+    assert(CVPixelBufferGetHeight(imageBuffer) == height, "Height must match")
+
+    if backgroundColor == nil && foregroundColor == nil {
+      return
+    }
+
+    let writeFlags = CVPixelBufferLockFlags(rawValue: 0)
+    CVPixelBufferLockBaseAddress(imageBuffer, writeFlags)
+    CVPixelBufferLockBaseAddress(mask.buffer, CVPixelBufferLockFlags.readOnly)
+
+    let maskBytesPerRow = CVPixelBufferGetBytesPerRow(mask.buffer)
+    var maskAddress =
+      CVPixelBufferGetBaseAddress(mask.buffer)!.bindMemory(
+        to: Float32.self, capacity: maskBytesPerRow * height)
+
+    let imageBytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+    var imageAddress = CVPixelBufferGetBaseAddress(imageBuffer)!.bindMemory(
+      to: UInt8.self, capacity: imageBytesPerRow * height)
+
+    var redFG: CGFloat = 0.0
+    var greenFG: CGFloat = 0.0
+    var blueFG: CGFloat = 0.0
+    var redBG: CGFloat = 0.0
+    var greenBG: CGFloat = 0.0
+    var blueBG: CGFloat = 0.0
+
+    if let backgroundColor = backgroundColor {
+      backgroundColor.getRed(&redBG, green: &greenBG, blue: &blueBG, alpha: nil)
+    }
+    if let foregroundColor = foregroundColor {
+      foregroundColor.getRed(&redFG, green: &greenFG, blue: &blueFG, alpha: nil)
+    }
+
+    redFG *= Constants.maxColorComponentValue
+    greenFG *= Constants.maxColorComponentValue
+    blueFG *= Constants.maxColorComponentValue
+    redBG *= Constants.maxColorComponentValue
+    greenBG *= Constants.maxColorComponentValue
+    blueBG *= Constants.maxColorComponentValue
+
+    for _ in 0...(height - 1) {
+      for col in 0...(width - 1) {
+        let pixelOffset = col * Constants.bgraBytesPerPixel
+        let blueOffset = pixelOffset
+        let greenOffset = pixelOffset + 1
+        let redOffset = pixelOffset + 2
+
+        let maskValue: Float32 = maskAddress[col]
+        let backgroundRegionRatio: Float32 = 1.0 - maskValue
+        let foregroundRegionRatio = maskValue
+
+        let originalPixelRed: UInt8 = imageAddress[redOffset]
+        let originalPixelGreen: UInt8 = imageAddress[greenOffset]
+        let originalPixelBlue: UInt8 = imageAddress[blueOffset]
+
+        let redBGComponent: Float32 =
+          backgroundColor != nil ? Float32(redBG) : Float32(originalPixelRed)
+        let greenBGComponent: Float32 =
+          backgroundColor != nil ? Float32(greenBG) : Float32(originalPixelGreen)
+        let blueBGComponent: Float32 =
+          backgroundColor != nil ? Float32(blueBG) : Float32(originalPixelBlue)
+
+        let redFGComponent: Float32 =
+          foregroundColor != nil ? Float32(redFG) : Float32(originalPixelRed)
+        let greenFGComponent: Float32 =
+          foregroundColor != nil ? Float32(greenFG) : Float32(originalPixelGreen)
+        let blueFGComponent: Float32 =
+          foregroundColor != nil ? Float32(blueFG) : Float32(originalPixelBlue)
+
+        imageAddress[redOffset] = UInt8(
+          redBGComponent * backgroundRegionRatio + redFGComponent * foregroundRegionRatio)
+        imageAddress[greenOffset] = UInt8(
+          greenBGComponent * backgroundRegionRatio + greenFGComponent * foregroundRegionRatio)
+        imageAddress[blueOffset] = UInt8(
+          blueBGComponent * backgroundRegionRatio + blueFGComponent * foregroundRegionRatio)
+      }
+
+      imageAddress += imageBytesPerRow / MemoryLayout<UInt8>.size
+      maskAddress += maskBytesPerRow / MemoryLayout<Float32>.size
+    }
+
+    CVPixelBufferUnlockBaseAddress(imageBuffer, writeFlags)
+    CVPixelBufferUnlockBaseAddress(mask.buffer, CVPixelBufferLockFlags.readOnly)
+  }
+
+  /// Converts an image buffer to a `UIImage`.
+  ///
+  /// @param imageBuffer The image buffer which should be converted.
+  /// @param orientation The orientation already applied to the image.
+  /// @return A new `UIImage` instance.
+  public static func createUIImage(
+    from imageBuffer: CVImageBuffer,
+    orientation: UIImage.Orientation
+  ) -> UIImage? {
+    let ciImage = CIImage(cvPixelBuffer: imageBuffer)
+    let context = CIContext(options: nil)
+    guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return nil }
+    return UIImage(cgImage: cgImage, scale: Constants.originalScale, orientation: orientation)
+  }
+
+  /// Converts a `UIImage` to an image buffer.
+  ///
+  /// @param image The `UIImage` which should be converted.
+  /// @return The image buffer. Callers own the returned buffer and are responsible for releasing it
+  ///     when it is no longer needed. Additionally, the image orientation will not be accounted for
+  ///     in the returned buffer, so callers must keep track of the orientation separately.
+  public static func createImageBuffer(from image: UIImage) -> CVImageBuffer? {
+    guard let cgImage = image.cgImage else { return nil }
+    let width = cgImage.width
+    let height = cgImage.height
+
+    var buffer: CVPixelBuffer? = nil
+    CVPixelBufferCreate(
+      kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil,
+      &buffer)
+    guard let imageBuffer = buffer else { return nil }
+
+    let flags = CVPixelBufferLockFlags(rawValue: 0)
+    CVPixelBufferLockBaseAddress(imageBuffer, flags)
+    let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
+    let colorSpace = CGColorSpaceCreateDeviceRGB()
+    let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+    let context = CGContext(
+      data: baseAddress, width: width, height: height, bitsPerComponent: 8,
+      bytesPerRow: bytesPerRow, space: colorSpace,
+      bitmapInfo: (CGImageAlphaInfo.premultipliedFirst.rawValue
+        | CGBitmapInfo.byteOrder32Little.rawValue))
+
+    if let context = context {
+      let rect = CGRect.init(x: 0, y: 0, width: width, height: height)
+      context.draw(cgImage, in: rect)
+      CVPixelBufferUnlockBaseAddress(imageBuffer, flags)
+      return imageBuffer
+    } else {
+      CVPixelBufferUnlockBaseAddress(imageBuffer, flags)
+      return nil
     }
   }
 
@@ -371,6 +531,9 @@ private enum Constants {
   static let rectangleViewAlpha: CGFloat = 0.3
   static let shapeViewAlpha: CGFloat = 0.3
   static let rectangleViewCornerRadius: CGFloat = 10.0
+  static let maxColorComponentValue: CGFloat = 255.0
+  static let originalScale: CGFloat = 1.0
+  static let bgraBytesPerPixel = 4
 }
 
 // MARK: - Extension
