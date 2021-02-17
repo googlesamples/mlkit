@@ -493,7 +493,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilitiesComponents\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Protobuf\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/TensorFlowLiteObjC\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb\"",
 					"\"${PODS_ROOT}/MLKitCommon/Frameworks\"",
 					"\"${PODS_ROOT}/MLKitImageClassificationAutoML/Frameworks\"",
