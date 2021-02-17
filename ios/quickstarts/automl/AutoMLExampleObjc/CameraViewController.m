@@ -40,7 +40,7 @@ static NSString *const MLKAutoMLLocalModelManifestFilename = @"automl_labeler_ma
 /** File type of AutoML local model manifest in the main resource bundle. */
 static NSString *const MLKAutoMLManifestFileType = @"json";
 
-static const float kLabelConfidenceThreshold = 0.75;
+static const float kLabelConfidenceThreshold = 0.75f;
 static const CGFloat kImageScale = 1.0;
 static const CGFloat kLayoutPadding = 10.0;
 static const CGFloat kResultsLabelHeight = 200.0;
