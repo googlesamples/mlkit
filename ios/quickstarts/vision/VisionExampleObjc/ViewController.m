@@ -18,57 +18,7 @@
 #import "UIImage+VisionDetection.h"
 #import "UIUtilities.h"
 
-// LINT.IfChange
-#if COCOAPODS
-@import MLKitBarcodeScanning;
-@import MLKitCommon;
-@import MLKitFaceDetection;
-@import MLKitImageLabeling;
-@import MLKitImageLabelingCommon;
-@import MLKitImageLabelingCustom;
-@import MLKitObjectDetection;
-@import MLKitObjectDetectionCommon;
-@import MLKitObjectDetectionCustom;
-@import MLKitPoseDetection;
-@import MLKitPoseDetectionAccurate;
-@import MLKitSelfieSegmentation;
-@import MLKitTextRecognition;
-@import MLKitVision;
-#else
-#import "googlemac/iPhone/MLKit/Common/Public/MLKLocalModel.h"
-#import "googlemac/iPhone/MLKit/Vision/BarcodeScanning/Public/MLKBarcode.h"
-#import "googlemac/iPhone/MLKit/Vision/BarcodeScanning/Public/MLKBarcodeScanner.h"
-#import "googlemac/iPhone/MLKit/Vision/BarcodeScanning/Public/MLKBarcodeScannerOptions.h"
-#import "googlemac/iPhone/MLKit/Vision/FaceDetection/Public/MLKFace.h"
-#import "googlemac/iPhone/MLKit/Vision/FaceDetection/Public/MLKFaceDetector.h"
-#import "googlemac/iPhone/MLKit/Vision/FaceDetection/Public/MLKFaceDetectorOptions.h"
-#import "googlemac/iPhone/MLKit/Vision/ImageLabeling/Public/MLKImageLabelerOptions.h"
-#import "googlemac/iPhone/MLKit/Vision/ImageLabelingCommon/Public/MLKImageLabel.h"
-#import "googlemac/iPhone/MLKit/Vision/ImageLabelingCommon/Public/MLKImageLabeler.h"
-#import "googlemac/iPhone/MLKit/Vision/ImageLabelingCustom/Public/MLKCustomImageLabelerOptions.h"
-#import "googlemac/iPhone/MLKit/Vision/ObjectDetection/Public/MLKObjectDetectorOptions.h"
-#import "googlemac/iPhone/MLKit/Vision/ObjectDetectionCommon/Public/MLKObject.h"
-#import "googlemac/iPhone/MLKit/Vision/ObjectDetectionCommon/Public/MLKObjectDetector.h"
-#import "googlemac/iPhone/MLKit/Vision/ObjectDetectionCommon/Public/MLKObjectLabel.h"
-#import "googlemac/iPhone/MLKit/Vision/ObjectDetectionCustom/Public/MLKCustomObjectDetectorOptions.h"
-#import "googlemac/iPhone/MLKit/Vision/PoseDetection/Public/MLKPoseDetectorOptions.h"
-#import "googlemac/iPhone/MLKit/Vision/PoseDetectionAccurate/Public/MLKAccuratePoseDetectorOptions.h"
-#import "googlemac/iPhone/MLKit/Vision/PoseDetectionCommon/PublicLibHeaders_Generated/MLKPose.h"
-#import "googlemac/iPhone/MLKit/Vision/PoseDetectionCommon/PublicLibHeaders_Generated/MLKPoseDetector.h"
-#import "googlemac/iPhone/MLKit/Vision/PoseDetectionCommon/PublicLibHeaders_Generated/MLKPoseLandmark.h"
-#import "googlemac/iPhone/MLKit/Vision/Public/MLKVisionImage.h"
-#import "googlemac/iPhone/MLKit/Vision/Public/MLKVisionPoint.h"
-#import "googlemac/iPhone/MLKit/Vision/SegmentationCommon/PublicLibHeaders_Generated/MLKSegmentationMask.h"
-#import "googlemac/iPhone/MLKit/Vision/SegmentationCommon/PublicLibHeaders_Generated/MLKSegmenter.h"
-#import "googlemac/iPhone/MLKit/Vision/SegmentationSelfie/Public/MLKSelfieSegmenterOptions.h"
-#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKText.h"
-#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextBlock.h"
-#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextElement.h"
-#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextLine.h"
-#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextRecognizedLanguage.h"
-#import "googlemac/iPhone/MLKit/Vision/TextRecognition/Public/MLKTextRecognizer.h"
-#endif
-// LINT.ThenChange(//depot/google3/third_party/mlkit_quickstart_ios_sot_piper/vision/copy.bara.sky)
+@import MLKit;
 
 NS_ASSUME_NONNULL_BEGIN
 
