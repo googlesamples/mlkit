@@ -80,7 +80,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 
     // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata:2.3.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
