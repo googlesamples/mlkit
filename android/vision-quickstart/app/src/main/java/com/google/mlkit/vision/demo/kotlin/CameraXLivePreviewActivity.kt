@@ -57,6 +57,7 @@ import com.google.mlkit.vision.demo.kotlin.facedetector.FaceDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.labeldetector.LabelDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.objectdetector.ObjectDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.posedetector.PoseDetectorProcessor
+import com.google.mlkit.vision.demo.kotlin.segmenter.SegmenterProcessor
 import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
@@ -132,6 +133,7 @@ class CameraXLivePreviewActivity :
     options.add(IMAGE_LABELING_CUSTOM)
     options.add(CUSTOM_AUTOML_LABELING)
     options.add(POSE_DETECTION)
+    options.add(SELFIE_SEGMENTATION)
 
     // Creating adapter for spinner
     val dataAdapter =
@@ -394,10 +396,13 @@ class CameraXLivePreviewActivity :
             PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodLivePreview(this)
           val visualizeZ = PreferenceUtils.shouldPoseDetectionVisualizeZ(this)
           val rescaleZ = PreferenceUtils.shouldPoseDetectionRescaleZForVisualization(this)
+          val runClassification = PreferenceUtils.shouldPoseDetectionRunClassification(this)
           PoseDetectorProcessor(
-            this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ
+            this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ,
+            runClassification, /* isStreamMode = */ true
           )
         }
+        SELFIE_SEGMENTATION -> SegmenterProcessor(this)
         else -> throw IllegalStateException("Invalid model name")
       }
     } catch (e: Exception) {
@@ -529,6 +534,7 @@ class CameraXLivePreviewActivity :
     private const val IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Bird)"
     private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"
     private const val POSE_DETECTION = "Pose Detection"
+    private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
 
     private const val STATE_SELECTED_MODEL = "selected_model"
     private const val STATE_LENS_FACING = "lens_facing"

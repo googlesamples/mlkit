@@ -14,6 +14,7 @@ Features that are included in this Quickstart app:
 * [Image Labeling](https://developers.google.com/ml-kit/vision/image-labeling/android) - Label images in real time and static images
 * [Custom Image Labeling - Birds](https://developers.google.com/ml-kit/vision/image-labeling/custom-models/android) - Label images of birds with a custom TensorFlow Lite model.
 * [Pose Detection](https://developers.google.com/ml-kit/vision/pose-detection/android) - Detect the position of the human body in real time.
+* [Selfie Segmentation](https://developers.google.com/ml-kit/vision/selfie-segmentation/android) - Segment people from the background in real time.
 
 <img src="../screenshots/quickstart-picker.png" width="256"/> <img src="../screenshots/quickstart-image-labeling.png" width="256"/> <img src="../screenshots/quickstart-object-detection.png" width="256"/>
 
@@ -46,6 +47,9 @@ It uses the camera preview as input and contains these API workflows: Object det
     * Show in-frame likelihood -- Displays InFrameLikelihood score for each landmark
     * Visualize z value -- Uses different colors to indicate z difference (red: smaller z, blue: larger z)
     * Rescale z value for visualization -- Maps the smallest z value to the most red and the largest z value to the most blue. This makes z difference more obvious
+    * Run classification -- Classify squat and pushup poses. Count reps in streaming mode.
+* Selfie Segmentation
+    * Enable raw size mask -- Asks the segmenter to return the raw size mask which matches the model output size.
 
 ### Static Image scenario
 The static image scenario is identical to the live camera scenario, but instead relies on images fed into the app through the gallery.

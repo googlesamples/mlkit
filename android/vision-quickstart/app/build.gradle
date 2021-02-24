@@ -87,9 +87,12 @@ dependencies {
     implementation 'com.google.mlkit:image-labeling-custom:16.3.1'
 
     // Pose detection with default models
-    implementation 'com.google.mlkit:pose-detection:17.0.1-beta2'
+    implementation 'com.google.mlkit:pose-detection:17.0.1-beta3'
     // Pose detection with accurate models
-    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta2'
+    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta3'
+
+    // Selfie segmentation
+    implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta1'
 
     // -------------------------------------------------------
 

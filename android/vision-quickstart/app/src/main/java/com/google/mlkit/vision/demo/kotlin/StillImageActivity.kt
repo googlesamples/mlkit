@@ -48,6 +48,7 @@ import com.google.mlkit.vision.demo.kotlin.facedetector.FaceDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.labeldetector.LabelDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.objectdetector.ObjectDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.posedetector.PoseDetectorProcessor
+import com.google.mlkit.vision.demo.kotlin.segmenter.SegmenterProcessor
 import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
@@ -165,6 +166,7 @@ class StillImageActivity : AppCompatActivity() {
     options.add(IMAGE_LABELING_CUSTOM)
     options.add(CUSTOM_AUTOML_LABELING)
     options.add(POSE_DETECTION)
+    options.add(SELFIE_SEGMENTATION)
 
     // Creating adapter for featureSpinner
     val dataAdapter =
@@ -465,9 +467,15 @@ class StillImageActivity : AppCompatActivity() {
             PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodStillImage(this)
           val visualizeZ = PreferenceUtils.shouldPoseDetectionVisualizeZ(this)
           val rescaleZ = PreferenceUtils.shouldPoseDetectionRescaleZForVisualization(this)
+          val runClassification = PreferenceUtils.shouldPoseDetectionRunClassification(this)
           imageProcessor =
             PoseDetectorProcessor(
-              this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ)
+              this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ,
+              runClassification, /* isStreamMode = */ false
+            )
+        }
+        SELFIE_SEGMENTATION -> {
+          imageProcessor = SegmenterProcessor(this, /* isStreamMode= */ false)
         }
         else -> Log.e(
           TAG,
@@ -501,6 +509,7 @@ class StillImageActivity : AppCompatActivity() {
     private const val IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Birds)"
     private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"
     private const val POSE_DETECTION = "Pose Detection"
+    private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
 
     private const val SIZE_SCREEN = "w:screen" // Match screen width
     private const val SIZE_1024_768 = "w:1024" // ~1024*768 in a normal ratio

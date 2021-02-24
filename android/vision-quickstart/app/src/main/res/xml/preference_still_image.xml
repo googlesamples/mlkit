@@ -43,6 +43,18 @@
         android:key="@string/pref_key_pose_detector_rescale_z"
         android:persistent="true"
         android:title="@string/pref_title_pose_detector_rescale_z"/>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_key_pose_detector_run_classification"
+        android:persistent="true"
+        android:title="@string/pref_title_pose_detector_run_classification"/>
   </PreferenceCategory>
 
+  <PreferenceCategory android:title="@string/pref_category_segmentation">
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_key_segmentation_raw_size_mask"
+        android:persistent="true"
+        android:title="@string/pref_title_segmentation_raw_size_mask"/>
+  </PreferenceCategory>
 </PreferenceScreen>

@@ -47,6 +47,7 @@ import com.google.mlkit.vision.demo.java.facedetector.FaceDetectorProcessor;
 import com.google.mlkit.vision.demo.java.labeldetector.LabelDetectorProcessor;
 import com.google.mlkit.vision.demo.java.objectdetector.ObjectDetectorProcessor;
 import com.google.mlkit.vision.demo.java.posedetector.PoseDetectorProcessor;
+import com.google.mlkit.vision.demo.java.segmenter.SegmenterProcessor;
 import com.google.mlkit.vision.demo.java.textdetector.TextRecognitionProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
@@ -76,6 +77,7 @@ public final class StillImageActivity extends AppCompatActivity {
   private static final String IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Bird)";
   private static final String CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)";
   private static final String POSE_DETECTION = "Pose Detection";
+  private static final String SELFIE_SEGMENTATION = "Selfie Segmentation";
 
   private static final String SIZE_SCREEN = "w:screen"; // Match screen width
   private static final String SIZE_1024_768 = "w:1024"; // ~1024*768 in a normal ratio
@@ -187,6 +189,7 @@ public final class StillImageActivity extends AppCompatActivity {
     options.add(IMAGE_LABELING_CUSTOM);
     options.add(CUSTOM_AUTOML_LABELING);
     options.add(POSE_DETECTION);
+    options.add(SELFIE_SEGMENTATION);
 
     // Creating adapter for featureSpinner
     ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_style, options);
@@ -425,9 +428,14 @@ public final class StillImageActivity extends AppCompatActivity {
               PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodStillImage(this);
           boolean visualizeZ = PreferenceUtils.shouldPoseDetectionVisualizeZ(this);
           boolean rescaleZ = PreferenceUtils.shouldPoseDetectionRescaleZForVisualization(this);
+          boolean runClassification = PreferenceUtils.shouldPoseDetectionRunClassification(this);
           imageProcessor =
               new PoseDetectorProcessor(
-                  this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ);
+                  this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ,
+                  runClassification, /* isStreamMode = */false);
+          break;
+        case SELFIE_SEGMENTATION:
+          imageProcessor = new SegmenterProcessor(this, /* isStreamMode= */ false);
           break;
         default:
           Log.e(TAG, "Unknown selectedMode: " + selectedMode);

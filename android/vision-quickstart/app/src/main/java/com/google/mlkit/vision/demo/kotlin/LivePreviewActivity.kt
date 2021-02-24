@@ -44,6 +44,7 @@ import com.google.mlkit.vision.demo.kotlin.facedetector.FaceDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.labeldetector.LabelDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.objectdetector.ObjectDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.posedetector.PoseDetectorProcessor
+import com.google.mlkit.vision.demo.kotlin.segmenter.SegmenterProcessor
 import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
@@ -93,6 +94,7 @@ class LivePreviewActivity :
     options.add(IMAGE_LABELING_CUSTOM)
     options.add(CUSTOM_AUTOML_LABELING)
     options.add(POSE_DETECTION)
+    options.add(SELFIE_SEGMENTATION)
 
     // Creating adapter for spinner
     val dataAdapter =
@@ -269,10 +271,16 @@ class LivePreviewActivity :
             PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodLivePreview(this)
           val visualizeZ = PreferenceUtils.shouldPoseDetectionVisualizeZ(this)
           val rescaleZ = PreferenceUtils.shouldPoseDetectionRescaleZForVisualization(this)
+          val runClassification = PreferenceUtils.shouldPoseDetectionRunClassification(this)
           cameraSource!!.setMachineLearningFrameProcessor(
             PoseDetectorProcessor(
-              this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ)
+              this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ,
+              runClassification, /* isStreamMode = */ true
+            )
           )
+        }
+        SELFIE_SEGMENTATION -> {
+          cameraSource!!.setMachineLearningFrameProcessor(SegmenterProcessor(this))
         }
         else -> Log.e(TAG, "Unknown model: $model")
       }
@@ -391,6 +399,7 @@ class LivePreviewActivity :
     private const val IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Birds)"
     private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"
     private const val POSE_DETECTION = "Pose Detection"
+    private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
 
     private const val TAG = "LivePreviewActivity"
     private const val PERMISSION_REQUESTS = 1

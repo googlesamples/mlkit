@@ -23,14 +23,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.java.VisionProcessorBase;
+import com.google.mlkit.vision.demo.java.posedetector.classification.PoseClassifierProcessor;
 import com.google.mlkit.vision.pose.Pose;
 import com.google.mlkit.vision.pose.PoseDetection;
 import com.google.mlkit.vision.pose.PoseDetector;
 import com.google.mlkit.vision.pose.PoseDetectorOptionsBase;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /** A processor to run pose detector. */
-public class PoseDetectorProcessor extends VisionProcessorBase<Pose> {
-
+public class PoseDetectorProcessor
+    extends VisionProcessorBase<PoseDetectorProcessor.PoseWithClassification> {
   private static final String TAG = "PoseDetectorProcessor";
 
   private final PoseDetector detector;
@@ -38,18 +43,50 @@ public class PoseDetectorProcessor extends VisionProcessorBase<Pose> {
   private final boolean showInFrameLikelihood;
   private final boolean visualizeZ;
   private final boolean rescaleZForVisualization;
+  private final boolean runClassification;
+  private final boolean isStreamMode;
+  private final Context context;
+  private final Executor classificationExecutor;
+
+  private PoseClassifierProcessor poseClassifierProcessor;
+  /**
+   * Internal class to hold Pose and classification results.
+   */
+  protected static class PoseWithClassification {
+    private final Pose pose;
+    private final List<String> classificationResult;
+
+    public PoseWithClassification(Pose pose, List<String> classificationResult) {
+      this.pose = pose;
+      this.classificationResult = classificationResult;
+    }
+
+    public Pose getPose() {
+      return pose;
+    }
+
+    public List<String> getClassificationResult() {
+      return classificationResult;
+    }
+  }
 
   public PoseDetectorProcessor(
       Context context,
       PoseDetectorOptionsBase options,
       boolean showInFrameLikelihood,
       boolean visualizeZ,
-      boolean rescaleZForVisualization) {
+      boolean rescaleZForVisualization,
+      boolean runClassification,
+      boolean isStreamMode) {
     super(context);
     this.showInFrameLikelihood = showInFrameLikelihood;
     this.visualizeZ = visualizeZ;
     this.rescaleZForVisualization = rescaleZForVisualization;
     detector = PoseDetection.getClient(options);
+    this.runClassification = runClassification;
+    this.isStreamMode = isStreamMode;
+    this.context = context;
+    classificationExecutor = Executors.newSingleThreadExecutor();
   }
 
   @Override
@@ -59,15 +96,32 @@ public class PoseDetectorProcessor extends VisionProcessorBase<Pose> {
   }
 
   @Override
-  protected Task<Pose> detectInImage(InputImage image) {
-    return detector.process(image);
+  protected Task<PoseWithClassification> detectInImage(InputImage image) {
+    return detector
+        .process(image)
+        .continueWith(
+            classificationExecutor,
+            task -> {
+              Pose pose = task.getResult();
+              List<String> classificationResult = new ArrayList<>();
+              if (runClassification) {
+                if (poseClassifierProcessor == null) {
+                  poseClassifierProcessor = new PoseClassifierProcessor(context, isStreamMode);
+                }
+                classificationResult = poseClassifierProcessor.getPoseResult(pose);
+              }
+              return new PoseWithClassification(pose, classificationResult);
+            });
   }
 
   @Override
-  protected void onSuccess(@NonNull Pose pose, @NonNull GraphicOverlay graphicOverlay) {
+  protected void onSuccess(
+      @NonNull PoseWithClassification poseWithClassification,
+      @NonNull GraphicOverlay graphicOverlay) {
     graphicOverlay.add(
         new PoseGraphic(
-            graphicOverlay, pose, showInFrameLikelihood, visualizeZ, rescaleZForVisualization));
+            graphicOverlay, poseWithClassification.pose, showInFrameLikelihood, visualizeZ,
+            rescaleZForVisualization, poseWithClassification.classificationResult));
   }
 
   @Override

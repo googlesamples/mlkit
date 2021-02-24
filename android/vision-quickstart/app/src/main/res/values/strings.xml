@@ -25,6 +25,7 @@
     <string name="pref_category_object_detection">Object Detection / Custom Object Detection</string>
     <string name="pref_category_automl">AutoML Image Labeling</string>
     <string name="pref_category_pose_detection">Pose Detection</string>
+    <string name="pref_category_segmentation">Selfie Segmentation</string>
 
     <!-- Strings for camera settings. -->
     <string name="pref_category_key_camera" translatable="false">pckc</string>
@@ -119,4 +120,12 @@
     <string name="pref_title_pose_detector_rescale_z">Rescale z value for visualization</string>
     <string name="pref_key_pose_detector_rescale_z" translatable="false">pdrz</string>
 
+    <!-- Strings for pose classification preference. -->
+    <string name="pref_title_pose_detector_run_classification">Run Classification</string>
+    <string name="pref_key_pose_detector_run_classification" translatable="false">pdrc</string>
+    <string name="pref_summary_pose_detector_run_classification">Classify squat and pushup poses. Count reps in streaming mode. To get the best classification results based on the current sample data, face the camera side way and make sure your full body is in the frame.</string>
+
+    <!-- Strings for segmentation preference. -->
+    <string name="pref_title_segmentation_raw_size_mask">Enable raw size mask</string>
+    <string name="pref_key_segmentation_raw_size_mask" translatable="false">srsm</string>
 </resources>
