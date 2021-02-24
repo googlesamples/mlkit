@@ -17,5 +17,5 @@ pod 'GoogleMLKit/TextRecognition'
 target 'VisionExample' do
 end
 
-target 'VisionExampleObjc' do
+target 'VisionExampleObjC' do
 end

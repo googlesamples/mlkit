@@ -67,7 +67,7 @@
 		1036DA2B2087CC16003253C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1036DA392087CC26003253C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1077670D210FBBB6007A19A7 /* liberty.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = liberty.jpg; sourceTree = "<group>"; };
-		10E114E020E5CBAA0013E4A4 /* VisionExampleObjc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VisionExampleObjc.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		10E114E020E5CBAA0013E4A4 /* VisionExampleObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VisionExampleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10E114E220E5CBAA0013E4A4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		10E114E320E5CBAA0013E4A4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		10E114E520E5CBAA0013E4A4 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -138,7 +138,7 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		10E114E120E5CBAA0013E4A4 /* VisionExampleObjc */ = {
+		10E114E120E5CBAA0013E4A4 /* VisionExampleObjC */ = {
 			isa = PBXGroup;
 			children = (
 				10E114E220E5CBAA0013E4A4 /* AppDelegate.h */,
@@ -153,7 +153,7 @@
 				10E1151820EBF7E10013E4A4 /* UIImage+VisionDetection.h */,
 				10E1151920EBF7E10013E4A4 /* UIImage+VisionDetection.m */,
 			);
-			path = VisionExampleObjc;
+			path = VisionExampleObjC;
 			sourceTree = "<group>";
 		};
 		BB287B2C20729CE90069707A = {
@@ -162,7 +162,7 @@
 				1001E6FC20CF0C8F00445CB3 /* Assets.xcassets */,
 				10224B642087E52600A77316 /* Resources */,
 				BB287B3720729CE90069707A /* VisionExample */,
-				10E114E120E5CBAA0013E4A4 /* VisionExampleObjc */,
+				10E114E120E5CBAA0013E4A4 /* VisionExampleObjC */,
 				BB287B3620729CE90069707A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -171,7 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				BB287B3520729CE90069707A /* VisionExample.app */,
-				10E114E020E5CBAA0013E4A4 /* VisionExampleObjc.app */,
+				10E114E020E5CBAA0013E4A4 /* VisionExampleObjC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,9 +201,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		10E114DF20E5CBAA0013E4A4 /* VisionExampleObjc */ = {
+		10E114DF20E5CBAA0013E4A4 /* VisionExampleObjC */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 10E1150F20E5CBAE0013E4A4 /* Build configuration list for PBXNativeTarget "VisionExampleObjc" */;
+			buildConfigurationList = 10E1150F20E5CBAE0013E4A4 /* Build configuration list for PBXNativeTarget "VisionExampleObjC" */;
 			buildPhases = (
 				10E114DC20E5CBAA0013E4A4 /* Sources */,
 				10E114DD20E5CBAA0013E4A4 /* Frameworks */,
@@ -213,9 +213,9 @@
 			);
 			dependencies = (
 			);
-			name = VisionExampleObjc;
-			productName = VisionExampleObjc;
-			productReference = 10E114E020E5CBAA0013E4A4 /* VisionExampleObjc.app */;
+			name = VisionExampleObjC;
+			productName = VisionExampleObjC;
+			productReference = 10E114E020E5CBAA0013E4A4 /* VisionExampleObjC.app */;
 			productType = "com.apple.product-type.application";
 		};
 		BB287B3420729CE90069707A /* VisionExample */ = {
@@ -275,7 +275,7 @@
 			projectRoot = "";
 			targets = (
 				BB287B3420729CE90069707A /* VisionExample */,
-				10E114DF20E5CBAA0013E4A4 /* VisionExampleObjc */,
+				10E114DF20E5CBAA0013E4A4 /* VisionExampleObjC */,
 			);
 		};
 /* End PBXProject section */
@@ -568,7 +568,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		10E1150F20E5CBAE0013E4A4 /* Build configuration list for PBXNativeTarget "VisionExampleObjc" */ = {
+		10E1150F20E5CBAE0013E4A4 /* Build configuration list for PBXNativeTarget "VisionExampleObjC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				10E1150920E5CBAE0013E4A4 /* Debug */,

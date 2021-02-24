@@ -40,6 +40,7 @@ static const CGFloat MLKImageLabelResultFrameX = 0.4;
 static const CGFloat MLKImageLabelResultFrameY = 0.1;
 static const CGFloat MLKImageLabelResultFrameWidth = 0.5;
 static const CGFloat MLKImageLabelResultFrameHeight = 0.8;
+static const CGFloat MLKSegmentationMaskAlpha = 0.5;
 
 @interface CameraViewController () <AVCaptureVideoDataOutputSampleBufferDelegate>
 
@@ -373,9 +374,11 @@ typedef NS_ENUM(NSInteger, Detector) {
   CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
 
   if (mask != nil) {
+    UIColor *backgroundColor =
+        [UIColor.purpleColor colorWithAlphaComponent:MLKSegmentationMaskAlpha];
     [UIUtilities applySegmentationMask:mask
                          toImageBuffer:imageBuffer
-                   withBackgroundColor:UIColor.blueColor
+                   withBackgroundColor:backgroundColor
                        foregroundColor:nil];
   } else {
     NSLog(@"Failed to segment image with error: %@", error.localizedDescription);

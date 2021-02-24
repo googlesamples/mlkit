@@ -16,14 +16,18 @@
 
 #import "AppDelegate.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface AppDelegate ()
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application
-    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions {
   return YES;
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

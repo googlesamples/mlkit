@@ -301,7 +301,8 @@ class CameraViewController: UIViewController {
       }
 
       UIUtilities.applySegmentationMask(
-        mask: mask, to: imageBuffer, backgroundColor: UIColor.blue,
+        mask: mask, to: imageBuffer,
+        backgroundColor: UIColor.purple.withAlphaComponent(Constant.segmentationMaskAlpha),
         foregroundColor: nil)
       strongSelf.updatePreviewOverlayViewWithImageBuffer(imageBuffer)
     }
@@ -1052,4 +1053,5 @@ private enum Constant {
   static let imageLabelResultFrameY = 0.1
   static let imageLabelResultFrameWidth = 0.5
   static let imageLabelResultFrameHeight = 0.8
+  static let segmentationMaskAlpha: CGFloat = 0.5
 }

@@ -18,9 +18,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+/** A `UIImage` category used for vision detection. */
+@interface UIImage (VisionDetection)
 
-@property(nonatomic, strong) UIWindow *window;
+- (UIImage *)scaledImageWithSize:(CGSize)size;
 
 @end
 

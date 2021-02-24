@@ -777,7 +777,9 @@ extension ViewController {
       }
 
       UIUtilities.applySegmentationMask(
-        mask: mask, to: imageBuffer, backgroundColor: UIColor.blue, foregroundColor: nil)
+        mask: mask, to: imageBuffer,
+        backgroundColor: UIColor.purple.withAlphaComponent(Constants.segmentationMaskAlpha),
+        foregroundColor: nil)
       let maskedImage = UIUtilities.createUIImage(from: imageBuffer, orientation: .up)
 
       let imageView = UIImageView()
@@ -1159,6 +1161,7 @@ private enum Constants {
   static let lineColor = UIColor.yellow.cgColor
   static let lineWidth: CGFloat = 3.0
   static let fillColor = UIColor.clear.cgColor
+  static let segmentationMaskAlpha: CGFloat = 0.5
 }
 
 // Helper function inserted by Swift 4.2 migrator.

@@ -31,9 +31,10 @@ static NSString *const denseTextModelName = @"Dense";
 static NSString *const localModelFileName = @"bird";
 static NSString *const localModelFileType = @"tflite";
 
-static float const labelConfidenceThreshold = 0.75;
-static CGFloat const smallDotRadius = 5.0;
-static CGFloat const largeDotRadius = 10.0;
+static const float labelConfidenceThreshold = 0.75;
+static const CGFloat smallDotRadius = 5.0;
+static const CGFloat largeDotRadius = 10.0;
+static const CGFloat segmentationMaskAlpha = 0.5;
 static CGColorRef lineColor;
 static CGColorRef fillColor;
 
@@ -957,9 +958,11 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
           }
 
           CVPixelBufferRef imageBuffer = [UIUtilities imageBufferFromUIImage:image];
+          UIColor *backgroundColor =
+              [UIColor.purpleColor colorWithAlphaComponent:segmentationMaskAlpha];
           [UIUtilities applySegmentationMask:mask
                                toImageBuffer:imageBuffer
-                         withBackgroundColor:UIColor.blueColor
+                         withBackgroundColor:backgroundColor
                              foregroundColor:nil];
 
           UIImage *maskedImage = [UIUtilities UIImageFromImageBuffer:imageBuffer
@@ -1061,10 +1064,12 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   [self process:visionImage withTextRecognizer:onDeviceTextRecognizer];
 }
 
-/// Detects objects on the specified image and draws a frame around them.
-///
-/// - Parameter image: The image.
-/// - Parameter options: The options for object detector.
+/**
+ * Detects objects on the specified image and draws a frame around them.
+ *
+ * @param image The image.
+ * @param options The options for object detector.
+ */
 - (void)detectObjectsOnDeviceInImage:(UIImage *)image
                          withOptions:(MLKCommonObjectDetectorOptions *)options {
   if (!image) {

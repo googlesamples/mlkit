@@ -176,18 +176,14 @@ NS_ASSUME_NONNULL_BEGIN
   size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
   static const int kBGRABytesPerPixel = 4;
 
-  CGFloat redFG, greenFG, blueFG;
-  CGFloat redBG, greenBG, blueBG;
-  [foregroundColor getRed:&redFG green:&greenFG blue:&blueFG alpha:nil];
-  [backgroundColor getRed:&redBG green:&greenBG blue:&blueBG alpha:nil];
+  foregroundColor = foregroundColor ?: UIColor.clearColor;
+  backgroundColor = backgroundColor ?: UIColor.clearColor;
+  CGFloat redFG, greenFG, blueFG, alphaFG;
+  CGFloat redBG, greenBG, blueBG, alphaBG;
+  [foregroundColor getRed:&redFG green:&greenFG blue:&blueFG alpha:&alphaFG];
+  [backgroundColor getRed:&redBG green:&greenBG blue:&blueBG alpha:&alphaBG];
 
-  static const int kMaxColorComponentValue = 255;
-  redFG *= kMaxColorComponentValue;
-  greenFG *= kMaxColorComponentValue;
-  blueFG *= kMaxColorComponentValue;
-  redBG *= kMaxColorComponentValue;
-  greenBG *= kMaxColorComponentValue;
-  blueBG *= kMaxColorComponentValue;
+  static const float kMaxColorComponentValue = 255.0f;
 
   for (int row = 0; row < height; ++row) {
     for (int col = 0; col < width; ++col) {
@@ -195,32 +191,46 @@ NS_ASSUME_NONNULL_BEGIN
       int blueOffset = pixelOffset;
       int greenOffset = pixelOffset + 1;
       int redOffset = pixelOffset + 2;
+      int alphaOffset = pixelOffset + 3;
 
       float maskValue = maskAddress[col];
       float backgroundRegionRatio = 1.0f - maskValue;
       float foregroundRegionRatio = maskValue;
 
-      int originalPixelRed = imageAddress[redOffset];
-      int originalPixelGreen = imageAddress[greenOffset];
-      int originalPixelBlue = imageAddress[blueOffset];
+      float originalPixelRed = imageAddress[redOffset] / kMaxColorComponentValue;
+      float originalPixelGreen = imageAddress[greenOffset] / kMaxColorComponentValue;
+      float originalPixelBlue = imageAddress[blueOffset] / kMaxColorComponentValue;
+      float originalPixelAlpha = imageAddress[alphaOffset] / kMaxColorComponentValue;
 
-      float redBGComponent = backgroundColor != nil ? redBG : originalPixelRed;
-      float greenBGComponent = backgroundColor != nil ? greenBG : originalPixelGreen;
-      float blueBGComponent = backgroundColor != nil ? blueBG : originalPixelBlue;
+      float redOverlay = redBG * backgroundRegionRatio + redFG * foregroundRegionRatio;
+      float greenOverlay = greenBG * backgroundRegionRatio + greenFG * foregroundRegionRatio;
+      float blueOverlay = blueBG * backgroundRegionRatio + blueFG * foregroundRegionRatio;
+      float alphaOverlay = alphaBG * backgroundRegionRatio + alphaFG * foregroundRegionRatio;
 
-      float redFGComponent = foregroundColor != nil ? redFG : originalPixelRed;
-      float greenFGComponent = foregroundColor != nil ? greenFG : originalPixelGreen;
-      float blueFGComponent = foregroundColor != nil ? blueFG : originalPixelBlue;
+      // Calculate composite color component values.
+      // Derived from https://en.wikipedia.org/wiki/Alpha_compositing#Alpha_blending
+      float compositeAlpha = ((1.0f - alphaOverlay) * originalPixelAlpha) + alphaOverlay;
+      float compositeRed = 0.0f;
+      float compositeGreen = 0.0f;
+      float compositeBlue = 0.0f;
+      // Only perform rgb blending calculations if the output alpha is > 0. A zero-value alpha
+      // means none of the color channels actually matter, and would introduce division by 0.
+      if (fabs(compositeAlpha) > FLT_EPSILON) {
+        compositeRed = (((1.0f - alphaOverlay) * originalPixelAlpha * originalPixelRed) +
+                        (alphaOverlay * redOverlay)) /
+                       compositeAlpha;
+        compositeGreen = (((1.0f - alphaOverlay) * originalPixelAlpha * originalPixelGreen) +
+                          (alphaOverlay * greenOverlay)) /
+                         compositeAlpha;
+        compositeBlue = (((1.0f - alphaOverlay) * originalPixelAlpha * originalPixelBlue) +
+                         (alphaOverlay * blueOverlay)) /
+                        compositeAlpha;
+      }
 
-      imageAddress[blueOffset] =
-          blueBGComponent * backgroundRegionRatio + blueFGComponent * foregroundRegionRatio;
-      ;
-      imageAddress[greenOffset] =
-          greenBGComponent * backgroundRegionRatio + greenFGComponent * foregroundRegionRatio;
-      ;
-      imageAddress[redOffset] =
-          redBGComponent * backgroundRegionRatio + redFGComponent * foregroundRegionRatio;
-      ;
+      imageAddress[blueOffset] = compositeBlue * kMaxColorComponentValue;
+      imageAddress[greenOffset] = compositeGreen * kMaxColorComponentValue;
+      imageAddress[redOffset] = compositeRed * kMaxColorComponentValue;
+      imageAddress[alphaOffset] = compositeAlpha * kMaxColorComponentValue;
     }
     imageAddress += bytesPerRow / sizeof(unsigned char);
     maskAddress += maskBytesPerRow / sizeof(float);

@@ -160,23 +160,16 @@ public class UIUtilities {
     var redFG: CGFloat = 0.0
     var greenFG: CGFloat = 0.0
     var blueFG: CGFloat = 0.0
+    var alphaFG: CGFloat = 0.0
     var redBG: CGFloat = 0.0
     var greenBG: CGFloat = 0.0
     var blueBG: CGFloat = 0.0
+    var alphaBG: CGFloat = 0.0
 
-    if let backgroundColor = backgroundColor {
-      backgroundColor.getRed(&redBG, green: &greenBG, blue: &blueBG, alpha: nil)
-    }
-    if let foregroundColor = foregroundColor {
-      foregroundColor.getRed(&redFG, green: &greenFG, blue: &blueFG, alpha: nil)
-    }
-
-    redFG *= Constants.maxColorComponentValue
-    greenFG *= Constants.maxColorComponentValue
-    blueFG *= Constants.maxColorComponentValue
-    redBG *= Constants.maxColorComponentValue
-    greenBG *= Constants.maxColorComponentValue
-    blueBG *= Constants.maxColorComponentValue
+    let backgroundColor = backgroundColor != nil ? backgroundColor : .clear
+    let foregroundColor = foregroundColor != nil ? foregroundColor : .clear
+    backgroundColor!.getRed(&redBG, green: &greenBG, blue: &blueBG, alpha: &alphaBG)
+    foregroundColor!.getRed(&redFG, green: &greenFG, blue: &blueFG, alpha: &alphaFG)
 
     for _ in 0...(height - 1) {
       for col in 0...(width - 1) {
@@ -184,35 +177,49 @@ public class UIUtilities {
         let blueOffset = pixelOffset
         let greenOffset = pixelOffset + 1
         let redOffset = pixelOffset + 2
+        let alphaOffset = pixelOffset + 3
 
-        let maskValue: Float32 = maskAddress[col]
-        let backgroundRegionRatio: Float32 = 1.0 - maskValue
+        let maskValue: CGFloat = CGFloat(maskAddress[col])
+        let backgroundRegionRatio: CGFloat = 1.0 - maskValue
         let foregroundRegionRatio = maskValue
 
-        let originalPixelRed: UInt8 = imageAddress[redOffset]
-        let originalPixelGreen: UInt8 = imageAddress[greenOffset]
-        let originalPixelBlue: UInt8 = imageAddress[blueOffset]
+        let originalPixelRed: CGFloat =
+          CGFloat(imageAddress[redOffset]) / Constants.maxColorComponentValue
+        let originalPixelGreen: CGFloat =
+          CGFloat(imageAddress[greenOffset]) / Constants.maxColorComponentValue
+        let originalPixelBlue: CGFloat =
+          CGFloat(imageAddress[blueOffset]) / Constants.maxColorComponentValue
+        let originalPixelAlpha: CGFloat =
+          CGFloat(imageAddress[alphaOffset]) / Constants.maxColorComponentValue
 
-        let redBGComponent: Float32 =
-          backgroundColor != nil ? Float32(redBG) : Float32(originalPixelRed)
-        let greenBGComponent: Float32 =
-          backgroundColor != nil ? Float32(greenBG) : Float32(originalPixelGreen)
-        let blueBGComponent: Float32 =
-          backgroundColor != nil ? Float32(blueBG) : Float32(originalPixelBlue)
+        let redOverlay = redBG * backgroundRegionRatio + redFG * foregroundRegionRatio
+        let greenOverlay = greenBG * backgroundRegionRatio + greenFG * foregroundRegionRatio
+        let blueOverlay = blueBG * backgroundRegionRatio + blueFG * foregroundRegionRatio
+        let alphaOverlay = alphaBG * backgroundRegionRatio + alphaFG * foregroundRegionRatio
 
-        let redFGComponent: Float32 =
-          foregroundColor != nil ? Float32(redFG) : Float32(originalPixelRed)
-        let greenFGComponent: Float32 =
-          foregroundColor != nil ? Float32(greenFG) : Float32(originalPixelGreen)
-        let blueFGComponent: Float32 =
-          foregroundColor != nil ? Float32(blueFG) : Float32(originalPixelBlue)
+        // Calculate composite color component values.
+        // Derived from https://en.wikipedia.org/wiki/Alpha_compositing#Alpha_blending
+        let compositeAlpha: CGFloat = ((1.0 - alphaOverlay) * originalPixelAlpha) + alphaOverlay
+        var compositeRed: CGFloat = 0.0
+        var compositeGreen: CGFloat = 0.0
+        var compositeBlue: CGFloat = 0.0
+        // Only perform rgb blending calculations if the output alpha is > 0. A zero-value alpha
+        // means none of the color channels actually matter, and would introduce division by 0.
+        if abs(compositeAlpha) > CGFloat(Float.ulpOfOne) {
+          compositeRed =
+            (((1.0 - alphaOverlay) * originalPixelAlpha * originalPixelRed)
+              + (alphaOverlay * redOverlay)) / compositeAlpha
+          compositeGreen =
+            (((1.0 - alphaOverlay) * originalPixelAlpha * originalPixelGreen)
+              + (alphaOverlay * greenOverlay)) / compositeAlpha
+          compositeBlue =
+            (((1.0 - alphaOverlay) * originalPixelAlpha * originalPixelBlue)
+              + (alphaOverlay * blueOverlay)) / compositeAlpha
+        }
 
-        imageAddress[redOffset] = UInt8(
-          redBGComponent * backgroundRegionRatio + redFGComponent * foregroundRegionRatio)
-        imageAddress[greenOffset] = UInt8(
-          greenBGComponent * backgroundRegionRatio + greenFGComponent * foregroundRegionRatio)
-        imageAddress[blueOffset] = UInt8(
-          blueBGComponent * backgroundRegionRatio + blueFGComponent * foregroundRegionRatio)
+        imageAddress[redOffset] = UInt8(compositeRed * Constants.maxColorComponentValue)
+        imageAddress[greenOffset] = UInt8(compositeGreen * Constants.maxColorComponentValue)
+        imageAddress[blueOffset] = UInt8(compositeBlue * Constants.maxColorComponentValue)
       }
 
       imageAddress += imageBytesPerRow / MemoryLayout<UInt8>.size
