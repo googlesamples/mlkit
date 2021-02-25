@@ -21,7 +21,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.demo.GraphicOverlay
-import com.google.mlkit.vision.demo.java.VisionProcessorBase
+import com.google.mlkit.vision.demo.kotlin.VisionProcessorBase
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseDetector
@@ -36,13 +36,13 @@ class PoseDetectorProcessor(
   private val rescaleZForVisualization: Boolean
 ) :
   VisionProcessorBase<Pose>(context) {
-  private val detector: PoseDetector
+  private val detector: PoseDetector = PoseDetection.getClient(options)
   override fun stop() {
     super.stop()
     detector.close()
   }
 
-  override fun detectInImage(image: InputImage): Task<Pose?>? {
+  override fun detectInImage(image: InputImage): Task<Pose> {
     return detector.process(image)
   }
 
@@ -67,7 +67,4 @@ class PoseDetectorProcessor(
     private const val TAG = "PoseDetectorProcessor"
   }
 
-  init {
-    detector = PoseDetection.getClient(options)
-  }
 }
