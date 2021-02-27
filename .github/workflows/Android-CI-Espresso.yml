@@ -19,7 +19,7 @@ jobs:
         with:
           java-version: ${{ matrix.java_version }}
       - name: Install Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.0
+        uses: malinskiy/action-android/install-sdk@release/0.1.1
       - name: Decrypt keystore
         run: cd android && ./signing/decrypt.sh
         env:
@@ -36,7 +36,7 @@ jobs:
       - name: Run tests
         run: cd android && ./gradlew test
 #      - name: Run instrumentation tests
-#        uses: malinskiy/action-android/emulator-run-cmd@release/0.1.0
+#        uses: malinskiy/action-android/emulator-run-cmd@release/0.1.1
 #        with:
 #          cmd: cd android && ./gradlew cAT
 #          api: 28
@@ -76,7 +76,7 @@ jobs:
         with:
           java-version: ${{ matrix.java_version }}
       - name: Install Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.0
+        uses: malinskiy/action-android/install-sdk@release/0.1.1
       - name: Decrypt keystore
         run: cd android && ./signing/decrypt.sh
         env:
@@ -103,7 +103,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Install Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.0
+        uses: malinskiy/action-android/install-sdk@release/0.1.1
       - name: Code checks
         run: cd android && ./gradlew check
       - name: Archive Lint report
