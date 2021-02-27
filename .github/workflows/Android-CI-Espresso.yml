@@ -20,19 +20,19 @@ jobs:
           java-version: ${{ matrix.java_version }}
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.1
-      - name: Decrypt keystore
-        run: cd android && ./signing/decrypt.sh
-        env:
-          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
-      - name: Build project
-        run: cd android && ./gradlew assembleDebug
-        env:
-          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
-          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
-          ALIAS_NAME: ${{ secrets.ALIAS_NAME }}
-          ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
-      - name: cleanup keystore
-        run: cd android && ./signing/cleanup.sh
+#      - name: Decrypt keystore
+#        run: cd android && ./signing/decrypt.sh
+#        env:
+#          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
+#      - name: Build project
+#        run: cd android && ./gradlew assembleDebug
+#        env:
+#          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
+#          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+#          ALIAS_NAME: ${{ secrets.ALIAS_NAME }}
+#          ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
+#      - name: cleanup keystore
+#        run: cd android && ./signing/cleanup.sh
       - name: Run tests
         run: cd android && ./gradlew test
 #      - name: Run instrumentation tests
