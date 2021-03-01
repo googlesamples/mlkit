@@ -21,7 +21,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.demo.GraphicOverlay
-import com.google.mlkit.vision.demo.java.VisionProcessorBase
+import com.google.mlkit.vision.demo.kotlin.VisionProcessorBase
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.segmentation.Segmentation
 import com.google.mlkit.vision.segmentation.SegmentationMask
@@ -55,7 +55,7 @@ class SegmenterProcessor :
     Log.d(TAG, "SegmenterProcessor created with option: " + options)
   }
 
-  override fun detectInImage(image: InputImage): Task<SegmentationMask?>? {
+  override fun detectInImage(image: InputImage): Task<SegmentationMask> {
     return segmenter.process(image)
   }
 

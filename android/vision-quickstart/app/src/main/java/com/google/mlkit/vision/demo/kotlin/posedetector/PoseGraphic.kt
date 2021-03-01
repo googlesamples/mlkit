@@ -114,32 +114,32 @@ class PoseGraphic internal constructor(
     val leftFootIndex = pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX)
     val rightFootIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX)
 
-    drawLine(canvas, leftShoulder!!, rightShoulder!!, whitePaint)
-    drawLine(canvas, leftHip!!, rightHip!!, whitePaint)
+    drawLine(canvas, leftShoulder, rightShoulder, whitePaint)
+    drawLine(canvas, leftHip, rightHip, whitePaint)
     // Left body
-    drawLine(canvas, leftShoulder, leftElbow!!, leftPaint)
-    drawLine(canvas, leftElbow, leftWrist!!, leftPaint)
+    drawLine(canvas, leftShoulder, leftElbow, leftPaint)
+    drawLine(canvas, leftElbow, leftWrist, leftPaint)
     drawLine(canvas, leftShoulder, leftHip, leftPaint)
-    drawLine(canvas, leftHip, leftKnee!!, leftPaint)
-    drawLine(canvas, leftKnee, leftAnkle!!, leftPaint)
-    drawLine(canvas, leftWrist, leftThumb!!, leftPaint)
-    drawLine(canvas, leftWrist, leftPinky!!, leftPaint)
-    drawLine(canvas, leftWrist, leftIndex!!, leftPaint)
-    drawLine(canvas, leftIndex, leftPinky!!, leftPaint)
-    drawLine(canvas, leftAnkle, leftHeel!!, leftPaint)
-    drawLine(canvas, leftHeel, leftFootIndex!!, leftPaint)
+    drawLine(canvas, leftHip, leftKnee, leftPaint)
+    drawLine(canvas, leftKnee, leftAnkle, leftPaint)
+    drawLine(canvas, leftWrist, leftThumb, leftPaint)
+    drawLine(canvas, leftWrist, leftPinky, leftPaint)
+    drawLine(canvas, leftWrist, leftIndex, leftPaint)
+    drawLine(canvas, leftIndex, leftPinky, leftPaint)
+    drawLine(canvas, leftAnkle, leftHeel, leftPaint)
+    drawLine(canvas, leftHeel, leftFootIndex, leftPaint)
     // Right body
-    drawLine(canvas, rightShoulder, rightElbow!!, rightPaint)
-    drawLine(canvas, rightElbow, rightWrist!!, rightPaint)
+    drawLine(canvas, rightShoulder, rightElbow, rightPaint)
+    drawLine(canvas, rightElbow, rightWrist, rightPaint)
     drawLine(canvas, rightShoulder, rightHip, rightPaint)
-    drawLine(canvas, rightHip, rightKnee!!, rightPaint)
-    drawLine(canvas, rightKnee, rightAnkle!!, rightPaint)
-    drawLine(canvas, rightWrist, rightThumb!!, rightPaint)
-    drawLine(canvas, rightWrist, rightPinky!!, rightPaint)
-    drawLine(canvas, rightWrist, rightIndex!!, rightPaint)
-    drawLine(canvas, rightIndex, rightPinky!!, rightPaint)
-    drawLine(canvas, rightAnkle, rightHeel!!, rightPaint)
-    drawLine(canvas, rightHeel, rightFootIndex!!, rightPaint)
+    drawLine(canvas, rightHip, rightKnee, rightPaint)
+    drawLine(canvas, rightKnee, rightAnkle, rightPaint)
+    drawLine(canvas, rightWrist, rightThumb, rightPaint)
+    drawLine(canvas, rightWrist, rightPinky, rightPaint)
+    drawLine(canvas, rightWrist, rightIndex, rightPaint)
+    drawLine(canvas, rightIndex, rightPinky, rightPaint)
+    drawLine(canvas, rightAnkle, rightHeel, rightPaint)
+    drawLine(canvas, rightHeel, rightFootIndex, rightPaint)
 
     // Draw inFrameLikelihood for all points
     if (showInFrameLikelihood) {
@@ -161,15 +161,15 @@ class PoseGraphic internal constructor(
 
   internal fun drawLine(
     canvas: Canvas,
-    startLandmark: PoseLandmark,
-    endLandmark: PoseLandmark,
+    startLandmark: PoseLandmark?,
+    endLandmark: PoseLandmark?,
     paint: Paint
   ) {
     // When visualizeZ is true, sets up the paint to draw body line in different colors based on
     // their z values.
     if (visualizeZ) {
-      val start = startLandmark.position3D
-      val end = endLandmark.position3D
+      val start = startLandmark!!.position3D
+      val end = endLandmark!!.position3D
 
       // Gets the range of z value.
       val zLowerBoundInScreenPixel: Float
@@ -213,8 +213,8 @@ class PoseGraphic internal constructor(
         paint
       )
     } else {
-      val start = startLandmark.position
-      val end = endLandmark.position
+      val start = startLandmark!!.position
+      val end = endLandmark!!.position
       canvas.drawLine(
         translateX(start.x), translateY(start.y), translateX(end.x), translateY(end.y), paint
       )
