@@ -15,7 +15,7 @@ Features that are included in this demo app:
 * [Image Labeling](https://developers.google.com/ml-kit/vision/image-labeling/ios) - Label images in real time and static images
 * [Custom Image Labeling (Birds)](https://developers.google.com/ml-kit/vision/image-labeling/custom-models/ios) - Label images of birds with a custom TensorFlow Lite model
 * [Pose Detection](https://developers.google.com/ml-kit/vision/pose-detection/ios) - Detect the position of the human body in real time.
-<img src="../../screenshots/vision_quickstart_1.jpg" width="256"/> <img src="../../screenshots/vision_quickstart_2.jpg" width="256"/> <img src="../../screenshots/vision_quickstart_3.jpg" width="256"/>
+* [Selfie Segmentation](https://developers.google.com/ml-kit/vision/selfie-segmentation/ios) - Segment people from the background in real time.
 
 ## Getting Started
 
