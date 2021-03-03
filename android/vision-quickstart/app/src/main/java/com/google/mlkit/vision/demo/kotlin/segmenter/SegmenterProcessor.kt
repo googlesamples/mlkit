@@ -43,7 +43,7 @@ class SegmenterProcessor :
   ) {
     val optionsBuilder = SelfieSegmenterOptions.Builder()
     optionsBuilder.setDetectorMode(
-      if(isStreamMode) SelfieSegmenterOptions.STREAM_MODE
+      if (isStreamMode) SelfieSegmenterOptions.STREAM_MODE
       else SelfieSegmenterOptions.SINGLE_IMAGE_MODE
     )
     if (PreferenceUtils.shouldSegmentationEnableRawSizeMask(context)) {
