@@ -1,8 +1,8 @@
 package com.google.mlkit.samples.vision.digitalink.kotlin
 
 import android.content.Context
+import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatTextView
 import com.google.mlkit.samples.vision.digitalink.kotlin.StrokeManager.StatusChangedListener
 
 /**
@@ -12,19 +12,20 @@ import com.google.mlkit.samples.vision.digitalink.kotlin.StrokeManager.StatusCha
  * It is updated upon status changes announced by the StrokeManager.
  */
 class StatusTextView : AppCompatTextView, StatusChangedListener {
-    private var strokeManager: StrokeManager? = null
+  private var strokeManager: StrokeManager? = null
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context?, attributeSet: AttributeSet?) : super(
-        context!!,
-        attributeSet
-    )
+  constructor(context: Context) : super(context) {}
+  constructor(context: Context?, attributeSet: AttributeSet?) : super(
+    context!!,
+    attributeSet
+  ) {
+  }
 
-    override fun onStatusChanged() {
-        this.text = strokeManager!!.status
-    }
+  override fun onStatusChanged() {
+    this.text = strokeManager!!.status
+  }
 
-    fun setStrokeManager(strokeManager: StrokeManager?) {
-        this.strokeManager = strokeManager
-    }
+  fun setStrokeManager(strokeManager: StrokeManager?) {
+    this.strokeManager = strokeManager
+  }
 }

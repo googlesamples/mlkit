@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name" translatable="false">ML Kit Digital Ink Recognition Demo</string>
     <string name="title_activity_main" translatable="false">ML Kit Digital Ink Recognition Demo</string>
-    <string name="clear">Clear</string>
+    <string name="clear" translatable="false">Clear</string>
 </resources>
