@@ -1,7 +1,7 @@
 import com.github.benmanes.gradle.versions.VersionsPlugin
 
 buildscript {
-    ext.kotlin_version = '1.4.30'
+    ext.kotlin_version = '1.4.31'
     repositories {
         mavenLocal()
         google()
@@ -15,7 +15,7 @@ buildscript {
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.38.0'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath 'com.google.gms:google-services:4.3.5'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.1'
         classpath "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
     }
 }
