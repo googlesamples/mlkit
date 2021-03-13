@@ -101,9 +101,6 @@ static def getTag() {
             def processT = "git describe --tags".execute()
             tagVersion = processT.text.toString().trim()
         }
-    } else {
-        def tagVersionToken = tagVersion.split("/")
-        tagVersion = tagVersionToken[2]
     }
     return tagVersion
 }
