@@ -203,6 +203,9 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
       val endMs = SystemClock.elapsedRealtime()
       val currentFrameLatencyMs = endMs - frameStartMs
       val currentDetectorLatencyMs = endMs - detectorStartMs
+      if (numRuns >= 500) {
+        resetLatencyStats()
+      }
       numRuns++
       frameProcessedInOneSecondInterval++
       totalFrameMs += currentFrameLatencyMs
@@ -271,10 +274,18 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
   override fun stop() {
     executor.shutdown()
     isShutdown = true
+    resetLatencyStats()
+    fpsTimer.cancel()
+  }
+
+  private fun resetLatencyStats() {
     numRuns = 0
     totalFrameMs = 0
+    maxFrameMs = 0
+    minFrameMs = Long.MAX_VALUE
     totalDetectorMs = 0
-    fpsTimer.cancel()
+    maxDetectorMs = 0
+    minDetectorMs = Long.MAX_VALUE
   }
 
   protected abstract fun detectInImage(image: InputImage): Task<T>

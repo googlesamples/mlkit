@@ -48,6 +48,7 @@ public class InferenceInfoGraphic extends GraphicOverlay.Graphic {
     textPaint = new Paint();
     textPaint.setColor(TEXT_COLOR);
     textPaint.setTextSize(TEXT_SIZE);
+    textPaint.setShadowLayer(5.0f, 0f, 0f, Color.BLACK);
     postInvalidate();
   }
 

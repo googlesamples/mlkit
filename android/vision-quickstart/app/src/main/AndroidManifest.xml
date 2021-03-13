@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.google.mlkit.vision.demo"
     android:installLocation="auto">
-
     <!-- CameraX libraries require minSdkVersion 21, while this quickstart app
     supports low to 16. Needs to use overrideLibrary to make the merger tool
     ignore this conflict and import the libraries while keeping the app's lower

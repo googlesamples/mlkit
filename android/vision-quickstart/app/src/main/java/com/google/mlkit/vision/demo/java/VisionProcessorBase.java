@@ -209,6 +209,9 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
               long endMs = SystemClock.elapsedRealtime();
               long currentFrameLatencyMs = endMs - frameStartMs;
               long currentDetectorLatencyMs = endMs - detectorStartMs;
+              if (numRuns >= 500) {
+                resetLatencyStats();
+              }
               numRuns++;
               frameProcessedInOneSecondInterval++;
               totalFrameMs += currentFrameLatencyMs;
@@ -278,10 +281,18 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
   public void stop() {
     executor.shutdown();
     isShutdown = true;
+    resetLatencyStats();
+    fpsTimer.cancel();
+  }
+
+  private void resetLatencyStats() {
     numRuns = 0;
     totalFrameMs = 0;
+    maxFrameMs = 0;
+    minFrameMs = Long.MAX_VALUE;
     totalDetectorMs = 0;
-    fpsTimer.cancel();
+    maxDetectorMs = 0;
+    minDetectorMs = Long.MAX_VALUE;
   }
 
   protected abstract Task<T> detectInImage(InputImage image);

@@ -70,6 +70,7 @@ public class PoseGraphic extends Graphic {
     classificationTextPaint = new Paint();
     classificationTextPaint.setColor(Color.WHITE);
     classificationTextPaint.setTextSize(POSE_CLASSIFICATION_TEXT_SIZE);
+    classificationTextPaint.setShadowLayer(5.0f, 0f, 0f, Color.BLACK);
 
     whitePaint = new Paint();
     whitePaint.setStrokeWidth(STROKE_WIDTH);

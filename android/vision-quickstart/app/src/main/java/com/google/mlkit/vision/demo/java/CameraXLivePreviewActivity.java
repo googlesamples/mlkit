@@ -98,7 +98,6 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
   private static final String SELFIE_SEGMENTATION = "Selfie Segmentation";
 
   private static final String STATE_SELECTED_MODEL = "selected_model";
-  private static final String STATE_LENS_FACING = "lens_facing";
 
   private PreviewView previewView;
   private GraphicOverlay graphicOverlay;
@@ -130,7 +129,6 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
 
     if (savedInstanceState != null) {
       selectedModel = savedInstanceState.getString(STATE_SELECTED_MODEL, OBJECT_DETECTION);
-      lensFacing = savedInstanceState.getInt(STATE_LENS_FACING, CameraSelector.LENS_FACING_BACK);
     }
     cameraSelector = new CameraSelector.Builder().requireLensFacing(lensFacing).build();
 
@@ -200,7 +198,6 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
   protected void onSaveInstanceState(@NonNull Bundle bundle) {
     super.onSaveInstanceState(bundle);
     bundle.putString(STATE_SELECTED_MODEL, selectedModel);
-    bundle.putInt(STATE_LENS_FACING, lensFacing);
   }
 
   @Override
@@ -219,11 +216,9 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
 
   @Override
   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-    Log.d(TAG, "Set facing");
     if (cameraProvider == null) {
       return;
     }
-
     int newLensFacing =
         lensFacing == CameraSelector.LENS_FACING_FRONT
             ? CameraSelector.LENS_FACING_BACK
@@ -232,6 +227,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
         new CameraSelector.Builder().requireLensFacing(newLensFacing).build();
     try {
       if (cameraProvider.hasCamera(newCameraSelector)) {
+        Log.d(TAG, "Set facing to " + newLensFacing);
         lensFacing = newLensFacing;
         cameraSelector = newCameraSelector;
         bindAllCameraUseCases();

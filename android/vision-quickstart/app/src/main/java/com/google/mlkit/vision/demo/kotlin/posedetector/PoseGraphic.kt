@@ -48,6 +48,7 @@ class PoseGraphic internal constructor(
     classificationTextPaint = Paint()
     classificationTextPaint.color = Color.WHITE
     classificationTextPaint.textSize = POSE_CLASSIFICATION_TEXT_SIZE
+    classificationTextPaint.setShadowLayer(5.0f, 0f, 0f, Color.BLACK)
 
     whitePaint = Paint()
     whitePaint.strokeWidth = STROKE_WIDTH

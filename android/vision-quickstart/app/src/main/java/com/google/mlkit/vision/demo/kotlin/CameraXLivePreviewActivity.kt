@@ -105,11 +105,6 @@ class CameraXLivePreviewActivity :
           STATE_SELECTED_MODEL,
           OBJECT_DETECTION
         )
-      lensFacing =
-        savedInstanceState.getInt(
-          STATE_LENS_FACING,
-          CameraSelector.LENS_FACING_BACK
-        )
     }
     cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
     setContentView(R.layout.activity_vision_camerax_live_preview)
@@ -181,7 +176,6 @@ class CameraXLivePreviewActivity :
   override fun onSaveInstanceState(bundle: Bundle) {
     super.onSaveInstanceState(bundle)
     bundle.putString(STATE_SELECTED_MODEL, selectedModel)
-    bundle.putInt(STATE_LENS_FACING, lensFacing)
   }
 
   @Synchronized
@@ -198,7 +192,6 @@ class CameraXLivePreviewActivity :
   }
 
   override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-    Log.d(TAG, "Set facing")
     if (cameraProvider == null) {
       return
     }
@@ -211,6 +204,7 @@ class CameraXLivePreviewActivity :
       CameraSelector.Builder().requireLensFacing(newLensFacing).build()
     try {
       if (cameraProvider!!.hasCamera(newCameraSelector)) {
+        Log.d(TAG, "Set facing to " + newLensFacing)
         lensFacing = newLensFacing
         cameraSelector = newCameraSelector
         bindAllCameraUseCases()
@@ -537,7 +531,6 @@ class CameraXLivePreviewActivity :
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
 
     private const val STATE_SELECTED_MODEL = "selected_model"
-    private const val STATE_LENS_FACING = "lens_facing"
 
     private fun isPermissionGranted(
       context: Context,
