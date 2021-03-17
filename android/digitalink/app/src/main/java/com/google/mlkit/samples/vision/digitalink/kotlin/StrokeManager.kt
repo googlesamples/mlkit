@@ -2,7 +2,7 @@ package com.google.mlkit.samples.vision.digitalink.kotlin
 
 import android.os.Handler
 import android.os.Message
-import android.support.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting
 import android.util.Log
 import android.view.MotionEvent
 import com.google.android.gms.tasks.SuccessContinuation

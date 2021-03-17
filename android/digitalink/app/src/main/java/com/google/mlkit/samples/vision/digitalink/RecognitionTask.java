@@ -1,6 +1,6 @@
 package com.google.mlkit.samples.vision.digitalink;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;

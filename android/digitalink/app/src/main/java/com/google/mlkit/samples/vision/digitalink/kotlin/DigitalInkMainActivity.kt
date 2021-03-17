@@ -1,8 +1,8 @@
 package com.google.mlkit.samples.vision.digitalink.kotlin
 
 import android.os.Bundle
-import android.support.annotation.VisibleForTesting
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.VisibleForTesting
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView

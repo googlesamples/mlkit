@@ -1,7 +1,7 @@
 package com.google.mlkit.samples.vision.digitalink;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import com.google.mlkit.samples.vision.digitalink.StrokeManager.StatusChangedListener;
