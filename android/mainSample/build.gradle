@@ -13,8 +13,7 @@ android {
 
         versionCode getGitCommitCount()
         versionName getTag()
-        buildConfigField "String", 'GIT_USER', "\"" + getGitUser() + "\""
-        buildConfigField "String", 'GIT_REPOSITORY', "\"" + getGitRepository() + "\""
+        buildConfigField "String", 'GIT_REPOSITORY', "\"" + getGitOriginRemote() + "\""
         buildConfigField "String", 'VERSION', "\"" + versionName + "\""
     }
 
@@ -71,7 +70,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.firebase:firebase-analytics:18.0.2'
-    implementation 'com.google.firebase:firebase-crashlytics:17.3.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.4.0'
 
     implementation 'com.github.AppDevNext.Logcat:LogcatCrashlytic:2.5.0'
 
@@ -84,7 +83,7 @@ dependencies {
     implementation project(':digitalink:digitalinkApp')
     implementation project(':langid:langidApp')
     implementation project(':entityextraction:entityextractionApp')
-    implementation 'com.github.hannesa2:githubAppUpdate:1.1'
+    implementation 'com.github.hannesa2:githubAppUpdate:1.2'
 
     implementation "androidx.core:core-ktx:1.3.2"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -116,14 +115,4 @@ static def getGitOriginRemote() {
 
     def found = values.find { it.startsWith("origin") && it.endsWith("(push)") }
     return found.replace("origin", "").replace("(push)", "").replace(".git", "").trim()
-}
-
-static def getGitUser() {
-    def token = getGitOriginRemote().split("/")
-    return token[3]
-}
-
-static def getGitRepository() {
-    def token = getGitOriginRemote().split("/")
-    return token[4]
 }
