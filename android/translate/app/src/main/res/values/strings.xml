@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!-- Application name [CHAR_LIMIT=11] -->
-  <string name="app_name">MLKit-Translate</string>
-  <!-- Placeholder for source entry box [CHAR_LIMIT=20] -->
-  <string name="hint_source_box">Enter a message...</string>
-  <!-- Placeholder for target entry box [CHAR_LIMIT=40] -->
-  <string name="hint_target_box">Translated message appears here</string>
-  <!-- Model management Activity title [CHAR_LIMIT=20] -->
-  <string name="model_management">Model Management</string>
-
-  <string name="yes">Yes</string>
-  <string name="no">No</string>
-  <string name="translate">Translate</string>
-  <string name="download_progress">"Downloading following model(s): %s"</string>
-  <string name="deletion_progress">"Deleting Translate model for %s"</string>
-  <string name="deletion_confirmation_prompt">"Are you sure you want to delete the model for %s?"</string>
-  <string name="model_not_downloaded">"Model not downloaded yet: can't be deleted."</string>
-  <string name="deletion_successful">"Model successfully deleted"</string>
-  <string name="error_get_models">"Could not get available models"</string>
-  <string name="error_download">"Could not download model."</string>
-  <string name="error_delete">"Could not delete model."</string>
+  <string name="app_name">ML Kit - Translate</string>
+  <string name="translated_text_hint">Translated text</string>
+  <string name="downloaded_models_label">Downloaded models: %1$s</string>
+  <string name="translate_progress">Translating&#8230;</string>
+  <string name="delete_model">Delete Model</string>
+  <string name="download_model">Download Model</string>
+  <string name="unknown_error">Unknown error occurred.</string>
+  <string name="source_text_hint">Source text</string>
 </resources>
