@@ -56,7 +56,7 @@ abstract class NavigationActivity : AppCompatActivity(), NavigationView.OnNaviga
         } else if (id == R.id.nav_translate_showcase) {
             openActivity(com.google.mlkit.showcase.translate.MainActivity::class.java)
         } else if (id == R.id.nav_translate) {
-            openActivity(com.google.mlkit.samples.translate.EntryChoiceActivity::class.java)
+            openActivity(com.google.mlkit.samples.nl.translate.EntryChoiceActivity::class.java)
         } else if (id == R.id.nav_smart_replay) {
             openActivity(com.google.mlkit.samples.smartreply.EntryChoiceActivity::class.java)
         } else if (id == R.id.nav_entityextraction) {
