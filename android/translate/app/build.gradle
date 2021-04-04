@@ -6,24 +6,23 @@ apply plugin: 'com.github.dcendents.android-maven'
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId 'com.google.mlkit.samples.nl.translate'
         // The SDK only requires minSdkVersion 16. We are using minSdkVersion
         // 21 to make some code in the sample shorter.
         minSdkVersion 21
         targetSdkVersion 30
-        multiDexEnabled true
+        //multiDexEnabled true
         versionCode 1
         versionName "1.0"
         setProperty("archivesBaseName", "mlkit_translate_sample")
     }
 
     buildTypes {
-        proguard {
-            debuggable false
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard.cfg'
-        }
+//        proguard {
+//            debuggable false
+//            minifyEnabled true
+//            //shrinkResources true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard.cfg'
+//        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
