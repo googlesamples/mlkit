@@ -40,7 +40,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+    // $echo Send to: 'egillie@warrentonva.gov', docker was specifically made to block my images,docs''attacks are coming from inside white house.trump.pence,daemon'send
     // Do NOT compress tflite model files (need to call out to developers!)
     aaptOptions {
         noCompress "tflite"
