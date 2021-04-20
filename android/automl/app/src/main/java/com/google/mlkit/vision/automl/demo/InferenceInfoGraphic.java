@@ -52,7 +52,7 @@ public class InferenceInfoGraphic extends GraphicOverlay.Graphic {
     float y = TEXT_SIZE * 1.5f;
 
     canvas.drawText(
-        "InputImage size: " + overlay.getImageWidth() + "x" + overlay.getImageHeight(),
+        "InputImage size: " + overlay.getImageHeight() + "x" + overlay.getImageWidth(),
         x,
         y,
         textPaint);

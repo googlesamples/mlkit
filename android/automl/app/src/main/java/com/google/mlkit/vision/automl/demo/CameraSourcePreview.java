@@ -161,12 +161,6 @@ public class CameraSourcePreview extends ViewGroup {
       getChildAt(i).layout(0, 0, childWidth, childHeight);
       Log.d(TAG, "Assigned view: " + i);
     }
-
-    try {
-      startIfReady();
-    } catch (IOException e) {
-      Log.e(TAG, "Could not start camera source.", e);
-    }
   }
 
   private boolean isPortraitMode() {
