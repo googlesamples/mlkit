@@ -174,16 +174,16 @@ class MainFragment : Fragment() {
             holder.setFormat(PixelFormat.TRANSPARENT)
             holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceChanged(
-                    holder: SurfaceHolder?,
+                    holder: SurfaceHolder,
                     format: Int,
                     width: Int,
                     height: Int
                 ) {
                 }
 
-                override fun surfaceDestroyed(holder: SurfaceHolder?) {}
+                override fun surfaceDestroyed(holder: SurfaceHolder) {}
 
-                override fun surfaceCreated(holder: SurfaceHolder?) {
+                override fun surfaceCreated(holder: SurfaceHolder) {
                     holder?.let {
                         drawOverlay(
                             it,
@@ -192,7 +192,6 @@ class MainFragment : Fragment() {
                         )
                     }
                 }
-
             })
         }
     }
@@ -261,7 +260,7 @@ class MainFragment : Fragment() {
             camera = cameraProvider.bindToLifecycle(
                 this, cameraSelector, preview, imageAnalyzer
             )
-            preview.setSurfaceProvider(viewFinder.createSurfaceProvider())
+            preview.setSurfaceProvider(viewFinder.surfaceProvider)
         } catch (exc: IllegalStateException) {
             Log.e(TAG, "Use case binding failed. This must be running on main thread.", exc)
         }
