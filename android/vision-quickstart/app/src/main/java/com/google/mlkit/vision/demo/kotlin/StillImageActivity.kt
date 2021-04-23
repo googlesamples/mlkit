@@ -153,6 +153,20 @@ class StillImageActivity : AppCompatActivity() {
     tryReloadAndDetectInImage()
   }
 
+  public override fun onPause() {
+    super.onPause()
+    imageProcessor?.run {
+      this.stop()
+    }
+  }
+
+  public override fun onDestroy() {
+    super.onDestroy()
+    imageProcessor?.run {
+      this.stop()
+    }
+  }
+
   private fun populateFeatureSelector() {
     val featureSpinner = findViewById<Spinner>(R.id.feature_selector)
     val options: MutableList<String> = ArrayList()
@@ -215,7 +229,6 @@ class StillImageActivity : AppCompatActivity() {
       ) {
         if (pos >= 0) {
           selectedSize = parentView.getItemAtPosition(pos).toString()
-          createImageProcessor()
           tryReloadAndDetectInImage()
         }
       }
@@ -384,7 +397,7 @@ class StillImageActivity : AppCompatActivity() {
             "Using Custom Object Detector Processor"
           )
           val localModel = LocalModel.Builder()
-            .setAssetFilePath("custom_models/bird_classifier.tflite")
+            .setAssetFilePath("custom_models/object_labeler.tflite")
             .build()
           val customObjectDetectorOptions =
             PreferenceUtils.getCustomObjectDetectorOptionsForStillImage(this, localModel)
@@ -500,7 +513,7 @@ class StillImageActivity : AppCompatActivity() {
   companion object {
     private const val TAG = "StillImageActivity"
     private const val OBJECT_DETECTION = "Object Detection"
-    private const val OBJECT_DETECTION_CUSTOM = "Custom Object Detection (Birds)"
+    private const val OBJECT_DETECTION_CUSTOM = "Custom Object Detection"
     private const val CUSTOM_AUTOML_OBJECT_DETECTION = "Custom AutoML Object Detection (Flower)"
     private const val FACE_DETECTION = "Face Detection"
     private const val BARCODE_SCANNING = "Barcode Scanning"

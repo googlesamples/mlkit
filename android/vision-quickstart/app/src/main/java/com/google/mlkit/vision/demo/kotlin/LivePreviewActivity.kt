@@ -181,7 +181,7 @@ class LivePreviewActivity :
             "Using Custom Object Detector Processor"
           )
           val localModel = LocalModel.Builder()
-            .setAssetFilePath("custom_models/bird_classifier.tflite")
+            .setAssetFilePath("custom_models/object_labeler.tflite")
             .build()
           val customObjectDetectorOptions =
             PreferenceUtils.getCustomObjectDetectorOptionsForLivePreview(this, localModel)
@@ -390,7 +390,7 @@ class LivePreviewActivity :
 
   companion object {
     private const val OBJECT_DETECTION = "Object Detection"
-    private const val OBJECT_DETECTION_CUSTOM = "Custom Object Detection (Birds)"
+    private const val OBJECT_DETECTION_CUSTOM = "Custom Object Detection"
     private const val CUSTOM_AUTOML_OBJECT_DETECTION = "Custom AutoML Object Detection (Flower)"
     private const val FACE_DETECTION = "Face Detection"
     private const val TEXT_RECOGNITION = "Text Recognition"

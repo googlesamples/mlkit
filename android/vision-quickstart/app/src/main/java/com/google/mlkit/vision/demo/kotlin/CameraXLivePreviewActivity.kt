@@ -296,10 +296,10 @@ class CameraXLivePreviewActivity :
         OBJECT_DETECTION_CUSTOM -> {
           Log.i(
             TAG,
-            "Using Custom Object Detector (Bird) Processor"
+            "Using Custom Object Detector (with object labeler) Processor"
           )
           val localModel = LocalModel.Builder()
-            .setAssetFilePath("custom_models/bird_classifier.tflite")
+            .setAssetFilePath("custom_models/object_labeler.tflite")
             .build()
           val customObjectDetectorOptions =
             PreferenceUtils.getCustomObjectDetectorOptionsForLivePreview(this, localModel)
@@ -356,7 +356,7 @@ class CameraXLivePreviewActivity :
         IMAGE_LABELING_CUSTOM -> {
           Log.i(
             TAG,
-            "Using Custom Image Label (Bird) Detector Processor"
+            "Using Custom Image Label (Birds) Detector Processor"
           )
           val localClassifier = LocalModel.Builder()
             .setAssetFilePath("custom_models/bird_classifier.tflite")
@@ -519,13 +519,13 @@ class CameraXLivePreviewActivity :
     private const val TAG = "CameraXLivePreview"
     private const val PERMISSION_REQUESTS = 1
     private const val OBJECT_DETECTION = "Object Detection"
-    private const val OBJECT_DETECTION_CUSTOM = "Custom Object Detection (Bird)"
+    private const val OBJECT_DETECTION_CUSTOM = "Custom Object Detection"
     private const val CUSTOM_AUTOML_OBJECT_DETECTION = "Custom AutoML Object Detection (Flower)"
     private const val FACE_DETECTION = "Face Detection"
     private const val TEXT_RECOGNITION = "Text Recognition"
     private const val BARCODE_SCANNING = "Barcode Scanning"
     private const val IMAGE_LABELING = "Image Labeling"
-    private const val IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Bird)"
+    private const val IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Birds)"
     private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"
     private const val POSE_DETECTION = "Pose Detection"
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"

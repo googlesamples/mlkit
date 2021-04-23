@@ -53,7 +53,7 @@ public class ObjectGraphic extends Graphic {
   private final Paint[] textPaints;
   private final Paint[] labelPaints;
 
-  ObjectGraphic(GraphicOverlay overlay, DetectedObject object) {
+  public ObjectGraphic(GraphicOverlay overlay, DetectedObject object) {
     super(overlay);
 
     this.object = object;

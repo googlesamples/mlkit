@@ -67,14 +67,14 @@ public final class LivePreviewActivity extends AppCompatActivity
         OnItemSelectedListener,
         CompoundButton.OnCheckedChangeListener {
   private static final String OBJECT_DETECTION = "Object Detection";
-  private static final String OBJECT_DETECTION_CUSTOM = "Custom Object Detection (Bird)";
+  private static final String OBJECT_DETECTION_CUSTOM = "Custom Object Detection";
   private static final String CUSTOM_AUTOML_OBJECT_DETECTION =
       "Custom AutoML Object Detection (Flower)";
   private static final String FACE_DETECTION = "Face Detection";
   private static final String TEXT_RECOGNITION = "Text Recognition";
   private static final String BARCODE_SCANNING = "Barcode Scanning";
   private static final String IMAGE_LABELING = "Image Labeling";
-  private static final String IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Bird)";
+  private static final String IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Birds)";
   private static final String CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)";
   private static final String POSE_DETECTION = "Pose Detection";
   private static final String SELFIE_SEGMENTATION = "Selfie Segmentation";
@@ -197,7 +197,7 @@ public final class LivePreviewActivity extends AppCompatActivity
           Log.i(TAG, "Using Custom Object Detector Processor");
           LocalModel localModel =
               new LocalModel.Builder()
-                  .setAssetFilePath("custom_models/bird_classifier.tflite")
+                  .setAssetFilePath("custom_models/object_labeler.tflite")
                   .build();
           CustomObjectDetectorOptions customObjectDetectorOptions =
               PreferenceUtils.getCustomObjectDetectorOptionsForLivePreview(this, localModel);

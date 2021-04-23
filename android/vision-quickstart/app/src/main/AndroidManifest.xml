@@ -65,6 +65,12 @@
         </activity>
 
         <activity
+            android:name=".java.CameraXSourceDemoActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme">
+        </activity>
+
+        <activity
             android:name=".java.StillImageActivity"
             android:exported="true"
             android:theme="@style/AppTheme">
@@ -88,6 +94,12 @@
         </activity>
 
         <activity
+            android:name=".kotlin.CameraXSourceDemoActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme">
+        </activity>
+
+        <activity
             android:name=".kotlin.StillImageActivity"
             android:exported="true"
             android:theme="@style/AppTheme">
@@ -98,5 +110,10 @@
             android:exported="false"/>
 
     </application>
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
 
 </manifest>
