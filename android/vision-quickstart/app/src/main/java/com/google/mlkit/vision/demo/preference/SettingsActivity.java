@@ -36,7 +36,9 @@ public class SettingsActivity extends AppCompatActivity {
     STILL_IMAGE(R.string.pref_screen_title_still_image, StillImagePreferenceFragment.class),
     CAMERAX_LIVE_PREVIEW(
         R.string.pref_screen_title_camerax_live_preview,
-        CameraXLivePreviewPreferenceFragment.class);
+        CameraXLivePreviewPreferenceFragment.class),
+    CAMERAXSOURCE_DEMO(
+        R.string.pref_screen_title_cameraxsource_demo, CameraXSourceDemoPreferenceFragment.class);
 
     private final int titleResId;
     private final Class<? extends PreferenceFragment> prefFragmentClass;

@@ -34,6 +34,7 @@ public class InferenceInfoGraphic extends GraphicOverlay.Graphic {
 
   // Only valid when a stream of input images is being processed. Null for single image mode.
   @Nullable private final Integer framesPerSecond;
+  private boolean showLatencyInfo = true;
 
   public InferenceInfoGraphic(
       GraphicOverlay overlay,
@@ -52,6 +53,12 @@ public class InferenceInfoGraphic extends GraphicOverlay.Graphic {
     postInvalidate();
   }
 
+  /** Creates an {@link InferenceInfoGraphic} to only display image size. */
+  public InferenceInfoGraphic(GraphicOverlay overlay) {
+    this(overlay, 0, 0, null);
+    showLatencyInfo = false;
+  }
+
   @Override
   public synchronized void draw(Canvas canvas) {
     float x = TEXT_SIZE * 0.5f;
@@ -63,6 +70,9 @@ public class InferenceInfoGraphic extends GraphicOverlay.Graphic {
         y,
         textPaint);
 
+    if (!showLatencyInfo) {
+      return;
+    }
     // Draw FPS (if valid) and inference latency
     if (framesPerSecond != null) {
       canvas.drawText(
@@ -70,12 +80,10 @@ public class InferenceInfoGraphic extends GraphicOverlay.Graphic {
           x,
           y + TEXT_SIZE,
           textPaint);
-      canvas.drawText(
-          "Detector latency: " + detectorLatency + " ms", x, y + TEXT_SIZE * 2, textPaint);
     } else {
       canvas.drawText("Frame latency: " + frameLatency + " ms", x, y + TEXT_SIZE, textPaint);
-      canvas.drawText(
-          "Detector latency: " + detectorLatency + " ms", x, y + TEXT_SIZE * 2, textPaint);
     }
+    canvas.drawText(
+        "Detector latency: " + detectorLatency + " ms", x, y + TEXT_SIZE * 2, textPaint);
   }
 }

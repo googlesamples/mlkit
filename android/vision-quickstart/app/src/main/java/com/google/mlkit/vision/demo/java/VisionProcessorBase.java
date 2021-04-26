@@ -251,13 +251,15 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
               if (originalCameraImage != null) {
                 graphicOverlay.add(new CameraImageGraphic(graphicOverlay, originalCameraImage));
               }
-              graphicOverlay.add(
-                  new InferenceInfoGraphic(
-                      graphicOverlay,
-                      currentFrameLatencyMs,
-                      currentDetectorLatencyMs,
-                      shouldShowFps ? framesPerSecond : null));
               VisionProcessorBase.this.onSuccess(results, graphicOverlay);
+              if (!PreferenceUtils.shouldHideDetectionInfo(graphicOverlay.getContext())) {
+                graphicOverlay.add(
+                    new InferenceInfoGraphic(
+                        graphicOverlay,
+                        currentFrameLatencyMs,
+                        currentDetectorLatencyMs,
+                        shouldShowFps ? framesPerSecond : null));
+              }
               graphicOverlay.postInvalidate();
             })
         .addOnFailureListener(

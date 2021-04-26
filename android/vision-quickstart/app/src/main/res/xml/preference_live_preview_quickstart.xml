@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:key="@string/pref_screen">
 
   <PreferenceCategory
       android:enabled="true"
@@ -33,6 +35,14 @@
         android:summary="@string/pref_summary_camera_live_viewport"
         android:title="@string/pref_title_camera_live_viewport"/>
 
+  </PreferenceCategory>
+
+  <PreferenceCategory android:title="@string/pref_category_info">
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_key_info_hide"
+        android:persistent="true"
+        android:title="@string/pref_title_info_hide"/>
   </PreferenceCategory>
 
   <PreferenceCategory

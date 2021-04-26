@@ -72,14 +72,18 @@ public class BarcodeScannerProcessor extends VisionProcessorBase<List<Barcode>> 
 
   private static void logExtrasForTesting(Barcode barcode) {
     if (barcode != null) {
-      Log.v(
-          MANUAL_TESTING_LOG,
-          String.format(
-              "Detected barcode's bounding box: %s", barcode.getBoundingBox().flattenToString()));
-      Log.v(
-          MANUAL_TESTING_LOG,
-          String.format(
-              "Expected corner point size is 4, get %d", barcode.getCornerPoints().length));
+      if (barcode.getBoundingBox() != null) {
+        Log.v(
+            MANUAL_TESTING_LOG,
+            String.format(
+                "Detected barcode's bounding box: %s", barcode.getBoundingBox().flattenToString()));
+      }
+      if (barcode.getCornerPoints() != null) {
+        Log.v(
+            MANUAL_TESTING_LOG,
+            String.format(
+                "Expected corner point size is 4, get %d", barcode.getCornerPoints().length));
+      }
       for (Point point : barcode.getCornerPoints()) {
         Log.v(
             MANUAL_TESTING_LOG,

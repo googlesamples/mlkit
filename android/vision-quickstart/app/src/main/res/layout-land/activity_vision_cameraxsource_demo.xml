@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
+
+  <androidx.camera.view.PreviewView
+      android:id="@+id/preview_view"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/control"/>
+
+  <com.google.mlkit.vision.demo.GraphicOverlay
+      android:id="@+id/graphic_overlay"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      app:layout_constraintStart_toStartOf="@id/preview_view"
+      app:layout_constraintEnd_toEndOf="@id/preview_view" />
+
+  <FrameLayout
+      android:id="@id/control"
+      android:layout_width="220dp"
+      android:layout_height="match_parent"
+      app:layout_constraintStart_toEndOf="@id/preview_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      android:background="#000">
+
+    <TextView
+        android:id="@+id/detector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textStyle="bold"
+        android:textColor="#FFF"
+        android:textSize="16sp"
+        android:text="@string/custom_object_detection"/>
+
+    <ToggleButton
+        android:id="@+id/facing_switch"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom|start"
+        android:background="@layout/toggle_style"
+        android:checked="false"
+        android:textOff=""
+        android:textOn=""/>
+
+    <ImageView
+        android:id="@+id/settings_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:padding="12dp"
+        android:contentDescription="@string/menu_item_settings"
+        android:src="@drawable/ic_settings_white_24dp"/>
+  </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
