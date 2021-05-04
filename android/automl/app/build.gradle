@@ -60,7 +60,7 @@ dependencies {
     // Image labeling with AutoML model support
     implementation 'com.google.mlkit:image-labeling-custom:16.3.1'
     implementation 'com.google.mlkit:object-detection-custom:16.3.1'
-    implementation 'com.google.mlkit:linkfirebase:16.1.0'
+    implementation 'com.google.mlkit:linkfirebase:16.1.1'
 
     implementation 'androidx.multidex:multidex:2.0.1'
     // -------------------------------------------------------
