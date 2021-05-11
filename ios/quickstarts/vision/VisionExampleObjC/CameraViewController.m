@@ -68,10 +68,12 @@ typedef NS_ENUM(NSInteger, Detector) {
 @property(nonatomic) bool isUsingFrontCamera;
 @property(nonatomic, nonnull) AVCaptureVideoPreviewLayer *previewLayer;
 @property(nonatomic) AVCaptureSession *captureSession;
+@property(nonatomic) AVCaptureConnection *captureConnection;
 @property(nonatomic) dispatch_queue_t sessionQueue;
 @property(nonatomic) UIView *annotationOverlayView;
 @property(nonatomic) UIImageView *previewOverlayView;
 @property(weak, nonatomic) IBOutlet UIView *cameraView;
+@property(weak, nonatomic) IBOutlet UILabel *hintLabel;
 @property(nonatomic) CMSampleBufferRef lastFrame;
 
 /** Initialized when one of the pose detector rows are chosen. Reset to `nil` when neither are. */
@@ -148,8 +150,8 @@ typedef NS_ENUM(NSInteger, Detector) {
     @(DetectorPoseAccurate),
     @(DetectorSegmentationSelfie),
   ];
-  self.currentDetector = DetectorOnDeviceFace;
-  _isUsingFrontCamera = YES;
+  self.currentDetector = DetectorOnDeviceBarcode;
+  _isUsingFrontCamera = NO;
   _captureSession = [[AVCaptureSession alloc] init];
   _sessionQueue = dispatch_queue_create(sessionQueueLabel.UTF8String, nil);
   _previewOverlayView = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -159,10 +161,14 @@ typedef NS_ENUM(NSInteger, Detector) {
   _annotationOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
 
   self.previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:_captureSession];
-  [self setUpPreviewOverlayView];
+  self.previewLayer.connection.videoOrientation = AVCaptureVideoOrientationPortrait;
+  self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+  [self.view.layer insertSublayer:self.previewLayer atIndex:0];
+//In Portrait mode, the conversion from CVImageBufferRef to UIImage is too slow. Use previewLayer instead
+//  [self setUpPreviewOverlayView];
   [self setUpAnnotationOverlayView];
-  [self setUpCaptureSessionOutput];
   [self setUpCaptureSessionInput];
+  [self setUpCaptureSessionOutput];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -177,6 +183,7 @@ typedef NS_ENUM(NSInteger, Detector) {
 
 - (void)viewDidLayoutSubviews {
   [super viewDidLayoutSubviews];
+  _cameraView.backgroundColor = UIColor.clearColor;
   _previewLayer.frame = _cameraView.frame;
 }
 
@@ -188,6 +195,16 @@ typedef NS_ENUM(NSInteger, Detector) {
   self.isUsingFrontCamera = !_isUsingFrontCamera;
   [self removeDetectionAnnotations];
   [self setUpCaptureSessionInput];
+}
+
+- (IBAction)selectOrientation:(id)sender {
+  if (self.captureConnection.videoOrientation == AVCaptureVideoOrientationPortrait) {
+    self.captureConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+    self.hintLabel.text = @"LandscapeRight";
+  } else {
+    self.captureConnection.videoOrientation = AVCaptureVideoOrientationPortrait;
+    self.hintLabel.text = @"Portrait";
+  }
 }
 
 #pragma mark - On-Device Detections
@@ -411,6 +428,8 @@ typedef NS_ENUM(NSInteger, Detector) {
     if (barcodes.count == 0) {
       NSLog(@"On-Device barcode scanner returned no results.");
       return;
+    } else {
+        NSLog(@"Got results!");
     }
     for (MLKBarcode *barcode in barcodes) {
       CGRect normalizedRect = CGRectMake(barcode.frame.origin.x / width,       // X
@@ -499,7 +518,7 @@ typedef NS_ENUM(NSInteger, Detector) {
     [strongSelf.captureSession beginConfiguration];
     // When performing latency tests to determine ideal capture settings,
     // run the app in 'release' mode to get accurate performance metrics
-    strongSelf.captureSession.sessionPreset = AVCaptureSessionPresetMedium;
+    strongSelf.captureSession.sessionPreset = AVCaptureSessionPresetHigh;
 
     AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
     output.videoSettings = @{
@@ -512,6 +531,8 @@ typedef NS_ENUM(NSInteger, Detector) {
     if ([strongSelf.captureSession canAddOutput:output]) {
       [strongSelf.captureSession addOutput:output];
       [strongSelf.captureSession commitConfiguration];
+      strongSelf.captureConnection = [output connectionWithMediaType:AVMediaTypeVideo];
+      strongSelf.captureConnection.videoOrientation = AVCaptureVideoOrientationPortrait;
     } else {
       NSLog(@"%@", @"Failed to add capture session output.");
     }
@@ -572,8 +593,8 @@ typedef NS_ENUM(NSInteger, Detector) {
 - (void)setUpPreviewOverlayView {
   [_cameraView addSubview:_previewOverlayView];
   [NSLayoutConstraint activateConstraints:@[
-    [_previewOverlayView.centerYAnchor constraintEqualToAnchor:_cameraView.centerYAnchor],
-    [_previewOverlayView.centerXAnchor constraintEqualToAnchor:_cameraView.centerXAnchor],
+    [_previewOverlayView.topAnchor constraintEqualToAnchor:_cameraView.topAnchor],
+    [_previewOverlayView.bottomAnchor constraintEqualToAnchor:_cameraView.bottomAnchor],
     [_previewOverlayView.leadingAnchor constraintEqualToAnchor:_cameraView.leadingAnchor],
     [_previewOverlayView.trailingAnchor constraintEqualToAnchor:_cameraView.trailingAnchor]
   ]];
@@ -644,6 +665,10 @@ typedef NS_ENUM(NSInteger, Detector) {
   }
   UIImageOrientation orientation =
       _isUsingFrontCamera ? UIImageOrientationLeftMirrored : UIImageOrientationRight;
+  if (self.captureConnection.videoOrientation == AVCaptureVideoOrientationPortrait) {
+    orientation = _isUsingFrontCamera ? UIImageOrientationUpMirrored : UIImageOrientationUp;
+  }
+  return; //In Portrait mode, the conversion from CVImageBufferRef to UIImage is too slow. Use previewLayer instead
   UIImage *image = [UIUtilities UIImageFromImageBuffer:imageBuffer orientation:orientation];
   _previewOverlayView.image = image;
 }
