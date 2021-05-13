@@ -25,16 +25,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build.VERSION_CODES;
 import android.os.SystemClock;
-import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.Toast;
+import androidx.annotation.GuardedBy;
 import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageProxy;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
+import com.google.android.gms.tasks.Tasks;
+import com.google.mlkit.common.MlKitException;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.BitmapUtils;
 import com.google.mlkit.vision.demo.CameraImageGraphic;
@@ -112,6 +114,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
   @Override
   public void processBitmap(Bitmap bitmap, final GraphicOverlay graphicOverlay) {
     long frameStartMs = SystemClock.elapsedRealtime();
+
     requestDetectInImage(
         InputImage.fromBitmap(bitmap, 0),
         graphicOverlay,
@@ -201,9 +204,18 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
       @Nullable final Bitmap originalCameraImage,
       boolean shouldShowFps,
       long frameStartMs) {
+    return setUpListener(
+        detectInImage(image), graphicOverlay, originalCameraImage, shouldShowFps, frameStartMs);
+  }
+
+  private Task<T> setUpListener(
+      Task<T> task,
+      final GraphicOverlay graphicOverlay,
+      @Nullable final Bitmap originalCameraImage,
+      boolean shouldShowFps,
+      long frameStartMs) {
     final long detectorStartMs = SystemClock.elapsedRealtime();
-    return detectInImage(image)
-        .addOnSuccessListener(
+    return task.addOnSuccessListener(
             executor,
             results -> {
               long endMs = SystemClock.elapsedRealtime();

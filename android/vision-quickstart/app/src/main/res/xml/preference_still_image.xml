@@ -65,4 +65,5 @@
         android:persistent="true"
         android:title="@string/pref_title_segmentation_raw_size_mask"/>
   </PreferenceCategory>
+
 </PreferenceScreen>

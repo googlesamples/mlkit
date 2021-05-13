@@ -49,9 +49,7 @@ public class PoseDetectorProcessor
   private final Executor classificationExecutor;
 
   private PoseClassifierProcessor poseClassifierProcessor;
-  /**
-   * Internal class to hold Pose and classification results.
-   */
+  /** Internal class to hold Pose and classification results. */
   protected static class PoseWithClassification {
     private final Pose pose;
     private final List<String> classificationResult;
@@ -120,8 +118,12 @@ public class PoseDetectorProcessor
       @NonNull GraphicOverlay graphicOverlay) {
     graphicOverlay.add(
         new PoseGraphic(
-            graphicOverlay, poseWithClassification.pose, showInFrameLikelihood, visualizeZ,
-            rescaleZForVisualization, poseWithClassification.classificationResult));
+            graphicOverlay,
+            poseWithClassification.pose,
+            showInFrameLikelihood,
+            visualizeZ,
+            rescaleZForVisualization,
+            poseWithClassification.classificationResult));
   }
 
   @Override
