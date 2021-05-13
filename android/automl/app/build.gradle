@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.google.mlkit.vision.automl.demo"
         minSdkVersion 16
         multiDexEnabled true
-        targetSdkVersion 29
+        targetSdkVersion 30
         // Version code for next release (version 9 is now in Play Store)
         versionCode 11
         versionName "1.11"
@@ -81,11 +81,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 
     // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.3.1"
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.annotation:annotation:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     // CameraX
