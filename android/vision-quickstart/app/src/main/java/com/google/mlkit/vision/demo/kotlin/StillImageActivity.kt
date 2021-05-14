@@ -67,7 +67,7 @@ class StillImageActivity : AppCompatActivity() {
   private var selectedMode =
     OBJECT_DETECTION
   private var selectedSize: String? =
-    SIZE_SCREEN
+    SIZE_ORIGINAL
   private var isLandScape = false
   private var imageUri: Uri? = null
   // Max width (portrait mode)
@@ -210,6 +210,7 @@ class StillImageActivity : AppCompatActivity() {
   private fun populateSizeSelector() {
     val sizeSpinner = findViewById<Spinner>(R.id.size_selector)
     val options: MutableList<String> = ArrayList()
+    options.add(SIZE_ORIGINAL)
     options.add(SIZE_SCREEN)
     options.add(SIZE_1024_768)
     options.add(SIZE_640_480)
@@ -319,19 +320,27 @@ class StillImageActivity : AppCompatActivity() {
         ?: return
       // Clear the overlay first
       graphicOverlay!!.clear()
-      // Get the dimensions of the image view
-      val targetedSize = targetedWidthHeight
-      // Determine how much to scale down the image
-      val scaleFactor = max(
-        imageBitmap.width.toFloat() / targetedSize.first.toFloat(),
-        imageBitmap.height.toFloat() / targetedSize.second.toFloat()
-      )
-      val resizedBitmap = Bitmap.createScaledBitmap(
-        imageBitmap,
-        (imageBitmap.width / scaleFactor).toInt(),
-        (imageBitmap.height / scaleFactor).toInt(),
-        true
-      )
+
+      val resizedBitmap: Bitmap
+      resizedBitmap = if (selectedSize == SIZE_ORIGINAL) {
+        imageBitmap
+      } else {
+        // Get the dimensions of the image view
+        val targetedSize: Pair<Int, Int> = targetedWidthHeight
+
+        // Determine how much to scale down the image
+        val scaleFactor = Math.max(
+          imageBitmap.width.toFloat() / targetedSize.first.toFloat(),
+          imageBitmap.height.toFloat() / targetedSize.second.toFloat()
+        )
+        Bitmap.createScaledBitmap(
+          imageBitmap,
+          (imageBitmap.width / scaleFactor).toInt(),
+          (imageBitmap.height / scaleFactor).toInt(),
+          true
+        )
+      }
+
       preview!!.setImageBitmap(resizedBitmap)
       if (imageProcessor != null) {
         graphicOverlay!!.setImageSourceInfo(
@@ -524,6 +533,7 @@ class StillImageActivity : AppCompatActivity() {
     private const val POSE_DETECTION = "Pose Detection"
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
 
+    private const val SIZE_ORIGINAL = "w:original" // Original image size
     private const val SIZE_SCREEN = "w:screen" // Match screen width
     private const val SIZE_1024_768 = "w:1024" // ~1024*768 in a normal ratio
     private const val SIZE_640_480 = "w:640" // ~640*480 in a normal ratio

@@ -16,6 +16,8 @@
 
 package com.google.mlkit.vision.demo.java;
 
+import static java.lang.Math.max;
+
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -79,6 +81,7 @@ public final class StillImageActivity extends AppCompatActivity {
   private static final String POSE_DETECTION = "Pose Detection";
   private static final String SELFIE_SEGMENTATION = "Selfie Segmentation";
 
+  private static final String SIZE_ORIGINAL = "w:original"; // Original image size
   private static final String SIZE_SCREEN = "w:screen"; // Match screen width
   private static final String SIZE_1024_768 = "w:1024"; // ~1024*768 in a normal ratio
   private static final String SIZE_640_480 = "w:640"; // ~640*480 in a normal ratio
@@ -92,7 +95,7 @@ public final class StillImageActivity extends AppCompatActivity {
   private ImageView preview;
   private GraphicOverlay graphicOverlay;
   private String selectedMode = OBJECT_DETECTION;
-  private String selectedSize = SIZE_SCREEN;
+  private String selectedSize = SIZE_ORIGINAL;
 
   boolean isLandScape;
 
@@ -232,6 +235,7 @@ public final class StillImageActivity extends AppCompatActivity {
   private void populateSizeSelector() {
     Spinner sizeSpinner = findViewById(R.id.size_selector);
     List<String> options = new ArrayList<>();
+    options.add(SIZE_ORIGINAL);
     options.add(SIZE_SCREEN);
     options.add(SIZE_1024_768);
     options.add(SIZE_640_480);
@@ -320,21 +324,26 @@ public final class StillImageActivity extends AppCompatActivity {
       // Clear the overlay first
       graphicOverlay.clear();
 
-      // Get the dimensions of the image view
-      Pair<Integer, Integer> targetedSize = getTargetedWidthHeight();
+      Bitmap resizedBitmap;
+      if (selectedSize.equals(SIZE_ORIGINAL)) {
+        resizedBitmap = imageBitmap;
+      } else {
+        // Get the dimensions of the image view
+        Pair<Integer, Integer> targetedSize = getTargetedWidthHeight();
 
-      // Determine how much to scale down the image
-      float scaleFactor =
-          Math.max(
-              (float) imageBitmap.getWidth() / (float) targetedSize.first,
-              (float) imageBitmap.getHeight() / (float) targetedSize.second);
+        // Determine how much to scale down the image
+        float scaleFactor =
+            max(
+                (float) imageBitmap.getWidth() / (float) targetedSize.first,
+                (float) imageBitmap.getHeight() / (float) targetedSize.second);
 
-      Bitmap resizedBitmap =
-          Bitmap.createScaledBitmap(
-              imageBitmap,
-              (int) (imageBitmap.getWidth() / scaleFactor),
-              (int) (imageBitmap.getHeight() / scaleFactor),
-              true);
+        resizedBitmap =
+            Bitmap.createScaledBitmap(
+                imageBitmap,
+                (int) (imageBitmap.getWidth() / scaleFactor),
+                (int) (imageBitmap.getHeight() / scaleFactor),
+                true);
+      }
 
       preview.setImageBitmap(resizedBitmap);
 
