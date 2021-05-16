@@ -70,7 +70,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.firebase:firebase-analytics:18.0.2'
-    implementation 'com.google.firebase:firebase-crashlytics:17.4.0'
+    implementation 'com.google.firebase:firebase-crashlytics:18.0.0'
 
     implementation 'com.github.AppDevNext.Logcat:LogcatCrashlytic:2.5.0'
 
