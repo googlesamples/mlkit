@@ -1,6 +1,6 @@
 name: PullRequest
 
-on: [pull_request]
+on: [ pull_request ]
 
 jobs:
   buildTest:
@@ -12,7 +12,7 @@ jobs:
         working-directory: android
     strategy:
       matrix:
-        java_version: [1.8]
+        java_version: [ 8 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -21,9 +21,10 @@ jobs:
       - name: Install JDK ${{ matrix.java_version }}
         uses: actions/setup-java@v2
         with:
+          distribution: "adopt"
           java-version: ${{ matrix.java_version }}
       - name: Install Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.1
+        uses: malinskiy/action-android/install-sdk@release/0.1.2
       - name: Decrypt keystore
         run: ./signing/decrypt.sh
         env:
@@ -37,29 +38,29 @@ jobs:
           ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
       - name: Run tests
         run: ./gradlew test
-#      - name: Run instrumentation tests
-#        uses: malinskiy/action-android/emulator-run-cmd@release/0.1.1
-#        with:
-#          cmd: ./gradlew cAT
-#          api: 28
-#          tag: default
-#          abi: x86
-#      - name: Archive Espresso results
-#        uses: actions/upload-artifact@v2.2.0
-#        with:
-#          name: MLKit-Espresso-report
-#          path: app/build/reports/androidTests/connected
-#      - name: Save logcat output
-#        uses: actions/upload-artifact@master
-#        if: failure()
-#        with:
-#          name: MLKit-logcat
-#          path: artifacts/logcat.log
-#      - name: Archive screenshots
-#        uses: actions/upload-artifact@v2.2.0
-#        with:
-#          name: MLKit-Screenshots
-#          path: screenshots/adb
+      #      - name: Run instrumentation tests
+      #        uses: malinskiy/action-android/emulator-run-cmd@release/0.1.2
+      #        with:
+      #          cmd: ./gradlew cAT
+      #          api: 28
+      #          tag: default
+      #          abi: x86
+      #      - name: Archive Espresso results
+      #        uses: actions/upload-artifact@v2.2.0
+      #        with:
+      #          name: MLKit-Espresso-report
+      #          path: app/build/reports/androidTests/connected
+      #      - name: Save logcat output
+      #        uses: actions/upload-artifact@master
+      #        if: failure()
+      #        with:
+      #          name: MLKit-logcat
+      #          path: artifacts/logcat.log
+      #      - name: Archive screenshots
+      #        uses: actions/upload-artifact@v2.2.0
+      #        with:
+      #          name: MLKit-Screenshots
+      #          path: screenshots/adb
       - name: cleanup keystore
         run: ./signing/cleanup.sh
   buildRelease:
@@ -71,7 +72,7 @@ jobs:
         working-directory: android
     strategy:
       matrix:
-        java_version: [1.8]
+        java_version: [ 8 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -80,9 +81,10 @@ jobs:
       - name: Install JDK ${{ matrix.java_version }}
         uses: actions/setup-java@v2
         with:
+          distribution: "adopt"
           java-version: ${{ matrix.java_version }}
       - name: Install Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.1
+        uses: malinskiy/action-android/install-sdk@release/0.1.2
       - name: Decrypt keystore
         run: ./signing/decrypt.sh
         env:
@@ -108,12 +110,13 @@ jobs:
         uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
-      - name: Install JDK 1.8
+      - name: Install JDK 8
         uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: "adopt"
+          java-version: 8
       - name: Install Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.1
+        uses: malinskiy/action-android/install-sdk@release/0.1.2
       - name: Code checks
         run: ./gradlew check
       - name: Archive Lint report
