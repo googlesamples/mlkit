@@ -120,7 +120,7 @@ jobs:
       - name: Code checks
         run: ./gradlew check
       - name: Archive Lint report
-        uses: actions/upload-artifact@v2.2.2
+        uses: actions/upload-artifact@v2.2.3
         if: ${{ always() }}
         with:
           name: MLKit-Lint-report
