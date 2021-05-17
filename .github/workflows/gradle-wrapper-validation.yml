@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+      - OneSample
   pull_request:
     branches:
       - master
+      - OneSample
 
 jobs:
   validation:
