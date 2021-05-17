@@ -1,6 +1,6 @@
 # ML Kit Showcase Apps with Material Design
 
-These apps demonstrate how to build an end-to-end user experience with [Google ML Kit APIs](https://developers.google.com/ml-kit) and following the new [Material for ML design guidelines](https://material.io/collections/machine-learning/).
+These apps demonstrate how to build an end-to-end user experience with [Google ML Kit APIs](https://developers.google.com/ml-kit) and following the new [Material for ML design guidelines](https://material.io/design/machine-learning/).
 
 The goal is to make it as easy as possible to integrate ML Kit into your app with an experience that has been user tested.
 
