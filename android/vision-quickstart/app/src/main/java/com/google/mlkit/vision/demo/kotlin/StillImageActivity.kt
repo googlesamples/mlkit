@@ -67,7 +67,7 @@ class StillImageActivity : AppCompatActivity() {
   private var selectedMode =
     OBJECT_DETECTION
   private var selectedSize: String? =
-    SIZE_ORIGINAL
+    SIZE_SCREEN
   private var isLandScape = false
   private var imageUri: Uri? = null
   // Max width (portrait mode)
@@ -210,10 +210,10 @@ class StillImageActivity : AppCompatActivity() {
   private fun populateSizeSelector() {
     val sizeSpinner = findViewById<Spinner>(R.id.size_selector)
     val options: MutableList<String> = ArrayList()
-    options.add(SIZE_ORIGINAL)
     options.add(SIZE_SCREEN)
     options.add(SIZE_1024_768)
     options.add(SIZE_640_480)
+    options.add(SIZE_ORIGINAL)
     // Creating adapter for featureSpinner
     val dataAdapter =
       ArrayAdapter(this, R.layout.spinner_style, options)
@@ -533,10 +533,10 @@ class StillImageActivity : AppCompatActivity() {
     private const val POSE_DETECTION = "Pose Detection"
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
 
-    private const val SIZE_ORIGINAL = "w:original" // Original image size
     private const val SIZE_SCREEN = "w:screen" // Match screen width
     private const val SIZE_1024_768 = "w:1024" // ~1024*768 in a normal ratio
     private const val SIZE_640_480 = "w:640" // ~640*480 in a normal ratio
+    private const val SIZE_ORIGINAL = "w:original" // Original image size
     private const val KEY_IMAGE_URI = "com.google.mlkit.vision.demo.KEY_IMAGE_URI"
     private const val KEY_IMAGE_MAX_WIDTH = "com.google.mlkit.vision.demo.KEY_IMAGE_MAX_WIDTH"
     private const val KEY_IMAGE_MAX_HEIGHT = "com.google.mlkit.vision.demo.KEY_IMAGE_MAX_HEIGHT"

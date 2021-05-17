@@ -81,10 +81,10 @@ public final class StillImageActivity extends AppCompatActivity {
   private static final String POSE_DETECTION = "Pose Detection";
   private static final String SELFIE_SEGMENTATION = "Selfie Segmentation";
 
-  private static final String SIZE_ORIGINAL = "w:original"; // Original image size
   private static final String SIZE_SCREEN = "w:screen"; // Match screen width
   private static final String SIZE_1024_768 = "w:1024"; // ~1024*768 in a normal ratio
   private static final String SIZE_640_480 = "w:640"; // ~640*480 in a normal ratio
+  private static final String SIZE_ORIGINAL = "w:original"; // Original image size
 
   private static final String KEY_IMAGE_URI = "com.google.mlkit.vision.demo.KEY_IMAGE_URI";
   private static final String KEY_SELECTED_SIZE = "com.google.mlkit.vision.demo.KEY_SELECTED_SIZE";
@@ -95,7 +95,7 @@ public final class StillImageActivity extends AppCompatActivity {
   private ImageView preview;
   private GraphicOverlay graphicOverlay;
   private String selectedMode = OBJECT_DETECTION;
-  private String selectedSize = SIZE_ORIGINAL;
+  private String selectedSize = SIZE_SCREEN;
 
   boolean isLandScape;
 
@@ -235,10 +235,10 @@ public final class StillImageActivity extends AppCompatActivity {
   private void populateSizeSelector() {
     Spinner sizeSpinner = findViewById(R.id.size_selector);
     List<String> options = new ArrayList<>();
-    options.add(SIZE_ORIGINAL);
     options.add(SIZE_SCREEN);
     options.add(SIZE_1024_768);
     options.add(SIZE_640_480);
+    options.add(SIZE_ORIGINAL);
 
     // Creating adapter for featureSpinner
     ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_style, options);
