@@ -2,14 +2,14 @@
 
 # ML Kit Vision Showcase App with Material Design
 
-This app demonstrates how to build an end-to-end user experience with 
-[Google ML Kit APIs](https://developers.google.com/ml-kit/guides) and following the 
-[new Material for ML design guidelines](https://material.io/collections/machine-learning/).
+This app demonstrates how to build an end-to-end user experience with
+[Google ML Kit APIs](https://developers.google.com/ml-kit/guides) and following the
+[new Material for ML design guidelines](https://material.io/design/machine-learning/).
 
 The goal of this app is to showcase an ideal ML Kit driven end to end solution for various ML Kit vision APIs and use cases. The following use cases are covered:
 * Visual search using the Object Detection & Tracking API - An end to end workflow for object detection and product search
 * “Wild Bird” search using the Object Detection & Tracking API - An end to end workflow for object detection and search using a custom TensorFlow Lite model
-* Barcode detection - An end to end barcode scanning solution 
+* Barcode detection - An end to end barcode scanning solution
 
 <img src="screenshots/live_odt.gif" width="256"/> <img src="screenshots/static_odt.gif" width="256"/>
 <img src="screenshots/live_barcode.gif" width="256"/>
@@ -32,10 +32,10 @@ allow you to configure several options:
   - Preview Size - Specify the preview size of rear camera manually (Default size is chose appropriately based on screen size)
 - Object detection
     - Enable Multiple Objects -- Enable multiple objects to be detected at once.
-    - Enable classification -- Enable coarse classification 
+    - Enable classification -- Enable coarse classification
 - Product search
     - Enable auto search -- If enabled, search request will be fired automatically once object is detected and confirmed, otherwise a search button will appear to trigger search manually
-    - Confirmation time in manual search -- Required time that an manually-detected object needs to be in focus before it is confirmed. 
+    - Confirmation time in manual search -- Required time that an manually-detected object needs to be in focus before it is confirmed.
     - Confirmation time in auto search -- Required time that an auto-detected object needs to be in focus before it is confirmed.
 - Barcode detection
     - Barcode reticle width -- Size of barcode reticle width relative to the camera preview width
