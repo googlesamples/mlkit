@@ -1,6 +1,6 @@
 # ML Kit Translate Demo with Material Design
 
-This app demonstrates how to build an end-to-end user experience with [Google ML Kit APIs](https://developers.google.com/ml-kit) and following the new [Material for ML design guidelines](https://material.io/collections/machine-learning/).
+This app demonstrates how to build an end-to-end user experience with [Google ML Kit APIs](https://developers.google.com/ml-kit) and following the new [Material for ML design guidelines](https://material.io/design/machine-learning/).
 
 The goal is to make it as easy as possible to integrate ML Kit into your app with an experience that has been user tested:
 

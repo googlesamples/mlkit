@@ -1,6 +1,6 @@
 # ML Kit Translate Showcase App with Material Design
 
-The ML Kit Translate Showcase app demonstrates how to build an end-to-end user experience with [Google ML Kit APIs](https://developers.google.com/ml-kit/guides) and following the new [Material for ML design guidelines](https://material.io/collections/machine-learning/).
+The ML Kit Translate Showcase app demonstrates how to build an end-to-end user experience with [Google ML Kit APIs](https://developers.google.com/ml-kit/guides) and following the new [Material for ML design guidelines](https://material.io/design/machine-learning/).
 
 The goal of this app is to showcase an ideal ML Kit driven end to end solution for various ML Kit Natural Language Processing APIs and use cases. The following use cases are covered:
 
