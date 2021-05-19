@@ -21,13 +21,14 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.TextRecognizerOptions
 
 class TextRecognitionActivity : AppCompatActivity() {
 
     private fun recognizeText(image: InputImage) {
 
         // [START get_detector_default]
-        val recognizer = TextRecognition.getClient()
+        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         // [END get_detector_default]
 
         // [START run_detector]
@@ -81,7 +82,7 @@ class TextRecognitionActivity : AppCompatActivity() {
 
     private fun getTextRecognizer(): TextRecognizer {
         // [START mlkit_local_doc_recognizer]
-        return TextRecognition.getClient()
+        return TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         // [END mlkit_local_doc_recognizer]
     }
 }

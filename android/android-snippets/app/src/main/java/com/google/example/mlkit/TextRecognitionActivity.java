@@ -29,6 +29,7 @@ import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.TextRecognizerOptions;
 
 public class TextRecognitionActivity extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class TextRecognitionActivity extends AppCompatActivity {
     private void recognizeText(InputImage image) {
 
         // [START get_detector_default]
-        TextRecognizer recognizer = TextRecognition.getClient();
+        TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
         // [END get_detector_default]
 
         // [START run_detector]
@@ -102,7 +103,7 @@ public class TextRecognitionActivity extends AppCompatActivity {
 
     private TextRecognizer getTextRecognizer() {
         // [START mlkit_local_doc_recognizer]
-        TextRecognizer detector = TextRecognition.getClient();
+        TextRecognizer detector = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
         // [END mlkit_local_doc_recognizer]
 
         return detector;
