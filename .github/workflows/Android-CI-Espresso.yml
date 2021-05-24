@@ -12,7 +12,7 @@ jobs:
         working-directory: android
     strategy:
       matrix:
-        java_version: [ 8 ]
+        java_version: [ 11 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -72,7 +72,7 @@ jobs:
         working-directory: android
     strategy:
       matrix:
-        java_version: [ 8 ]
+        java_version: [ 11 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -110,11 +110,11 @@ jobs:
         uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
-      - name: Install JDK 8
+      - name: Install JDK 11
         uses: actions/setup-java@v2
         with:
           distribution: "adopt"
-          java-version: 8
+          java-version: 11
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.2
       - name: Code checks
