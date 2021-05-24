@@ -2,10 +2,10 @@ apply plugin: 'java-library'
 apply plugin: "kotlin"
 
 dependencies {
-    compileOnly "com.android.tools.lint:lint-api:27.2.1"
+    compileOnly "com.android.tools.lint:lint-api:30.0.0-beta02"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    testImplementation "com.android.tools.lint:lint:27.2.1"
-    testImplementation "com.android.tools.lint:lint-tests:27.2.1"
+    testImplementation "com.android.tools.lint:lint:30.0.0-beta02"
+    testImplementation "com.android.tools.lint:lint-tests:30.0.0-beta02"
 }
 
 jar {
