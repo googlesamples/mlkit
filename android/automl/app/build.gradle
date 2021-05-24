@@ -1,5 +1,7 @@
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
 
 android {
     compileSdkVersion 30
@@ -92,4 +94,14 @@ configurations {
     // Resolves dependency conflict caused by some dependencies use
     // com.google.guava:guava and com.google.guava:listenablefuture together.
     all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+}
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+            }
+        }
+    }
 }

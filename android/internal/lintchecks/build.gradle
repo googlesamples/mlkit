@@ -1,5 +1,8 @@
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
 
 android {
     compileSdkVersion 30
@@ -12,4 +15,14 @@ android {
 
 dependencies {
     lintChecks project(":internal:lint")
+}
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+            }
+        }
+    }
 }

@@ -15,10 +15,12 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.dcendents.android-maven'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'maven-publish'
+}
 
 android {
     compileSdkVersion 30
@@ -65,3 +67,13 @@ dependencies {
     implementation 'com.google.mlkit:translate:16.1.2'
 }
 apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+            }
+        }
+    }
+}
