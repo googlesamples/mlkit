@@ -33,11 +33,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     // Do NOT compress tflite model files (need to call out to developers!)
     aaptOptions {
         noCompress "tflite"

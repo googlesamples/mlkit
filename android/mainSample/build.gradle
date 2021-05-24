@@ -51,11 +51,6 @@ android {
         }
     }
 
-    compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
-    }
-
     packagingOptions {
         exclude "META-INF/*.kotlin_module"
     }
