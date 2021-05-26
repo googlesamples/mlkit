@@ -69,7 +69,7 @@ dependencies {
     implementation 'com.google.mlkit:object-detection-custom:16.3.2'
 
     // Face features
-    implementation 'com.google.mlkit:face-detection:16.1.0'
+    implementation 'com.google.mlkit:face-detection:16.1.1'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
     // implementation 'com.google.android.gms:play-services-mlkit-face-detection:16.1.7'
