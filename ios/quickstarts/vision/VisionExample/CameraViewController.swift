@@ -16,6 +16,7 @@
 
 import AVFoundation
 import CoreVideo
+import MLImage
 import MLKit
 
 @objc(CameraViewController)
@@ -133,21 +134,15 @@ class CameraViewController: UIViewController {
       barcodes = try barcodeScanner.results(in: image)
     } catch let error {
       print("Failed to scan barcodes with error: \(error.localizedDescription).")
+      self.updatePreviewOverlayViewWithLastFrame()
       return
     }
-    weak var weakSelf = self
-    DispatchQueue.main.sync {
-      guard let strongSelf = weakSelf else {
-        print("Self is nil!")
-        return
-      }
-      strongSelf.updatePreviewOverlayViewWithLastFrame()
-      strongSelf.removeDetectionAnnotations()
-    }
+    self.updatePreviewOverlayViewWithLastFrame()
     guard !barcodes.isEmpty else {
       print("Barcode scanner returrned no results.")
       return
     }
+    weak var weakSelf = self
     DispatchQueue.main.sync {
       guard let strongSelf = weakSelf else {
         print("Self is nil!")
@@ -191,21 +186,15 @@ class CameraViewController: UIViewController {
       faces = try faceDetector.results(in: image)
     } catch let error {
       print("Failed to detect faces with error: \(error.localizedDescription).")
+      self.updatePreviewOverlayViewWithLastFrame()
       return
     }
-    weak var weakSelf = self
-    DispatchQueue.main.sync {
-      guard let strongSelf = weakSelf else {
-        print("Self is nil!")
-        return
-      }
-      strongSelf.updatePreviewOverlayViewWithLastFrame()
-      strongSelf.removeDetectionAnnotations()
-    }
+    self.updatePreviewOverlayViewWithLastFrame()
     guard !faces.isEmpty else {
       print("On-Device face detector returned no results.")
       return
     }
+    weak var weakSelf = self
     DispatchQueue.main.sync {
       guard let strongSelf = weakSelf else {
         print("Self is nil!")
@@ -231,28 +220,22 @@ class CameraViewController: UIViewController {
     }
   }
 
-  private func detectPose(in image: VisionImage, width: CGFloat, height: CGFloat) {
+  private func detectPose(in image: MLImage, width: CGFloat, height: CGFloat) {
     if let poseDetector = self.poseDetector {
       var poses: [Pose]
       do {
         poses = try poseDetector.results(in: image)
       } catch let error {
         print("Failed to detect poses with error: \(error.localizedDescription).")
+        self.updatePreviewOverlayViewWithLastFrame()
         return
       }
-      weak var weakSelf = self
-      DispatchQueue.main.sync {
-        guard let strongSelf = weakSelf else {
-          print("Self is nil!")
-          return
-        }
-        strongSelf.updatePreviewOverlayViewWithLastFrame()
-        strongSelf.removeDetectionAnnotations()
-      }
+      self.updatePreviewOverlayViewWithLastFrame()
       guard !poses.isEmpty else {
         print("Pose detector returned no results.")
         return
       }
+      weak var weakSelf = self
       DispatchQueue.main.sync {
         guard let strongSelf = weakSelf else {
           print("Self is nil!")
@@ -285,6 +268,7 @@ class CameraViewController: UIViewController {
       mask = try segmenter.results(in: image)
     } catch let error {
       print("Failed to perform segmentation with error: \(error.localizedDescription).")
+      self.updatePreviewOverlayViewWithLastFrame()
       return
     }
     weak var weakSelf = self
@@ -315,16 +299,16 @@ class CameraViewController: UIViewController {
       recognizedText = try TextRecognizer.textRecognizer().results(in: image)
     } catch let error {
       print("Failed to recognize text with error: \(error.localizedDescription).")
+      self.updatePreviewOverlayViewWithLastFrame()
       return
     }
+    self.updatePreviewOverlayViewWithLastFrame()
     weak var weakSelf = self
     DispatchQueue.main.sync {
       guard let strongSelf = weakSelf else {
         print("Self is nil!")
         return
       }
-      strongSelf.updatePreviewOverlayViewWithLastFrame()
-      strongSelf.removeDetectionAnnotations()
 
       // Blocks.
       for block in recognizedText.blocks {
@@ -397,29 +381,23 @@ class CameraViewController: UIViewController {
     }
     options.confidenceThreshold = NSNumber(floatLiteral: Constant.labelConfidenceThreshold)
     let onDeviceLabeler = ImageLabeler.imageLabeler(options: options)
-    weak var weakSelf = self
     let labels: [ImageLabel]
     do {
       labels = try onDeviceLabeler.results(in: visionImage)
     } catch let error {
       let errorString = error.localizedDescription
       print("On-Device label detection failed with error: \(errorString)")
+      self.updatePreviewOverlayViewWithLastFrame()
       return
     }
     let resultsText = labels.map { label -> String in
       return "Label: \(label.text), Confidence: \(label.confidence), Index: \(label.index)"
     }.joined(separator: "\n")
 
-    DispatchQueue.main.sync {
-      guard let strongSelf = weakSelf else {
-        print("Self is nil!")
-        return
-      }
-      strongSelf.updatePreviewOverlayViewWithLastFrame()
-      strongSelf.removeDetectionAnnotations()
-    }
+    self.updatePreviewOverlayViewWithLastFrame()
     guard resultsText.count != 0 else { return }
 
+    weak var weakSelf = self
     DispatchQueue.main.sync {
       guard let strongSelf = weakSelf else {
         print("Self is nil!")
@@ -461,22 +439,16 @@ class CameraViewController: UIViewController {
       objects = try detector.results(in: image)
     } catch let error {
       print("Failed to detect objects with error: \(error.localizedDescription).")
+      self.updatePreviewOverlayViewWithLastFrame()
       return
     }
-    weak var weakSelf = self
-    DispatchQueue.main.sync {
-      guard let strongSelf = weakSelf else {
-        print("Self is nil!")
-        return
-      }
-      strongSelf.updatePreviewOverlayViewWithLastFrame()
-      strongSelf.removeDetectionAnnotations()
-    }
+    self.updatePreviewOverlayViewWithLastFrame()
     guard !objects.isEmpty else {
       print("On-Device object detector returned no results.")
       return
     }
 
+    weak var weakSelf = self
     DispatchQueue.main.sync {
       guard let strongSelf = weakSelf else {
         print("Self is nil!")
@@ -665,12 +637,21 @@ class CameraViewController: UIViewController {
   }
 
   private func updatePreviewOverlayViewWithLastFrame() {
-    guard let lastFrame = lastFrame,
-      let imageBuffer = CMSampleBufferGetImageBuffer(lastFrame)
-    else {
-      return
+    weak var weakSelf = self
+    DispatchQueue.main.sync {
+      guard let strongSelf = weakSelf else {
+        print("Self is nil!")
+        return
+      }
+
+      guard let lastFrame = lastFrame,
+        let imageBuffer = CMSampleBufferGetImageBuffer(lastFrame)
+      else {
+        return
+      }
+      strongSelf.updatePreviewOverlayViewWithImageBuffer(imageBuffer)
+      strongSelf.removeDetectionAnnotations()
     }
-    self.updatePreviewOverlayViewWithImageBuffer(imageBuffer)
   }
 
   private func updatePreviewOverlayViewWithImageBuffer(_ imageBuffer: CVImageBuffer?) {
@@ -938,8 +919,14 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     let orientation = UIUtilities.imageOrientation(
       fromDevicePosition: isUsingFrontCamera ? .front : .back
     )
-
     visionImage.orientation = orientation
+
+    guard let inputImage = MLImage(sampleBuffer: sampleBuffer) else {
+      print("Failed to create MLImage from sample buffer.")
+      return
+    }
+    inputImage.orientation = orientation
+
     let imageWidth = CGFloat(CVPixelBufferGetWidth(imageBuffer))
     let imageHeight = CGFloat(CVPixelBufferGetHeight(imageBuffer))
     var shouldEnableClassification = false
@@ -1006,7 +993,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         options: options)
 
     case .pose, .poseAccurate:
-      detectPose(in: visionImage, width: imageWidth, height: imageHeight)
+      detectPose(in: inputImage, width: imageWidth, height: imageHeight)
     case .segmentationSelfie:
       detectSegmentationMask(in: visionImage, sampleBuffer: sampleBuffer)
     }

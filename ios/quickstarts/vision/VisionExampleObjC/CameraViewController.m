@@ -19,6 +19,7 @@
 #import <CoreVideo/CoreVideo.h>
 #import "UIUtilities.h"
 
+@import MLImage;
 @import MLKit;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -334,7 +335,7 @@ typedef NS_ENUM(NSInteger, Detector) {
   });
 }
 
-- (void)detectPoseInImage:(MLKVisionImage *)image width:(CGFloat)width height:(CGFloat)height {
+- (void)detectPoseInImage:(GMLImage *)image width:(CGFloat)width height:(CGFloat)height {
   NSError *error;
   NSArray<MLKPose *> *poses = [self.poseDetector resultsInImage:image error:&error];
   __weak typeof(self) weakSelf = self;
@@ -830,6 +831,10 @@ typedef NS_ENUM(NSInteger, Detector) {
                                                                : AVCaptureDevicePositionBack];
 
     visionImage.orientation = orientation;
+
+    GMLImage *inputImage = [[GMLImage alloc] initWithSampleBuffer:sampleBuffer];
+    inputImage.orientation = orientation;
+
     CGFloat imageWidth = CVPixelBufferGetWidth(imageBuffer);
     CGFloat imageHeight = CVPixelBufferGetHeight(imageBuffer);
     BOOL shouldEnableClassification = NO;
@@ -876,7 +881,7 @@ typedef NS_ENUM(NSInteger, Detector) {
         break;
       case DetectorPose:
       case DetectorPoseAccurate:
-        [self detectPoseInImage:visionImage width:imageWidth height:imageHeight];
+        [self detectPoseInImage:inputImage width:imageWidth height:imageHeight];
         break;
       case DetectorSegmentationSelfie:
         [self detectSegmentationMaskInImage:visionImage sampleBuffer:_lastFrame];

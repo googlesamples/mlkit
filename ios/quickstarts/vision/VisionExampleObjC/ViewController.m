@@ -18,6 +18,7 @@
 #import "UIImage+VisionDetection.h"
 #import "UIUtilities.h"
 
+@import MLImage;
 @import MLKit;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -895,43 +896,44 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     return;
   }
 
-  // Initialize a `VisionImage` object with the given `UIImage`.
-  MLKVisionImage *visionImage = [[MLKVisionImage alloc] initWithImage:image];
-  visionImage.orientation = image.imageOrientation;
+  GMLImage *inputImage = [[GMLImage alloc] initWithImage:image];
+  inputImage.orientation = image.imageOrientation;
 
   CGAffineTransform transform = [self transformMatrix];
 
   __weak typeof(self) weakSelf = self;
-  [self.poseDetector processImage:visionImage completion:^(NSArray<MLKPose *> *_Nullable poses,
-                                                           NSError *_Nullable error) {
-    __strong typeof(weakSelf) strongSelf = weakSelf;
-    if (strongSelf == nil) {
-      return;
-    }
-    if (poses.count == 0) {
-      NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
-      strongSelf.resultsText = [NSMutableString
-          stringWithFormat:@"Pose detection failed with error: %@", errorString];
-      [strongSelf showResults];
-      return;
-    }
+  [self.poseDetector
+      processImage:inputImage
+        completion:^(NSArray<MLKPose *> *_Nullable poses, NSError *_Nullable error) {
+          __strong typeof(weakSelf) strongSelf = weakSelf;
+          if (strongSelf == nil) {
+            return;
+          }
+          if (poses.count == 0) {
+            NSString *errorString = error ? error.localizedDescription : detectionNoResultsMessage;
+            strongSelf.resultsText = [NSMutableString
+                stringWithFormat:@"Pose detection failed with error: %@", errorString];
+            [strongSelf showResults];
+            return;
+          }
 
-    // Pose detection currently only supports single pose.
-    MLKPose *pose = poses.firstObject;
+          // Pose detection currently only supports single pose.
+          MLKPose *pose = poses.firstObject;
 
-    UIView *poseOverlay = [UIUtilities
-             poseOverlayViewForPose:pose
-                   inViewWithBounds:self.annotationOverlayView.bounds
-                          lineWidth:3.0f
-                          dotRadius:smallDotRadius
-        positionTransformationBlock:^(MLKVisionPoint *position) {
-          return CGPointApplyAffineTransform([strongSelf pointFromVisionPoint:position], transform);
+          UIView *poseOverlay =
+              [UIUtilities poseOverlayViewForPose:pose
+                                 inViewWithBounds:self.annotationOverlayView.bounds
+                                        lineWidth:3.0f
+                                        dotRadius:smallDotRadius
+                      positionTransformationBlock:^(MLKVisionPoint *position) {
+                        return CGPointApplyAffineTransform(
+                            [strongSelf pointFromVisionPoint:position], transform);
+                      }];
+
+          [strongSelf.annotationOverlayView addSubview:poseOverlay];
+          strongSelf.resultsText = [NSMutableString stringWithFormat:@"Pose Detected"];
+          [strongSelf showResults];
         }];
-
-    [strongSelf.annotationOverlayView addSubview:poseOverlay];
-    strongSelf.resultsText = [NSMutableString stringWithFormat:@"Pose Detected"];
-    [strongSelf showResults];
-  }];
 }
 
 - (void)detectSegmentationMaskInImage:(UIImage *)image {

@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import MLImage
 import MLKit
 import UIKit
 
@@ -800,12 +801,14 @@ extension ViewController {
   func detectPose(image: UIImage?) {
     guard let image = image else { return }
 
-    // Initialize a `VisionImage` object with the given `UIImage`.
-    let visionImage = VisionImage(image: image)
-    visionImage.orientation = image.imageOrientation
+    guard let inputImage = MLImage(image: image) else {
+      print("Failed to create MLImage from UIImage.")
+      return
+    }
+    inputImage.orientation = image.imageOrientation
 
     if let poseDetector = self.poseDetector {
-      poseDetector.process(visionImage) { poses, error in
+      poseDetector.process(inputImage) { poses, error in
         guard error == nil, let poses = poses, !poses.isEmpty else {
           let errorString = error?.localizedDescription ?? Constants.detectionNoResultsMessage
           self.resultsText = "Pose detection failed with error: \(errorString)"
