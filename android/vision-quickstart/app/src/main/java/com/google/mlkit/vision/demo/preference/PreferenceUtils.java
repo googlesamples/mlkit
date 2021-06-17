@@ -185,7 +185,7 @@ public class PreferenceUtils {
     return builder.build();
   }
 
-  public static FaceDetectorOptions getFaceDetectorOptionsForLivePreview(Context context) {
+  public static FaceDetectorOptions getFaceDetectorOptions(Context context) {
     int landmarkMode =
         getModeTypePreferenceValue(
             context,

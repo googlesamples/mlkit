@@ -36,6 +36,10 @@ import androidx.camera.core.ImageProxy;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.android.gms.tasks.Tasks;
+import com.google.android.odml.image.BitmapMlImageBuilder;
+import com.google.android.odml.image.ByteBufferMlImageBuilder;
+import com.google.android.odml.image.MediaMlImageBuilder;
+import com.google.android.odml.image.MlImage;
 import com.google.mlkit.common.MlKitException;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.BitmapUtils;
@@ -115,6 +119,19 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
   public void processBitmap(Bitmap bitmap, final GraphicOverlay graphicOverlay) {
     long frameStartMs = SystemClock.elapsedRealtime();
 
+    if (isMlImageEnabled(graphicOverlay.getContext())) {
+      MlImage mlImage = new BitmapMlImageBuilder(bitmap).build();
+      requestDetectInImage(
+          mlImage,
+          graphicOverlay,
+          /* originalCameraImage= */ null,
+          /* shouldShowFps= */ false,
+          frameStartMs);
+      mlImage.close();
+
+      return;
+    }
+
     requestDetectInImage(
         InputImage.fromBitmap(bitmap, 0),
         graphicOverlay,
@@ -155,6 +172,24 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
             ? null
             : BitmapUtils.getBitmap(data, frameMetadata);
 
+    if (isMlImageEnabled(graphicOverlay.getContext())) {
+      MlImage mlImage =
+          new ByteBufferMlImageBuilder(
+                  data,
+                  frameMetadata.getWidth(),
+                  frameMetadata.getHeight(),
+                  MlImage.IMAGE_FORMAT_NV21)
+              .setRotation(frameMetadata.getRotation())
+              .build();
+
+      requestDetectInImage(mlImage, graphicOverlay, bitmap, /* shouldShowFps= */ true, frameStartMs)
+          .addOnSuccessListener(executor, results -> processLatestImage(graphicOverlay));
+
+      // This is optional. Java Garbage collection can also close it eventually.
+      mlImage.close();
+      return;
+    }
+
     requestDetectInImage(
             InputImage.fromByteBuffer(
                 data,
@@ -185,6 +220,27 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
       bitmap = BitmapUtils.getBitmap(image);
     }
 
+    if (isMlImageEnabled(graphicOverlay.getContext())) {
+      MlImage mlImage =
+          new MediaMlImageBuilder(image.getImage())
+              .setRotation(image.getImageInfo().getRotationDegrees())
+              .build();
+
+      requestDetectInImage(
+              mlImage,
+              graphicOverlay,
+              /* originalCameraImage= */ bitmap,
+              /* shouldShowFps= */ true,
+              frameStartMs)
+          // When the image is from CameraX analysis use case, must call image.close() on received
+          // images when finished using them. Otherwise, new images may not be received or the
+          // camera may stall.
+          // Currently MlImage doesn't support ImageProxy directly, so we still need to call
+          // ImageProxy.close() here.
+          .addOnCompleteListener(results -> image.close());
+      return;
+    }
+
     requestDetectInImage(
             InputImage.fromMediaImage(image.getImage(), image.getImageInfo().getRotationDegrees()),
             graphicOverlay,
@@ -200,6 +256,16 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
   // -----------------Common processing logic-------------------------------------------------------
   private Task<T> requestDetectInImage(
       final InputImage image,
+      final GraphicOverlay graphicOverlay,
+      @Nullable final Bitmap originalCameraImage,
+      boolean shouldShowFps,
+      long frameStartMs) {
+    return setUpListener(
+        detectInImage(image), graphicOverlay, originalCameraImage, shouldShowFps, frameStartMs);
+  }
+
+  private Task<T> requestDetectInImage(
+      final MlImage image,
       final GraphicOverlay graphicOverlay,
       @Nullable final Bitmap originalCameraImage,
       boolean shouldShowFps,
@@ -311,7 +377,18 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
   protected abstract Task<T> detectInImage(InputImage image);
 
+  protected Task<T> detectInImage(MlImage image) {
+    return Tasks.forException(
+        new MlKitException(
+            "MlImage is currently not demonstrated for this feature",
+            MlKitException.INVALID_ARGUMENT));
+  }
+
   protected abstract void onSuccess(@NonNull T results, @NonNull GraphicOverlay graphicOverlay);
 
   protected abstract void onFailure(@NonNull Exception e);
+
+  protected boolean isMlImageEnabled(Context context) {
+    return false;
+  }
 }

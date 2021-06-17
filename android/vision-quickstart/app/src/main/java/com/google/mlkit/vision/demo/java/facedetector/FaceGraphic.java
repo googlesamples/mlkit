@@ -222,6 +222,7 @@ public class FaceGraphic extends Graphic {
           left,
           top + yLabelOffset,
           idPaints[colorID]);
+      yLabelOffset += lineHeight;
     }
     if (rightEye != null) {
       float rightEyeLeft =
@@ -237,7 +238,6 @@ public class FaceGraphic extends Graphic {
           rightEyeLeft,
           translateY(rightEye.getPosition().y) + ID_Y_OFFSET,
           idPaints[colorID]);
-      yLabelOffset += lineHeight;
     }
 
     canvas.drawText(

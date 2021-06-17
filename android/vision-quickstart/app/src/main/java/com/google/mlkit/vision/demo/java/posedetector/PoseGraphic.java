@@ -22,7 +22,6 @@ import static java.lang.Math.min;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import com.google.common.primitives.Ints;
 import com.google.mlkit.vision.common.PointF3D;
 import com.google.mlkit.vision.demo.GraphicOverlay;
@@ -112,6 +111,18 @@ public class PoseGraphic extends Graphic {
       }
     }
 
+    PoseLandmark nose = pose.getPoseLandmark(PoseLandmark.NOSE);
+    PoseLandmark lefyEyeInner = pose.getPoseLandmark(PoseLandmark.LEFT_EYE_INNER);
+    PoseLandmark lefyEye = pose.getPoseLandmark(PoseLandmark.LEFT_EYE);
+    PoseLandmark leftEyeOuter = pose.getPoseLandmark(PoseLandmark.LEFT_EYE_OUTER);
+    PoseLandmark rightEyeInner = pose.getPoseLandmark(PoseLandmark.RIGHT_EYE_INNER);
+    PoseLandmark rightEye = pose.getPoseLandmark(PoseLandmark.RIGHT_EYE);
+    PoseLandmark rightEyeOuter = pose.getPoseLandmark(PoseLandmark.RIGHT_EYE_OUTER);
+    PoseLandmark leftEar = pose.getPoseLandmark(PoseLandmark.LEFT_EAR);
+    PoseLandmark rightEar = pose.getPoseLandmark(PoseLandmark.RIGHT_EAR);
+    PoseLandmark leftMouth = pose.getPoseLandmark(PoseLandmark.LEFT_MOUTH);
+    PoseLandmark rightMouth = pose.getPoseLandmark(PoseLandmark.RIGHT_MOUTH);
+
     PoseLandmark leftShoulder = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER);
     PoseLandmark rightShoulder = pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER);
     PoseLandmark leftElbow = pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW);
@@ -135,6 +146,17 @@ public class PoseGraphic extends Graphic {
     PoseLandmark rightHeel = pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL);
     PoseLandmark leftFootIndex = pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX);
     PoseLandmark rightFootIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX);
+
+    // Face
+    drawLine(canvas, nose, lefyEyeInner, whitePaint);
+    drawLine(canvas, lefyEyeInner, lefyEye, whitePaint);
+    drawLine(canvas, lefyEye, leftEyeOuter, whitePaint);
+    drawLine(canvas, leftEyeOuter, leftEar, whitePaint);
+    drawLine(canvas, nose, rightEyeInner, whitePaint);
+    drawLine(canvas, rightEyeInner, rightEye, whitePaint);
+    drawLine(canvas, rightEye, rightEyeOuter, whitePaint);
+    drawLine(canvas, rightEyeOuter, rightEar, whitePaint);
+    drawLine(canvas, leftMouth, rightMouth, whitePaint);
 
     drawLine(canvas, leftShoulder, rightShoulder, whitePaint);
     drawLine(canvas, leftHip, rightHip, whitePaint);
@@ -177,64 +199,64 @@ public class PoseGraphic extends Graphic {
     }
   }
 
-  void drawPoint(Canvas canvas, PoseLandmark landmark, Paint paint) {
-    PointF point = landmark.getPosition();
-    canvas.drawCircle(translateX(point.x), translateY(point.y), DOT_RADIUS, paint);
+    void drawPoint(Canvas canvas, PoseLandmark landmark, Paint paint) {
+    PointF3D point = landmark.getPosition3D();
+    maybeUpdatePaintColor(paint, canvas, point.getZ());
+    canvas.drawCircle(translateX(point.getX()), translateY(point.getY()), DOT_RADIUS, paint);
   }
 
   void drawLine(Canvas canvas, PoseLandmark startLandmark, PoseLandmark endLandmark, Paint paint) {
-    // When visualizeZ is true, sets up the paint to draw body line in different colors based on
-    // their z values.
-    if (visualizeZ) {
-      PointF3D start = startLandmark.getPosition3D();
-      PointF3D end = endLandmark.getPosition3D();
+    PointF3D start = startLandmark.getPosition3D();
+    PointF3D end = endLandmark.getPosition3D();
 
-      // Gets the range of z value.
-      float zLowerBoundInScreenPixel;
-      float zUpperBoundInScreenPixel;
+    // Gets average z for the current body line
+    float avgZInImagePixel = (start.getZ() + end.getZ()) / 2;
+    maybeUpdatePaintColor(paint, canvas, avgZInImagePixel);
 
-      if (rescaleZForVisualization) {
-        zLowerBoundInScreenPixel = min(-0.001f, scale(zMin));
-        zUpperBoundInScreenPixel = max(0.001f, scale(zMax));
-      } else {
-        // By default, assume the range of z value in screen pixel is [-canvasWidth, canvasWidth].
-        float defaultRangeFactor = 1f;
-        zLowerBoundInScreenPixel = -defaultRangeFactor * canvas.getWidth();
-        zUpperBoundInScreenPixel = defaultRangeFactor * canvas.getWidth();
-      }
-
-      // Gets average z for the current body line
-      float avgZInImagePixel = (start.getZ() + end.getZ()) / 2;
-      float zInScreenPixel = scale(avgZInImagePixel);
-
-      if (zInScreenPixel < 0) {
-        // Sets up the paint to draw the body line in red if it is in front of the z origin.
-        // Maps values within [zLowerBoundInScreenPixel, 0) to [255, 0) and use it to control the
-        // color. The larger the value is, the more red it will be.
-        int v = (int) (zInScreenPixel / zLowerBoundInScreenPixel * 255);
-        v = Ints.constrainToRange(v, 0, 255);
-        paint.setARGB(255, 255, 255 - v, 255 - v);
-      } else {
-        // Sets up the paint to draw the body line in blue if it is behind the z origin.
-        // Maps values within [0, zUpperBoundInScreenPixel] to [0, 255] and use it to control the
-        // color. The larger the value is, the more blue it will be.
-        int v = (int) (zInScreenPixel / zUpperBoundInScreenPixel * 255);
-        v = Ints.constrainToRange(v, 0, 255);
-        paint.setARGB(255, 255 - v, 255 - v, 255);
-      }
-
-      canvas.drawLine(
+    canvas.drawLine(
           translateX(start.getX()),
           translateY(start.getY()),
           translateX(end.getX()),
           translateY(end.getY()),
           paint);
+  }
 
+  private void maybeUpdatePaintColor(Paint paint, Canvas canvas, float zInImagePixel) {
+    if (!visualizeZ) {
+      return;
+    }
+
+    // When visualizeZ is true, sets up the paint to different colors based on z values.
+    // Gets the range of z value.
+    float zLowerBoundInScreenPixel;
+    float zUpperBoundInScreenPixel;
+
+    if (rescaleZForVisualization) {
+      zLowerBoundInScreenPixel = min(-0.001f, scale(zMin));
+      zUpperBoundInScreenPixel = max(0.001f, scale(zMax));
     } else {
-      PointF start = startLandmark.getPosition();
-      PointF end = endLandmark.getPosition();
-      canvas.drawLine(
-          translateX(start.x), translateY(start.y), translateX(end.x), translateY(end.y), paint);
+      // By default, assume the range of z value in screen pixel is [-canvasWidth, canvasWidth].
+      float defaultRangeFactor = 1f;
+      zLowerBoundInScreenPixel = -defaultRangeFactor * canvas.getWidth();
+      zUpperBoundInScreenPixel = defaultRangeFactor * canvas.getWidth();
+    }
+
+    float zInScreenPixel = scale(zInImagePixel);
+
+    if (zInScreenPixel < 0) {
+      // Sets up the paint to draw the body line in red if it is in front of the z origin.
+      // Maps values within [zLowerBoundInScreenPixel, 0) to [255, 0) and use it to control the
+      // color. The larger the value is, the more red it will be.
+      int v = (int) (zInScreenPixel / zLowerBoundInScreenPixel * 255);
+      v = Ints.constrainToRange(v, 0, 255);
+      paint.setARGB(255, 255, 255 - v, 255 - v);
+    } else {
+      // Sets up the paint to draw the body line in blue if it is behind the z origin.
+      // Maps values within [0, zUpperBoundInScreenPixel] to [0, 255] and use it to control the
+      // color. The larger the value is, the more blue it will be.
+      int v = (int) (zInScreenPixel / zUpperBoundInScreenPixel * 255);
+      v = Ints.constrainToRange(v, 0, 255);
+      paint.setARGB(255, 255 - v, 255 - v, 255);
     }
   }
 }

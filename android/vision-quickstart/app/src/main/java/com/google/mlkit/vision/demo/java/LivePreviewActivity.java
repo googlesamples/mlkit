@@ -50,7 +50,6 @@ import com.google.mlkit.vision.demo.java.segmenter.SegmenterProcessor;
 import com.google.mlkit.vision.demo.java.textdetector.TextRecognitionProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
-import com.google.mlkit.vision.face.FaceDetectorOptions;
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
@@ -220,10 +219,7 @@ public final class LivePreviewActivity extends AppCompatActivity
           break;
         case FACE_DETECTION:
           Log.i(TAG, "Using Face Detector Processor");
-          FaceDetectorOptions faceDetectorOptions =
-              PreferenceUtils.getFaceDetectorOptionsForLivePreview(this);
-          cameraSource.setMachineLearningFrameProcessor(
-              new FaceDetectorProcessor(this, faceDetectorOptions));
+          cameraSource.setMachineLearningFrameProcessor(new FaceDetectorProcessor(this));
           break;
         case BARCODE_SCANNING:
           Log.i(TAG, "Using Barcode Detector Processor");
@@ -265,9 +261,15 @@ public final class LivePreviewActivity extends AppCompatActivity
           boolean visualizeZ = PreferenceUtils.shouldPoseDetectionVisualizeZ(this);
           boolean rescaleZ = PreferenceUtils.shouldPoseDetectionRescaleZForVisualization(this);
           boolean runClassification = PreferenceUtils.shouldPoseDetectionRunClassification(this);
-          cameraSource.setMachineLearningFrameProcessor(new PoseDetectorProcessor(
-              this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ,
-              runClassification, /* isStreamMode = */true));
+          cameraSource.setMachineLearningFrameProcessor(
+              new PoseDetectorProcessor(
+                  this,
+                  poseDetectorOptions,
+                  shouldShowInFrameLikelihood,
+                  visualizeZ,
+                  rescaleZ,
+                  runClassification,
+                  /* isStreamMode = */ true));
           break;
         case SELFIE_SEGMENTATION:
           cameraSource.setMachineLearningFrameProcessor(new SegmenterProcessor(this));

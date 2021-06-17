@@ -20,6 +20,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import android.util.Log;
 import com.google.android.gms.tasks.Task;
+import com.google.android.odml.image.MlImage;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.java.VisionProcessorBase;
@@ -113,6 +114,25 @@ public class PoseDetectorProcessor
   }
 
   @Override
+  protected Task<PoseWithClassification> detectInImage(MlImage image) {
+    return detector
+        .process(image)
+        .continueWith(
+            classificationExecutor,
+            task -> {
+              Pose pose = task.getResult();
+              List<String> classificationResult = new ArrayList<>();
+              if (runClassification) {
+                if (poseClassifierProcessor == null) {
+                  poseClassifierProcessor = new PoseClassifierProcessor(context, isStreamMode);
+                }
+                classificationResult = poseClassifierProcessor.getPoseResult(pose);
+              }
+              return new PoseWithClassification(pose, classificationResult);
+            });
+  }
+
+  @Override
   protected void onSuccess(
       @NonNull PoseWithClassification poseWithClassification,
       @NonNull GraphicOverlay graphicOverlay) {
@@ -129,5 +149,11 @@ public class PoseDetectorProcessor
   @Override
   protected void onFailure(@NonNull Exception e) {
     Log.e(TAG, "Pose detection failed!", e);
+  }
+
+  @Override
+  protected boolean isMlImageEnabled(Context context) {
+    // Use MlImage in Pose Detection by default, change it to OFF to switch to InputImage.
+    return true;
   }
 }

@@ -213,7 +213,7 @@ class LivePreviewActivity :
         FACE_DETECTION -> {
           Log.i(TAG, "Using Face Detector Processor")
           val faceDetectorOptions =
-            PreferenceUtils.getFaceDetectorOptionsForLivePreview(this)
+            PreferenceUtils.getFaceDetectorOptions(this)
           cameraSource!!.setMachineLearningFrameProcessor(
             FaceDetectorProcessor(this, faceDetectorOptions)
           )

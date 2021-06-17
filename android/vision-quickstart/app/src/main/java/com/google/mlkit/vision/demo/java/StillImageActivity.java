@@ -416,6 +416,7 @@ public final class StillImageActivity extends AppCompatActivity {
           imageProcessor = new ObjectDetectorProcessor(this, customAutoMLODTOptions);
           break;
         case FACE_DETECTION:
+          Log.i(TAG, "Using Face Detector Processor");
           imageProcessor = new FaceDetectorProcessor(this);
           break;
         case BARCODE_SCANNING:
@@ -458,8 +459,13 @@ public final class StillImageActivity extends AppCompatActivity {
           boolean runClassification = PreferenceUtils.shouldPoseDetectionRunClassification(this);
           imageProcessor =
               new PoseDetectorProcessor(
-                  this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ,
-                  runClassification, /* isStreamMode = */false);
+                  this,
+                  poseDetectorOptions,
+                  shouldShowInFrameLikelihood,
+                  visualizeZ,
+                  rescaleZ,
+                  runClassification,
+                  /* isStreamMode = */ false);
           break;
         case SELFIE_SEGMENTATION:
           imageProcessor = new SegmenterProcessor(this, /* isStreamMode= */ false);

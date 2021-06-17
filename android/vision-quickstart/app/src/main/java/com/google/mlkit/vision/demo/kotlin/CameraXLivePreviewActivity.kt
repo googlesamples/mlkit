@@ -334,7 +334,7 @@ class CameraXLivePreviewActivity :
             "Using Face Detector Processor"
           )
           val faceDetectorOptions =
-            PreferenceUtils.getFaceDetectorOptionsForLivePreview(this)
+            PreferenceUtils.getFaceDetectorOptions(this)
           FaceDetectorProcessor(this, faceDetectorOptions)
         }
         BARCODE_SCANNING -> {

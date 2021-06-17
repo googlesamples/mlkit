@@ -432,9 +432,13 @@ class StillImageActivity : AppCompatActivity() {
               customAutoMLODTOptions
             )
         }
-        FACE_DETECTION ->
-          imageProcessor =
-            FaceDetectorProcessor(this, null)
+        FACE_DETECTION -> {
+          Log.i(TAG, "Using Face Detector Processor")
+           val faceDetectorOptions =
+            PreferenceUtils.getFaceDetectorOptions(this)
+           imageProcessor =
+            FaceDetectorProcessor(this, faceDetectorOptions)
+        }
         BARCODE_SCANNING ->
           imageProcessor =
             BarcodeScannerProcessor(this)

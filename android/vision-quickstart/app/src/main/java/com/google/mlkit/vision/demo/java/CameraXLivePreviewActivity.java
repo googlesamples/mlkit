@@ -65,7 +65,6 @@ import com.google.mlkit.vision.demo.java.segmenter.SegmenterProcessor;
 import com.google.mlkit.vision.demo.java.textdetector.TextRecognitionProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
-import com.google.mlkit.vision.face.FaceDetectorOptions;
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
@@ -339,9 +338,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
           break;
         case FACE_DETECTION:
           Log.i(TAG, "Using Face Detector Processor");
-          FaceDetectorOptions faceDetectorOptions =
-              PreferenceUtils.getFaceDetectorOptionsForLivePreview(this);
-          imageProcessor = new FaceDetectorProcessor(this, faceDetectorOptions);
+          imageProcessor = new FaceDetectorProcessor(this);
           break;
         case BARCODE_SCANNING:
           Log.i(TAG, "Using Barcode Detector Processor");
@@ -381,8 +378,13 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
           boolean runClassification = PreferenceUtils.shouldPoseDetectionRunClassification(this);
           imageProcessor =
               new PoseDetectorProcessor(
-                  this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ,
-                  runClassification, /* isStreamMode = */true);
+                  this,
+                  poseDetectorOptions,
+                  shouldShowInFrameLikelihood,
+                  visualizeZ,
+                  rescaleZ,
+                  runClassification,
+                  /* isStreamMode = */ true);
           break;
         case SELFIE_SEGMENTATION:
           imageProcessor = new SegmenterProcessor(this);

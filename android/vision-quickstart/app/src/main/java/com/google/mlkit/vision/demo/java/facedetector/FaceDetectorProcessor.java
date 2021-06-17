@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.java.VisionProcessorBase;
+import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.face.Face;
 import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
@@ -40,18 +41,10 @@ public class FaceDetectorProcessor extends VisionProcessorBase<List<Face>> {
   private final FaceDetector detector;
 
   public FaceDetectorProcessor(Context context) {
-    this(
-        context,
-        new FaceDetectorOptions.Builder()
-            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
-            .enableTracking()
-            .build());
-  }
-
-  public FaceDetectorProcessor(Context context, FaceDetectorOptions options) {
     super(context);
-    Log.v(MANUAL_TESTING_LOG, "Face detector options: " + options);
-    detector = FaceDetection.getClient(options);
+    FaceDetectorOptions faceDetectorOptions = PreferenceUtils.getFaceDetectorOptions(context);
+    Log.v(MANUAL_TESTING_LOG, "Face detector options: " + faceDetectorOptions);
+    detector = FaceDetection.getClient(faceDetectorOptions);
   }
 
   @Override
