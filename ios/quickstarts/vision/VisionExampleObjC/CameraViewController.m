@@ -49,6 +49,10 @@ typedef NS_ENUM(NSInteger, Detector) {
   DetectorOnDeviceBarcode,
   DetectorOnDeviceFace,
   DetectorOnDeviceText,
+  DetectorOnDeviceTextChinese,
+  DetectorOnDeviceTextDevanagari,
+  DetectorOnDeviceTextJapanese,
+  DetectorOnDeviceTextKorean,
   DetectorOnDeviceImageLabels,
   DetectorOnDeviceImageLabelsCustom,
   DetectorOnDeviceObjectProminentNoClassifier,
@@ -104,6 +108,14 @@ typedef NS_ENUM(NSInteger, Detector) {
       return @"Image Labeling Custom";
     case DetectorOnDeviceText:
       return @"Text Recognition";
+    case DetectorOnDeviceTextChinese:
+      return @"Text Recognition Chinese";
+    case DetectorOnDeviceTextDevanagari:
+      return @"Text Recognition Devanagari";
+    case DetectorOnDeviceTextJapanese:
+      return @"Text Recognition Japanese";
+    case DetectorOnDeviceTextKorean:
+      return @"Text Recognition Korean";
     case DetectorOnDeviceObjectProminentNoClassifier:
       return @"ODT, single, no labeling";
     case DetectorOnDeviceObjectProminentWithClassifier:
@@ -135,6 +147,10 @@ typedef NS_ENUM(NSInteger, Detector) {
     @(DetectorOnDeviceBarcode),
     @(DetectorOnDeviceFace),
     @(DetectorOnDeviceText),
+    @(DetectorOnDeviceTextChinese),
+    @(DetectorOnDeviceTextDevanagari),
+    @(DetectorOnDeviceTextJapanese),
+    @(DetectorOnDeviceTextKorean),
     @(DetectorOnDeviceImageLabels),
     @(DetectorOnDeviceImageLabelsCustom),
     @(DetectorOnDeviceObjectProminentNoClassifier),
@@ -235,8 +251,21 @@ typedef NS_ENUM(NSInteger, Detector) {
 
 - (void)recognizeTextOnDeviceInImage:(MLKVisionImage *)image
                                width:(CGFloat)width
-                              height:(CGFloat)height {
-  MLKTextRecognizer *textRecognizer = [MLKTextRecognizer textRecognizer];
+                              height:(CGFloat)height
+                        detectorType:(Detector)detectorType {
+  MLKCommonTextRecognizerOptions *options;
+  if (detectorType == DetectorOnDeviceText) {
+    options = [[MLKTextRecognizerOptions alloc] init];
+  } else if (detectorType == DetectorOnDeviceTextChinese) {
+    options = [[MLKChineseTextRecognizerOptions alloc] init];
+  } else if (detectorType == DetectorOnDeviceTextDevanagari) {
+    options = [[MLKDevanagariTextRecognizerOptions alloc] init];
+  } else if (detectorType == DetectorOnDeviceTextJapanese) {
+    options = [[MLKJapaneseTextRecognizerOptions alloc] init];
+  } else if (detectorType == DetectorOnDeviceTextKorean) {
+    options = [[MLKKoreanTextRecognizerOptions alloc] init];
+  }
+  MLKTextRecognizer *textRecognizer = [MLKTextRecognizer textRecognizerWithOptions:options];
   NSError *error;
   MLKText *text = [textRecognizer resultsInImage:image error:&error];
   __weak typeof(self) weakSelf = self;
@@ -426,7 +455,9 @@ typedef NS_ENUM(NSInteger, Detector) {
       UILabel *label = [[UILabel alloc] initWithFrame:standardizedRect];
       label.numberOfLines = 0;
       NSMutableString *description = [NSMutableString new];
-      [description appendString:barcode.rawValue];
+      if (barcode.displayValue) {
+        [description appendString:barcode.displayValue];
+      }
       label.text = description;
       label.adjustsFontSizeToFitWidth = YES;
       [strongSelf rotateView:label orientation:image.orientation];
@@ -870,8 +901,15 @@ typedef NS_ENUM(NSInteger, Detector) {
       case DetectorOnDeviceFace:
         [self detectFacesOnDeviceInImage:visionImage width:imageWidth height:imageHeight];
         break;
-      case DetectorOnDeviceText:
-        [self recognizeTextOnDeviceInImage:visionImage width:imageWidth height:imageHeight];
+      case DetectorOnDeviceText:            // Falls through
+      case DetectorOnDeviceTextChinese:     // Falls through
+      case DetectorOnDeviceTextDevanagari:  // Falls through
+      case DetectorOnDeviceTextJapanese:    // Falls through
+      case DetectorOnDeviceTextKorean:
+        [self recognizeTextOnDeviceInImage:visionImage
+                                     width:imageWidth
+                                    height:imageHeight
+                              detectorType:activeDetector];
         break;
       case DetectorOnDeviceImageLabels:
         [self detectLabelsInImage:visionImage useCustomModel:NO];

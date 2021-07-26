@@ -24,6 +24,10 @@ class CameraViewController: UIViewController {
   private let detectors: [Detector] = [
     .onDeviceFace,
     .onDeviceText,
+    .onDeviceTextChinese,
+    .onDeviceTextDevanagari,
+    .onDeviceTextJapanese,
+    .onDeviceTextKorean,
     .onDeviceBarcode,
     .onDeviceImageLabel,
     .onDeviceImageLabelsCustom,
@@ -164,7 +168,7 @@ class CameraViewController: UIViewController {
           color: UIColor.green
         )
         let label = UILabel(frame: convertedRect)
-        label.text = barcode.rawValue
+        label.text = barcode.displayValue
         label.adjustsFontSizeToFitWidth = true
         strongSelf.rotate(label, orientation: image.orientation)
         strongSelf.annotationOverlayView.addSubview(label)
@@ -293,10 +297,25 @@ class CameraViewController: UIViewController {
 
   }
 
-  private func recognizeTextOnDevice(in image: VisionImage, width: CGFloat, height: CGFloat) {
+  private func recognizeTextOnDevice(
+    in image: VisionImage, width: CGFloat, height: CGFloat, detectorType: Detector
+  ) {
+    var options: CommonTextRecognizerOptions
+    if detectorType == .onDeviceTextChinese {
+      options = ChineseTextRecognizerOptions.init()
+    } else if detectorType == .onDeviceTextDevanagari {
+      options = DevanagariTextRecognizerOptions.init()
+    } else if detectorType == .onDeviceTextJapanese {
+      options = JapaneseTextRecognizerOptions.init()
+    } else if detectorType == .onDeviceTextKorean {
+      options = KoreanTextRecognizerOptions.init()
+    } else {
+      options = TextRecognizerOptions.init()
+    }
     var recognizedText: Text
     do {
-      recognizedText = try TextRecognizer.textRecognizer().results(in: image)
+      recognizedText = try TextRecognizer.textRecognizer(options: options)
+        .results(in: image)
     } catch let error {
       print("Failed to recognize text with error: \(error.localizedDescription).")
       self.updatePreviewOverlayViewWithLastFrame()
@@ -951,8 +970,10 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
       scanBarcodesOnDevice(in: visionImage, width: imageWidth, height: imageHeight)
     case .onDeviceFace:
       detectFacesOnDevice(in: visionImage, width: imageWidth, height: imageHeight)
-    case .onDeviceText:
-      recognizeTextOnDevice(in: visionImage, width: imageWidth, height: imageHeight)
+    case .onDeviceText, .onDeviceTextChinese, .onDeviceTextDevanagari, .onDeviceTextJapanese,
+      .onDeviceTextKorean:
+      recognizeTextOnDevice(
+        in: visionImage, width: imageWidth, height: imageHeight, detectorType: activeDetector)
     case .onDeviceImageLabel:
       detectLabels(
         in: visionImage, width: imageWidth, height: imageHeight, shouldUseCustomModel: false)
@@ -1006,6 +1027,10 @@ public enum Detector: String {
   case onDeviceBarcode = "Barcode Scanning"
   case onDeviceFace = "Face Detection"
   case onDeviceText = "Text Recognition"
+  case onDeviceTextChinese = "Text Recognition Chinese"
+  case onDeviceTextDevanagari = "Text Recognition Devanagari"
+  case onDeviceTextJapanese = "Text Recognition Japanese"
+  case onDeviceTextKorean = "Text Recognition Korean"
   case onDeviceImageLabel = "Image Labeling"
   case onDeviceImageLabelsCustom = "Image Labeling Custom"
   case onDeviceObjectProminentNoClassifier = "ODT, single, no labeling"

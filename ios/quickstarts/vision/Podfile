@@ -13,6 +13,10 @@ pod 'GoogleMLKit/PoseDetection'
 pod 'GoogleMLKit/PoseDetectionAccurate'
 pod 'GoogleMLKit/SegmentationSelfie'
 pod 'GoogleMLKit/TextRecognition'
+pod 'GoogleMLKit/TextRecognitionChinese'
+pod 'GoogleMLKit/TextRecognitionDevanagari'
+pod 'GoogleMLKit/TextRecognitionJapanese'
+pod 'GoogleMLKit/TextRecognitionKorean'
 
 target 'VisionExample' do
 end
