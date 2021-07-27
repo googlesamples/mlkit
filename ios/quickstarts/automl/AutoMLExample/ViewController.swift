@@ -96,12 +96,32 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
     super.viewWillAppear(animated)
 
     navigationController?.navigationBar.isHidden = true
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(remoteModelDownloadDidSucceed(_:)),
+      name: .mlkitModelDownloadDidSucceed,
+      object: nil
+    )
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(remoteModelDownloadDidFail(_:)),
+      name: .mlkitModelDownloadDidFail,
+      object: nil
+    )
   }
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
 
     navigationController?.navigationBar.isHidden = false
+    // We wouldn't have needed to remove the observers if iOS 9.0+ had cleaned up the observer "the
+    // next time it would have posted to it" as documented here:
+    // https://developer.apple.com/documentation/foundation/nsnotificationcenter/1413994-removeobserver
+    NotificationCenter.default.removeObserver(
+      self,
+      name: .mlkitModelDownloadDidSucceed,
+      object: nil)
+    NotificationCenter.default.removeObserver(self, name: .mlkitModelDownloadDidFail, object: nil)
   }
 
   // MARK: - IBActions
@@ -267,18 +287,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
   }
 
   private func downloadAutoMLRemoteModel(_ remoteModel: RemoteModel) {
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(remoteModelDownloadDidSucceed(_:)),
-      name: .mlkitModelDownloadDidSucceed,
-      object: nil
-    )
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(remoteModelDownloadDidFail(_:)),
-      name: .mlkitModelDownloadDidFail,
-      object: nil
-    )
     downloadProgressView.isHidden = false
     let conditions = ModelDownloadConditions(
       allowsCellularAccess: true,

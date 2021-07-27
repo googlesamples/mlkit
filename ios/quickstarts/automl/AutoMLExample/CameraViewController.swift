@@ -72,12 +72,32 @@ class CameraViewController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
 
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(remoteModelDownloadDidSucceed(_:)),
+      name: .mlkitModelDownloadDidSucceed,
+      object: nil
+    )
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(remoteModelDownloadDidFail(_:)),
+      name: .mlkitModelDownloadDidFail,
+      object: nil
+    )
     startSession()
   }
 
   override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
 
+    // We wouldn't have needed to remove the observers if iOS 9.0+ had cleaned up the observer "the
+    // next time it would have posted to it" as documented here:
+    // https://developer.apple.com/documentation/foundation/nsnotificationcenter/1413994-removeobserver
+    NotificationCenter.default.removeObserver(
+      self,
+      name: .mlkitModelDownloadDidSucceed,
+      object: nil)
+    NotificationCenter.default.removeObserver(self, name: .mlkitModelDownloadDidFail, object: nil)
     stopSession()
   }
 
@@ -272,18 +292,6 @@ class CameraViewController: UIViewController {
     if modelManager.isModelDownloaded(remoteModel) {
       return
     }
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(remoteModelDownloadDidSucceed(_:)),
-      name: .mlkitModelDownloadDidSucceed,
-      object: nil
-    )
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(remoteModelDownloadDidFail(_:)),
-      name: .mlkitModelDownloadDidFail,
-      object: nil
-    )
     weak var weakSelf = self
     DispatchQueue.main.async {
       guard let strongSelf = weakSelf else {

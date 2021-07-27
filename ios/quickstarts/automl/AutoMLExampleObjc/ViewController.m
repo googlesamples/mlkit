@@ -167,11 +167,28 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   [self.navigationController.navigationBar setHidden:YES];
+  [NSNotificationCenter.defaultCenter addObserver:self
+                                         selector:@selector(remoteModelDownloadDidSucceed:)
+                                             name:MLKModelDownloadDidSucceedNotification
+                                           object:nil];
+  [NSNotificationCenter.defaultCenter addObserver:self
+                                         selector:@selector(remoteModelDownloadDidFail:)
+                                             name:MLKModelDownloadDidFailNotification
+                                           object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
   [self.navigationController.navigationBar setHidden:NO];
+  // We wouldn't have needed to remove the observers if iOS 9.0+ had cleaned up the observer "the
+  // next time it would have posted to it" as documented here:
+  // https://developer.apple.com/documentation/foundation/nsnotificationcenter/1413994-removeobserver
+  [NSNotificationCenter.defaultCenter removeObserver:self
+                                                name:MLKModelDownloadDidSucceedNotification
+                                              object:nil];
+  [NSNotificationCenter.defaultCenter removeObserver:self
+                                                name:MLKModelDownloadDidFailNotification
+                                              object:nil];
 }
 
 - (IBAction)detect:(id)sender {
@@ -546,15 +563,6 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   if ([self.modelManager isModelDownloaded:remoteModel]) {
     return;
   }
-  [NSNotificationCenter.defaultCenter addObserver:self
-                                         selector:@selector(remoteModelDownloadDidSucceed:)
-                                             name:MLKModelDownloadDidSucceedNotification
-                                           object:nil];
-  [NSNotificationCenter.defaultCenter addObserver:self
-                                         selector:@selector(remoteModelDownloadDidFail:)
-                                             name:MLKModelDownloadDidFailNotification
-                                           object:nil];
-
   __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
     __strong typeof(weakSelf) strongSelf = weakSelf;
