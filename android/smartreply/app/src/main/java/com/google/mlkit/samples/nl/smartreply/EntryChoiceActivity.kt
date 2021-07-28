@@ -14,25 +14,35 @@
  * limitations under the License.
  */
 
-package com.google.mlkit.samples.smartreply
+package com.google.mlkit.samples.nl.smartreply
 
 import android.content.Intent
-import com.google.mlkit.samples.smartreply.java.MainActivity
+import androidx.appcompat.app.AppCompatDelegate
+import com.google.mlkit.samples.nl.smartreply.java.MainActivityJava
+import com.google.mlkit.samples.nl.smartreply.kotlin.MainActivityKotlin
 import com.mlkit.example.internal.BaseEntryChoiceActivity
 import com.mlkit.example.internal.Choice
 
 class EntryChoiceActivity : BaseEntryChoiceActivity() {
 
-    override fun getChoices(): List<Choice> {
-        return listOf(
-                Choice(
-                        "Java",
-                        "Run the ML Kit Smart Reply quickstart written in Java.",
-                        Intent(this, MainActivity::class.java)),
-                Choice(
-                        "Kotlin",
-                        "Run the ML Kit Smart Reply quickstart written in Kotlin.",
-                        Intent(this, com.google.mlkit.samples.smartreply.kotlin.MainActivity::class.java))
-        )
+  override fun getChoices(): List<Choice> {
+    return listOf(
+      Choice(
+        "Java",
+        "Run the ML Kit Smart Reply quickstart written in Java.",
+        Intent(this, MainActivityJava::class.java)
+      ),
+      Choice(
+        "Kotlin",
+        "Run the ML Kit Smart Reply quickstart written in Kotlin.",
+        Intent(this, MainActivityKotlin::class.java)
+      )
+    )
+  }
+
+  companion object {
+    init {
+      AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
+  }
 }

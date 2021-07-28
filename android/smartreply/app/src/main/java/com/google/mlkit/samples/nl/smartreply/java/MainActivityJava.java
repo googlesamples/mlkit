@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package com.google.mlkit.samples.smartreply.java;
+package com.google.mlkit.samples.nl.smartreply.java;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.mlkit.samples.nl.smartreply.R;
+import com.google.mlkit.samples.nl.smartreply.java.chat.ChatFragment;
 
-import com.google.mlkit.samples.smartreply.R;
-import com.google.mlkit.samples.smartreply.java.chat.ChatFragment;
+/** Default launcher activity. */
+public class MainActivityJava extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.main_smartreply_activity);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_smartreply_activity);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, ChatFragment.newInstance())
-                    .commitNow();
-        }
+    if (savedInstanceState == null) {
+      getSupportFragmentManager()
+          .beginTransaction()
+          .replace(R.id.container, ChatFragment.newInstance())
+          .commitNow();
     }
+  }
 }
