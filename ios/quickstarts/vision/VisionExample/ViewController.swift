@@ -1127,7 +1127,7 @@ private enum DetectorPickerRow: Int {
     detectPoseAccurate,
     detectSegmentationMaskSelfie
 
-  static let rowsCount = 16
+  static let rowsCount = 20
   static let componentsCount = 1
 
   public var description: String {

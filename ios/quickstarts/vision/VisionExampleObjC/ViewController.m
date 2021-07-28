@@ -39,7 +39,7 @@ static const CGFloat segmentationMaskAlpha = 0.5;
 static CGColorRef lineColor;
 static CGColorRef fillColor;
 
-static int const rowsCount = 16;
+static int const rowsCount = 20;
 static int const componentsCount = 1;
 
 /**
