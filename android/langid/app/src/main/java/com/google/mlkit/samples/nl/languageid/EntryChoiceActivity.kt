@@ -14,28 +14,34 @@
  * limitations under the License.
  */
 
-package com.google.mlkit.samples.languageid
+package com.google.mlkit.samples.nl.languageid
 
 import android.content.Intent
+import com.google.mlkit.samples.nl.languageid.java.MainActivityJava
+import com.google.mlkit.samples.nl.languageid.kotlin.MainActivityKotlin
 import com.mlkit.example.internal.BaseEntryChoiceActivity
 import com.mlkit.example.internal.Choice
-import com.google.mlkit.samples.languageid.java.MainActivity
 
 class EntryChoiceActivity : BaseEntryChoiceActivity() {
 
-    override fun getChoices(): List<Choice> {
-        return listOf(
-                Choice(
-                        "Java",
-                        "Run the ML Kit Language ID quickstart written in Java.",
-                        Intent(this,
-                                MainActivity::class.java)),
-                Choice(
-                        "Kotlin",
-                        "Run the ML Kit Language ID quickstart written in Kotlin.",
-                        Intent(
-                                this,
-                                com.google.mlkit.samples.languageid.kotlin.MainActivity::class.java))
+  override fun getChoices(): List<Choice> {
+    return listOf(
+      Choice(
+        "Java",
+        "Run the ML Kit Language ID quickstart written in Java.",
+        Intent(
+          this,
+          MainActivityJava::class.java
         )
-    }
+      ),
+      Choice(
+        "Kotlin",
+        "Run the ML Kit Language ID quickstart written in Kotlin.",
+        Intent(
+          this,
+          MainActivityKotlin::class.java
+        )
+      )
+    )
+  }
 }
