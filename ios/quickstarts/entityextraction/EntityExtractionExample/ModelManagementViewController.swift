@@ -69,7 +69,7 @@ class ModelManagementViewController: UITableViewController {
         }
       #endif
     } else {
-      // TODO(mikie): implement status symbols for pre-13.
+      cell.textLabel!.text! += downloadedLanguages.contains(language) ? ": Delete" : ": Download"
     }
     return cell
   }

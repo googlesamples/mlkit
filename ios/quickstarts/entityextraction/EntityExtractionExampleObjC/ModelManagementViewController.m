@@ -89,7 +89,9 @@ NS_ASSUME_NONNULL_BEGIN
       cell.imageView.image = [UIImage systemImageNamed:@"icloud.and.arrow.down"];
     }
   } else {
-    // TODO(mikie): status indicator on iOS < 13
+    NSString *action =
+        [self.downloadedLanguages containsObject:language] ? @": Delete" : @": Download";
+    cell.textLabel.text = [cell.textLabel.text stringByAppendingString:action];
   }
   return cell;
 }
