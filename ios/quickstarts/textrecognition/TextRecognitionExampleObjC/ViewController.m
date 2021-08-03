@@ -27,21 +27,7 @@ static NSArray *images;
 
 static NSString *const detectionNoResultsMessage = @"No results returned.";
 
-static int const rowsCount = 1;
-static int const componentsCount = 1;
-
-/**
- * @enum DetectorPickerRow
- * Defines the ML Kit SDK vision detector types.
- */
-typedef NS_ENUM(NSInteger, DetectorPickerRow) {
-  /** Vision text vision detector. */
-  DetectorPickerRowDetectTextOnDevice,
-};
-
 @interface ViewController () <UINavigationControllerDelegate,
-                              UIPickerViewDelegate,
-                              UIPickerViewDataSource,
                               UIImagePickerControllerDelegate>
 
 /** A string holding current results from detection. */
@@ -57,7 +43,6 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 // Image counter.
 @property(nonatomic) NSUInteger currentImage;
 
-@property(weak, nonatomic) IBOutlet UIPickerView *detectorPicker;
 @property(weak, nonatomic) IBOutlet UIImageView *imageView;
 @property(weak, nonatomic) IBOutlet UIBarButtonItem *photoCameraButton;
 @property(weak, nonatomic) IBOutlet UIBarButtonItem *videoCameraButton;
@@ -65,13 +50,6 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 @end
 
 @implementation ViewController
-
-- (NSString *)stringForDetectorPickerRow:(DetectorPickerRow)detectorPickerRow {
-  switch (detectorPickerRow) {
-    case DetectorPickerRowDetectTextOnDevice:
-      return @"Text Recognition";
-  }
-}
 
 - (void)viewDidLoad {
   [super viewDidLoad];
@@ -97,9 +75,6 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   _imagePicker.delegate = self;
   _imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
 
-  _detectorPicker.delegate = self;
-  _detectorPicker.dataSource = self;
-
   BOOL isCameraAvailable =
       [UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront] ||
       [UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear];
@@ -112,9 +87,6 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   } else {
     [_photoCameraButton setEnabled:NO];
   }
-
-  int defaultRow = 0;
-  [_detectorPicker selectRow:defaultRow inComponent:0 animated:NO];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -129,10 +101,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 - (IBAction)detect:(id)sender {
   [self clearResults];
-  NSInteger rowIndex = [_detectorPicker selectedRowInComponent:0];
-  if (rowIndex == DetectorPickerRowDetectTextOnDevice) {
-    [self detectTextOnDeviceInImage:_imageView.image];
-  }
+  [self detectTextOnDeviceInImage:_imageView.image];
 }
 
 - (IBAction)openPhotoLibrary:(id)sender {
@@ -295,31 +264,6 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
           [strongSelf.resultsText appendFormat:@"%@\n", text.text];
           [strongSelf showResults];
         }];
-}
-
-#pragma mark - UIPickerViewDataSource
-
-- (NSInteger)numberOfComponentsInPickerView:(nonnull UIPickerView *)pickerView {
-  return componentsCount;
-}
-
-- (NSInteger)pickerView:(nonnull UIPickerView *)pickerView
-    numberOfRowsInComponent:(NSInteger)component {
-  return rowsCount;
-}
-
-#pragma mark - UIPickerViewDelegate
-
-- (nullable NSString *)pickerView:(UIPickerView *)pickerView
-                      titleForRow:(NSInteger)row
-                     forComponent:(NSInteger)component {
-  return [self stringForDetectorPickerRow:row];
-}
-
-- (void)pickerView:(UIPickerView *)pickerView
-      didSelectRow:(NSInteger)row
-       inComponent:(NSInteger)component {
-  [self clearResults];
 }
 
 #pragma mark - UIImagePickerControllerDelegate

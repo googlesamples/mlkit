@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="0Q6-lG-sCk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="0Q6-lG-sCk">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -35,14 +34,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xs4-mo-RjW">
-                                <rect key="frame" x="0.0" y="488" width="375" height="180"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="180" id="f3t-1V-izd"/>
-                                </constraints>
-                                <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
-                            </pickerView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="POq-8j-gOJ" userLabel="Top Toolbar">
                                 <rect key="frame" x="0.0" y="56" width="375" height="44"/>
                                 <constraints>
@@ -71,10 +62,10 @@
                                 </items>
                             </toolbar>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cCp-tA-gDT">
-                                <rect key="frame" x="0.0" y="100" width="375" height="350"/>
+                                <rect key="frame" x="0.0" y="100" width="375" height="523"/>
                             </imageView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="yof-fW-vlO" userLabel="Bottom Toolbar">
-                                <rect key="frame" x="0.0" y="450" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="74h-Pf-w4T"/>
                                 </constraints>
@@ -93,17 +84,14 @@
                         <constraints>
                             <constraint firstItem="cCp-tA-gDT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="45c-Cz-uBY"/>
                             <constraint firstItem="POq-8j-gOJ" firstAttribute="top" secondItem="LHw-b6-B2a" secondAttribute="bottom" constant="12" id="7wp-P3-gcC"/>
-                            <constraint firstItem="Xs4-mo-RjW" firstAttribute="top" secondItem="yof-fW-vlO" secondAttribute="bottom" constant="-6" id="Eqz-89-OCh"/>
                             <constraint firstAttribute="trailing" secondItem="POq-8j-gOJ" secondAttribute="trailing" id="I0X-8i-nPT"/>
+                            <constraint firstItem="Ydg-C1-MLG" firstAttribute="top" secondItem="yof-fW-vlO" secondAttribute="bottom" id="OP6-mK-H38"/>
                             <constraint firstItem="cCp-tA-gDT" firstAttribute="top" secondItem="POq-8j-gOJ" secondAttribute="bottom" id="Tv4-sH-Gef"/>
                             <constraint firstAttribute="trailing" secondItem="cCp-tA-gDT" secondAttribute="trailing" id="UKP-ZW-thL"/>
                             <constraint firstItem="yof-fW-vlO" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Wki-fU-blU"/>
                             <constraint firstItem="POq-8j-gOJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="cho-7Z-rGg"/>
                             <constraint firstAttribute="trailing" secondItem="yof-fW-vlO" secondAttribute="trailing" id="etE-tG-0CW"/>
-                            <constraint firstAttribute="trailing" secondItem="Xs4-mo-RjW" secondAttribute="trailing" id="gvn-CW-6Xx"/>
                             <constraint firstItem="yof-fW-vlO" firstAttribute="top" secondItem="cCp-tA-gDT" secondAttribute="bottom" id="oQg-Ks-4Jj"/>
-                            <constraint firstItem="Ydg-C1-MLG" firstAttribute="top" secondItem="Xs4-mo-RjW" secondAttribute="bottom" constant="-1" id="rWN-Im-hnc"/>
-                            <constraint firstItem="Xs4-mo-RjW" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="uNU-KO-ASb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="xYg-VP-pps">
@@ -111,7 +99,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="detectButton" destination="Dwb-uQ-3dE" id="8Hn-BT-3m1"/>
-                        <outlet property="detectorPicker" destination="Xs4-mo-RjW" id="kFH-5K-Mcc"/>
                         <outlet property="imageView" destination="cCp-tA-gDT" id="FIt-va-neE"/>
                         <outlet property="photoCameraButton" destination="jD4-E9-bbj" id="cf0-4Q-UL8"/>
                         <outlet property="videoCameraButton" destination="M1D-Qg-lKI" id="3Cr-4e-JCG"/>

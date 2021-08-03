@@ -42,8 +42,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
   // MARK: - IBOutlets
 
-  @IBOutlet fileprivate weak var detectorPicker: UIPickerView!
-
   @IBOutlet fileprivate weak var imageView: UIImageView!
   @IBOutlet fileprivate weak var photoCameraButton: UIBarButtonItem!
   @IBOutlet fileprivate weak var videoCameraButton: UIBarButtonItem!
@@ -66,9 +64,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
     imagePicker.delegate = self
     imagePicker.sourceType = .photoLibrary
 
-    detectorPicker.delegate = self
-    detectorPicker.dataSource = self
-
     let isCameraAvailable =
       UIImagePickerController.isCameraDeviceAvailable(.front)
       || UIImagePickerController.isCameraDeviceAvailable(.rear)
@@ -81,9 +76,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
     } else {
       photoCameraButton.isEnabled = false
     }
-
-    let defaultRow = (DetectorPickerRow.rowsCount / 2) - 1
-    detectorPicker.selectRow(defaultRow, inComponent: 0, animated: false)
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -102,14 +94,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
   @IBAction func detect(_ sender: Any) {
     clearResults()
-    let row = detectorPicker.selectedRow(inComponent: 0)
-    if let rowIndex = DetectorPickerRow(rawValue: row) {
-      if rowIndex == .detectTextOnDevice {
-        detectTextOnDevice(image: imageView.image)
-      }
-    } else {
-      print("No such item at row \(row) in detector picker.")
-    }
+    detectTextOnDevice(image: imageView.image)
   }
 
   @IBAction func openPhotoLibrary(_ sender: Any) {
@@ -272,33 +257,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
   }
 }
 
-extension ViewController: UIPickerViewDataSource, UIPickerViewDelegate {
-
-  // MARK: - UIPickerViewDataSource
-
-  func numberOfComponents(in pickerView: UIPickerView) -> Int {
-    return DetectorPickerRow.componentsCount
-  }
-
-  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-    return DetectorPickerRow.rowsCount
-  }
-
-  // MARK: - UIPickerViewDelegate
-
-  func pickerView(
-    _ pickerView: UIPickerView,
-    titleForRow row: Int,
-    forComponent component: Int
-  ) -> String? {
-    return DetectorPickerRow(rawValue: row)?.description
-  }
-
-  func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-    clearResults()
-  }
-}
-
 // MARK: - UIImagePickerControllerDelegate
 
 extension ViewController: UIImagePickerControllerDelegate {
@@ -344,20 +302,6 @@ extension ViewController {
 }
 
 // MARK: - Enums
-
-private enum DetectorPickerRow: Int {
-  case detectTextOnDevice = 0
-
-  static let rowsCount = 1
-  static let componentsCount = 1
-
-  public var description: String {
-    switch self {
-    case .detectTextOnDevice:
-      return "Text Recognition"
-    }
-  }
-}
 
 private enum Constants {
   static let images = ["image_has_text.jpg"]
