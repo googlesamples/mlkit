@@ -263,13 +263,17 @@ class EntityViewController: UIViewController, UITextViewDelegate, UIPickerViewDa
             NSMutableAttributedString.init(
               string: "Entity Extractor failed with error \(error!)", attributes: outputAttributes))
         }
-        if result?.count == 0 {
+        guard let result = result else {
+          print("Result is nil.")
+          return
+        }
+        if result.count == 0 {
           output.append(
             NSMutableAttributedString.init(
               string: "No results returned.", attributes: outputAttributes))
         } else {
           var i = 0
-          for annotation in result! {
+          for annotation in result {
             let color = self.colorPalette[i % self.colorPalette.count]
             i += 1
             input.addAttributes(

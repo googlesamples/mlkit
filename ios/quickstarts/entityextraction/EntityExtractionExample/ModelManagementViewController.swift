@@ -60,16 +60,10 @@ class ModelManagementViewController: UITableViewController {
     let language = languages[indexPath.row]
     let code = language.toLanguageTag()
     cell.textLabel!.text = Locale.current.localizedString(forLanguageCode: code)
-    if #available(iOS 13.0, *) {
-      #if swift(>=5.1)
-        if downloadedLanguages.contains(language) {
-          cell.imageView!.image = UIImage.init(systemName: "trash.circle")
-        } else {
-          cell.imageView!.image = UIImage.init(systemName: "icloud.and.arrow.down")
-        }
-      #endif
+    if downloadedLanguages.contains(language) {
+      cell.imageView!.image = UIImage.init(named: "delete_24pt")
     } else {
-      cell.textLabel!.text! += downloadedLanguages.contains(language) ? ": Delete" : ": Download"
+      cell.imageView!.image = UIImage.init(named: "cloud_download_24pt")
     }
     return cell
   }
