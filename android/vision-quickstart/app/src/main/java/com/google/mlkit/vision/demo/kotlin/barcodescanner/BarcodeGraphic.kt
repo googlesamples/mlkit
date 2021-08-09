@@ -26,7 +26,7 @@ import com.google.mlkit.vision.demo.GraphicOverlay.Graphic
 import kotlin.math.max
 import kotlin.math.min
 
-/** Graphic instance for rendering Barcode position and content information in an overlay view.  */
+/** Graphic instance for rendering Barcode position and content information in an overlay view. */
 class BarcodeGraphic constructor(overlay: GraphicOverlay?, private val barcode: Barcode?) :
   Graphic(overlay) {
   private val rectPaint: Paint = Paint()
@@ -61,9 +61,8 @@ class BarcodeGraphic constructor(overlay: GraphicOverlay?, private val barcode: 
     rect.bottom = translateY(rect.bottom)
     canvas.drawRect(rect, rectPaint)
     // Draws other object info.
-    val lineHeight =
-      TEXT_SIZE + 2 * STROKE_WIDTH
-    val textWidth = barcodePaint.measureText(barcode.rawValue)
+    val lineHeight = TEXT_SIZE + 2 * STROKE_WIDTH
+    val textWidth = barcodePaint.measureText(barcode.displayValue)
     canvas.drawRect(
       rect.left - STROKE_WIDTH,
       rect.top - lineHeight,
@@ -72,12 +71,7 @@ class BarcodeGraphic constructor(overlay: GraphicOverlay?, private val barcode: 
       labelPaint
     )
     // Renders the barcode at the bottom of the box.
-    canvas.drawText(
-      barcode.rawValue!!,
-      rect.left,
-      rect.top - STROKE_WIDTH,
-      barcodePaint
-    )
+    canvas.drawText(barcode.displayValue!!, rect.left, rect.top - STROKE_WIDTH, barcodePaint)
   }
 
   companion object {

@@ -49,11 +49,13 @@ public class TextGraphic extends Graphic {
   private final Paint textPaint;
   private final Paint labelPaint;
   private final Text text;
+  private final Boolean shouldGroupTextInBlocks;
 
-  TextGraphic(GraphicOverlay overlay, Text text) {
+  TextGraphic(GraphicOverlay overlay, Text text, Boolean shouldGroupTextInBlocks) {
     super(overlay);
 
     this.text = text;
+    this.shouldGroupTextInBlocks = shouldGroupTextInBlocks;
 
     rectPaint = new Paint();
     rectPaint.setColor(MARKER_COLOR);
@@ -80,39 +82,51 @@ public class TextGraphic extends Graphic {
       Log.d(TAG, "TextBlock text is: " + textBlock.getText());
       Log.d(TAG, "TextBlock boundingbox is: " + textBlock.getBoundingBox());
       Log.d(TAG, "TextBlock cornerpoint is: " + Arrays.toString(textBlock.getCornerPoints()));
-      for (Line line : textBlock.getLines()) {
-        Log.d(TAG, "Line text is: " + line.getText());
-        Log.d(TAG, "Line boundingbox is: " + line.getBoundingBox());
-        Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.getCornerPoints()));
-        // Draws the bounding box around the TextBlock.
-        RectF rect = new RectF(line.getBoundingBox());
-        // If the image is flipped, the left will be translated to right, and the right to left.
-        float x0 = translateX(rect.left);
-        float x1 = translateX(rect.right);
-        rect.left = min(x0, x1);
-        rect.right = max(x0, x1);
-        rect.top = translateY(rect.top);
-        rect.bottom = translateY(rect.bottom);
-        canvas.drawRect(rect, rectPaint);
+      if (shouldGroupTextInBlocks) {
+        drawText(
+            textBlock.getText(),
+            new RectF(textBlock.getBoundingBox()),
+            TEXT_SIZE * textBlock.getLines().size() + 2 * STROKE_WIDTH,
+            canvas);
+      } else {
+        for (Line line : textBlock.getLines()) {
+          Log.d(TAG, "Line text is: " + line.getText());
+          Log.d(TAG, "Line boundingbox is: " + line.getBoundingBox());
+          Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.getCornerPoints()));
+          drawText(
+              line.getText(),
+              new RectF(line.getBoundingBox()),
+              TEXT_SIZE + 2 * STROKE_WIDTH,
+              canvas);
 
-        float lineHeight = TEXT_SIZE + 2 * STROKE_WIDTH;
-        float textWidth = textPaint.measureText(line.getText());
-        canvas.drawRect(
-            rect.left - STROKE_WIDTH,
-            rect.top - lineHeight,
-            rect.left + textWidth + 2 * STROKE_WIDTH,
-            rect.top,
-            labelPaint);
-        // Renders the text at the bottom of the box.
-        canvas.drawText(line.getText(), rect.left, rect.top - STROKE_WIDTH, textPaint);
-
-        for (Element element : line.getElements()) {
-          Log.d(TAG, "Element text is: " + element.getText());
-          Log.d(TAG, "Element boundingbox is: " + element.getBoundingBox());
-          Log.d(TAG, "Element cornerpoint is: " + Arrays.toString(element.getCornerPoints()));
-          Log.d(TAG, "Element language is: " + element.getRecognizedLanguage());
+          for (Element element : line.getElements()) {
+            Log.d(TAG, "Element text is: " + element.getText());
+            Log.d(TAG, "Element boundingbox is: " + element.getBoundingBox());
+            Log.d(TAG, "Element cornerpoint is: " + Arrays.toString(element.getCornerPoints()));
+            Log.d(TAG, "Element language is: " + element.getRecognizedLanguage());
+          }
         }
       }
     }
+  }
+
+  private void drawText(String text, RectF rect, float textHeight, Canvas canvas) {
+    // If the image is flipped, the left will be translated to right, and the right to left.
+    float x0 = translateX(rect.left);
+    float x1 = translateX(rect.right);
+    rect.left = min(x0, x1);
+    rect.right = max(x0, x1);
+    rect.top = translateY(rect.top);
+    rect.bottom = translateY(rect.bottom);
+    canvas.drawRect(rect, rectPaint);
+    float textWidth = textPaint.measureText(text);
+    canvas.drawRect(
+        rect.left - STROKE_WIDTH,
+        rect.top - textHeight,
+        rect.left + textWidth + 2 * STROKE_WIDTH,
+        rect.top,
+        labelPaint);
+    // Renders the text at the bottom of the box.
+    canvas.drawText(text, rect.left, rect.top - STROKE_WIDTH, textPaint);
   }
 }

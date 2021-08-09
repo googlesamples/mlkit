@@ -57,10 +57,10 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Barcode model
-    implementation 'com.google.mlkit:barcode-scanning:16.2.0'
+    implementation 'com.google.mlkit:barcode-scanning:17.0.0'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.2.0'
+    // implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.2.1'
 
     // Object detection feature with bundled default classifier
     implementation 'com.google.mlkit:object-detection:16.2.6'
@@ -75,7 +75,14 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-face-detection:16.2.0'
 
     // Text features
-    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.3.0'
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:17.0.0'
+    // Or comment the dependency above and uncomment the dependency below to
+    // use bundled model.
+    // implementation 'com.google.mlkit:text-recognition:16.0.0-beta1'
+    implementation 'com.google.mlkit:text-recognition-chinese:16.0.0-beta1'
+    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0-beta1'
+    implementation 'com.google.mlkit:text-recognition-japanese:16.0.0-beta1'
+    implementation 'com.google.mlkit:text-recognition-korean:16.0.0-beta1'
 
     // Image labeling
     implementation 'com.google.mlkit:image-labeling:17.0.5'
@@ -87,9 +94,9 @@ dependencies {
     implementation 'com.google.mlkit:image-labeling-custom:16.3.1'
 
     // Pose detection with default models
-    implementation 'com.google.mlkit:pose-detection:17.0.1-beta4'
+    implementation 'com.google.mlkit:pose-detection:17.0.1-beta5'
     // Pose detection with accurate models
-    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta4'
+    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta5'
 
     // Selfie segmentation
     implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta2'

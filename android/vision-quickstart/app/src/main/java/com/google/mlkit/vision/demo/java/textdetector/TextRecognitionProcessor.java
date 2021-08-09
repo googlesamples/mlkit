@@ -24,11 +24,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.java.VisionProcessorBase;
+import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.Text.Element;
 import com.google.mlkit.vision.text.Text.Line;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.TextRecognizerOptionsInterface;
 import java.util.List;
 
 /** Processor for the text detector demo. */
@@ -37,10 +39,13 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
   private static final String TAG = "TextRecProcessor";
 
   private final TextRecognizer textRecognizer;
+  private final Boolean shouldGroupRecognizedTextInBlocks;
 
-  public TextRecognitionProcessor(Context context) {
+  public TextRecognitionProcessor(
+      Context context, TextRecognizerOptionsInterface textRecognizerOptions) {
     super(context);
-    textRecognizer = TextRecognition.getClient();
+    shouldGroupRecognizedTextInBlocks = PreferenceUtils.shouldGroupRecognizedTextInBlocks(context);
+    textRecognizer = TextRecognition.getClient(textRecognizerOptions);
   }
 
   @Override
@@ -58,7 +63,7 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
   protected void onSuccess(@NonNull Text text, @NonNull GraphicOverlay graphicOverlay) {
     Log.d(TAG, "On-device Text detection successful");
     logExtrasForTesting(text);
-    graphicOverlay.add(new TextGraphic(graphicOverlay, text));
+    graphicOverlay.add(new TextGraphic(graphicOverlay, text, shouldGroupRecognizedTextInBlocks));
   }
 
   private static void logExtrasForTesting(Text text) {

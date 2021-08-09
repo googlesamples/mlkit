@@ -22,13 +22,16 @@ import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.demo.GraphicOverlay
 import com.google.mlkit.vision.demo.kotlin.VisionProcessorBase
+import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 
 /** Processor for the text detector demo.  */
-class TextRecognitionProcessor(context: Context) : VisionProcessorBase<Text>(context) {
-  private val textRecognizer: TextRecognizer = TextRecognition.getClient()
+class TextRecognitionProcessor(private val context: Context, textRecognizerOptions: TextRecognizerOptionsInterface) : VisionProcessorBase<Text>(context) {
+  private val textRecognizer: TextRecognizer = TextRecognition.getClient(textRecognizerOptions)
+  private val shouldGroupRecognizedTextInBlocks: Boolean = PreferenceUtils.shouldGroupRecognizedTextInBlocks(context)
 
   override fun stop() {
     super.stop()
@@ -42,7 +45,8 @@ class TextRecognitionProcessor(context: Context) : VisionProcessorBase<Text>(con
   override fun onSuccess(text: Text, graphicOverlay: GraphicOverlay) {
     Log.d(TAG, "On-device Text detection successful")
     logExtrasForTesting(text)
-    graphicOverlay.add(TextGraphic(graphicOverlay, text))
+    graphicOverlay.add(
+      TextGraphic(graphicOverlay, text, shouldGroupRecognizedTextInBlocks))
   }
 
   override fun onFailure(e: Exception) {

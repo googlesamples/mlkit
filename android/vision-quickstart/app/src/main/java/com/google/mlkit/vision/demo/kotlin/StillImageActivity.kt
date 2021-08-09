@@ -55,6 +55,11 @@ import com.google.mlkit.vision.demo.preference.SettingsActivity
 import com.google.mlkit.vision.demo.preference.SettingsActivity.LaunchSource
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
+import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
+import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
+import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.IOException
 import java.util.ArrayList
 import kotlin.math.max
@@ -175,12 +180,16 @@ class StillImageActivity : AppCompatActivity() {
     options.add(CUSTOM_AUTOML_OBJECT_DETECTION)
     options.add(FACE_DETECTION)
     options.add(BARCODE_SCANNING)
-    options.add(TEXT_RECOGNITION)
     options.add(IMAGE_LABELING)
     options.add(IMAGE_LABELING_CUSTOM)
     options.add(CUSTOM_AUTOML_LABELING)
     options.add(POSE_DETECTION)
     options.add(SELFIE_SEGMENTATION)
+    options.add(TEXT_RECOGNITION_LATIN)
+    options.add(TEXT_RECOGNITION_CHINESE)
+    options.add(TEXT_RECOGNITION_DEVANAGARI)
+    options.add(TEXT_RECOGNITION_JAPANESE)
+    options.add(TEXT_RECOGNITION_KOREAN)
 
     // Creating adapter for featureSpinner
     val dataAdapter =
@@ -442,9 +451,21 @@ class StillImageActivity : AppCompatActivity() {
         BARCODE_SCANNING ->
           imageProcessor =
             BarcodeScannerProcessor(this)
-        TEXT_RECOGNITION ->
+        TEXT_RECOGNITION_LATIN ->
           imageProcessor =
-            TextRecognitionProcessor(this)
+            TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build())
+        TEXT_RECOGNITION_CHINESE ->
+          imageProcessor =
+            TextRecognitionProcessor(this, ChineseTextRecognizerOptions.Builder().build())
+        TEXT_RECOGNITION_DEVANAGARI ->
+          imageProcessor =
+            TextRecognitionProcessor(this, DevanagariTextRecognizerOptions.Builder().build())
+        TEXT_RECOGNITION_JAPANESE ->
+          imageProcessor =
+            TextRecognitionProcessor(this, JapaneseTextRecognizerOptions.Builder().build())
+        TEXT_RECOGNITION_KOREAN ->
+          imageProcessor =
+            TextRecognitionProcessor(this, KoreanTextRecognizerOptions.Builder().build())
         IMAGE_LABELING ->
           imageProcessor =
             LabelDetectorProcessor(
@@ -530,7 +551,11 @@ class StillImageActivity : AppCompatActivity() {
     private const val CUSTOM_AUTOML_OBJECT_DETECTION = "Custom AutoML Object Detection (Flower)"
     private const val FACE_DETECTION = "Face Detection"
     private const val BARCODE_SCANNING = "Barcode Scanning"
-    private const val TEXT_RECOGNITION = "Text Recognition"
+    private const val TEXT_RECOGNITION_LATIN = "Text Recognition Latin"
+    private const val TEXT_RECOGNITION_CHINESE = "Text Recognition Chinese"
+    private const val TEXT_RECOGNITION_DEVANAGARI = "Text Recognition Devanagari"
+    private const val TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese"
+    private const val TEXT_RECOGNITION_KOREAN = "Text Recognition Korean"
     private const val IMAGE_LABELING = "Image Labeling"
     private const val IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Birds)"
     private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"

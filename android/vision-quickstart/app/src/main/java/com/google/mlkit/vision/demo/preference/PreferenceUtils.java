@@ -95,8 +95,7 @@ public class PreferenceUtils {
 
   public static boolean shouldHideDetectionInfo(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    String prefKey =
-        context.getString(R.string.pref_key_info_hide);
+    String prefKey = context.getString(R.string.pref_key_info_hide);
     return sharedPreferences.getBoolean(prefKey, false);
   }
 
@@ -264,6 +263,12 @@ public class PreferenceUtils {
     }
   }
 
+  public static boolean shouldGroupRecognizedTextInBlocks(Context context) {
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    String prefKey = context.getString(R.string.pref_key_group_recognized_text_in_blocks);
+    return sharedPreferences.getBoolean(prefKey, true);
+  }
+
   public static boolean shouldShowPoseDetectionInFrameLikelihoodLivePreview(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     String prefKey =
@@ -298,8 +303,7 @@ public class PreferenceUtils {
 
   public static boolean shouldSegmentationEnableRawSizeMask(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    String prefKey =
-        context.getString(R.string.pref_key_segmentation_raw_size_mask);
+    String prefKey = context.getString(R.string.pref_key_segmentation_raw_size_mask);
     return sharedPreferences.getBoolean(prefKey, false);
   }
 
