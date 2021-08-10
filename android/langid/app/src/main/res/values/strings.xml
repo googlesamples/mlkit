@@ -1,7 +1,13 @@
 <resources>
-    <string name="app_name">MLKit LanguageID</string>
-    <string name="help_text">Enter text and press button to identify language</string>
-    <string name="text_id_language">Identify most likely language</string>
-    <string name="text_find_all_possibilities">Show all possibilities</string>
-    <string name="language_id_error">Failed to identify language</string>
+  <string name="app_name">MLKit-LanguageID</string>
+  <string name="edit_text">Enter your text (≥ 20 bytes for accurate results)</string>
+  <string name="identify_language_button">Identify language</string>
+  <string name="identify_possible_languages_button">Identify possible languages</string>
+  <string name="clear_text_button">Clear text</string>
+  <string name="language">Identified language(s): %1$s</string>
+  <string name="input">Your input: %1$s</string>
+  <string name="empty_text_message">Please enter your text in order to identify the language.</string>
+  <string name="wait_message">Waiting…</string>
+  <string name="language_id_error">Failed to identify language</string>
+  <string name="language_id_context">ML Kit sample app to provide basic knowledge on using Language Identification API on Android.\nEnter your text in the text box above and press button to trigger the API.</string>
 </resources>
