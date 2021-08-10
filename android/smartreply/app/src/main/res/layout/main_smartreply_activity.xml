@@ -4,4 +4,4 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.google.mlkit.samples.apps.mlkit.smartreply.com.google.mlkit.samples.smartreply.java.MainActivity" />
+    tools:context="com.google.mlkit.samples.nl.smartreply.java.MainActivityJava" />
