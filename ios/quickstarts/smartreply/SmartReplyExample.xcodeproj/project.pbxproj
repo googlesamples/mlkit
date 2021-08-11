@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1036DA002087CA10003253C9 /* SmartReplyExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1036D9FF2087CA10003253C9 /* SmartReplyExampleTests.m */; };
-		1036DA0E2087CA25003253C9 /* SmartReplyExampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1036DA0D2087CA25003253C9 /* SmartReplyExampleUITests.m */; };
-		1036DA1C2087CA66003253C9 /* SmartReplyExampleSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1036DA1B2087CA66003253C9 /* SmartReplyExampleSwiftUITests.swift */; };
+		1036DA002087CA10003253C9 /* SmartReplyExampleObjCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1036D9FF2087CA10003253C9 /* SmartReplyExampleObjCTests.m */; };
+		1036DA0E2087CA25003253C9 /* SmartReplyExampleObjCUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1036DA0D2087CA25003253C9 /* SmartReplyExampleObjCUITests.m */; };
+		1036DA1C2087CA66003253C9 /* SmartReplyExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1036DA1B2087CA66003253C9 /* SmartReplyExampleUITests.swift */; };
 		1091729C22066E9D0059D03D /* UITextView+Placeholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1091729B22066E9D0059D03D /* UITextView+Placeholder.m */; };
 		1091729F2206767C0059D03D /* NSDate+Format.m in Sources */ = {isa = PBXBuildFile; fileRef = 1091729E2206767C0059D03D /* NSDate+Format.m */; };
 		109172A022067F750059D03D /* UITextViewPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106C558821F7958B00908FF7 /* UITextViewPlaceholder.swift */; };
@@ -33,33 +33,33 @@
 			containerPortal = 5F5A53441ADE670C00F81DF0 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 5F5A534B1ADE670C00F81DF0;
-			remoteInfo = SmartReplyExample;
+			remoteInfo = SmartReplyExampleObjC;
 		};
 		1036DA102087CA25003253C9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5F5A53441ADE670C00F81DF0 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 5F5A534B1ADE670C00F81DF0;
-			remoteInfo = SmartReplyExample;
+			remoteInfo = SmartReplyExampleObjC;
 		};
 		1036DA1E2087CA66003253C9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5F5A53441ADE670C00F81DF0 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 5F5A53781ADE67D500F81DF0;
-			remoteInfo = SmartReplyExampleSwift;
+			remoteInfo = SmartReplyExample;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1036D9FD2087CA10003253C9 /* SmartReplyExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartReplyExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1036D9FF2087CA10003253C9 /* SmartReplyExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmartReplyExampleTests.m; sourceTree = "<group>"; };
+		1036D9FD2087CA10003253C9 /* SmartReplyExampleObjCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartReplyExampleObjCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1036D9FF2087CA10003253C9 /* SmartReplyExampleObjCTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmartReplyExampleObjCTests.m; sourceTree = "<group>"; };
 		1036DA012087CA10003253C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1036DA0B2087CA25003253C9 /* SmartReplyExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartReplyExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1036DA0D2087CA25003253C9 /* SmartReplyExampleUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmartReplyExampleUITests.m; sourceTree = "<group>"; };
+		1036DA0B2087CA25003253C9 /* SmartReplyExampleObjCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartReplyExampleObjCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1036DA0D2087CA25003253C9 /* SmartReplyExampleObjCUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmartReplyExampleObjCUITests.m; sourceTree = "<group>"; };
 		1036DA0F2087CA25003253C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1036DA192087CA66003253C9 /* SmartReplyExampleSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartReplyExampleSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1036DA1B2087CA66003253C9 /* SmartReplyExampleSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartReplyExampleSwiftUITests.swift; sourceTree = "<group>"; };
+		1036DA192087CA66003253C9 /* SmartReplyExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartReplyExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1036DA1B2087CA66003253C9 /* SmartReplyExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartReplyExampleUITests.swift; sourceTree = "<group>"; };
 		1036DA1D2087CA66003253C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		106C558821F7958B00908FF7 /* UITextViewPlaceholder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextViewPlaceholder.swift; sourceTree = "<group>"; };
 		108F913D21FB8F1A0069ADDA /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
@@ -68,14 +68,14 @@
 		1091729D2206767C0059D03D /* NSDate+Format.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDate+Format.h"; sourceTree = "<group>"; };
 		1091729E2206767C0059D03D /* NSDate+Format.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Format.m"; sourceTree = "<group>"; };
 		10B054021C6A3C630061077D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		40B95AC124616FAD007AED02 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LaunchScreen.xib; path = SmartReplyExample/LaunchScreen.xib; sourceTree = SOURCE_ROOT; };
-		40B95AC4246179A9007AED02 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = SmartReplyExample/Assets.xcassets; sourceTree = SOURCE_ROOT; };
-		5F5A534C1ADE670C00F81DF0 /* SmartReplyExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartReplyExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		40B95AC124616FAD007AED02 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LaunchScreen.xib; path = SmartReplyExampleObjC/LaunchScreen.xib; sourceTree = SOURCE_ROOT; };
+		40B95AC4246179A9007AED02 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = SmartReplyExampleObjC/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		5F5A534C1ADE670C00F81DF0 /* SmartReplyExampleObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartReplyExampleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F5A53501ADE670C00F81DF0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5F5A53511ADE670C00F81DF0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5F5A53531ADE670C00F81DF0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5F5A53541ADE670C00F81DF0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		5F5A53791ADE67D500F81DF0 /* SmartReplyExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartReplyExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F5A53791ADE67D500F81DF0 /* SmartReplyExampleObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartReplyExampleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F5A537D1ADE67D500F81DF0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EF6DB4CA1CDD60F700319C08 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		EF6DB4D01CDD610200319C08 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
@@ -121,41 +121,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1036D9FE2087CA10003253C9 /* SmartReplyExampleTests */ = {
+		1036D9FE2087CA10003253C9 /* SmartReplyExampleObjCTests */ = {
 			isa = PBXGroup;
 			children = (
-				1036D9FF2087CA10003253C9 /* SmartReplyExampleTests.m */,
+				1036D9FF2087CA10003253C9 /* SmartReplyExampleObjCTests.m */,
 				1036DA012087CA10003253C9 /* Info.plist */,
 			);
-			path = SmartReplyExampleTests;
+			path = SmartReplyExampleObjCTests;
 			sourceTree = "<group>";
 		};
-		1036DA0C2087CA25003253C9 /* SmartReplyExampleUITests */ = {
+		1036DA0C2087CA25003253C9 /* SmartReplyExampleObjCUITests */ = {
 			isa = PBXGroup;
 			children = (
-				1036DA0D2087CA25003253C9 /* SmartReplyExampleUITests.m */,
+				1036DA0D2087CA25003253C9 /* SmartReplyExampleObjCUITests.m */,
 				1036DA0F2087CA25003253C9 /* Info.plist */,
 			);
-			path = SmartReplyExampleUITests;
+			path = SmartReplyExampleObjCUITests;
 			sourceTree = "<group>";
 		};
-		1036DA1A2087CA66003253C9 /* SmartReplyExampleSwiftUITests */ = {
+		1036DA1A2087CA66003253C9 /* SmartReplyExampleUITests */ = {
 			isa = PBXGroup;
 			children = (
-				1036DA1B2087CA66003253C9 /* SmartReplyExampleSwiftUITests.swift */,
+				1036DA1B2087CA66003253C9 /* SmartReplyExampleUITests.swift */,
 				1036DA1D2087CA66003253C9 /* Info.plist */,
 			);
-			path = SmartReplyExampleSwiftUITests;
+			path = SmartReplyExampleUITests;
 			sourceTree = "<group>";
 		};
 		5F5A53431ADE670C00F81DF0 = {
 			isa = PBXGroup;
 			children = (
-				5F5A534E1ADE670C00F81DF0 /* SmartReplyExample */,
-				5F5A537A1ADE67D500F81DF0 /* SmartReplyExampleSwift */,
-				1036D9FE2087CA10003253C9 /* SmartReplyExampleTests */,
-				1036DA0C2087CA25003253C9 /* SmartReplyExampleUITests */,
-				1036DA1A2087CA66003253C9 /* SmartReplyExampleSwiftUITests */,
+				5F5A534E1ADE670C00F81DF0 /* SmartReplyExampleObjC */,
+				5F5A537A1ADE67D500F81DF0 /* SmartReplyExample */,
+				1036D9FE2087CA10003253C9 /* SmartReplyExampleObjCTests */,
+				1036DA0C2087CA25003253C9 /* SmartReplyExampleObjCUITests */,
+				1036DA1A2087CA66003253C9 /* SmartReplyExampleUITests */,
 				5F5A534D1ADE670C00F81DF0 /* Products */,
 				84AF1DBB4C2C1A28DF953D03 /* Pods */,
 			);
@@ -165,16 +165,16 @@
 		5F5A534D1ADE670C00F81DF0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5F5A534C1ADE670C00F81DF0 /* SmartReplyExample.app */,
-				5F5A53791ADE67D500F81DF0 /* SmartReplyExample.app */,
-				1036D9FD2087CA10003253C9 /* SmartReplyExampleTests.xctest */,
-				1036DA0B2087CA25003253C9 /* SmartReplyExampleUITests.xctest */,
-				1036DA192087CA66003253C9 /* SmartReplyExampleSwiftUITests.xctest */,
+				5F5A534C1ADE670C00F81DF0 /* SmartReplyExampleObjC.app */,
+				5F5A53791ADE67D500F81DF0 /* SmartReplyExampleObjC.app */,
+				1036D9FD2087CA10003253C9 /* SmartReplyExampleObjCTests.xctest */,
+				1036DA0B2087CA25003253C9 /* SmartReplyExampleObjCUITests.xctest */,
+				1036DA192087CA66003253C9 /* SmartReplyExampleUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5F5A534E1ADE670C00F81DF0 /* SmartReplyExample */ = {
+		5F5A534E1ADE670C00F81DF0 /* SmartReplyExampleObjC */ = {
 			isa = PBXGroup;
 			children = (
 				EF6DB4D31CDD610200319C08 /* MainViewController.h */,
@@ -187,7 +187,7 @@
 				1091729E2206767C0059D03D /* NSDate+Format.m */,
 				5F5A534F1ADE670C00F81DF0 /* Supporting Files */,
 			);
-			path = SmartReplyExample;
+			path = SmartReplyExampleObjC;
 			sourceTree = "<group>";
 		};
 		5F5A534F1ADE670C00F81DF0 /* Supporting Files */ = {
@@ -202,7 +202,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		5F5A537A1ADE67D500F81DF0 /* SmartReplyExampleSwift */ = {
+		5F5A537A1ADE67D500F81DF0 /* SmartReplyExample */ = {
 			isa = PBXGroup;
 			children = (
 				108F913D21FB8F1A0069ADDA /* DateExtension.swift */,
@@ -210,7 +210,7 @@
 				5F5A537D1ADE67D500F81DF0 /* AppDelegate.swift */,
 				106C558821F7958B00908FF7 /* UITextViewPlaceholder.swift */,
 			);
-			path = SmartReplyExampleSwift;
+			path = SmartReplyExample;
 			sourceTree = "<group>";
 		};
 		84AF1DBB4C2C1A28DF953D03 /* Pods */ = {
@@ -223,9 +223,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1036D9FC2087CA10003253C9 /* SmartReplyExampleTests */ = {
+		1036D9FC2087CA10003253C9 /* SmartReplyExampleObjCTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1036DA062087CA10003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleTests" */;
+			buildConfigurationList = 1036DA062087CA10003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjCTests" */;
 			buildPhases = (
 				1036D9F92087CA10003253C9 /* Sources */,
 				1036D9FA2087CA10003253C9 /* Frameworks */,
@@ -236,14 +236,14 @@
 			dependencies = (
 				1036DA032087CA10003253C9 /* PBXTargetDependency */,
 			);
-			name = SmartReplyExampleTests;
-			productName = SmartReplyExampleTests;
-			productReference = 1036D9FD2087CA10003253C9 /* SmartReplyExampleTests.xctest */;
+			name = SmartReplyExampleObjCTests;
+			productName = SmartReplyExampleObjCTests;
+			productReference = 1036D9FD2087CA10003253C9 /* SmartReplyExampleObjCTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		1036DA0A2087CA25003253C9 /* SmartReplyExampleUITests */ = {
+		1036DA0A2087CA25003253C9 /* SmartReplyExampleObjCUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1036DA122087CA25003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleUITests" */;
+			buildConfigurationList = 1036DA122087CA25003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjCUITests" */;
 			buildPhases = (
 				1036DA072087CA25003253C9 /* Sources */,
 				1036DA082087CA25003253C9 /* Frameworks */,
@@ -254,14 +254,14 @@
 			dependencies = (
 				1036DA112087CA25003253C9 /* PBXTargetDependency */,
 			);
-			name = SmartReplyExampleUITests;
-			productName = SmartReplyExampleUITests;
-			productReference = 1036DA0B2087CA25003253C9 /* SmartReplyExampleUITests.xctest */;
+			name = SmartReplyExampleObjCUITests;
+			productName = SmartReplyExampleObjCUITests;
+			productReference = 1036DA0B2087CA25003253C9 /* SmartReplyExampleObjCUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		1036DA182087CA66003253C9 /* SmartReplyExampleSwiftUITests */ = {
+		1036DA182087CA66003253C9 /* SmartReplyExampleUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1036DA202087CA66003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleSwiftUITests" */;
+			buildConfigurationList = 1036DA202087CA66003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleUITests" */;
 			buildPhases = (
 				1036DA152087CA66003253C9 /* Sources */,
 				1036DA162087CA66003253C9 /* Frameworks */,
@@ -272,14 +272,14 @@
 			dependencies = (
 				1036DA1F2087CA66003253C9 /* PBXTargetDependency */,
 			);
-			name = SmartReplyExampleSwiftUITests;
-			productName = SmartReplyExampleSwiftUITests;
-			productReference = 1036DA192087CA66003253C9 /* SmartReplyExampleSwiftUITests.xctest */;
+			name = SmartReplyExampleUITests;
+			productName = SmartReplyExampleUITests;
+			productReference = 1036DA192087CA66003253C9 /* SmartReplyExampleUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		5F5A534B1ADE670C00F81DF0 /* SmartReplyExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5F5A536F1ADE670C00F81DF0 /* Build configuration list for PBXNativeTarget "SmartReplyExample" */;
+			buildConfigurationList = 5F5A536F1ADE670C00F81DF0 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjC" */;
 			buildPhases = (
 				5F5A53481ADE670C00F81DF0 /* Sources */,
 				5F5A53491ADE670C00F81DF0 /* Frameworks */,
@@ -289,14 +289,14 @@
 			);
 			dependencies = (
 			);
-			name = SmartReplyExample;
+			name = SmartReplyExampleObjC;
 			productName = UserManagementExample;
-			productReference = 5F5A534C1ADE670C00F81DF0 /* SmartReplyExample.app */;
+			productReference = 5F5A534C1ADE670C00F81DF0 /* SmartReplyExampleObjC.app */;
 			productType = "com.apple.product-type.application";
 		};
-		5F5A53781ADE67D500F81DF0 /* SmartReplyExampleSwift */ = {
+		5F5A53781ADE67D500F81DF0 /* SmartReplyExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5F5A53991ADE67D500F81DF0 /* Build configuration list for PBXNativeTarget "SmartReplyExampleSwift" */;
+			buildConfigurationList = 5F5A53991ADE67D500F81DF0 /* Build configuration list for PBXNativeTarget "SmartReplyExample" */;
 			buildPhases = (
 				5F5A53751ADE67D500F81DF0 /* Sources */,
 				5F5A53761ADE67D500F81DF0 /* Frameworks */,
@@ -307,7 +307,7 @@
 			);
 			dependencies = (
 			);
-			name = SmartReplyExampleSwift;
+			name = SmartReplyExample;
 			productName = UserManagementExampleSwift;
 			productReference = 5F5A53791ADE67D500F81DF0 /* SmartReplyExample.app */;
 			productType = "com.apple.product-type.application";
@@ -366,7 +366,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5F5A53471ADE670C00F81DF0 /* Build configuration list for PBXProject "SmartReplyExample" */;
+			buildConfigurationList = 5F5A53471ADE670C00F81DF0 /* Build configuration list for PBXProject "SmartReplyExampleObjC" */;
 			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -380,11 +380,11 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5F5A534B1ADE670C00F81DF0 /* SmartReplyExample */,
-				5F5A53781ADE67D500F81DF0 /* SmartReplyExampleSwift */,
-				1036D9FC2087CA10003253C9 /* SmartReplyExampleTests */,
-				1036DA0A2087CA25003253C9 /* SmartReplyExampleUITests */,
-				1036DA182087CA66003253C9 /* SmartReplyExampleSwiftUITests */,
+				5F5A534B1ADE670C00F81DF0 /* SmartReplyExampleObjC */,
+				5F5A53781ADE67D500F81DF0 /* SmartReplyExample */,
+				1036D9FC2087CA10003253C9 /* SmartReplyExampleObjCTests */,
+				1036DA0A2087CA25003253C9 /* SmartReplyExampleObjCUITests */,
+				1036DA182087CA66003253C9 /* SmartReplyExampleUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -458,7 +458,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1036DA002087CA10003253C9 /* SmartReplyExampleTests.m in Sources */,
+				1036DA002087CA10003253C9 /* SmartReplyExampleObjCTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,7 +466,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1036DA0E2087CA25003253C9 /* SmartReplyExampleUITests.m in Sources */,
+				1036DA0E2087CA25003253C9 /* SmartReplyExampleObjCUITests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,7 +474,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1036DA1C2087CA66003253C9 /* SmartReplyExampleSwiftUITests.swift in Sources */,
+				1036DA1C2087CA66003253C9 /* SmartReplyExampleUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,17 +506,17 @@
 /* Begin PBXTargetDependency section */
 		1036DA032087CA10003253C9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5F5A534B1ADE670C00F81DF0 /* SmartReplyExample */;
+			target = 5F5A534B1ADE670C00F81DF0 /* SmartReplyExampleObjC */;
 			targetProxy = 1036DA022087CA10003253C9 /* PBXContainerItemProxy */;
 		};
 		1036DA112087CA25003253C9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5F5A534B1ADE670C00F81DF0 /* SmartReplyExample */;
+			target = 5F5A534B1ADE670C00F81DF0 /* SmartReplyExampleObjC */;
 			targetProxy = 1036DA102087CA25003253C9 /* PBXContainerItemProxy */;
 		};
 		1036DA1F2087CA66003253C9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5F5A53781ADE67D500F81DF0 /* SmartReplyExampleSwift */;
+			target = 5F5A53781ADE67D500F81DF0 /* SmartReplyExample */;
 			targetProxy = 1036DA1E2087CA66003253C9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -549,14 +549,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleTests/Info.plist;
+				INFOPLIST_FILE = SmartReplyExampleObjCTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleObjCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "x86_64 arm64 arm64e";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartReplyExample.app/SmartReplyExample";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartReplyExampleObjC.app/SmartReplyExampleObjC";
 			};
 			name = Debug;
 		};
@@ -577,14 +577,14 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleTests/Info.plist;
+				INFOPLIST_FILE = SmartReplyExampleObjCTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleObjCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "x86_64 arm64 arm64e";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartReplyExample.app/SmartReplyExample";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartReplyExampleObjC.app/SmartReplyExampleObjC";
 			};
 			name = Release;
 		};
@@ -603,14 +603,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleUITests/Info.plist;
+				INFOPLIST_FILE = SmartReplyExampleObjCUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleObjCUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "x86_64 arm64 arm64e";
-				TEST_TARGET_NAME = SmartReplyExample;
+				TEST_TARGET_NAME = SmartReplyExampleObjC;
 			};
 			name = Debug;
 		};
@@ -630,13 +630,13 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleUITests/Info.plist;
+				INFOPLIST_FILE = SmartReplyExampleObjCUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleObjCUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = SmartReplyExample;
+				TEST_TARGET_NAME = SmartReplyExampleObjC;
 				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Release;
@@ -656,16 +656,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleSwiftUITests/Info.plist;
+				INFOPLIST_FILE = SmartReplyExampleUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleSwiftUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = SmartReplyExampleSwift;
+				TEST_TARGET_NAME = SmartReplyExample;
 				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Debug;
@@ -686,15 +686,15 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleSwiftUITests/Info.plist;
+				INFOPLIST_FILE = SmartReplyExampleUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleSwiftUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = SmartReplyExampleSwift;
+				TEST_TARGET_NAME = SmartReplyExample;
 				VALID_ARCHS = "x86_64 arm64 arm64e";
 			};
 			name = Release;
@@ -817,10 +817,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "$(SRCROOT)/SmartReplyExample/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/SmartReplyExampleObjC/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.sampleapp.smartreply;
-				PRODUCT_NAME = SmartReplyExample;
+				PRODUCT_NAME = SmartReplyExampleObjC;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -840,10 +840,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "$(SRCROOT)/SmartReplyExample/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/SmartReplyExampleObjC/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.SmartReplyExample;
-				PRODUCT_NAME = SmartReplyExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.SmartReplyExampleObjC;
+				PRODUCT_NAME = SmartReplyExampleObjC;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
@@ -860,11 +860,11 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "$(SRCROOT)/SmartReplyExample/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/SmartReplyExampleObjC/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D COCOAPODS";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.SmartReplyExample;
-				PRODUCT_NAME = SmartReplyExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.SmartReplyExampleObjC;
+				PRODUCT_NAME = SmartReplyExampleObjC;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -883,10 +883,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "$(SRCROOT)/SmartReplyExample/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/SmartReplyExampleObjC/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.SmartReplyExample;
-				PRODUCT_NAME = SmartReplyExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.SmartReplyExampleObjC;
+				PRODUCT_NAME = SmartReplyExampleObjC;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -899,7 +899,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1036DA062087CA10003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleTests" */ = {
+		1036DA062087CA10003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjCTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1036DA042087CA10003253C9 /* Debug */,
@@ -908,7 +908,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1036DA122087CA25003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleUITests" */ = {
+		1036DA122087CA25003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjCUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1036DA132087CA25003253C9 /* Debug */,
@@ -917,7 +917,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1036DA202087CA66003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleSwiftUITests" */ = {
+		1036DA202087CA66003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1036DA212087CA66003253C9 /* Debug */,
@@ -926,7 +926,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5F5A53471ADE670C00F81DF0 /* Build configuration list for PBXProject "SmartReplyExample" */ = {
+		5F5A53471ADE670C00F81DF0 /* Build configuration list for PBXProject "SmartReplyExampleObjC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5F5A536D1ADE670C00F81DF0 /* Debug */,
@@ -935,7 +935,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5F5A536F1ADE670C00F81DF0 /* Build configuration list for PBXNativeTarget "SmartReplyExample" */ = {
+		5F5A536F1ADE670C00F81DF0 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5F5A53701ADE670C00F81DF0 /* Debug */,
@@ -944,7 +944,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5F5A53991ADE67D500F81DF0 /* Build configuration list for PBXNativeTarget "SmartReplyExampleSwift" */ = {
+		5F5A53991ADE67D500F81DF0 /* Build configuration list for PBXNativeTarget "SmartReplyExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5F5A53951ADE67D500F81DF0 /* Debug */,
