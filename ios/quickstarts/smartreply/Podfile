@@ -3,14 +3,12 @@ platform :ios, '10.0'
 
 project 'SmartReplyExample.xcodeproj'
 
-# [START smartreply_pod]
-pod 'GoogleMLKit/SmartReply'
-# [END smartreply_pod]
+pod 'GoogleMLKit/SmartReply', '2.3.0'
 
 pod 'MaterialComponents'
 pod 'SwiftLint'
 
-target 'SmartReplyExample' do
+target 'SmartReplyExampleObjC' do
 end
-target 'SmartReplyExampleSwift' do
+target 'SmartReplyExample' do
 end
