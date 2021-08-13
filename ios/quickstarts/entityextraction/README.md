@@ -12,7 +12,6 @@ language model.
 
 ## Getting Started
 
--   Needs XCode 11.7 or above.
 -   Run the sample on your iOS device or simulator.
 -   Type input text and change languages to see entity extraction in action.
 
