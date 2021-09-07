@@ -21,10 +21,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build.VERSION_CODES
 import android.os.SystemClock
-import androidx.annotation.RequiresApi
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.GuardedBy
+import androidx.annotation.RequiresApi
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import com.google.android.gms.tasks.OnFailureListener

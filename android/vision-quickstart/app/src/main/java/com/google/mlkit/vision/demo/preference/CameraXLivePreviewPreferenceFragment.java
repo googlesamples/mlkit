@@ -26,8 +26,8 @@ import android.os.Build.VERSION_CODES;
 import android.preference.ListPreference;
 import android.preference.PreferenceCategory;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import android.util.Size;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.camera.core.CameraSelector;
 import com.google.mlkit.vision.demo.R;
@@ -56,7 +56,8 @@ public class CameraXLivePreviewPreferenceFragment extends LivePreviewPreferenceF
   private void setUpCameraXTargetAnalysisSizePreference(
       @StringRes int previewSizePrefKeyId, int lensFacing) {
     ListPreference pref = (ListPreference) findPreference(getString(previewSizePrefKeyId));
-    CameraCharacteristics cameraCharacteristics = getCameraCharacteristics(getActivity(), lensFacing);
+    CameraCharacteristics cameraCharacteristics =
+        getCameraCharacteristics(getActivity(), lensFacing);
     String[] entries;
     if (cameraCharacteristics != null) {
       StreamConfigurationMap map =
