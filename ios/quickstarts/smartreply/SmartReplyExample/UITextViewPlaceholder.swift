@@ -67,7 +67,7 @@ extension UITextView {
   }
 
   /// Resize the placeholder UILabel to make sure it's in the same position as the UITextView text
-  private func resizePlaceholder() {
+  func resizePlaceholder() {
     if let placeholderLabel = self.viewWithTag(100) as? UILabel {
       let labelX = self.textContainer.lineFragmentPadding
       let labelY = self.textContainerInset.top - 2

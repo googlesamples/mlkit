@@ -180,6 +180,11 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
     super.viewWillDisappear(animated)
   }
 
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    inputTextView.resizePlaceholder()
+  }
+
   @objc func replySelected(reply: MDCChipView) {
     guard let title = reply.titleLabel.text else { return }
     inputTextView.insertText(title)

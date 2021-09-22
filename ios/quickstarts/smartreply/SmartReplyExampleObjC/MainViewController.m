@@ -213,6 +213,11 @@ NS_ASSUME_NONNULL_BEGIN
   [super viewWillDisappear:animated];
 }
 
+- (void)viewDidLayoutSubviews {
+  [super viewDidLayoutSubviews];
+  [_inputTextView resizePlaceholder];
+}
+
 - (void)enterPressed {
   NSString *text = _inputTextView.text;
   if (text.length > 0) {

@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UITextView (Placeholder)
 - (instancetype)initWithPlaceholder:(NSString *)placeholder;
 - (void)textViewDidChange:(UITextView *)textView;
+- (void)resizePlaceholder;
 @end
 
 NS_ASSUME_NONNULL_END
