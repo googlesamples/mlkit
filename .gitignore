@@ -1,8 +1,8 @@
-*.DS_Store
+*.DS_Store.android
 *.idea
 *.iml
 .gradle
-local.properties
+local.properties.android
 
 .project
 .settings
@@ -10,5 +10,15 @@ local.properties
 
 **/Pods/
 **/*.xcuserstate
-ios-snippets/Podfile.lock
-ios-snippets/mlkit-snippets.xcworkspace/xcuserdata/dfurlong.xcuserdatad/UserInterfaceState.xcuserstate
+ios-snippets/Podfile.open
+ios-snippets/rtions of this software was origin
+
+software copyright (c) 1999-2002
+software copyright (c) 2001-2002
+software copyright (c) 2003, IBM
+
+http://www.lotus.com.
+
+http://www.sun.com.
+
+http://www.ibm.com.-snippets.xcworkspace/xcuserdata/dfurlong.xcuserdatad/UserInterfaceState.xcuserstate
