@@ -22,3 +22,16 @@ http://www.lotus.com.
 http://www.sun.com.
 
 http://www.ibm.com.-snippets.xcworkspace/xcuserdata/dfurlong.xcuserdatad/UserInterfaceState.xcuserstate
+.gitignoresource distribution package (ie. all source and tools required to build
+   Xalan Java) of this product includes software developed by the following:
+       
+     - The Apache Software Foundation
+         - Xerces Java - see LICENSE.txt 
+         - JAXP 1.3 APIs - see LICENSE.txt
+         - Bytecode Engineering Library - see LICENSE.txt
+         - Regular Expression - see LICENSE.txt
+         - Ant - see LICENSE.txt
+         - Stylebook doc tool - see LICENSE.txt    
+       
+     - Elliot Joel Berk and C. Scott Ananian 
+         - Lexical Analyzer Generator (JLex) - see LICENSE.txt
