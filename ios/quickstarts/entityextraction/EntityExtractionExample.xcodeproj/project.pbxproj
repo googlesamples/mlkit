@@ -3,17 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		108489A5224415A1004D37A8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 108489A4224415A1004D37A8 /* AppDelegate.m */; };
 		108489A8224415A1004D37A8 /* EntityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 108489A7224415A1004D37A8 /* EntityViewController.m */; };
 		108489B3224415A4004D37A8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 108489B2224415A4004D37A8 /* main.m */; };
-		108489BD224415A4004D37A8 /* EntityExtractionExampleObjCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 108489BC224415A4004D37A8 /* EntityExtractionExampleObjCTests.m */; };
-		108489C8224415A5004D37A8 /* EntityExtractionExampleObjCUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 108489C7224415A5004D37A8 /* EntityExtractionExampleObjCUITests.m */; };
-		108489DA224415FF004D37A8 /* EntityExtractionExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108489D9224415FF004D37A8 /* EntityExtractionExampleTests.swift */; };
-		108489E82244160B004D37A8 /* EntityExtractionExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108489E72244160B004D37A8 /* EntityExtractionExampleUITests.swift */; };
 		108489F8224531B9004D37A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1E8DDC822259E3400536A5C /* Main.storyboard */; };
 		108489F9224531BF004D37A8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1E8DDCD22259E3500536A5C /* LaunchScreen.storyboard */; };
 		408FD251248AB72A00CA5C9D /* EntityExtractionModelIdentifierExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408FD250248AB72A00CA5C9D /* EntityExtractionModelIdentifierExtensions.swift */; };
@@ -27,37 +23,6 @@
 		C1E8DDCF22259E3500536A5C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1E8DDCD22259E3500536A5C /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		108489B9224415A4004D37A8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C1E8DDB922259E3400536A5C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 108489A0224415A1004D37A8;
-			remoteInfo = EntityExtractionExampleObjC;
-		};
-		108489C4224415A5004D37A8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C1E8DDB922259E3400536A5C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 108489A0224415A1004D37A8;
-			remoteInfo = EntityExtractionExampleObjC;
-		};
-		108489DC22441600004D37A8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C1E8DDB922259E3400536A5C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C1E8DDC022259E3400536A5C;
-			remoteInfo = EntityExtractionExample;
-		};
-		108489EA2244160B004D37A8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C1E8DDB922259E3400536A5C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C1E8DDC022259E3400536A5C;
-			remoteInfo = EntityExtractionExample;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		108489A1224415A1004D37A8 /* EntityExtractionExampleObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EntityExtractionExampleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		108489A3224415A1004D37A8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -65,18 +30,6 @@
 		108489A6224415A1004D37A8 /* EntityViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EntityViewController.h; sourceTree = "<group>"; };
 		108489A7224415A1004D37A8 /* EntityViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EntityViewController.m; sourceTree = "<group>"; };
 		108489B2224415A4004D37A8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		108489B8224415A4004D37A8 /* EntityExtractionExampleObjCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EntityExtractionExampleObjCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		108489BC224415A4004D37A8 /* EntityExtractionExampleObjCTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EntityExtractionExampleObjCTests.m; sourceTree = "<group>"; };
-		108489BE224415A4004D37A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		108489C3224415A4004D37A8 /* EntityExtractionExampleObjCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EntityExtractionExampleObjCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		108489C7224415A5004D37A8 /* EntityExtractionExampleObjCUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EntityExtractionExampleObjCUITests.m; sourceTree = "<group>"; };
-		108489C9224415A5004D37A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		108489D7224415FF004D37A8 /* EntityExtractionExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EntityExtractionExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		108489D9224415FF004D37A8 /* EntityExtractionExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityExtractionExampleTests.swift; sourceTree = "<group>"; };
-		108489DB22441600004D37A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		108489E52244160B004D37A8 /* EntityExtractionExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EntityExtractionExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		108489E72244160B004D37A8 /* EntityExtractionExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityExtractionExampleUITests.swift; sourceTree = "<group>"; };
-		108489E92244160B004D37A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		408FD250248AB72A00CA5C9D /* EntityExtractionModelIdentifierExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityExtractionModelIdentifierExtensions.swift; sourceTree = "<group>"; };
 		408FD252248AB84300CA5C9D /* MLKEntityExtractionModelIdentifier+Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MLKEntityExtractionModelIdentifier+Extensions.h"; sourceTree = "<group>"; };
 		408FD253248AB84300CA5C9D /* MLKEntityExtractionModelIdentifier+Extensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MLKEntityExtractionModelIdentifier+Extensions.m"; sourceTree = "<group>"; };
@@ -94,34 +47,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		1084899E224415A1004D37A8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489B5224415A4004D37A8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489C0224415A4004D37A8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489D4224415FF004D37A8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489E22244160B004D37A8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -155,42 +80,6 @@
 			path = EntityExtractionExampleObjC;
 			sourceTree = "<group>";
 		};
-		108489BB224415A4004D37A8 /* EntityExtractionExampleObjCTests */ = {
-			isa = PBXGroup;
-			children = (
-				108489BC224415A4004D37A8 /* EntityExtractionExampleObjCTests.m */,
-				108489BE224415A4004D37A8 /* Info.plist */,
-			);
-			path = EntityExtractionExampleObjCTests;
-			sourceTree = "<group>";
-		};
-		108489C6224415A5004D37A8 /* EntityExtractionExampleObjCUITests */ = {
-			isa = PBXGroup;
-			children = (
-				108489C7224415A5004D37A8 /* EntityExtractionExampleObjCUITests.m */,
-				108489C9224415A5004D37A8 /* Info.plist */,
-			);
-			path = EntityExtractionExampleObjCUITests;
-			sourceTree = "<group>";
-		};
-		108489D8224415FF004D37A8 /* EntityExtractionExampleTests */ = {
-			isa = PBXGroup;
-			children = (
-				108489D9224415FF004D37A8 /* EntityExtractionExampleTests.swift */,
-				108489DB22441600004D37A8 /* Info.plist */,
-			);
-			path = EntityExtractionExampleTests;
-			sourceTree = "<group>";
-		};
-		108489E62244160B004D37A8 /* EntityExtractionExampleUITests */ = {
-			isa = PBXGroup;
-			children = (
-				108489E72244160B004D37A8 /* EntityExtractionExampleUITests.swift */,
-				108489E92244160B004D37A8 /* Info.plist */,
-			);
-			path = EntityExtractionExampleUITests;
-			sourceTree = "<group>";
-		};
 		65AC6D81F1B268042A1E4A79 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -204,10 +93,6 @@
 			children = (
 				C1E8DDC322259E3400536A5C /* EntityExtractionExample */,
 				108489A2224415A1004D37A8 /* EntityExtractionExampleObjC */,
-				108489BB224415A4004D37A8 /* EntityExtractionExampleObjCTests */,
-				108489C6224415A5004D37A8 /* EntityExtractionExampleObjCUITests */,
-				108489D8224415FF004D37A8 /* EntityExtractionExampleTests */,
-				108489E62244160B004D37A8 /* EntityExtractionExampleUITests */,
 				C1E8DDC222259E3400536A5C /* Products */,
 				65AC6D81F1B268042A1E4A79 /* Frameworks */,
 				E7C45F3A2FC5CB6A04E2E3FF /* Pods */,
@@ -219,10 +104,6 @@
 			children = (
 				C1E8DDC122259E3400536A5C /* EntityExtractionExample.app */,
 				108489A1224415A1004D37A8 /* EntityExtractionExampleObjC.app */,
-				108489B8224415A4004D37A8 /* EntityExtractionExampleObjCTests.xctest */,
-				108489C3224415A4004D37A8 /* EntityExtractionExampleObjCUITests.xctest */,
-				108489D7224415FF004D37A8 /* EntityExtractionExampleTests.xctest */,
-				108489E52244160B004D37A8 /* EntityExtractionExampleUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -268,78 +149,6 @@
 			productReference = 108489A1224415A1004D37A8 /* EntityExtractionExampleObjC.app */;
 			productType = "com.apple.product-type.application";
 		};
-		108489B7224415A4004D37A8 /* EntityExtractionExampleObjCTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 108489D1224415A5004D37A8 /* Build configuration list for PBXNativeTarget "EntityExtractionExampleObjCTests" */;
-			buildPhases = (
-				108489B4224415A4004D37A8 /* Sources */,
-				108489B5224415A4004D37A8 /* Frameworks */,
-				108489B6224415A4004D37A8 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				108489BA224415A4004D37A8 /* PBXTargetDependency */,
-			);
-			name = EntityExtractionExampleObjCTests;
-			productName = EntityExtractionExampleObjCTests;
-			productReference = 108489B8224415A4004D37A8 /* EntityExtractionExampleObjCTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		108489C2224415A4004D37A8 /* EntityExtractionExampleObjCUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 108489D2224415A5004D37A8 /* Build configuration list for PBXNativeTarget "EntityExtractionExampleObjCUITests" */;
-			buildPhases = (
-				108489BF224415A4004D37A8 /* Sources */,
-				108489C0224415A4004D37A8 /* Frameworks */,
-				108489C1224415A4004D37A8 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				108489C5224415A5004D37A8 /* PBXTargetDependency */,
-			);
-			name = EntityExtractionExampleObjCUITests;
-			productName = EntityExtractionExampleObjCUITests;
-			productReference = 108489C3224415A4004D37A8 /* EntityExtractionExampleObjCUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		108489D6224415FF004D37A8 /* EntityExtractionExampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 108489DE22441600004D37A8 /* Build configuration list for PBXNativeTarget "EntityExtractionExampleTests" */;
-			buildPhases = (
-				108489D3224415FF004D37A8 /* Sources */,
-				108489D4224415FF004D37A8 /* Frameworks */,
-				108489D5224415FF004D37A8 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				108489DD22441600004D37A8 /* PBXTargetDependency */,
-			);
-			name = EntityExtractionExampleTests;
-			productName = EntityExtractionExampleTests;
-			productReference = 108489D7224415FF004D37A8 /* EntityExtractionExampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		108489E42244160B004D37A8 /* EntityExtractionExampleUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 108489EC2244160B004D37A8 /* Build configuration list for PBXNativeTarget "EntityExtractionExampleUITests" */;
-			buildPhases = (
-				108489E12244160B004D37A8 /* Sources */,
-				108489E22244160B004D37A8 /* Frameworks */,
-				108489E32244160B004D37A8 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				108489EB2244160B004D37A8 /* PBXTargetDependency */,
-			);
-			name = EntityExtractionExampleUITests;
-			productName = EntityExtractionExampleUITests;
-			productReference = 108489E52244160B004D37A8 /* EntityExtractionExampleUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		C1E8DDC022259E3400536A5C /* EntityExtractionExample */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C1E8DDD322259E3500536A5C /* Build configuration list for PBXNativeTarget "EntityExtractionExample" */;
@@ -370,24 +179,6 @@
 					108489A0224415A1004D37A8 = {
 						CreatedOnToolsVersion = 10.1;
 					};
-					108489B7224415A4004D37A8 = {
-						CreatedOnToolsVersion = 10.1;
-						TestTargetID = 108489A0224415A1004D37A8;
-					};
-					108489C2224415A4004D37A8 = {
-						CreatedOnToolsVersion = 10.1;
-						TestTargetID = 108489A0224415A1004D37A8;
-					};
-					108489D6224415FF004D37A8 = {
-						CreatedOnToolsVersion = 10.1;
-						LastSwiftMigration = 1130;
-						TestTargetID = C1E8DDC022259E3400536A5C;
-					};
-					108489E42244160B004D37A8 = {
-						CreatedOnToolsVersion = 10.1;
-						LastSwiftMigration = 1130;
-						TestTargetID = C1E8DDC022259E3400536A5C;
-					};
 					C1E8DDC022259E3400536A5C = {
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1130;
@@ -409,10 +200,6 @@
 			targets = (
 				C1E8DDC022259E3400536A5C /* EntityExtractionExample */,
 				108489A0224415A1004D37A8 /* EntityExtractionExampleObjC */,
-				108489B7224415A4004D37A8 /* EntityExtractionExampleObjCTests */,
-				108489C2224415A4004D37A8 /* EntityExtractionExampleObjCUITests */,
-				108489D6224415FF004D37A8 /* EntityExtractionExampleTests */,
-				108489E42244160B004D37A8 /* EntityExtractionExampleUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -424,34 +211,6 @@
 			files = (
 				108489F8224531B9004D37A8 /* Main.storyboard in Resources */,
 				108489F9224531BF004D37A8 /* LaunchScreen.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489B6224415A4004D37A8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489C1224415A4004D37A8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489D5224415FF004D37A8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489E32244160B004D37A8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -479,38 +238,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		108489B4224415A4004D37A8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				108489BD224415A4004D37A8 /* EntityExtractionExampleObjCTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489BF224415A4004D37A8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				108489C8224415A5004D37A8 /* EntityExtractionExampleObjCUITests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489D3224415FF004D37A8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				108489DA224415FF004D37A8 /* EntityExtractionExampleTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		108489E12244160B004D37A8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				108489E82244160B004D37A8 /* EntityExtractionExampleUITests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C1E8DDBD22259E3400536A5C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -523,29 +250,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		108489BA224415A4004D37A8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 108489A0224415A1004D37A8 /* EntityExtractionExampleObjC */;
-			targetProxy = 108489B9224415A4004D37A8 /* PBXContainerItemProxy */;
-		};
-		108489C5224415A5004D37A8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 108489A0224415A1004D37A8 /* EntityExtractionExampleObjC */;
-			targetProxy = 108489C4224415A5004D37A8 /* PBXContainerItemProxy */;
-		};
-		108489DD22441600004D37A8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C1E8DDC022259E3400536A5C /* EntityExtractionExample */;
-			targetProxy = 108489DC22441600004D37A8 /* PBXContainerItemProxy */;
-		};
-		108489EB2244160B004D37A8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C1E8DDC022259E3400536A5C /* EntityExtractionExample */;
-			targetProxy = 108489EA2244160B004D37A8 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		C1E8DDC822259E3400536A5C /* Main.storyboard */ = {
@@ -607,150 +311,6 @@
 			};
 			name = Release;
 		};
-		108489CC224415A5004D37A8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = EntityExtractionExampleObjCTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.EntityExtractionExampleObjCTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EntityExtractionExampleObjC.app/EntityExtractionExampleObjC";
-			};
-			name = Debug;
-		};
-		108489CD224415A5004D37A8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = EntityExtractionExampleObjCTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.EntityExtractionExampleObjCTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EntityExtractionExampleObjC.app/EntityExtractionExampleObjC";
-			};
-			name = Release;
-		};
-		108489CE224415A5004D37A8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = EntityExtractionExampleObjCUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.EntityExtractionExampleObjCUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = EntityExtractionExampleObjC;
-			};
-			name = Debug;
-		};
-		108489CF224415A5004D37A8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = EntityExtractionExampleObjCUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.EntityExtractionExampleObjCUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = EntityExtractionExampleObjC;
-			};
-			name = Release;
-		};
-		108489DF22441600004D37A8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = EntityExtractionExampleTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.EntityExtractionExampleTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EntityExtractionExample.app/EntityExtractionExample";
-			};
-			name = Debug;
-		};
-		108489E022441600004D37A8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = EntityExtractionExampleTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.EntityExtractionExampleTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EntityExtractionExample.app/EntityExtractionExample";
-			};
-			name = Release;
-		};
-		108489ED2244160B004D37A8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = EntityExtractionExampleUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.EntityExtractionExampleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = EntityExtractionExample;
-			};
-			name = Debug;
-		};
-		108489EE2244160B004D37A8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = EntityExtractionExampleUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.EntityExtractionExampleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = EntityExtractionExample;
-			};
-			name = Release;
-		};
 		C1E8DDD122259E3500536A5C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -802,7 +362,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -857,7 +417,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -923,42 +483,6 @@
 			buildConfigurations = (
 				108489CA224415A5004D37A8 /* Debug */,
 				108489CB224415A5004D37A8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		108489D1224415A5004D37A8 /* Build configuration list for PBXNativeTarget "EntityExtractionExampleObjCTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				108489CC224415A5004D37A8 /* Debug */,
-				108489CD224415A5004D37A8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		108489D2224415A5004D37A8 /* Build configuration list for PBXNativeTarget "EntityExtractionExampleObjCUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				108489CE224415A5004D37A8 /* Debug */,
-				108489CF224415A5004D37A8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		108489DE22441600004D37A8 /* Build configuration list for PBXNativeTarget "EntityExtractionExampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				108489DF22441600004D37A8 /* Debug */,
-				108489E022441600004D37A8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		108489EC2244160B004D37A8 /* Build configuration list for PBXNativeTarget "EntityExtractionExampleUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				108489ED2244160B004D37A8 /* Debug */,
-				108489EE2244160B004D37A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
