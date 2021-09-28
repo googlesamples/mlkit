@@ -6,16 +6,7 @@ project 'EntityExtractionExample.xcodeproj'
 pod 'GoogleMLKit/EntityExtraction', '2.4.0'
 
 target 'EntityExtractionExample' do
-  target 'EntityExtractionExampleTests' do
-    inherit! :search_paths
-  end
 end
 
 target 'EntityExtractionExampleObjC' do
-  target 'EntityExtractionExampleObjCTests' do
-    inherit! :search_paths
-  end
-end
-
-target 'EntityExtractionExampleUITests' do
 end
