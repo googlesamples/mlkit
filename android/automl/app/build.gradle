@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.google.mlkit.vision.automl.demo"
-        minSdkVersion 16
+        minSdkVersion 19
         multiDexEnabled true
-        targetSdkVersion 30
+        targetSdkVersion 31
         // Version code for next release (version 9 is now in Play Store)
         versionCode 11
         versionName "1.11"
@@ -58,8 +58,12 @@ repositories {
 
 dependencies {
     // Image labeling with AutoML model support
-    implementation 'com.google.mlkit:image-labeling-custom:16.3.1'
-    implementation 'com.google.mlkit:object-detection-custom:16.3.1'
+    implementation 'com.google.mlkit:image-labeling-custom:17.0.0'
+    // Or comment the dependency above and uncomment the dependency below to
+    // use unbundled model that depends on Google Play Services
+    // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta2'
+
+    implementation 'com.google.mlkit:object-detection-custom:16.3.4'
     implementation 'com.google.mlkit:linkfirebase:16.1.1'
 
     implementation 'androidx.multidex:multidex:2.0.1'

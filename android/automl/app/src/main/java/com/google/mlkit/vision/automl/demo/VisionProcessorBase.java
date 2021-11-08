@@ -71,11 +71,13 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
   // To keep the latest images and its metadata.
   @GuardedBy("this")
   private ByteBuffer latestImage;
+
   @GuardedBy("this")
   private FrameMetadata latestImageMetaData;
   // To keep the images and metadata in process.
   @GuardedBy("this")
   private ByteBuffer processingImage;
+
   @GuardedBy("this")
   private FrameMetadata processingMetaData;
 
@@ -150,7 +152,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
   // -----------------Code for processing live preview frame from CameraX API-----------------------
   @Override
-  @RequiresApi(VERSION_CODES.KITKAT)
+  @RequiresApi(VERSION_CODES.LOLLIPOP)
   @ExperimentalGetImage
   public void processImageProxy(ImageProxy image, GraphicOverlay graphicOverlay) {
     if (isShutdown) {
@@ -164,10 +166,10 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
     }
 
     requestDetectInImage(
-        InputImage.fromMediaImage(image.getImage(), image.getImageInfo().getRotationDegrees()),
-        graphicOverlay,
-        /* originalCameraImage= */ bitmap,
-        /* shouldShowFps= */ true)
+            InputImage.fromMediaImage(image.getImage(), image.getImageInfo().getRotationDegrees()),
+            graphicOverlay,
+            /* originalCameraImage= */ bitmap,
+            /* shouldShowFps= */ true)
         // When the image is from CameraX analysis use case, must call image.close() on received
         // images when finished using them. Otherwise, new images may not be received or the camera
         // may stall.

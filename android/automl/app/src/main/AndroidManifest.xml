@@ -6,7 +6,7 @@
     android:installLocation="auto">
 
   <!-- CameraX libraries require minSdkVersion 21, while this quickstart app
-  supports low to 16. Needs to use overrideLibrary to make the merger tool
+  supports low to 19. Needs to use overrideLibrary to make the merger tool
   ignore this conflict and import the libraries while keeping the app's lower
   minSdkVersion value. In code, will check SDK version, before calling CameraX
   APIs. -->
@@ -31,6 +31,9 @@
     <meta-data
         android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version"/>
+    <meta-data
+        android:name="com.google.mlkit.vision.DEPENDENCIES"
+        android:value="custom_ica"/>
 
     <activity
         android:name=".ChooserActivity"

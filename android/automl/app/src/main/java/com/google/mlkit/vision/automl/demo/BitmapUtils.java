@@ -71,18 +71,19 @@ public final class BitmapUtils {
   }
 
   /** Converts a YUV_420_888 image from CameraX API to a bitmap. */
-  @RequiresApi(VERSION_CODES.KITKAT)
+  @RequiresApi(VERSION_CODES.LOLLIPOP)
   @Nullable
   @ExperimentalGetImage
   public static Bitmap getBitmap(ImageProxy image) {
-    FrameMetadata frameMetadata = new FrameMetadata.Builder()
-        .setWidth(image.getWidth())
-        .setHeight(image.getHeight())
-        .setRotation(image.getImageInfo().getRotationDegrees())
-        .build();
+    FrameMetadata frameMetadata =
+        new FrameMetadata.Builder()
+            .setWidth(image.getWidth())
+            .setHeight(image.getHeight())
+            .setRotation(image.getImageInfo().getRotationDegrees())
+            .build();
 
-    ByteBuffer nv21Buffer = yuv420ThreePlanesToNV21(
-        image.getImage().getPlanes(), image.getWidth(), image.getHeight());
+    ByteBuffer nv21Buffer =
+        yuv420ThreePlanesToNV21(image.getImage().getPlanes(), image.getWidth(), image.getHeight());
     return getBitmap(nv21Buffer, frameMetadata);
   }
 

@@ -46,6 +46,7 @@ public final class ChooserActivity extends AppCompatActivity
   private static final String TAG = "ChooserActivity";
   private static final int PERMISSION_REQUESTS = 1;
 
+  @SuppressWarnings("NewApi") // CameraX is only available on API 21+
   private static final Class<?>[] CLASSES =
       new Class<?>[] {
         LivePreviewActivity.class, StillImageActivity.class, CameraXLivePreviewActivity.class,
