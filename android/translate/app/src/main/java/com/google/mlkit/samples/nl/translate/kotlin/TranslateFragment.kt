@@ -104,10 +104,15 @@ class TranslateFragment : Fragment() {
       }
     }
     switchButton.setOnClickListener {
+      val targetText = targetTextView.text.toString()
       setProgressText(targetTextView)
       val sourceLangPosition = sourceLangSelector.selectedItemPosition
       sourceLangSelector.setSelection(targetLangSelector.selectedItemPosition)
       targetLangSelector.setSelection(sourceLangPosition)
+
+      // Also update srcTextView with targetText
+      srcTextView.setText(targetText)
+      viewModel.sourceText.setValue(targetText)
     }
 
     // Set up toggle buttons to delete or download remote models locally.

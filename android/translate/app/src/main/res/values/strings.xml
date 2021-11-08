@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">ML Kit - Translate</string>
+  <string name="app_name">MLKit-Translate</string>
   <string name="translated_text_hint">Translated text</string>
   <string name="downloaded_models_label">Downloaded models: %1$s</string>
   <string name="translate_progress">Translating&#8230;</string>

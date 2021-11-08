@@ -17,13 +17,13 @@
 package com.google.mlkit.samples.nl.translate.java;
 
 import android.app.Application;
+import android.util.LruCache;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import android.util.LruCache;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -83,6 +83,7 @@ public class TranslateViewModel extends AndroidViewModel {
               translatedText.setValue(new ResultOrError(task.getResult(), null));
             } else {
               translatedText.setValue(new ResultOrError(null, task.getException()));
+              task.getException().printStackTrace();
             }
             // Update the list of downloaded models as more may have been
             // automatically downloaded due to requested translation.

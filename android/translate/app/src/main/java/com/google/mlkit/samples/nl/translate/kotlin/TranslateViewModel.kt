@@ -17,11 +17,11 @@
 package com.google.mlkit.samples.nl.translate.kotlin
 
 import android.app.Application
+import android.util.LruCache
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import android.util.LruCache
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -63,10 +63,7 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
   val availableModels = MutableLiveData<List<String>>()
 
   // Gets a list of all available translation languages.
-  val availableLanguages: List<Language> = TranslateLanguage.getAllLanguages()
-    .map {
-      Language(it)
-    }
+  val availableLanguages: List<Language> = TranslateLanguage.getAllLanguages().map { Language(it) }
 
   init {
     // Create a translation result or error object.
@@ -98,18 +95,18 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
 
   // Updates the list of downloaded models available for local translation.
   private fun fetchDownloadedModels() {
-    modelManager.getDownloadedModels(TranslateRemoteModel::class.java)
-      .addOnSuccessListener { remoteModels ->
-        availableModels.value =
-          remoteModels.sortedBy { it.language }.map { it.language }
-      }
+    modelManager.getDownloadedModels(TranslateRemoteModel::class.java).addOnSuccessListener {
+      remoteModels ->
+      availableModels.value = remoteModels.sortedBy { it.language }.map { it.language }
+    }
   }
 
   // Starts downloading a remote model for local translation.
   internal fun downloadLanguage(language: Language) {
     val model = getModel(TranslateLanguage.fromLanguageTag(language.code)!!)
-    modelManager.download(model, DownloadConditions.Builder().build())
-      .addOnCompleteListener { fetchDownloadedModels() }
+    modelManager.download(model, DownloadConditions.Builder().build()).addOnCompleteListener {
+      fetchDownloadedModels()
+    }
   }
 
   // Deletes a locally stored translation model.
@@ -127,10 +124,11 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
     }
     val sourceLangCode = TranslateLanguage.fromLanguageTag(source.code)!!
     val targetLangCode = TranslateLanguage.fromLanguageTag(target.code)!!
-    val options = TranslatorOptions.Builder()
-      .setSourceLanguage(sourceLangCode)
-      .setTargetLanguage(targetLangCode)
-      .build()
+    val options =
+      TranslatorOptions.Builder()
+        .setSourceLanguage(sourceLangCode)
+        .setTargetLanguage(targetLangCode)
+        .build()
     return translators[options].downloadModelIfNeeded().continueWithTask { task ->
       if (task.isSuccessful) {
         translators[options].translate(text)
@@ -143,14 +141,12 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
     }
   }
 
-  /**
-   * Holds the result of the translation or any error.
-   */
+  /** Holds the result of the translation or any error. */
   inner class ResultOrError(var result: String?, var error: Exception?)
 
   /**
-   * Holds the language code (i.e. "en") and the corresponding localized full language name
-   * (i.e. "English")
+   * Holds the language code (i.e. "en") and the corresponding localized full language name (i.e.
+   * "English")
    */
   class Language(val code: String) : Comparable<Language> {
 

@@ -17,8 +17,6 @@
 package com.google.mlkit.samples.nl.translate.java;
 
 import android.annotation.SuppressLint;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.text.Editable;
@@ -35,6 +33,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.mlkit.samples.nl.translate.R;
 import java.util.List;
@@ -117,10 +117,15 @@ public class TranslateFragment extends Fragment {
         new View.OnClickListener() {
           @Override
           public void onClick(View v) {
+            String targetText = targetTextView.getText().toString();
             setProgressText(targetTextView);
             int sourceLangPosition = sourceLangSelector.getSelectedItemPosition();
             sourceLangSelector.setSelection(targetLangSelector.getSelectedItemPosition());
             targetLangSelector.setSelection(sourceLangPosition);
+
+            // Also update srcTextView with targetText
+            srcTextView.setText(targetText);
+            viewModel.sourceText.setValue(targetText);
           }
         });
 

@@ -3,17 +3,17 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId 'com.google.mlkit.samples.nl.translate'
-        // The SDK only requires minSdkVersion 16. We are using minSdkVersion
+        // The SDK only requires minSdkVersion 19. We are using minSdkVersion
         // 21 to make some code in the sample shorter.
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
-        setProperty("archivesBaseName", "mlkit_translate_sample")
+        setProperty("archivesBaseName", "nl-translate")
     }
 
     buildTypes {
@@ -37,7 +37,7 @@ android {
 
 dependencies {
     implementation project(':internal:chooserx')
-    implementation 'com.google.mlkit:translate:16.1.2'
+    implementation 'com.google.mlkit:translate:17.0.0'
 
     // Those dependencies are not required by the SDK. They are used for the sample itself.
     implementation 'androidx.core:core-ktx:1.3.0'
