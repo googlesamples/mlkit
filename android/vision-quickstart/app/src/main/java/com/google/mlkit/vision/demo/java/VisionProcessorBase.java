@@ -209,7 +209,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
   // -----------------Code for processing live preview frame from CameraX API-----------------------
   @Override
-  @RequiresApi(VERSION_CODES.KITKAT)
+  @RequiresApi(VERSION_CODES.LOLLIPOP)
   @ExperimentalGetImage
   public void processImageProxy(ImageProxy image, GraphicOverlay graphicOverlay) {
     long frameStartMs = SystemClock.elapsedRealtime();

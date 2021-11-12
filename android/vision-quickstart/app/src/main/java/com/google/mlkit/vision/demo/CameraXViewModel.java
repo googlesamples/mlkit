@@ -17,17 +17,20 @@
 package com.google.mlkit.vision.demo;
 
 import android.app.Application;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.annotation.NonNull;
+import android.os.Build.VERSION_CODES;
 import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
 
 /** View model for interacting with CameraX. */
+@RequiresApi(VERSION_CODES.LOLLIPOP)
 public final class CameraXViewModel extends AndroidViewModel {
 
   private static final String TAG = "CameraXViewModel";

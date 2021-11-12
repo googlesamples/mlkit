@@ -36,7 +36,8 @@ class TextGraphic
 constructor(
   overlay: GraphicOverlay?,
   private val text: Text,
-  private val shouldGroupTextInBlocks: Boolean
+  private val shouldGroupTextInBlocks: Boolean,
+  private val showLanguageTag: Boolean
 ) : Graphic(overlay) {
 
   private val rectPaint: Paint = Paint()
@@ -66,7 +67,7 @@ constructor(
       Log.d(TAG, "TextBlock cornerpoint is: " + Arrays.toString(textBlock.cornerPoints))
       if (shouldGroupTextInBlocks) {
         drawText(
-          textBlock.text,
+          getFormattedText(textBlock.text, textBlock.recognizedLanguage),
           RectF(textBlock.boundingBox),
           TEXT_SIZE * textBlock.lines.size + 2 * STROKE_WIDTH,
           canvas
@@ -78,7 +79,12 @@ constructor(
           Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.cornerPoints))
           // Draws the bounding box around the TextBlock.
           val rect = RectF(line.boundingBox)
-          drawText(line.text, rect, TEXT_SIZE + 2 * STROKE_WIDTH, canvas)
+          drawText(
+            getFormattedText(line.text, line.recognizedLanguage),
+            rect,
+            TEXT_SIZE + 2 * STROKE_WIDTH,
+            canvas
+          )
           for (element in line.elements) {
             Log.d(TAG, "Element text is: " + element.text)
             Log.d(TAG, "Element boundingbox is: " + element.boundingBox)
@@ -88,6 +94,17 @@ constructor(
         }
       }
     }
+  }
+
+  private fun getFormattedText(text: String, languageTag: String): String {
+    if (showLanguageTag) {
+      return String.format(
+        TEXT_WITH_LANGUAGE_TAG_FORMAT,
+        languageTag,
+        text
+      )
+    }
+    return text
   }
 
   private fun drawText(text: String, rect: RectF, textHeight: Float, canvas: Canvas) {
@@ -113,6 +130,7 @@ constructor(
 
   companion object {
     private const val TAG = "TextGraphic"
+    private const val TEXT_WITH_LANGUAGE_TAG_FORMAT = "%s:%s"
     private const val TEXT_COLOR = Color.BLACK
     private const val MARKER_COLOR = Color.WHITE
     private const val TEXT_SIZE = 54.0f

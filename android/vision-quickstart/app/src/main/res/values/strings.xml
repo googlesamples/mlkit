@@ -57,6 +57,8 @@
     <!-- Strings for text recognition preference. -->
     <string name="pref_title_group_recognized_text_in_blocks" translatable="false">Group recognized text in paragraphs</string>
     <string name="pref_key_group_recognized_text_in_blocks" translatable="false">grtib</string>
+    <string name="pref_title_show_language_tag" translatable="false">Show language identified</string>
+    <string name="pref_key_show_language_tag" translatable="false">slt</string>
 
     <!-- Strings for object detector enable multiple objects preference. -->
     <string name="pref_title_object_detector_enable_multiple_objects" translatable="false">Enable multiple objects</string>

@@ -16,6 +16,7 @@
 
 package com.google.mlkit.vision.demo.java.posedetector.classification;
 
+import android.os.SystemClock;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,11 +29,15 @@ public class EMASmoothing {
   private static final int DEFAULT_WINDOW_SIZE = 10;
   private static final float DEFAULT_ALPHA = 0.2f;
 
+  private static final long RESET_THRESHOLD_MS = 100;
+
   private final int windowSize;
   private final float alpha;
   // This is a window of {@link ClassificationResult}s as outputted by the {@link PoseClassifier}.
   // We run smoothing over this window of size {@link windowSize}.
   private final Deque<ClassificationResult> window;
+
+  private long lastInputMs;
 
   public EMASmoothing() {
     this(DEFAULT_WINDOW_SIZE, DEFAULT_ALPHA);
@@ -45,6 +50,13 @@ public class EMASmoothing {
   }
 
   public ClassificationResult getSmoothedResult(ClassificationResult classificationResult) {
+    // Resets memory if the input is too far away from the previous one in time.
+    long nowMs = SystemClock.elapsedRealtime();
+    if (nowMs - lastInputMs > RESET_THRESHOLD_MS) {
+      window.clear();
+    }
+    lastInputMs = nowMs;
+
     // If we are at window size, remove the last (oldest) result.
     if (window.size() == windowSize) {
       window.pollLast();

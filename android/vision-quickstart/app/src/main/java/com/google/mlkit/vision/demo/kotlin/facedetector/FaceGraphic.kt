@@ -57,65 +57,81 @@ class FaceGraphic constructor(overlay: GraphicOverlay?, private val face: Face) 
     }
   }
 
-  /** Draws the face annotations for position on the supplied canvas.  */
+  /** Draws the face annotations for position on the supplied canvas. */
   override fun draw(canvas: Canvas) {
     // Draws a circle at the position of the detected face, with the face's track id below.
 
     // Draws a circle at the position of the detected face, with the face's track id below.
     val x = translateX(face.boundingBox.centerX().toFloat())
     val y = translateY(face.boundingBox.centerY().toFloat())
-    canvas.drawCircle(
-      x,
-      y,
-      FACE_POSITION_RADIUS,
-      facePositionPaint
-    )
+    canvas.drawCircle(x, y, FACE_POSITION_RADIUS, facePositionPaint)
 
     // Calculate positions.
     val left = x - scale(face.boundingBox.width() / 2.0f)
     val top = y - scale(face.boundingBox.height() / 2.0f)
     val right = x + scale(face.boundingBox.width() / 2.0f)
     val bottom = y + scale(face.boundingBox.height() / 2.0f)
-    val lineHeight =
-      ID_TEXT_SIZE + BOX_STROKE_WIDTH
+    val lineHeight = ID_TEXT_SIZE + BOX_STROKE_WIDTH
     var yLabelOffset: Float = if (face.trackingId == null) 0f else -lineHeight
 
     // Decide color based on face ID
-    val colorID =
-      if (face.trackingId == null) 0 else abs(face.trackingId!! % NUM_COLORS)
+    val colorID = if (face.trackingId == null) 0 else abs(face.trackingId!! % NUM_COLORS)
 
     // Calculate width and height of label box
     var textWidth = idPaints[colorID].measureText("ID: " + face.trackingId)
     if (face.smilingProbability != null) {
       yLabelOffset -= lineHeight
-      textWidth = max(
-        textWidth,
-        idPaints[colorID]
-          .measureText(String.format(Locale.US, "Happiness: %.2f", face.smilingProbability))
-      )
+      textWidth =
+        max(
+          textWidth,
+          idPaints[colorID].measureText(
+            String.format(Locale.US, "Happiness: %.2f", face.smilingProbability)
+          )
+        )
     }
     if (face.leftEyeOpenProbability != null) {
       yLabelOffset -= lineHeight
-      textWidth = max(
-        textWidth,
-        idPaints[colorID].measureText(
-          String.format(
-            Locale.US, "Left eye open: %.2f", face.leftEyeOpenProbability
+      textWidth =
+        max(
+          textWidth,
+          idPaints[colorID].measureText(
+            String.format(Locale.US, "Left eye open: %.2f", face.leftEyeOpenProbability)
           )
         )
-      )
     }
     if (face.rightEyeOpenProbability != null) {
       yLabelOffset -= lineHeight
-      textWidth = max(
-        textWidth,
-        idPaints[colorID].measureText(
-          String.format(
-            Locale.US, "Right eye open: %.2f", face.rightEyeOpenProbability
+      textWidth =
+        max(
+          textWidth,
+          idPaints[colorID].measureText(
+            String.format(Locale.US, "Right eye open: %.2f", face.rightEyeOpenProbability)
           )
         )
-      )
     }
+
+    yLabelOffset = yLabelOffset - 3 * lineHeight
+    textWidth =
+      Math.max(
+        textWidth,
+        idPaints[colorID].measureText(
+          String.format(Locale.US, "EulerX: %.2f", face.headEulerAngleX)
+        )
+      )
+    textWidth =
+      Math.max(
+        textWidth,
+        idPaints[colorID].measureText(
+          String.format(Locale.US, "EulerY: %.2f", face.headEulerAngleY)
+        )
+      )
+    textWidth =
+      Math.max(
+        textWidth,
+        idPaints[colorID].measureText(
+          String.format(Locale.US, "EulerZ: %.2f", face.headEulerAngleZ)
+        )
+      )
 
     // Draw labels
     canvas.drawRect(
@@ -128,12 +144,7 @@ class FaceGraphic constructor(overlay: GraphicOverlay?, private val face: Face) 
     yLabelOffset += ID_TEXT_SIZE
     canvas.drawRect(left, top, right, bottom, boxPaints[colorID])
     if (face.trackingId != null) {
-      canvas.drawText(
-        "ID: " + face.trackingId,
-        left,
-        top + yLabelOffset,
-        idPaints[colorID]
-      )
+      canvas.drawText("ID: " + face.trackingId, left, top + yLabelOffset, idPaints[colorID])
       yLabelOffset += lineHeight
     }
 
@@ -176,8 +187,7 @@ class FaceGraphic constructor(overlay: GraphicOverlay?, private val face: Face) 
       canvas.drawRect(
         leftEyeLeft - BOX_STROKE_WIDTH,
         translateY(leftEye.position.y) + ID_Y_OFFSET - ID_TEXT_SIZE,
-        leftEyeLeft + idPaints[colorID]
-          .measureText("Left Eye") + BOX_STROKE_WIDTH,
+        leftEyeLeft + idPaints[colorID].measureText("Left Eye") + BOX_STROKE_WIDTH,
         translateY(leftEye.position.y) + ID_Y_OFFSET + BOX_STROKE_WIDTH,
         labelPaints[colorID]
       )
@@ -197,6 +207,7 @@ class FaceGraphic constructor(overlay: GraphicOverlay?, private val face: Face) 
         top + yLabelOffset,
         idPaints[colorID]
       )
+      yLabelOffset += lineHeight
     }
     if (rightEye != null) {
       val rightEyeLeft =
@@ -204,8 +215,7 @@ class FaceGraphic constructor(overlay: GraphicOverlay?, private val face: Face) 
       canvas.drawRect(
         rightEyeLeft - BOX_STROKE_WIDTH,
         translateY(rightEye.position.y) + ID_Y_OFFSET - ID_TEXT_SIZE,
-        rightEyeLeft + idPaints[colorID]
-          .measureText("Right Eye") + BOX_STROKE_WIDTH,
+        rightEyeLeft + idPaints[colorID].measureText("Right Eye") + BOX_STROKE_WIDTH,
         translateY(rightEye.position.y) + ID_Y_OFFSET + BOX_STROKE_WIDTH,
         labelPaints[colorID]
       )
@@ -216,6 +226,12 @@ class FaceGraphic constructor(overlay: GraphicOverlay?, private val face: Face) 
         idPaints[colorID]
       )
     }
+
+    canvas.drawText("EulerX: " + face.headEulerAngleX, left, top + yLabelOffset, idPaints[colorID])
+    yLabelOffset += lineHeight
+    canvas.drawText("EulerY: " + face.headEulerAngleY, left, top + yLabelOffset, idPaints[colorID])
+    yLabelOffset += lineHeight
+    canvas.drawText("EulerZ: " + face.headEulerAngleZ, left, top + yLabelOffset, idPaints[colorID])
 
     // Draw facial landmarks
     drawFaceLandmark(canvas, FaceLandmark.LEFT_EYE)

@@ -18,12 +18,13 @@ package com.google.mlkit.vision.demo.java.barcodescanner;
 
 import android.content.Context;
 import android.graphics.Point;
-import androidx.annotation.NonNull;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.Task;
-import com.google.mlkit.vision.barcode.Barcode;
+import com.google.android.odml.image.MlImage;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.java.VisionProcessorBase;

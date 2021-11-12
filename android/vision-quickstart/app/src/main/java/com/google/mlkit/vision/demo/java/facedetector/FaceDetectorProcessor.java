@@ -18,8 +18,8 @@ package com.google.mlkit.vision.demo.java.facedetector;
 
 import android.content.Context;
 import android.graphics.PointF;
-import androidx.annotation.NonNull;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.GraphicOverlay;
