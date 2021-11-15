@@ -3,11 +3,11 @@ use_frameworks!
 
 project 'AutoMLExample.xcodeproj'
 
-pod 'GoogleMLKit/Common', '2.4.0'
-pod 'GoogleMLKit/ImageLabelingCustom', '2.4.0'
-pod 'GoogleMLKit/LinkFirebase', '2.4.0'
-pod 'GoogleMLKit/ObjectDetectionCustom', '2.4.0'
-pod 'GoogleMLKit/Vision', '2.4.0'
+pod 'GoogleMLKit/Common', '2.5.0'
+pod 'GoogleMLKit/ImageLabelingCustom', '2.5.0'
+pod 'GoogleMLKit/LinkFirebase', '2.5.0'
+pod 'GoogleMLKit/ObjectDetectionCustom', '2.5.0'
+pod 'GoogleMLKit/Vision', '2.5.0'
 
 target 'AutoMLExample' do
 end
