@@ -3,7 +3,7 @@ platform :ios, '10.0'
 
 project 'SmartReplyExample.xcodeproj'
 
-pod 'GoogleMLKit/SmartReply', '2.4.0'
+pod 'GoogleMLKit/SmartReply', '2.5.0'
 
 pod 'MaterialComponents'
 pod 'SwiftLint'
