@@ -1,9 +1,7 @@
 package com.google.mlkit.samples.vision.digitalink;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +9,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.mlkit.samples.vision.digitalink.StrokeManager.DownloadedModelsChangedListener;
