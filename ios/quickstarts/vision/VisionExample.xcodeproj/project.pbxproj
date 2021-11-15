@@ -48,6 +48,7 @@
 		BB287B3E20729CE90069707A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB287B3C20729CE90069707A /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
+
 /* Begin PBXFileReference section */
 		1001E6F620CEE0DD00445CB3 /* UIUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIUtilities.swift; sourceTree = "<group>"; };
 		1001E6F820CF021E00445CB3 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
