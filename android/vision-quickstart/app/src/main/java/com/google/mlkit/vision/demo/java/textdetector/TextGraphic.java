@@ -39,6 +39,7 @@ import java.util.Arrays;
 public class TextGraphic extends Graphic {
 
   private static final String TAG = "TextGraphic";
+  private static final String TEXT_WITH_LANGUAGE_TAG_FORMAT = "%s:%s";
 
   private static final int TEXT_COLOR = Color.BLACK;
   private static final int MARKER_COLOR = Color.WHITE;
@@ -50,12 +51,15 @@ public class TextGraphic extends Graphic {
   private final Paint labelPaint;
   private final Text text;
   private final Boolean shouldGroupTextInBlocks;
+  private final Boolean showLanguageTag;
 
-  TextGraphic(GraphicOverlay overlay, Text text, Boolean shouldGroupTextInBlocks) {
+  TextGraphic(
+      GraphicOverlay overlay, Text text, boolean shouldGroupTextInBlocks, boolean showLanguageTag) {
     super(overlay);
 
     this.text = text;
     this.shouldGroupTextInBlocks = shouldGroupTextInBlocks;
+    this.showLanguageTag = showLanguageTag;
 
     rectPaint = new Paint();
     rectPaint.setColor(MARKER_COLOR);
@@ -83,8 +87,15 @@ public class TextGraphic extends Graphic {
       Log.d(TAG, "TextBlock boundingbox is: " + textBlock.getBoundingBox());
       Log.d(TAG, "TextBlock cornerpoint is: " + Arrays.toString(textBlock.getCornerPoints()));
       if (shouldGroupTextInBlocks) {
+        String text =
+            showLanguageTag
+                ? String.format(
+                    TEXT_WITH_LANGUAGE_TAG_FORMAT,
+                    textBlock.getRecognizedLanguage(),
+                    textBlock.getText())
+                : textBlock.getText();
         drawText(
-            textBlock.getText(),
+            text,
             new RectF(textBlock.getBoundingBox()),
             TEXT_SIZE * textBlock.getLines().size() + 2 * STROKE_WIDTH,
             canvas);
@@ -93,11 +104,12 @@ public class TextGraphic extends Graphic {
           Log.d(TAG, "Line text is: " + line.getText());
           Log.d(TAG, "Line boundingbox is: " + line.getBoundingBox());
           Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.getCornerPoints()));
-          drawText(
-              line.getText(),
-              new RectF(line.getBoundingBox()),
-              TEXT_SIZE + 2 * STROKE_WIDTH,
-              canvas);
+          String text =
+              showLanguageTag
+                  ? String.format(
+                      TEXT_WITH_LANGUAGE_TAG_FORMAT, line.getRecognizedLanguage(), line.getText())
+                  : line.getText();
+          drawText(text, new RectF(line.getBoundingBox()), TEXT_SIZE + 2 * STROKE_WIDTH, canvas);
 
           for (Element element : line.getElements()) {
             Log.d(TAG, "Element text is: " + element.getText());

@@ -32,6 +32,7 @@ import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 class TextRecognitionProcessor(private val context: Context, textRecognizerOptions: TextRecognizerOptionsInterface) : VisionProcessorBase<Text>(context) {
   private val textRecognizer: TextRecognizer = TextRecognition.getClient(textRecognizerOptions)
   private val shouldGroupRecognizedTextInBlocks: Boolean = PreferenceUtils.shouldGroupRecognizedTextInBlocks(context)
+  private val showLanguageTag: Boolean = PreferenceUtils.showLanguageTag(context)
 
   override fun stop() {
     super.stop()
@@ -46,7 +47,7 @@ class TextRecognitionProcessor(private val context: Context, textRecognizerOptio
     Log.d(TAG, "On-device Text detection successful")
     logExtrasForTesting(text)
     graphicOverlay.add(
-      TextGraphic(graphicOverlay, text, shouldGroupRecognizedTextInBlocks))
+      TextGraphic(graphicOverlay, text, shouldGroupRecognizedTextInBlocks, showLanguageTag))
   }
 
   override fun onFailure(e: Exception) {

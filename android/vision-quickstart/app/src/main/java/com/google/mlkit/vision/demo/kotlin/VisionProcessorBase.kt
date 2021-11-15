@@ -205,7 +205,7 @@ abstract class VisionProcessorBase<T>(context: Context) : VisionImageProcessor {
   }
 
   // -----------------Code for processing live preview frame from CameraX API-----------------------
-  @RequiresApi(VERSION_CODES.KITKAT)
+  @RequiresApi(VERSION_CODES.LOLLIPOP)
   @ExperimentalGetImage
   override fun processImageProxy(image: ImageProxy, graphicOverlay: GraphicOverlay) {
     val frameStartMs = SystemClock.elapsedRealtime()

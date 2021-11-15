@@ -269,6 +269,12 @@ public class PreferenceUtils {
     return sharedPreferences.getBoolean(prefKey, true);
   }
 
+  public static boolean showLanguageTag(Context context) {
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    String prefKey = context.getString(R.string.pref_key_show_language_tag);
+    return sharedPreferences.getBoolean(prefKey, true);
+  }
+
   public static boolean shouldShowPoseDetectionInFrameLikelihoodLivePreview(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     String prefKey =

@@ -10,11 +10,19 @@
   </PreferenceCategory>
 
   <PreferenceCategory android:title="@string/pref_category_text_recognition">
+
     <SwitchPreference
         android:defaultValue="false"
         android:key="@string/pref_key_group_recognized_text_in_blocks"
         android:persistent="true"
         android:title="@string/pref_title_group_recognized_text_in_blocks"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_key_show_language_tag"
+        android:persistent="true"
+        android:title="@string/pref_title_show_language_tag"/>
+
   </PreferenceCategory>
 
   <PreferenceCategory
