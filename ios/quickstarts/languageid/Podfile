@@ -3,7 +3,7 @@ platform :ios, '10.0'
 
 project 'LanguageIDExample.xcodeproj'
 
-pod 'GoogleMLKit/LanguageID', '2.4.0'
+pod 'GoogleMLKit/LanguageID', '2.5.0'
 
 target 'LanguageIDExample' do
 end
