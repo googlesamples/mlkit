@@ -24,7 +24,7 @@ import com.google.android.gms.common.images.Size
 import com.google.mlkit.md.R
 import com.google.mlkit.md.camera.CameraSizePair
 import com.google.mlkit.md.camera.GraphicOverlay
-import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.common.Barcode
 
 /** Utility class to retrieve shared preferences.  */
 object PreferenceUtils {

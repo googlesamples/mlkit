@@ -27,8 +27,8 @@ import com.google.mlkit.md.camera.WorkflowModel
 import com.google.mlkit.md.camera.WorkflowModel.WorkflowState
 import com.google.mlkit.md.camera.FrameProcessorBase
 import com.google.mlkit.md.settings.PreferenceUtils
-import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import java.io.IOException
 

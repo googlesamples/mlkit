@@ -25,7 +25,7 @@ import com.google.mlkit.md.objectdetection.DetectedObjectInfo
 import com.google.mlkit.md.productsearch.Product
 import com.google.mlkit.md.productsearch.SearchedObject
 import com.google.mlkit.md.settings.PreferenceUtils
-import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.common.Barcode
 import java.util.HashSet
 
 /** View model for handling application workflow based on camera preview.  */
