@@ -21,6 +21,8 @@
 		C1E8DDC722259E3400536A5C /* EntityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8DDC622259E3400536A5C /* EntityViewController.swift */; };
 		C1E8DDCA22259E3400536A5C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1E8DDC822259E3400536A5C /* Main.storyboard */; };
 		C1E8DDCF22259E3500536A5C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1E8DDCD22259E3500536A5C /* LaunchScreen.storyboard */; };
+		EC1278572748201D00863E4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC1278562748201D00863E4A /* Assets.xcassets */; };
+		EC1278582748201D00863E4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC1278562748201D00863E4A /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +45,7 @@
 		C1E8DDC922259E3400536A5C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C1E8DDCE22259E3500536A5C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C1E8DDD022259E3500536A5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EC1278562748201D00863E4A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +94,7 @@
 		C1E8DDB822259E3400536A5C = {
 			isa = PBXGroup;
 			children = (
+				EC1278562748201D00863E4A /* Assets.xcassets */,
 				C1E8DDC322259E3400536A5C /* EntityExtractionExample */,
 				108489A2224415A1004D37A8 /* EntityExtractionExampleObjC */,
 				C1E8DDC222259E3400536A5C /* Products */,
@@ -210,6 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				108489F8224531B9004D37A8 /* Main.storyboard in Resources */,
+				EC1278582748201D00863E4A /* Assets.xcassets in Resources */,
 				108489F9224531BF004D37A8 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -219,6 +224,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1E8DDCF22259E3500536A5C /* LaunchScreen.storyboard in Resources */,
+				EC1278572748201D00863E4A /* Assets.xcassets in Resources */,
 				C1E8DDCA22259E3400536A5C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
