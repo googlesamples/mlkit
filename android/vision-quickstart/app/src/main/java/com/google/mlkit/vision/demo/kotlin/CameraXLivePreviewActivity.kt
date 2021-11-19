@@ -16,11 +16,9 @@
 
 package com.google.mlkit.vision.demo.kotlin
 
-import androidx.lifecycle.ViewModelProvider
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -45,6 +43,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.common.annotation.KeepName
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.common.model.LocalModel
@@ -94,16 +93,6 @@ class CameraXLivePreviewActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Log.d(TAG, "onCreate")
-    if (VERSION.SDK_INT < VERSION_CODES.LOLLIPOP) {
-      Toast.makeText(
-          applicationContext,
-          "CameraX is only supported on SDK version >=21. Current SDK version is " +
-            VERSION.SDK_INT,
-          Toast.LENGTH_LONG
-        )
-        .show()
-      return
-    }
     if (savedInstanceState != null) {
       selectedModel = savedInstanceState.getString(STATE_SELECTED_MODEL, OBJECT_DETECTION)
     }
