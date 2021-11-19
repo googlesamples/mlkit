@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -96,16 +95,6 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
     super.onCreate(savedInstanceState);
     Log.d(TAG, "onCreate");
 
-    if (VERSION.SDK_INT < VERSION_CODES.LOLLIPOP) {
-      Toast.makeText(
-              getApplicationContext(),
-              "CameraX is only supported on SDK version >=21. Current SDK version is "
-                  + VERSION.SDK_INT,
-              Toast.LENGTH_LONG)
-          .show();
-      return;
-    }
-
     if (savedInstanceState != null) {
       selectedModel = savedInstanceState.getString(STATE_SELECTED_MODEL, CUSTOM_AUTOML_LABELING);
       lensFacing = savedInstanceState.getInt(STATE_LENS_FACING, CameraSelector.LENS_FACING_BACK);
@@ -152,13 +141,13 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
 
     ImageView settingsButton = findViewById(R.id.settings_button);
     settingsButton.setOnClickListener(
-      v -> {
-        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-        intent.putExtra(
-          SettingsActivity.EXTRA_LAUNCH_SOURCE,
-          SettingsActivity.LaunchSource.CAMERAX_LIVE_PREVIEW);
-        startActivity(intent);
-      });
+        v -> {
+          Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+          intent.putExtra(
+              SettingsActivity.EXTRA_LAUNCH_SOURCE,
+              SettingsActivity.LaunchSource.CAMERAX_LIVE_PREVIEW);
+          startActivity(intent);
+        });
 
     if (!allPermissionsGranted()) {
       getRuntimePermissions();
@@ -311,7 +300,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
         default:
           throw new IllegalStateException("Invalid model name");
       }
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       Log.e(TAG, "Can not create image processor: " + selectedModel, e);
       Toast.makeText(
               getApplicationContext(),
