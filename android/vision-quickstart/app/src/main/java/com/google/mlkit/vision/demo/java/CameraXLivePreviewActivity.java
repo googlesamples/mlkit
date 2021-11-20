@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -124,16 +123,6 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.d(TAG, "onCreate");
-
-    if (VERSION.SDK_INT < VERSION_CODES.LOLLIPOP) {
-      Toast.makeText(
-              getApplicationContext(),
-              "CameraX is only supported on SDK version >=21. Current SDK version is "
-                  + VERSION.SDK_INT,
-              Toast.LENGTH_LONG)
-          .show();
-      return;
-    }
 
     if (savedInstanceState != null) {
       selectedModel = savedInstanceState.getString(STATE_SELECTED_MODEL, OBJECT_DETECTION);
