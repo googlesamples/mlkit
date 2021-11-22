@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -80,8 +81,11 @@ public class MainActivityJava extends AppCompatActivity {
   private void hideKeyboard() {
     InputMethodManager inputMethodManager =
         (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-    inputMethodManager.hideSoftInputFromWindow(
-        getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    View view = getCurrentFocus();
+    if (inputMethodManager != null && view != null) {
+      inputMethodManager.hideSoftInputFromWindow(
+          view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
   }
 
   private String getInputText() {
