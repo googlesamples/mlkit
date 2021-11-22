@@ -1,7 +1,6 @@
 package com.google.mlkit.samples.vision.digitalink.kotlin
 
 import android.os.Bundle
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -9,17 +8,16 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.annotation.VisibleForTesting
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSortedSet
 import com.google.mlkit.samples.vision.digitalink.R
 import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
 import java.util.Locale
 
-/** Main activity which creates a StrokeManager and connects it to the DrawingView.  */
+/** Main activity which creates a StrokeManager and connects it to the DrawingView. */
 class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedModelsChangedListener {
-  @JvmField
-  @VisibleForTesting
-  val strokeManager = StrokeManager()
+  @JvmField @VisibleForTesting val strokeManager = StrokeManager()
   private lateinit var languageAdapter: ArrayAdapter<ModelLanguageContainer>
 
   public override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,9 +25,7 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
     setContentView(R.layout.activity_digital_ink_main_kotlin)
     val languageSpinner = findViewById<Spinner>(R.id.languages_spinner)
     val drawingView = findViewById<DrawingView>(R.id.drawing_view)
-    val statusTextView = findViewById<StatusTextView>(
-      R.id.status_text_view
-    )
+    val statusTextView = findViewById<StatusTextView>(R.id.status_text_view)
     drawingView.setStrokeManager(strokeManager)
     statusTextView.setStrokeManager(strokeManager)
     strokeManager.setStatusChangedListener(statusTextView)
@@ -42,24 +38,19 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
     languageSpinner.adapter = languageAdapter
     strokeManager.refreshDownloadedModelsStatus()
 
-    languageSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-      override fun onItemSelected(
-        parent: AdapterView<*>,
-        view: View,
-        position: Int,
-        id: Long
-      ) {
-        val languageCode =
-          (parent.adapter.getItem(position) as ModelLanguageContainer).languageTag
-            ?: return
-        Log.i(TAG, "Selected language: $languageCode")
-        strokeManager.setActiveModel(languageCode)
-      }
+    languageSpinner.onItemSelectedListener =
+      object : OnItemSelectedListener {
+        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+          val languageCode =
+            (parent.adapter.getItem(position) as ModelLanguageContainer).languageTag ?: return
+          Log.i(TAG, "Selected language: $languageCode")
+          strokeManager.setActiveModel(languageCode)
+        }
 
-      override fun onNothingSelected(parent: AdapterView<*>?) {
-        Log.i(TAG, "No language selected")
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+          Log.i(TAG, "No language selected")
+        }
       }
-    }
     strokeManager.reset()
   }
 
@@ -81,10 +72,8 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
     strokeManager.deleteActiveModel()
   }
 
-  private class ModelLanguageContainer private constructor(
-    private val label: String,
-    val languageTag: String?
-  ) :
+  private class ModelLanguageContainer
+  private constructor(private val label: String, val languageTag: String?) :
     Comparable<ModelLanguageContainer> {
 
     var downloaded: Boolean = false
@@ -102,13 +91,13 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
     }
 
     companion object {
-      /** Populates and returns a real model identifier, with label and language tag.  */
+      /** Populates and returns a real model identifier, with label and language tag. */
       fun createModelContainer(label: String, languageTag: String?): ModelLanguageContainer {
         // Offset the actual language labels for better readability
         return ModelLanguageContainer(label, languageTag)
       }
 
-      /** Populates and returns a label only, without a language tag.  */
+      /** Populates and returns a label only, without a language tag. */
       fun createLabelOnly(label: String): ModelLanguageContainer {
         return ModelLanguageContainer(label, null)
       }
@@ -118,33 +107,17 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
   private fun populateLanguageAdapter(): ArrayAdapter<ModelLanguageContainer> {
     val languageAdapter =
       ArrayAdapter<ModelLanguageContainer>(this, android.R.layout.simple_spinner_item)
-    languageAdapter.add(
-      ModelLanguageContainer.createLabelOnly(
-        "Select language"
-      )
-    )
-    languageAdapter.add(
-      ModelLanguageContainer.createLabelOnly(
-        "Non-text Models"
-      )
-    )
+    languageAdapter.add(ModelLanguageContainer.createLabelOnly("Select language"))
+    languageAdapter.add(ModelLanguageContainer.createLabelOnly("Non-text Models"))
 
     // Manually add non-text models first
     for (languageTag in NON_TEXT_MODELS.keys) {
       languageAdapter.add(
-        ModelLanguageContainer.createModelContainer(
-          NON_TEXT_MODELS[languageTag]!!,
-          languageTag
-        )
+        ModelLanguageContainer.createModelContainer(NON_TEXT_MODELS[languageTag]!!, languageTag)
       )
     }
-    languageAdapter.add(
-      ModelLanguageContainer.createLabelOnly(
-        "Text Models"
-      )
-    )
-    val textModels =
-      ImmutableSortedSet.naturalOrder<ModelLanguageContainer>()
+    languageAdapter.add(ModelLanguageContainer.createLabelOnly("Text Models"))
+    val textModels = ImmutableSortedSet.naturalOrder<ModelLanguageContainer>()
     for (modelIdentifier in DigitalInkRecognitionModelIdentifier.allModelIdentifiers()) {
       if (NON_TEXT_MODELS.containsKey(modelIdentifier.languageTag)) {
         continue
@@ -158,9 +131,7 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
         label.append(", ").append(modelIdentifier.scriptSubtag).append(" Script")
       }
       textModels.add(
-        ModelLanguageContainer.createModelContainer(
-          label.toString(), modelIdentifier.languageTag
-        )
+        ModelLanguageContainer.createModelContainer(label.toString(), modelIdentifier.languageTag)
       )
     }
     languageAdapter.addAll(textModels.build())
@@ -172,17 +143,19 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
       val container = languageAdapter.getItem(i)!!
       container.downloaded = downloadedLanguageTags.contains(container.languageTag)
     }
+    languageAdapter.notifyDataSetChanged()
   }
 
   companion object {
     private const val TAG = "MLKDI.Activity"
-    private val NON_TEXT_MODELS = ImmutableMap.of(
-      "zxx-Zsym-x-autodraw",
-      "Autodraw",
-      "zxx-Zsye-x-emoji",
-      "Emoji",
-      "zxx-Zsym-x-shapes",
-      "Shapes"
-    )
+    private val NON_TEXT_MODELS =
+      ImmutableMap.of(
+        "zxx-Zsym-x-autodraw",
+        "Autodraw",
+        "zxx-Zsye-x-emoji",
+        "Emoji",
+        "zxx-Zsym-x-shapes",
+        "Shapes"
+      )
   }
 }

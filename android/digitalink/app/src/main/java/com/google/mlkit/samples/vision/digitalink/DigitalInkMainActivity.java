@@ -152,6 +152,7 @@ public class DigitalInkMainActivity extends AppCompatActivity
       ModelLanguageContainer container = languageAdapter.getItem(i);
       container.setDownloaded(downloadedLanguageTags.contains(container.languageTag));
     }
+    languageAdapter.notifyDataSetChanged();
   }
 
   private ArrayAdapter<ModelLanguageContainer> populateLanguageAdapter() {
