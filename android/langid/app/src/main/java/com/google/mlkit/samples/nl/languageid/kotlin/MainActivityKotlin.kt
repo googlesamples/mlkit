@@ -73,10 +73,13 @@ class MainActivityKotlin : AppCompatActivity() {
 
   private fun hideKeyboard() {
     val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.hideSoftInputFromWindow(
-      getCurrentFocus()!!.getWindowToken(),
-      InputMethodManager.HIDE_NOT_ALWAYS
-    )
+    val view = getCurrentFocus()
+    if (inputMethodManager != null && view != null) {
+      inputMethodManager.hideSoftInputFromWindow(
+        view.getWindowToken(),
+        InputMethodManager.HIDE_NOT_ALWAYS
+      )
+    }
   }
 
   private fun getInputText(): String {
