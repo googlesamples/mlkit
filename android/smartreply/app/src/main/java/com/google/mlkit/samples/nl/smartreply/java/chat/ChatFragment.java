@@ -17,7 +17,6 @@
 package com.google.mlkit.samples.nl.smartreply.java.chat;
 
 import android.annotation.SuppressLint;
-import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -35,6 +34,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import com.google.mlkit.samples.nl.smartreply.R;
 import com.google.mlkit.samples.nl.smartreply.java.model.Message;
 import java.util.ArrayList;

@@ -21,9 +21,9 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import com.google.mlkit.samples.nl.smartreply.R;
 
 /** Represents a chat message. */

@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.google.mlkit.samples.nl.smartreply"
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion 19
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary true
@@ -39,7 +39,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
-    implementation 'com.google.mlkit:smart-reply:16.2.0'
+    implementation 'com.google.mlkit:smart-reply:17.0.0'
 
     implementation 'com.google.guava:guava:27.0.1-android'
 }

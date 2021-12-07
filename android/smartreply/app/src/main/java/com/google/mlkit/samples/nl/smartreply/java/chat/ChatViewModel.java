@@ -17,11 +17,11 @@
 package com.google.mlkit.samples.nl.smartreply.java.chat;
 
 import android.app.Application;
+import android.widget.Toast;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import android.widget.Toast;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.common.collect.Iterables;
