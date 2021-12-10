@@ -51,20 +51,19 @@ android {
 }
 
 repositories {
-    maven { url 'https://google.bintray.com/tensorflow' }
     // Depending on AndroidX Snapshot Builds to get the latest CameraX libs.
     maven { url 'https://androidx.dev/snapshots/builds/6787662/artifacts/repository/' }
 }
 
 dependencies {
     // Image labeling with AutoML model support
-    implementation 'com.google.mlkit:image-labeling-custom:17.0.0'
+    implementation 'com.google.mlkit:image-labeling-custom:17.0.1'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta2'
+    // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta3'
 
-    implementation 'com.google.mlkit:object-detection-custom:16.3.4'
-    implementation 'com.google.mlkit:linkfirebase:16.1.1'
+    implementation 'com.google.mlkit:object-detection-custom:17.0.0'
+    implementation 'com.google.mlkit:linkfirebase:17.0.0'
 
     implementation 'androidx.multidex:multidex:2.0.1'
     // -------------------------------------------------------
