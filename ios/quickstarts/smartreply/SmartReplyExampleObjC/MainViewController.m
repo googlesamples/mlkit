@@ -102,7 +102,12 @@ NS_ASSUME_NONNULL_BEGIN
   self.messages = [NSMutableArray new];
   self.isLocalUser = YES;
   self.messageInputContainerView = [UIView new];
-  _messageInputContainerView.backgroundColor = UIColor.whiteColor;
+  if (@available(iOS 13.0, *)) {
+    // Support dark mode
+    _messageInputContainerView.backgroundColor = UIColor.systemBackgroundColor;
+  } else {
+    _messageInputContainerView.backgroundColor = UIColor.whiteColor;
+  }
   self.smartReply = [MLKSmartReply smartReply];
   self.bottomAreaInset = 0;
   self.inputTextView = [[UITextView alloc] initWithPlaceholder:@"Write a message"];
@@ -135,7 +140,7 @@ NS_ASSUME_NONNULL_BEGIN
                   action:@selector(enterPressed)
         forControlEvents:UIControlEventTouchUpInside];
 
-  self.navigationController.navigationBar.barTintColor = UIColor.blueColor;
+  [self updateNavigationBarWithColor:UIColor.blueColor];
   [self.collectionView registerClass:MDCSelfSizingStereoCell.class
           forCellWithReuseIdentifier:@"cell"];
   if (@available(iOS 11, *)) {
@@ -168,6 +173,23 @@ NS_ASSUME_NONNULL_BEGIN
   [self.view addConstraint:_bottomConstraint];
   [self.view addConstraint:_heightConstraint];
   [self setupInputComponents];
+}
+
+- (void)updateNavigationBarWithColor:(UIColor *)color {
+  if (@available(iOS 13.0, *)) {
+    // In iOS 15, `scrollEdgeAppearance` applies to all navigtion bars. If the value of
+    // `scrollEdgeAppearance` is `nil`, UIKit uses the setting in `standardAppearance` and
+    // modify it to use a transparent background. To avoid this, we have the `UINavigationBar`
+    // use the same appearance for both standard and edge states.
+    self.navigationController.navigationBar.standardAppearance.backgroundColor = color;
+    self.navigationController.navigationBar.standardAppearance.titleTextAttributes =
+        @{NSForegroundColorAttributeName : [UIColor whiteColor]};
+    self.navigationController.navigationBar.scrollEdgeAppearance =
+        self.navigationController.navigationBar.standardAppearance;
+
+  } else {
+    self.navigationController.navigationBar.barTintColor = color;
+  }
 }
 
 - (void)setupInputComponents {
@@ -351,6 +373,11 @@ NS_ASSUME_NONNULL_BEGIN
   cell.leadingImageView.tintColor = item.isLocalUser ? UIColor.blueColor : UIColor.redColor;
   cell.titleLabel.text = item.text;
   cell.detailLabel.text = [[NSDate dateWithTimeIntervalSince1970:item.timestamp] timeAgo];
+  if (@available(iOS 13.0, *)) {
+    // Support dark mode
+    cell.titleLabel.textColor = UIColor.labelColor;
+    cell.detailLabel.textColor = UIColor.labelColor;
+  }
   return cell;
 }
 
@@ -362,7 +389,7 @@ NS_ASSUME_NONNULL_BEGIN
   self.isLocalUser = !_isLocalUser;
   UIColor *color = _isLocalUser ? UIColor.blueColor : UIColor.redColor;
   _sendButton.tintColor = color;
-  self.navigationController.navigationBar.barTintColor = color;
+  [self updateNavigationBarWithColor:color];
   [self updateReplies];
 }
 
