@@ -229,6 +229,18 @@ NS_ASSUME_NONNULL_BEGIN
   return [NSString stringWithFormat:@"[%@]\n", [outputs componentsJoinedByString:@", "]];
 }
 
+- (NSDictionary *)outputTextAttributes {
+  if (@available(iOS 13.0, *)) {
+    // Support Dark Mode
+    return @{
+      NSFontAttributeName : self.outputTextView.font,
+      NSForegroundColorAttributeName : UIColor.labelColor
+    };
+  } else {
+    return @{NSFontAttributeName : self.outputTextView.font};
+  }
+}
+
 - (void)annotateText:(NSAttributedString *)text
        withExtractor:(MLKEntityExtractor *)extractor
               locale:(NSLocale *)locale {
@@ -241,7 +253,7 @@ NS_ASSUME_NONNULL_BEGIN
         completion:^(NSArray<MLKEntityAnnotation *> *_Nullable result, NSError *_Nullable error) {
           typeof(self) strongSelf = weakSelf;
           if (strongSelf == nil) return;
-          NSDictionary *outputAttributes = @{NSFontAttributeName : self.outputTextView.font};
+          NSDictionary *outputAttributes = [self outputTextAttributes];
           NSMutableAttributedString *output = [[NSMutableAttributedString alloc] init];
           NSMutableAttributedString *input = [text mutableCopy];
           [input removeAttribute:NSBackgroundColorAttributeName
