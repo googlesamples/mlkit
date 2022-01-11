@@ -51,7 +51,6 @@
         android:persistent="true"
         android:title="@string/pref_title_pose_detector_performance_mode"
         android:summary="%s"/>
-
     <SwitchPreference
         android:defaultValue="true"
         android:key="@string/pref_key_still_image_pose_detector_show_in_frame_likelihood"

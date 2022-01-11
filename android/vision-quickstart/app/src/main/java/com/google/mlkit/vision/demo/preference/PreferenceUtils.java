@@ -236,13 +236,14 @@ public class PreferenceUtils {
             R.string.pref_key_live_preview_pose_detection_performance_mode,
             POSE_DETECTOR_PERFORMANCE_MODE_FAST);
     if (performanceMode == POSE_DETECTOR_PERFORMANCE_MODE_FAST) {
-      return new PoseDetectorOptions.Builder()
-          .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
-          .build();
+      PoseDetectorOptions.Builder builder =
+          new PoseDetectorOptions.Builder().setDetectorMode(PoseDetectorOptions.STREAM_MODE);
+      return builder.build();
     } else {
-      return new AccuratePoseDetectorOptions.Builder()
-          .setDetectorMode(AccuratePoseDetectorOptions.STREAM_MODE)
-          .build();
+      AccuratePoseDetectorOptions.Builder builder =
+          new AccuratePoseDetectorOptions.Builder()
+              .setDetectorMode(AccuratePoseDetectorOptions.STREAM_MODE);
+      return builder.build();
     }
   }
 
@@ -253,13 +254,14 @@ public class PreferenceUtils {
             R.string.pref_key_still_image_pose_detection_performance_mode,
             POSE_DETECTOR_PERFORMANCE_MODE_FAST);
     if (performanceMode == POSE_DETECTOR_PERFORMANCE_MODE_FAST) {
-      return new PoseDetectorOptions.Builder()
-          .setDetectorMode(PoseDetectorOptions.SINGLE_IMAGE_MODE)
-          .build();
+      PoseDetectorOptions.Builder builder =
+          new PoseDetectorOptions.Builder().setDetectorMode(PoseDetectorOptions.SINGLE_IMAGE_MODE);
+      return builder.build();
     } else {
-      return new AccuratePoseDetectorOptions.Builder()
-          .setDetectorMode(AccuratePoseDetectorOptions.SINGLE_IMAGE_MODE)
-          .build();
+      AccuratePoseDetectorOptions.Builder builder =
+          new AccuratePoseDetectorOptions.Builder()
+              .setDetectorMode(AccuratePoseDetectorOptions.SINGLE_IMAGE_MODE);
+      return builder.build();
     }
   }
 
