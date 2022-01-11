@@ -42,7 +42,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
-    implementation 'com.google.mlkit:digital-ink-recognition:17.0.1'
+    implementation 'com.google.mlkit:digital-ink-recognition:18.0.0'
 
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
