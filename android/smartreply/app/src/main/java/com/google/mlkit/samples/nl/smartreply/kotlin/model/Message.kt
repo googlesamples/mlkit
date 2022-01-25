@@ -31,9 +31,9 @@ class Message(val text: String, val isLocalUser: Boolean, val timestamp: Long) {
         ?: throw IllegalStateException("Could not get drawable ic_tag_faces_black_24dp")
 
     if (isLocalUser) {
-      DrawableCompat.setTint(drawable, Color.BLUE)
+      DrawableCompat.setTint(drawable.mutate(), Color.BLUE)
     } else {
-      DrawableCompat.setTint(drawable, Color.RED)
+      DrawableCompat.setTint(drawable.mutate(), Color.RED)
     }
 
     return drawable

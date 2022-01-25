@@ -11,6 +11,7 @@ android {
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
+        setProperty("archivesBaseName", "vision-digital-ink")
         testApplicationId "com.google.mlkit.vision.digitalink"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
