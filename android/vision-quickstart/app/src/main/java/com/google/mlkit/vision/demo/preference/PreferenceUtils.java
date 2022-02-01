@@ -235,14 +235,21 @@ public class PreferenceUtils {
             context,
             R.string.pref_key_live_preview_pose_detection_performance_mode,
             POSE_DETECTOR_PERFORMANCE_MODE_FAST);
+    boolean preferGPU = preferGPUForPoseDetection(context);
     if (performanceMode == POSE_DETECTOR_PERFORMANCE_MODE_FAST) {
       PoseDetectorOptions.Builder builder =
           new PoseDetectorOptions.Builder().setDetectorMode(PoseDetectorOptions.STREAM_MODE);
+      if (preferGPU) {
+        builder.setPreferredHardwareConfigs(PoseDetectorOptions.CPU_GPU);
+      }
       return builder.build();
     } else {
       AccuratePoseDetectorOptions.Builder builder =
           new AccuratePoseDetectorOptions.Builder()
               .setDetectorMode(AccuratePoseDetectorOptions.STREAM_MODE);
+      if (preferGPU) {
+        builder.setPreferredHardwareConfigs(AccuratePoseDetectorOptions.CPU_GPU);
+      }
       return builder.build();
     }
   }
@@ -253,14 +260,21 @@ public class PreferenceUtils {
             context,
             R.string.pref_key_still_image_pose_detection_performance_mode,
             POSE_DETECTOR_PERFORMANCE_MODE_FAST);
+    boolean preferGPU = preferGPUForPoseDetection(context);
     if (performanceMode == POSE_DETECTOR_PERFORMANCE_MODE_FAST) {
       PoseDetectorOptions.Builder builder =
           new PoseDetectorOptions.Builder().setDetectorMode(PoseDetectorOptions.SINGLE_IMAGE_MODE);
+      if (preferGPU) {
+        builder.setPreferredHardwareConfigs(PoseDetectorOptions.CPU_GPU);
+      }
       return builder.build();
     } else {
       AccuratePoseDetectorOptions.Builder builder =
           new AccuratePoseDetectorOptions.Builder()
               .setDetectorMode(AccuratePoseDetectorOptions.SINGLE_IMAGE_MODE);
+      if (preferGPU) {
+        builder.setPreferredHardwareConfigs(AccuratePoseDetectorOptions.CPU_GPU);
+      }
       return builder.build();
     }
   }
@@ -275,6 +289,13 @@ public class PreferenceUtils {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     String prefKey = context.getString(R.string.pref_key_show_language_tag);
     return sharedPreferences.getBoolean(prefKey, false);
+  }
+
+  public static boolean preferGPUForPoseDetection(Context context) {
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    String prefKey =
+        context.getString(R.string.pref_key_pose_detector_prefer_gpu);
+    return sharedPreferences.getBoolean(prefKey, true);
   }
 
   public static boolean shouldShowPoseDetectionInFrameLikelihoodLivePreview(Context context) {

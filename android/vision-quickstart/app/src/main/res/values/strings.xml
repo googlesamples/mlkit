@@ -125,6 +125,11 @@
     <string name="pref_entry_values_pose_detector_performance_mode_fast" translatable="false">1</string>
     <string name="pref_entry_values_pose_detector_performance_mode_accurate" translatable="false">2</string>
 
+    <!-- Strings for pose detector prefer gpu preference. -->
+    <string name="pref_title_pose_detector_prefer_gpu" translatable="false">Prefer using GPU</string>
+    <string name="pref_key_pose_detector_prefer_gpu" translatable="false">pdpg</string>
+    <string name="pref_summary_pose_detector_prefer_gpu" translatable="false">If enabled, GPU will be used as long as it is available, stable and returns correct results. In this case, the detector will not check if GPU is really faster than CPU.</string>
+
     <!-- Strings for pose detector showInFrameLikelihood preference. -->
     <string name="pref_title_pose_detector_show_in_frame_likelihood" translatable="false">Show in-frame likelihood</string>
     <string name="pref_key_live_preview_pose_detector_show_in_frame_likelihood" translatable="false">lppdsifl</string>

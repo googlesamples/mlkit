@@ -138,6 +138,12 @@
         android:summary="%s"/>
     <SwitchPreference
         android:defaultValue="true"
+        android:key="@string/pref_key_pose_detector_prefer_gpu"
+        android:persistent="true"
+        android:title="@string/pref_title_pose_detector_prefer_gpu"
+        android:summary="@string/pref_summary_pose_detector_prefer_gpu"/>
+    <SwitchPreference
+        android:defaultValue="true"
         android:key="@string/pref_key_live_preview_pose_detector_show_in_frame_likelihood"
         android:persistent="true"
         android:title="@string/pref_title_pose_detector_show_in_frame_likelihood"/>
