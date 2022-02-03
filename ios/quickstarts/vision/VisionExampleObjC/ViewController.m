@@ -128,6 +128,10 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 @implementation ViewController
 
+- (BOOL)prefersStatusBarHidden {
+  return YES;
+}
+
 - (NSString *)stringForDetectorPickerRow:(DetectorPickerRow)detectorPickerRow {
   switch (detectorPickerRow) {
     case DetectorPickerRowDetectFaceOnDevice:
