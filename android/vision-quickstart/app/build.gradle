@@ -67,10 +67,10 @@ dependencies {
     implementation 'com.google.mlkit:object-detection-custom:17.0.0'
 
     // Face features
-    implementation 'com.google.mlkit:face-detection:16.1.4'
+    implementation 'com.google.mlkit:face-detection:16.1.5'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.0.0'
+    // implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.0.1'
 
     // Text features
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.0'
@@ -95,9 +95,9 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta3'
 
     // Pose detection with default models
-    implementation 'com.google.mlkit:pose-detection:18.0.0-beta1'
+    implementation 'com.google.mlkit:pose-detection:18.0.0-beta2'
     // Pose detection with accurate models
-    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta1'
+    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta2'
 
     // Selfie segmentation
     implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta4'
