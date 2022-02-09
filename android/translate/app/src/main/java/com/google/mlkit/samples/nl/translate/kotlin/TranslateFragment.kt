@@ -16,7 +16,6 @@
 package com.google.mlkit.samples.nl.translate.kotlin
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.text.Editable
@@ -31,9 +30,13 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.textfield.TextInputEditText
 import com.google.mlkit.samples.nl.translate.R
 
+/***
+ * Fragment view for handling translations
+ */
 class TranslateFragment : Fragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -43,7 +46,7 @@ class TranslateFragment : Fragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     return inflater.inflate(R.layout.translate_fragment, container, false)
   }
@@ -78,7 +81,7 @@ class TranslateFragment : Fragment() {
         parent: AdapterView<*>?,
         view: View?,
         position: Int,
-        id: Long
+        id: Long,
       ) {
         setProgressText(targetTextView)
         viewModel.sourceLang.setValue(adapter.getItem(position))
@@ -93,7 +96,7 @@ class TranslateFragment : Fragment() {
         parent: AdapterView<*>?,
         view: View?,
         position: Int,
-        id: Long
+        id: Long,
       ) {
         setProgressText(targetTextView)
         viewModel.targetLang.setValue(adapter.getItem(position))
@@ -162,13 +165,13 @@ class TranslateFragment : Fragment() {
           translateRemoteModels
         )
         downloadedModelsTextView.text = output
-        sourceSyncButton.isChecked =
-          translateRemoteModels!!.contains(
-            adapter.getItem(sourceLangSelector.selectedItemPosition)!!.code
-          )
-        targetSyncButton.isChecked = translateRemoteModels.contains(
-          adapter.getItem(targetLangSelector.selectedItemPosition)!!.code
-        )
+
+        sourceSyncButton.isChecked = !viewModel.requiresModelDownload(
+          adapter.getItem(sourceLangSelector.selectedItemPosition)!!,
+          translateRemoteModels)
+        targetSyncButton.isChecked = !viewModel.requiresModelDownload(
+          adapter.getItem(targetLangSelector.selectedItemPosition)!!,
+          translateRemoteModels)
       }
     )
   }

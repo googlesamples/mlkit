@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:width="172dp"
     android:height="129dp"
     android:viewportWidth="172.43"
-    android:viewportHeight="129.06">
+    android:viewportHeight="129.06"
+    tools:ignore="NewApi">
   <path
       android:fillColor="#009933"
       android:pathData="M1.102,114.948l57.68,-109.632l16.815,8.847l-57.68,109.632z" />

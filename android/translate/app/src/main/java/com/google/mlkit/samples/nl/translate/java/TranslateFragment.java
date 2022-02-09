@@ -39,6 +39,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.mlkit.samples.nl.translate.R;
 import java.util.List;
 
+/***
+ * Fragment view for handling translations
+ */
 public class TranslateFragment extends Fragment {
 
   public static TranslateFragment newInstance() {
@@ -194,12 +197,15 @@ public class TranslateFragment extends Fragment {
             String output =
                 getContext().getString(R.string.downloaded_models_label, translateRemoteModels);
             downloadedModelsTextView.setText(output);
+
             sourceSyncButton.setChecked(
-                translateRemoteModels.contains(
-                    adapter.getItem(sourceLangSelector.getSelectedItemPosition()).getCode()));
+                !viewModel.requiresModelDownload(
+                    adapter.getItem(sourceLangSelector.getSelectedItemPosition()),
+                    translateRemoteModels));
             targetSyncButton.setChecked(
-                translateRemoteModels.contains(
-                    adapter.getItem(targetLangSelector.getSelectedItemPosition()).getCode()));
+                !viewModel.requiresModelDownload(
+                    adapter.getItem(targetLangSelector.getSelectedItemPosition()),
+                    translateRemoteModels));
           }
         });
   }

@@ -39,10 +39,14 @@ import com.google.mlkit.nl.translate.TranslatorOptions;
 import com.google.mlkit.samples.nl.translate.R;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+/**
+ * Model class for tracking available models and performing live translations
+ */
 public class TranslateViewModel extends AndroidViewModel {
   // This specifies the number of translators instance we want to keep in our LRU cache.
   // Each instance of the translator is built with different options based on the source
@@ -69,6 +73,8 @@ public class TranslateViewModel extends AndroidViewModel {
   MutableLiveData<String> sourceText = new MutableLiveData<>();
   MediatorLiveData<ResultOrError> translatedText = new MediatorLiveData<>();
   MutableLiveData<List<String>> availableModels = new MutableLiveData<>();
+
+  HashMap<String, Task<Void>> pendingDownloads = new HashMap<>();
 
   public TranslateViewModel(@NonNull Application application) {
     super(application);
@@ -149,15 +155,34 @@ public class TranslateViewModel extends AndroidViewModel {
   // Starts downloading a remote model for local translation.
   void downloadLanguage(Language language) {
     TranslateRemoteModel model = getModel(TranslateLanguage.fromLanguageTag(language.getCode()));
-    modelManager
-        .download(model, new DownloadConditions.Builder().build())
-        .addOnCompleteListener(
-            new OnCompleteListener<Void>() {
-              @Override
-              public void onComplete(@NonNull Task<Void> task) {
-                fetchDownloadedModels();
-              }
-            });
+    Task<Void> downloadTask;
+    if (pendingDownloads.containsKey(language.code)) {
+      downloadTask = pendingDownloads.get(language.code);
+      // found existing task. exiting
+      if (downloadTask != null && !downloadTask.isCanceled()) {
+        return;
+      }
+    }
+    downloadTask =
+        modelManager
+            .download(model, new DownloadConditions.Builder().build())
+            .addOnCompleteListener(
+                new OnCompleteListener<Void>() {
+                  @Override
+                  public void onComplete(@NonNull Task<Void> task) {
+                    pendingDownloads.remove(language.getCode());
+                    fetchDownloadedModels();
+                  }
+                });
+    pendingDownloads.put(language.code, downloadTask);
+  }
+
+  // Returns if a new model download task should be started.
+  boolean requiresModelDownload(Language lang, @Nullable List<String> downloadedModels) {
+    if (downloadedModels == null) {
+      return true;
+    }
+    return !downloadedModels.contains(lang.code) && !pendingDownloads.containsKey(lang.code);
   }
 
   // Deletes a locally stored translation model.
@@ -172,6 +197,7 @@ public class TranslateViewModel extends AndroidViewModel {
                 fetchDownloadedModels();
               }
             });
+    pendingDownloads.remove(language.code);
   }
 
   public Task<String> translate() {

@@ -1,6 +1,7 @@
 package com.google.mlkit.samples.nl.translate
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.mlkit.samples.nl.translate.java.MainActivity
 import com.mlkit.example.internal.BaseEntryChoiceActivity
 import com.mlkit.example.internal.Choice
@@ -20,5 +21,11 @@ class EntryChoiceActivity : BaseEntryChoiceActivity() {
         Intent(this, com.google.mlkit.samples.nl.translate.kotlin.MainActivity::class.java)
       )
     )
+  }
+
+  companion object {
+    init {
+      AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+    }
   }
 }

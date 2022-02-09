@@ -27,10 +27,17 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
-import com.google.mlkit.nl.translate.*
+import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.nl.translate.TranslateRemoteModel
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.Translator
+import com.google.mlkit.nl.translate.TranslatorOptions
 import com.google.mlkit.samples.nl.translate.R
 import java.util.Locale
 
+/**
+ * Model class for tracking available models and performing live translations
+ */
 class TranslateViewModel(application: Application) : AndroidViewModel(application) {
 
   companion object {
@@ -42,6 +49,7 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
   }
 
   private val modelManager: RemoteModelManager = RemoteModelManager.getInstance()
+  private val pendingDownloads: HashMap<String, Task<Void>> = hashMapOf()
   private val translators =
     object : LruCache<TranslatorOptions, Translator>(NUM_TRANSLATORS) {
       override fun create(options: TranslatorOptions): Translator {
@@ -51,7 +59,7 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
         evicted: Boolean,
         key: TranslatorOptions,
         oldValue: Translator,
-        newValue: Translator?
+        newValue: Translator?,
       ) {
         oldValue.close()
       }
@@ -104,15 +112,37 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
   // Starts downloading a remote model for local translation.
   internal fun downloadLanguage(language: Language) {
     val model = getModel(TranslateLanguage.fromLanguageTag(language.code)!!)
-    modelManager.download(model, DownloadConditions.Builder().build()).addOnCompleteListener {
-      fetchDownloadedModels()
+    var downloadTask: Task<Void>?
+    if (pendingDownloads.containsKey(language.code)) {
+      downloadTask = pendingDownloads[language.code]
+      // found existing task. exiting
+      if (downloadTask != null && !downloadTask.isCanceled) {
+        return
+      }
     }
+    downloadTask =
+      modelManager.download(model, DownloadConditions.Builder().build()).addOnCompleteListener {
+        pendingDownloads.remove(language.code)
+        fetchDownloadedModels()
+      }
+    pendingDownloads[language.code] = downloadTask
+  }
+
+  // Returns if a new model download task should be started.
+  fun requiresModelDownload(
+    lang: Language,
+    downloadedModels: List<String?>?,
+  ): Boolean {
+    return if (downloadedModels == null) {
+      true
+    } else !downloadedModels.contains(lang.code) && !pendingDownloads.containsKey(lang.code)
   }
 
   // Deletes a locally stored translation model.
   internal fun deleteLanguage(language: Language) {
     val model = getModel(TranslateLanguage.fromLanguageTag(language.code)!!)
     modelManager.deleteDownloadedModel(model).addOnCompleteListener { fetchDownloadedModels() }
+    pendingDownloads.remove(language.code)
   }
 
   fun translate(): Task<String> {
