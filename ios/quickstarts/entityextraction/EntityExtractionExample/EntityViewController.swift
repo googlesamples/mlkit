@@ -32,6 +32,17 @@ class EntityViewController: UIViewController, UITextViewDelegate, UIPickerViewDa
     options: EntityExtractorOptions(modelIdentifier: EntityExtractionModelIdentifier.english))
   let colorPalette: [UIColor]! = EntityViewController.simplePalette()
   let languages = EntityExtractionModelIdentifier.allModelIdentifiersSorted()
+  var outputTextAttributes:[NSAttributedString.Key: Any] {
+    if #available(iOS 13.0, *) {
+      // Support Dark Mode
+      return [
+        NSAttributedString.Key.font: self.outputTextView.font as Any,
+        NSAttributedString.Key.foregroundColor: UIColor.label,
+      ]
+    } else {
+      return [NSAttributedString.Key.font: self.outputTextView.font as Any]
+    }
+  }
 
   class func simplePalette() -> [UIColor]! {
     return [
@@ -253,7 +264,7 @@ class EntityViewController: UIViewController, UITextViewDelegate, UIPickerViewDa
         result, error in
 
         guard let self = self else { return }
-        let outputAttributes = [NSAttributedString.Key.font: self.outputTextView.font as Any]
+        let outputAttributes = self.outputTextAttributes
         let output = NSMutableAttributedString()
         let input = text.mutableCopy() as! NSMutableAttributedString
         input.removeAttribute(
