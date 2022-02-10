@@ -16,10 +16,7 @@
 
 package com.google.mlkit.vision.demo.java;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
@@ -32,9 +29,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
-import androidx.core.content.ContextCompat;
 import com.google.android.gms.common.annotation.KeepName;
 import com.google.mlkit.common.model.LocalModel;
 import com.google.mlkit.vision.demo.CameraSource;
@@ -67,9 +61,7 @@ import java.util.List;
 /** Live preview demo for ML Kit APIs. */
 @KeepName
 public final class LivePreviewActivity extends AppCompatActivity
-    implements OnRequestPermissionsResultCallback,
-        OnItemSelectedListener,
-        CompoundButton.OnCheckedChangeListener {
+    implements OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
   private static final String OBJECT_DETECTION = "Object Detection";
   private static final String OBJECT_DETECTION_CUSTOM = "Custom Object Detection";
   private static final String CUSTOM_AUTOML_OBJECT_DETECTION =
@@ -88,7 +80,6 @@ public final class LivePreviewActivity extends AppCompatActivity
   private static final String TEXT_RECOGNITION_KOREAN = "Text Recognition Korean (Beta)";
 
   private static final String TAG = "LivePreviewActivity";
-  private static final int PERMISSION_REQUESTS = 1;
 
   private CameraSource cameraSource = null;
   private CameraSourcePreview preview;
@@ -149,11 +140,7 @@ public final class LivePreviewActivity extends AppCompatActivity
           startActivity(intent);
         });
 
-    if (allPermissionsGranted()) {
-      createCameraSource(selectedModel);
-    } else {
-      getRuntimePermissions();
-    }
+    createCameraSource(selectedModel);
   }
 
   @Override
@@ -163,12 +150,8 @@ public final class LivePreviewActivity extends AppCompatActivity
     selectedModel = parent.getItemAtPosition(pos).toString();
     Log.d(TAG, "Selected model: " + selectedModel);
     preview.stop();
-    if (allPermissionsGranted()) {
-      createCameraSource(selectedModel);
-      startCameraSource();
-    } else {
-      getRuntimePermissions();
-    }
+    createCameraSource(selectedModel);
+    startCameraSource();
   }
 
   @Override
@@ -369,64 +352,5 @@ public final class LivePreviewActivity extends AppCompatActivity
     if (cameraSource != null) {
       cameraSource.release();
     }
-  }
-
-  private String[] getRequiredPermissions() {
-    try {
-      PackageInfo info =
-          this.getPackageManager()
-              .getPackageInfo(this.getPackageName(), PackageManager.GET_PERMISSIONS);
-      String[] ps = info.requestedPermissions;
-      if (ps != null && ps.length > 0) {
-        return ps;
-      } else {
-        return new String[0];
-      }
-    } catch (Exception e) {
-      return new String[0];
-    }
-  }
-
-  private boolean allPermissionsGranted() {
-    for (String permission : getRequiredPermissions()) {
-      if (!isPermissionGranted(this, permission)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private void getRuntimePermissions() {
-    List<String> allNeededPermissions = new ArrayList<>();
-    for (String permission : getRequiredPermissions()) {
-      if (!isPermissionGranted(this, permission)) {
-        allNeededPermissions.add(permission);
-      }
-    }
-
-    if (!allNeededPermissions.isEmpty()) {
-      ActivityCompat.requestPermissions(
-          this, allNeededPermissions.toArray(new String[0]), PERMISSION_REQUESTS);
-    }
-  }
-
-  @Override
-  public void onRequestPermissionsResult(
-      int requestCode, String[] permissions, int[] grantResults) {
-    Log.i(TAG, "Permission granted!");
-    if (allPermissionsGranted()) {
-      createCameraSource(selectedModel);
-    }
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-  }
-
-  private static boolean isPermissionGranted(Context context, String permission) {
-    if (ContextCompat.checkSelfPermission(context, permission)
-        == PackageManager.PERMISSION_GRANTED) {
-      Log.i(TAG, "Permission granted: " + permission);
-      return true;
-    }
-    Log.i(TAG, "Permission NOT granted: " + permission);
-    return false;
   }
 }

@@ -16,10 +16,7 @@
 
 package com.google.mlkit.vision.demo.java;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -32,9 +29,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import androidx.annotation.RequiresApi;
 import androidx.camera.view.PreviewView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
-import androidx.core.content.ContextCompat;
 import com.google.android.gms.common.annotation.KeepName;
 import com.google.mlkit.common.model.LocalModel;
 import com.google.mlkit.vision.camera.CameraSourceConfig;
@@ -50,7 +44,6 @@ import com.google.mlkit.vision.objects.DetectedObject;
 import com.google.mlkit.vision.objects.ObjectDetection;
 import com.google.mlkit.vision.objects.ObjectDetector;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,9 +51,8 @@ import java.util.Objects;
 @KeepName
 @RequiresApi(VERSION_CODES.LOLLIPOP)
 public final class CameraXSourceDemoActivity extends AppCompatActivity
-    implements OnRequestPermissionsResultCallback, CompoundButton.OnCheckedChangeListener {
+    implements CompoundButton.OnCheckedChangeListener {
   private static final String TAG = "CameraXSourceDemo";
-  private static final int PERMISSION_REQUESTS = 1;
 
   private static final LocalModel localModel =
       new LocalModel.Builder().setAssetFilePath("custom_models/object_labeler.tflite").build();
@@ -108,9 +100,6 @@ public final class CameraXSourceDemoActivity extends AppCompatActivity
             detectionTask
                 .addOnSuccessListener(this::onDetectionTaskSuccess)
                 .addOnFailureListener(this::onDetectionTaskFailure);
-    if (!allPermissionsGranted()) {
-      getRuntimePermissions();
-    }
   }
 
   @Override
@@ -153,14 +142,6 @@ public final class CameraXSourceDemoActivity extends AppCompatActivity
     if (cameraXSource != null) {
       cameraXSource.close();
     }
-  }
-
-  @Override
-  public void onRequestPermissionsResult(
-      int requestCode, String[] permissions, int[] grantResults) {
-    Log.i(TAG, "Permission granted!");
-    createThenStartCameraXSource();
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 
   private void createThenStartCameraXSource() {
@@ -227,54 +208,5 @@ public final class CameraXSourceDemoActivity extends AppCompatActivity
   private boolean isPortraitMode() {
     return getApplicationContext().getResources().getConfiguration().orientation
         != Configuration.ORIENTATION_LANDSCAPE;
-  }
-
-  private boolean allPermissionsGranted() {
-    for (String permission : getRequiredPermissions()) {
-      if (!isPermissionGranted(this, permission)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private String[] getRequiredPermissions() {
-    try {
-      PackageInfo info =
-          this.getPackageManager()
-              .getPackageInfo(this.getPackageName(), PackageManager.GET_PERMISSIONS);
-      String[] ps = info.requestedPermissions;
-      if (ps != null && ps.length > 0) {
-        return ps;
-      } else {
-        return new String[0];
-      }
-    } catch (Exception e) {
-      return new String[0];
-    }
-  }
-
-  private void getRuntimePermissions() {
-    List<String> allNeededPermissions = new ArrayList<>();
-    for (String permission : getRequiredPermissions()) {
-      if (!isPermissionGranted(this, permission)) {
-        allNeededPermissions.add(permission);
-      }
-    }
-
-    if (!allNeededPermissions.isEmpty()) {
-      ActivityCompat.requestPermissions(
-          this, allNeededPermissions.toArray(new String[0]), PERMISSION_REQUESTS);
-    }
-  }
-
-  private static boolean isPermissionGranted(Context context, String permission) {
-    if (ContextCompat.checkSelfPermission(context, permission)
-        == PackageManager.PERMISSION_GRANTED) {
-      Log.i(TAG, "Permission granted: " + permission);
-      return true;
-    }
-    Log.i(TAG, "Permission NOT granted: " + permission);
-    return false;
   }
 }

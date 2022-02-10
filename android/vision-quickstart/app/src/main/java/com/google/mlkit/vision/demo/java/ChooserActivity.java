@@ -18,8 +18,6 @@ package com.google.mlkit.vision.demo.java;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -33,22 +31,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
-import androidx.core.content.ContextCompat;
 import com.google.mlkit.vision.demo.BuildConfig;
 import com.google.mlkit.vision.demo.R;
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Demo app chooser which takes care of runtime permission requesting and allow you pick from all
- * available testing Activities.
- */
+/** Demo app chooser which allows you pick from all available testing Activities. */
 public final class ChooserActivity extends AppCompatActivity
-    implements OnRequestPermissionsResultCallback, AdapterView.OnItemClickListener {
+    implements AdapterView.OnItemClickListener {
   private static final String TAG = "ChooserActivity";
-  private static final int PERMISSION_REQUESTS = 1;
 
   @SuppressWarnings("NewApi") // CameraX is only available on API 21+
   private static final Class<?>[] CLASSES =
@@ -100,65 +89,12 @@ public final class ChooserActivity extends AppCompatActivity
 
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(this);
-
-    if (!allPermissionsGranted()) {
-      getRuntimePermissions();
-    }
   }
 
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     Class<?> clicked = CLASSES[position];
     startActivity(new Intent(this, clicked));
-  }
-
-  private String[] getRequiredPermissions() {
-    try {
-      PackageInfo info =
-          this.getPackageManager()
-              .getPackageInfo(this.getPackageName(), PackageManager.GET_PERMISSIONS);
-      String[] ps = info.requestedPermissions;
-      if (ps != null && ps.length > 0) {
-        return ps;
-      } else {
-        return new String[0];
-      }
-    } catch (Exception e) {
-      return new String[0];
-    }
-  }
-
-  private boolean allPermissionsGranted() {
-    for (String permission : getRequiredPermissions()) {
-      if (!isPermissionGranted(this, permission)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private void getRuntimePermissions() {
-    List<String> allNeededPermissions = new ArrayList<>();
-    for (String permission : getRequiredPermissions()) {
-      if (!isPermissionGranted(this, permission)) {
-        allNeededPermissions.add(permission);
-      }
-    }
-
-    if (!allNeededPermissions.isEmpty()) {
-      ActivityCompat.requestPermissions(
-          this, allNeededPermissions.toArray(new String[0]), PERMISSION_REQUESTS);
-    }
-  }
-
-  private static boolean isPermissionGranted(Context context, String permission) {
-    if (ContextCompat.checkSelfPermission(context, permission)
-        == PackageManager.PERMISSION_GRANTED) {
-      Log.i(TAG, "Permission granted: " + permission);
-      return true;
-    }
-    Log.i(TAG, "Permission NOT granted: " + permission);
-    return false;
   }
 
   private static class MyArrayAdapter extends ArrayAdapter<Class<?>> {

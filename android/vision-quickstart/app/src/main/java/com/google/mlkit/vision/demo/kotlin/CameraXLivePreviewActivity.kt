@@ -16,9 +16,7 @@
 
 package com.google.mlkit.vision.demo.kotlin
 
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -40,7 +38,6 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -74,10 +71,7 @@ import java.util.ArrayList
 @KeepName
 @RequiresApi(VERSION_CODES.LOLLIPOP)
 class CameraXLivePreviewActivity :
-  AppCompatActivity(),
-  ActivityCompat.OnRequestPermissionsResultCallback,
-  OnItemSelectedListener,
-  CompoundButton.OnCheckedChangeListener {
+  AppCompatActivity(), OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
   private var previewView: PreviewView? = null
   private var graphicOverlay: GraphicOverlay? = null
@@ -140,9 +134,7 @@ class CameraXLivePreviewActivity :
         this,
         Observer { provider: ProcessCameraProvider? ->
           cameraProvider = provider
-          if (allPermissionsGranted()) {
-            bindAllCameraUseCases()
-          }
+          bindAllCameraUseCases()
         }
       )
 
@@ -151,10 +143,6 @@ class CameraXLivePreviewActivity :
       val intent = Intent(applicationContext, SettingsActivity::class.java)
       intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, LaunchSource.CAMERAX_LIVE_PREVIEW)
       startActivity(intent)
-    }
-
-    if (!allPermissionsGranted()) {
-      runtimePermissions
     }
   }
 
@@ -406,62 +394,8 @@ class CameraXLivePreviewActivity :
     cameraProvider!!.bindToLifecycle(/* lifecycleOwner= */ this, cameraSelector!!, analysisUseCase)
   }
 
-  private val requiredPermissions: Array<String?>
-    get() =
-      try {
-        val info =
-          this.packageManager.getPackageInfo(this.packageName, PackageManager.GET_PERMISSIONS)
-        val ps = info.requestedPermissions
-        if (ps != null && ps.isNotEmpty()) {
-          ps
-        } else {
-          arrayOfNulls(0)
-        }
-      } catch (e: Exception) {
-        arrayOfNulls(0)
-      }
-
-  private fun allPermissionsGranted(): Boolean {
-    for (permission in requiredPermissions) {
-      if (!isPermissionGranted(this, permission)) {
-        return false
-      }
-    }
-    return true
-  }
-
-  private val runtimePermissions: Unit
-    get() {
-      val allNeededPermissions: MutableList<String?> = ArrayList()
-      for (permission in requiredPermissions) {
-        if (!isPermissionGranted(this, permission)) {
-          allNeededPermissions.add(permission)
-        }
-      }
-      if (allNeededPermissions.isNotEmpty()) {
-        ActivityCompat.requestPermissions(
-          this,
-          allNeededPermissions.toTypedArray(),
-          PERMISSION_REQUESTS
-        )
-      }
-    }
-
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String>,
-    grantResults: IntArray
-  ) {
-    Log.i(TAG, "Permission granted!")
-    if (allPermissionsGranted()) {
-      bindAllCameraUseCases()
-    }
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-  }
-
   companion object {
     private const val TAG = "CameraXLivePreview"
-    private const val PERMISSION_REQUESTS = 1
     private const val OBJECT_DETECTION = "Object Detection"
     private const val OBJECT_DETECTION_CUSTOM = "Custom Object Detection"
     private const val CUSTOM_AUTOML_OBJECT_DETECTION = "Custom AutoML Object Detection (Flower)"
@@ -479,16 +413,5 @@ class CameraXLivePreviewActivity :
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
 
     private const val STATE_SELECTED_MODEL = "selected_model"
-
-    private fun isPermissionGranted(context: Context, permission: String?): Boolean {
-      if (ContextCompat.checkSelfPermission(context, permission!!) ==
-          PackageManager.PERMISSION_GRANTED
-      ) {
-        Log.i(TAG, "Permission granted: $permission")
-        return true
-      }
-      Log.i(TAG, "Permission NOT granted: $permission")
-      return false
-    }
   }
 }

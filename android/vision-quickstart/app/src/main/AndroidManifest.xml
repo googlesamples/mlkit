@@ -49,59 +49,59 @@
 
         <activity
             android:name=".java.ChooserActivity"
-            android:exported="true">
+            android:exported="false">
         </activity>
 
         <activity
             android:name=".java.LivePreviewActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
             android:name=".java.CameraXLivePreviewActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
             android:name=".java.CameraXSourceDemoActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
             android:name=".java.StillImageActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
             android:name=".kotlin.ChooserActivity"
-            android:exported="true">
+            android:exported="false">
         </activity>
 
         <activity
             android:name=".kotlin.LivePreviewActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
             android:name=".kotlin.CameraXLivePreviewActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
             android:name=".kotlin.CameraXSourceDemoActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
             android:name=".kotlin.StillImageActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/AppTheme">
         </activity>
 

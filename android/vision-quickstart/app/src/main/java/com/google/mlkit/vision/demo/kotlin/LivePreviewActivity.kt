@@ -16,9 +16,7 @@
 
 package com.google.mlkit.vision.demo.kotlin
 
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
@@ -31,8 +29,6 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
 import android.widget.ToggleButton
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.google.android.gms.common.annotation.KeepName
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.demo.CameraSource
@@ -62,10 +58,7 @@ import java.util.ArrayList
 /** Live preview demo for ML Kit APIs. */
 @KeepName
 class LivePreviewActivity :
-  AppCompatActivity(),
-  ActivityCompat.OnRequestPermissionsResultCallback,
-  OnItemSelectedListener,
-  CompoundButton.OnCheckedChangeListener {
+  AppCompatActivity(), OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
   private var cameraSource: CameraSource? = null
   private var preview: CameraSourcePreview? = null
@@ -124,11 +117,7 @@ class LivePreviewActivity :
       startActivity(intent)
     }
 
-    if (allPermissionsGranted()) {
-      createCameraSource(selectedModel)
-    } else {
-      runtimePermissions
-    }
+    createCameraSource(selectedModel)
   }
 
   @Synchronized
@@ -138,12 +127,8 @@ class LivePreviewActivity :
     selectedModel = parent?.getItemAtPosition(pos).toString()
     Log.d(TAG, "Selected model: $selectedModel")
     preview?.stop()
-    if (allPermissionsGranted()) {
-      createCameraSource(selectedModel)
-      startCameraSource()
-    } else {
-      runtimePermissions
-    }
+    createCameraSource(selectedModel)
+    startCameraSource()
   }
 
   override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -347,59 +332,6 @@ class LivePreviewActivity :
     }
   }
 
-  private val requiredPermissions: Array<String?>
-    get() =
-      try {
-        val info =
-          this.packageManager.getPackageInfo(this.packageName, PackageManager.GET_PERMISSIONS)
-        val ps = info.requestedPermissions
-        if (ps != null && ps.isNotEmpty()) {
-          ps
-        } else {
-          arrayOfNulls(0)
-        }
-      } catch (e: Exception) {
-        arrayOfNulls(0)
-      }
-
-  private fun allPermissionsGranted(): Boolean {
-    for (permission in requiredPermissions) {
-      if (!isPermissionGranted(this, permission)) {
-        return false
-      }
-    }
-    return true
-  }
-
-  private val runtimePermissions: Unit
-    get() {
-      val allNeededPermissions: MutableList<String?> = ArrayList()
-      for (permission in requiredPermissions) {
-        if (!isPermissionGranted(this, permission)) {
-          allNeededPermissions.add(permission)
-        }
-      }
-      if (allNeededPermissions.isNotEmpty()) {
-        ActivityCompat.requestPermissions(
-          this,
-          allNeededPermissions.toTypedArray(),
-          PERMISSION_REQUESTS
-        )
-      }
-    }
-
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String>,
-    grantResults: IntArray
-  ) {
-    Log.i(TAG, "Permission granted!")
-    if (allPermissionsGranted()) {
-      createCameraSource(selectedModel)
-    }
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-  }
-
   companion object {
     private const val OBJECT_DETECTION = "Object Detection"
     private const val OBJECT_DETECTION_CUSTOM = "Custom Object Detection"
@@ -418,16 +350,5 @@ class LivePreviewActivity :
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
 
     private const val TAG = "LivePreviewActivity"
-    private const val PERMISSION_REQUESTS = 1
-    private fun isPermissionGranted(context: Context, permission: String?): Boolean {
-      if (ContextCompat.checkSelfPermission(context, permission!!) ==
-          PackageManager.PERMISSION_GRANTED
-      ) {
-        Log.i(TAG, "Permission granted: $permission")
-        return true
-      }
-      Log.i(TAG, "Permission NOT granted: $permission")
-      return false
-    }
   }
 }
