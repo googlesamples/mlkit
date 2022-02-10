@@ -29,7 +29,12 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
   private var isKeyboardShown = false
   private let messageInputContainerView: UIView = {
     let view = UIView()
-    view.backgroundColor = .white
+    if #available(iOS 13.0, *) {
+      // Support dark mode
+      view.backgroundColor = .systemBackground
+    } else {
+      view.backgroundColor = .white
+    }
     return view
   }()
 
@@ -97,7 +102,7 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    navigationController?.navigationBar.barTintColor = .blue
+    updateNavigationBar(.blue)
 
     guard let collectionView = collectionView else {
       return
@@ -135,6 +140,24 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
     view.addConstraint(bottomConstraint)
     view.addConstraint(heightConstraint)
     setupInputComponents()
+  }
+
+  private func updateNavigationBar(_ color: UIColor) {
+    guard let navigationBar = navigationController?.navigationBar else { return }
+    if #available(iOS 13.0, *) {
+      // In iOS 15, `scrollEdgeAppearance` applies to all navigtion bars. If the value of
+      // `scrollEdgeAppearance` is `nil`, UIKit uses the setting in `standardAppearance` and
+      // modify it to use a transparent background. To avoid this, we have the `UINavigationBar`
+      // use the same appearance for both standard and edge states.
+      navigationBar.standardAppearance.backgroundColor = color
+      navigationBar.standardAppearance.titleTextAttributes = [
+        .foregroundColor: UIColor.white
+      ]
+      navigationBar.scrollEdgeAppearance =
+        navigationBar.standardAppearance
+    } else {
+      navigationBar.barTintColor = color
+    }
   }
 
   private func setupInputComponents() {
@@ -194,7 +217,7 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
     isLocalUser.toggle()
     let color: UIColor = isLocalUser ? .blue : .red
     sendButton.tintColor = color
-    navigationController?.navigationBar.barTintColor = color
+    updateNavigationBar(color)
     updateReplies()
   }
 
@@ -379,6 +402,11 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
     cell.leadingImageView.tintColor = item.isLocalUser ? .blue : .red
     cell.titleLabel.text = item.text
     cell.detailLabel.text = Date(timeIntervalSince1970: item.timestamp).timeAgo()
+    if #available(iOS 13.0, *) {
+      // Support dark mode
+      cell.titleLabel.textColor = .label
+      cell.detailLabel.textColor = .label
+    }
     return cell
   }
 }
