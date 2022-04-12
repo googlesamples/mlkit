@@ -80,6 +80,7 @@ class StillImageActivity : AppCompatActivity() {
   // Max height (portrait mode)
   private var imageMaxHeight = 0
   private var imageProcessor: VisionImageProcessor? = null
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_still_image)
@@ -325,8 +326,7 @@ class StillImageActivity : AppCompatActivity() {
         return
       }
 
-      val imageBitmap = BitmapUtils.getBitmapFromContentUri(contentResolver, imageUri)
-        ?: return
+      val imageBitmap = BitmapUtils.getBitmapFromContentUri(contentResolver, imageUri) ?: return
       // Clear the overlay first
       graphicOverlay!!.clear()
 

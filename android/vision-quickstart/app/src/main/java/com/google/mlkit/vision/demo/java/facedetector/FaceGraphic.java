@@ -254,6 +254,7 @@ public class FaceGraphic extends Graphic {
     drawFaceLandmark(canvas, FaceLandmark.RIGHT_EYE);
     drawFaceLandmark(canvas, FaceLandmark.LEFT_CHEEK);
     drawFaceLandmark(canvas, FaceLandmark.RIGHT_CHEEK);
+    drawFaceLandmark(canvas, FaceLandmark.LEFT_EAR);
   }
 
   private void drawFaceLandmark(Canvas canvas, @LandmarkType int landmarkType) {

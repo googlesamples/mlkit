@@ -293,8 +293,7 @@ public class PreferenceUtils {
 
   public static boolean preferGPUForPoseDetection(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    String prefKey =
-        context.getString(R.string.pref_key_pose_detector_prefer_gpu);
+    String prefKey = context.getString(R.string.pref_key_pose_detector_prefer_gpu);
     return sharedPreferences.getBoolean(prefKey, true);
   }
 

@@ -28,6 +28,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            isDefault true
             minifyEnabled false
             proguardFiles 'proguard-rules.pro'
         }
@@ -73,14 +74,14 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.0.1'
 
     // Text features
-    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.0'
+    implementation 'com.google.mlkit:text-recognition:16.0.0-beta4'
     // Or comment the dependency above and uncomment the dependency below to
-    // use bundled model.
-    // implementation 'com.google.mlkit:text-recognition:16.0.0-beta3'
-    implementation 'com.google.mlkit:text-recognition-chinese:16.0.0-beta3'
-    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0-beta3'
-    implementation 'com.google.mlkit:text-recognition-japanese:16.0.0-beta3'
-    implementation 'com.google.mlkit:text-recognition-korean:16.0.0-beta3'
+    // use unbundled model that depends on Google Play Services
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.0'
+    implementation 'com.google.mlkit:text-recognition-chinese:16.0.0-beta4'
+    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0-beta4'
+    implementation 'com.google.mlkit:text-recognition-japanese:16.0.0-beta4'
+    implementation 'com.google.mlkit:text-recognition-korean:16.0.0-beta4'
 
     // Image labeling
     implementation 'com.google.mlkit:image-labeling:17.0.7'
