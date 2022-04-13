@@ -128,10 +128,6 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 @implementation ViewController
 
-- (BOOL)prefersStatusBarHidden {
-  return YES;
-}
-
 - (NSString *)stringForDetectorPickerRow:(DetectorPickerRow)detectorPickerRow {
   switch (detectorPickerRow) {
     case DetectorPickerRowDetectFaceOnDevice:
@@ -227,12 +223,10 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-  [self.navigationController.navigationBar setHidden:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
-  [self.navigationController.navigationBar setHidden:NO];
 }
 
 - (IBAction)detect:(id)sender {
