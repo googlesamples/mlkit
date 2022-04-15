@@ -66,8 +66,8 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha32"
 
     // Add ML Kit dependencies
-    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.0'
-    implementation 'com.google.mlkit:language-id:17.0.3'
-    implementation 'com.google.mlkit:translate:17.0.0'
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.1'
+    implementation 'com.google.mlkit:language-id:17.0.4'
+    implementation 'com.google.mlkit:translate:17.0.1'
 }
 apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
