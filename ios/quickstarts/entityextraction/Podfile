@@ -3,7 +3,7 @@ use_frameworks!
 
 project 'EntityExtractionExample.xcodeproj'
 
-pod 'GoogleMLKit/EntityExtraction', '2.6.0'
+pod 'GoogleMLKit/EntityExtraction', '3.0.0'
 
 target 'EntityExtractionExample' do
 end
