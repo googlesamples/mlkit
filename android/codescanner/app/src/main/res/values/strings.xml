@@ -1,0 +1,9 @@
+<resources>
+  <string name="app_name" translatable="false">Code Scanner Demo</string>
+  <string name="scan_barcode_button" translatable="false">Scan Barcode</string>
+  <string name="barcode_result" translatable="false">Barcode detected.\n%1$s</string>
+  <string name="error_scanner_cancelled" translatable="false">Code scanner is cancelled.</string>
+  <string name="error_camera_permission_not_granted" translatable="false">Camera permission is not granted.</string>
+  <string name="error_app_name_unavailable" translatable="false">App name is not set.</string>
+  <string name="error_default_message" translatable="false">Failed to scan code: %1$s</string>
+</resources>

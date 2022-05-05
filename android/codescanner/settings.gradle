@@ -1,0 +1,4 @@
+rootProject.name= "mlkit_code_scanner_sample"
+include ':app'
+include ':internal:chooserx'
+project(':internal:chooserx').projectDir = file('../internal/chooserx')
