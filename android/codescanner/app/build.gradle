@@ -15,6 +15,7 @@ android {
     }
     buildTypes {
         debug {
+            isDefault true
             minifyEnabled false
             proguardFiles 'proguard-rules.pro'
         }
