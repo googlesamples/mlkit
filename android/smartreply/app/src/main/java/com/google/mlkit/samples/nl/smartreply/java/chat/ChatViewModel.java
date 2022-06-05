@@ -17,6 +17,7 @@
 package com.google.mlkit.samples.nl.smartreply.java.chat;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -39,6 +40,7 @@ import java.util.UUID;
 /** View model for chat message. */
 public class ChatViewModel extends AndroidViewModel {
 
+  private static final String TAG = "ChatViewModel";
   private static final String REMOTE_USER_ID = UUID.randomUUID().toString();
 
   private final MediatorLiveData<List<SmartReplySuggestion>> suggestions = new MediatorLiveData<>();
@@ -156,6 +158,19 @@ public class ChatViewModel extends AndroidViewModel {
                 default: // fall out
               }
               return result.getSuggestions();
+            })
+        .addOnFailureListener(
+            e -> {
+              Log.e(TAG, "Smart reply error", e);
+              Toast.makeText(
+                      getApplication(),
+                      "Smart reply error"
+                          + "\nError: "
+                          + e.getLocalizedMessage()
+                          + "\nCause: "
+                          + e.getCause(),
+                      Toast.LENGTH_LONG)
+                  .show();
             });
   }
 

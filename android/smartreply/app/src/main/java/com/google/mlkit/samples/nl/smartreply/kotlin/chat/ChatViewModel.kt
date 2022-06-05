@@ -17,8 +17,9 @@
 package com.google.mlkit.samples.nl.smartreply.kotlin.chat
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -45,6 +46,10 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
 
   val messages: LiveData<MutableList<Message>>
     get() = messageList
+
+  companion object {
+    private const val TAG = "ChatViewModel"
+  }
 
   init {
     initSuggestionsGenerator()
@@ -138,28 +143,39 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
       }
     }
 
-    return smartReply.suggestReplies(chatHistory).continueWith { task ->
-      val result = task.result
-      when (result.status) {
-        SmartReplySuggestionResult.STATUS_NOT_SUPPORTED_LANGUAGE ->
-          // This error happens when the detected language is not English, as that is the
-          // only supported language in Smart Reply.
-          Toast.makeText(
-              getApplication(),
-              R.string.error_not_supported_language,
-              Toast.LENGTH_SHORT
-            )
-            .show()
-        SmartReplySuggestionResult.STATUS_NO_REPLY ->
-          // This error happens when the inference completed successfully, but no replies
-          // were returned.
-          Toast.makeText(getApplication(), R.string.error_no_reply, Toast.LENGTH_SHORT).show()
-        else -> {
-          // Do nothing.
+    return smartReply
+      .suggestReplies(chatHistory)
+      .continueWith { task ->
+        val result = task.result
+        when (result.status) {
+          SmartReplySuggestionResult.STATUS_NOT_SUPPORTED_LANGUAGE ->
+            // This error happens when the detected language is not English, as that is the
+            // only supported language in Smart Reply.
+            Toast.makeText(
+                getApplication(),
+                R.string.error_not_supported_language,
+                Toast.LENGTH_SHORT
+              )
+              .show()
+          SmartReplySuggestionResult.STATUS_NO_REPLY ->
+            // This error happens when the inference completed successfully, but no replies
+            // were returned.
+            Toast.makeText(getApplication(), R.string.error_no_reply, Toast.LENGTH_SHORT).show()
+          else -> {
+            // Do nothing.
+          }
         }
+        result!!.suggestions
       }
-      result!!.suggestions
-    }
+      .addOnFailureListener { e ->
+        Log.e(TAG, "Smart reply error", e)
+        Toast.makeText(
+            getApplication(),
+            "Smart reply error" + "\nError: " + e.getLocalizedMessage() + "\nCause: " + e.cause,
+            Toast.LENGTH_LONG
+          )
+          .show()
+      }
   }
 
   override fun onCleared() {

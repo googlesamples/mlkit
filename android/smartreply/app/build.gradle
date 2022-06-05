@@ -39,7 +39,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
-    implementation 'com.google.mlkit:smart-reply:17.0.1'
+    implementation 'com.google.mlkit:smart-reply:17.0.2'
 
     implementation 'com.google.guava:guava:27.0.1-android'
 }
