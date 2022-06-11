@@ -257,5 +257,3 @@ class PoseGraphic internal constructor(
       result = 360.0 - result // Always get the acute representation of the angle
     }
     return result
-  }
-}
