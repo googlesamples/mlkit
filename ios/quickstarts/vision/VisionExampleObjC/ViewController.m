@@ -35,7 +35,7 @@ static NSString *const localModelFileType = @"tflite";
 static const float labelConfidenceThreshold = 0.75;
 static const CGFloat smallDotRadius = 5.0;
 static const CGFloat largeDotRadius = 10.0;
-static const CGFloat segmentationMaskAlpha = 0.5;
+static const CGFloat segmentationMaskAlpha = 1;
 static CGColorRef lineColor;
 static CGColorRef fillColor;
 
@@ -177,8 +177,9 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
   [super viewDidLoad];
 
   images = @[
-    @"grace_hopper.jpg", @"image_has_text.jpg", @"chinese_sparse.png", @"devanagari_sparse.png",
-    @"japanese_sparse.png", @"korean_sparse.png", @"barcode_128.png", @"qr_code.jpg", @"beach.jpg",
+    @"grace_hopper.jpg", @"image_has_text.jpg", @"chinese_sparse.png", @"chinese.png",
+    @"devanagari_sparse.png", @"devanagari.png", @"japanese_sparse.png", @"japanese.png",
+    @"korean_sparse.png", @"korean.png", @"barcode_128.png", @"qr_code.jpg", @"beach.jpg",
     @"liberty.jpg", @"bird.jpg"
   ];
   lineColor = UIColor.yellowColor.CGColor;

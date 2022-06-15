@@ -791,7 +791,7 @@ extension ViewController {
       imageView.image = maskedImage
 
       strongSelf.annotationOverlayView.addSubview(imageView)
-      strongSelf.resultsText = "Segmentation succeeded"
+      strongSelf.resultsText = "Segmentation Succeeded"
       strongSelf.showResults()
     }
   }
@@ -1178,9 +1178,10 @@ private enum DetectorPickerRow: Int {
 
 private enum Constants {
   static let images = [
-    "grace_hopper.jpg", "image_has_text.jpg", "chinese_sparse.png", "devanagari_sparse.png",
-    "japanese_sparse.png", "korean_sparse.png", "barcode_128.png", "qr_code.jpg", "beach.jpg",
-    "liberty.jpg", "bird.jpg",
+    "grace_hopper.jpg", "image_has_text.jpg", "chinese_sparse.png", "chinese.png",
+    "devanagari_sparse.png", "devanagari.png", "japanese_sparse.png", "japanese.png",
+    "korean_sparse.png", "korean.png", "barcode_128.png", "qr_code.jpg", "beach.jpg", "liberty.jpg",
+    "bird.jpg",
   ]
 
   static let detectionNoResultsMessage = "No results returned."

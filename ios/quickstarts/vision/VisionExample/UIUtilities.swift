@@ -39,6 +39,8 @@ public class UIUtilities {
     circleView.layer.cornerRadius = radius / divisor
     circleView.alpha = Constants.circleViewAlpha
     circleView.backgroundColor = color
+    circleView.isAccessibilityElement = true
+    circleView.accessibilityIdentifier = Constants.circleViewIdentifier
     view.addSubview(circleView)
   }
 
@@ -56,6 +58,8 @@ public class UIUtilities {
     lineLayer.lineWidth = width
     let lineView = UIView()
     lineView.layer.addSublayer(lineLayer)
+    lineView.isAccessibilityElement = true
+    lineView.accessibilityIdentifier = Constants.lineViewIdentifier
     inView.addSubview(lineView)
   }
 
@@ -65,6 +69,8 @@ public class UIUtilities {
     rectangleView.layer.cornerRadius = Constants.rectangleViewCornerRadius
     rectangleView.alpha = Constants.rectangleViewAlpha
     rectangleView.backgroundColor = color
+    rectangleView.isAccessibilityElement = true
+    rectangleView.accessibilityIdentifier = Constants.rectangleViewIdentifier
     view.addSubview(rectangleView)
   }
 
@@ -400,6 +406,8 @@ public class UIUtilities {
 
     let lineView = UIView(frame: inView.bounds)
     lineView.layer.addSublayer(gradientLayer)
+    lineView.isAccessibilityElement = true
+    lineView.accessibilityIdentifier = Constants.lineViewIdentifier
     inView.addSubview(lineView)
   }
 
@@ -541,6 +549,9 @@ private enum Constants {
   static let maxColorComponentValue: CGFloat = 255.0
   static let originalScale: CGFloat = 1.0
   static let bgraBytesPerPixel = 4
+  static let circleViewIdentifier = "MLKit Circle View"
+  static let lineViewIdentifier = "MLKit Line View"
+  static let rectangleViewIdentifier = "MLKit Rectangle View"
 }
 
 // MARK: - Extension
