@@ -3,7 +3,7 @@ use_frameworks!
 
 project 'DigitalInkRecognitionExample.xcodeproj'
 
-pod 'GoogleMLKit/DigitalInkRecognition', '3.0.0'
+pod 'GoogleMLKit/DigitalInkRecognition', '3.1.0'
 
 target 'DigitalInkRecognitionExample' do
 end
