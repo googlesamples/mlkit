@@ -75,7 +75,7 @@
 		5F5A53511ADE670C00F81DF0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5F5A53531ADE670C00F81DF0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5F5A53541ADE670C00F81DF0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		5F5A53791ADE67D500F81DF0 /* SmartReplyExampleObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartReplyExampleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F5A53791ADE67D500F81DF0 /* SmartReplyExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartReplyExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F5A537D1ADE67D500F81DF0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EF6DB4CA1CDD60F700319C08 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		EF6DB4D01CDD610200319C08 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
@@ -166,7 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				5F5A534C1ADE670C00F81DF0 /* SmartReplyExampleObjC.app */,
-				5F5A53791ADE67D500F81DF0 /* SmartReplyExampleObjC.app */,
+				5F5A53791ADE67D500F81DF0 /* SmartReplyExample.app */,
 				1036D9FD2087CA10003253C9 /* SmartReplyExampleObjCTests.xctest */,
 				1036DA0B2087CA25003253C9 /* SmartReplyExampleObjCUITests.xctest */,
 				1036DA192087CA66003253C9 /* SmartReplyExampleUITests.xctest */,
@@ -366,7 +366,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5F5A53471ADE670C00F81DF0 /* Build configuration list for PBXProject "SmartReplyExampleObjC" */;
+			buildConfigurationList = 5F5A53471ADE670C00F81DF0 /* Build configuration list for PBXProject "SmartReplyExample" */;
 			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -864,7 +864,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D COCOAPODS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.SmartReplyExampleObjC;
-				PRODUCT_NAME = SmartReplyExampleObjC;
+				PRODUCT_NAME = SmartReplyExample;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -885,8 +885,9 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/SmartReplyExampleObjC/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-D COCOAPODS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.mlkit.quickstart.SmartReplyExampleObjC;
-				PRODUCT_NAME = SmartReplyExampleObjC;
+				PRODUCT_NAME = SmartReplyExample;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -926,7 +927,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5F5A53471ADE670C00F81DF0 /* Build configuration list for PBXProject "SmartReplyExampleObjC" */ = {
+		5F5A53471ADE670C00F81DF0 /* Build configuration list for PBXProject "SmartReplyExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5F5A536D1ADE670C00F81DF0 /* Debug */,
