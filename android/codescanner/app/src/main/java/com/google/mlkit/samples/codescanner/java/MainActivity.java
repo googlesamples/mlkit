@@ -36,34 +36,31 @@ public class MainActivity extends AppCompatActivity {
   private static final String KEY_ALLOW_MANUAL_INPUT = "allow_manual_input";
 
   private boolean allowManualInput;
+  private TextView barcodeResultView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    TextView barcodeResultView = findViewById(R.id.barcode_result_view);
-    findViewById(R.id.scan_barcode_button)
-        .setOnClickListener(
-            v -> {
-              GmsBarcodeScannerOptions.Builder optionsBuilder =
-                  new GmsBarcodeScannerOptions.Builder();
-              if (allowManualInput) {
-                optionsBuilder.allowManualInput();
-              }
-              GmsBarcodeScanner gmsBarcodeScanner =
-                  GmsBarcodeScanning.getClient(this, optionsBuilder.build());
-              gmsBarcodeScanner
-                  .startScan()
-                  .addOnSuccessListener(
-                      barcode -> barcodeResultView.setText(getSuccessfulMessage(barcode)))
-                  .addOnFailureListener(
-                      e -> barcodeResultView.setText(getErrorMessage((MlKitException) e)));
-            });
+    barcodeResultView = findViewById(R.id.barcode_result_view);
   }
 
   public void onAllowManualInputCheckboxClicked(View view) {
     allowManualInput = ((CheckBox) view).isChecked();
+  }
+
+  public void onScanButtonClicked(View view) {
+    GmsBarcodeScannerOptions.Builder optionsBuilder = new GmsBarcodeScannerOptions.Builder();
+    if (allowManualInput) {
+      optionsBuilder.allowManualInput();
+    }
+    GmsBarcodeScanner gmsBarcodeScanner =
+        GmsBarcodeScanning.getClient(this, optionsBuilder.build());
+    gmsBarcodeScanner
+        .startScan()
+        .addOnSuccessListener(barcode -> barcodeResultView.setText(getSuccessfulMessage(barcode)))
+        .addOnFailureListener(e -> barcodeResultView.setText(getErrorMessage((MlKitException) e)));
   }
 
   @Override

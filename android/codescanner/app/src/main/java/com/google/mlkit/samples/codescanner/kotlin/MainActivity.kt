@@ -32,30 +32,32 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
 
   private var allowManualInput = false
+  private var barcodeResultView: TextView? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    val barcodeResultView = findViewById<TextView>(R.id.barcode_result_view)
-    findViewById<View>(R.id.scan_barcode_button).setOnClickListener {
-      val optionsBuilder = GmsBarcodeScannerOptions.Builder()
-      if (allowManualInput) {
-        optionsBuilder.allowManualInput()
-      }
-      val gmsBarcodeScanner = GmsBarcodeScanning.getClient(this, optionsBuilder.build())
-      gmsBarcodeScanner
-        .startScan()
-        .addOnSuccessListener { barcode: Barcode ->
-          barcodeResultView.text = getSuccessfulMessage(barcode)
-        }
-        .addOnFailureListener { e: Exception ->
-          barcodeResultView.text = getErrorMessage(e as MlKitException)
-        }
-    }
+    barcodeResultView = findViewById(R.id.barcode_result_view)
   }
 
   fun onAllowManualInputCheckboxClicked(view: View) {
     allowManualInput = (view as CheckBox).isChecked
+  }
+
+  fun onScanButtonClicked(view: View) {
+    val optionsBuilder = GmsBarcodeScannerOptions.Builder()
+    if (allowManualInput) {
+      optionsBuilder.allowManualInput()
+    }
+    val gmsBarcodeScanner = GmsBarcodeScanning.getClient(this, optionsBuilder.build())
+    gmsBarcodeScanner
+      .startScan()
+      .addOnSuccessListener { barcode: Barcode ->
+        barcodeResultView!!.text = getSuccessfulMessage(barcode)
+      }
+      .addOnFailureListener { e: Exception ->
+        barcodeResultView!!.text = getErrorMessage(e as MlKitException)
+      }
   }
 
   override fun onSaveInstanceState(savedInstanceState: Bundle) {
