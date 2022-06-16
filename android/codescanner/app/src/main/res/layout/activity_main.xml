@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+  <CheckBox android:id="@+id/allow_manual_input"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/allow_manual_input"
+      android:onClick="onAllowManualInputCheckboxClicked"/>
   <Button
       android:id="@+id/scan_barcode_button"
       android:layout_width="wrap_content"

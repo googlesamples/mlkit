@@ -19,16 +19,23 @@ package com.google.mlkit.samples.codescanner.java;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import com.google.mlkit.common.MlKitException;
 import com.google.mlkit.samples.codescanner.R;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 import java.util.Locale;
 
 /** Demonstrates the code scanner powered by Google Play Services. */
 public class MainActivity extends AppCompatActivity {
+
+  private static final String KEY_ALLOW_MANUAL_INPUT = "allow_manual_input";
+
+  private boolean allowManualInput;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +46,13 @@ public class MainActivity extends AppCompatActivity {
     findViewById(R.id.scan_barcode_button)
         .setOnClickListener(
             v -> {
-              GmsBarcodeScanner gmsBarcodeScanner = GmsBarcodeScanning.getClient(this);
+              GmsBarcodeScannerOptions.Builder optionsBuilder =
+                  new GmsBarcodeScannerOptions.Builder();
+              if (allowManualInput) {
+                optionsBuilder.allowManualInput();
+              }
+              GmsBarcodeScanner gmsBarcodeScanner =
+                  GmsBarcodeScanning.getClient(this, optionsBuilder.build());
               gmsBarcodeScanner
                   .startScan()
                   .addOnSuccessListener(
@@ -47,6 +60,22 @@ public class MainActivity extends AppCompatActivity {
                   .addOnFailureListener(
                       e -> barcodeResultView.setText(getErrorMessage((MlKitException) e)));
             });
+  }
+
+  public void onAllowManualInputCheckboxClicked(View view) {
+    allowManualInput = ((CheckBox) view).isChecked();
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle savedInstanceState) {
+    savedInstanceState.putBoolean(KEY_ALLOW_MANUAL_INPUT, allowManualInput);
+    super.onSaveInstanceState(savedInstanceState);
+  }
+
+  @Override
+  protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    super.onRestoreInstanceState(savedInstanceState);
+    allowManualInput = savedInstanceState.getBoolean(KEY_ALLOW_MANUAL_INPUT);
   }
 
   private String getSuccessfulMessage(Barcode barcode) {
