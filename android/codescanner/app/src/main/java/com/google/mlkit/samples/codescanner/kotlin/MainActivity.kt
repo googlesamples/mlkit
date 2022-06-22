@@ -58,6 +58,9 @@ class MainActivity : AppCompatActivity() {
       .addOnFailureListener { e: Exception ->
         barcodeResultView!!.text = getErrorMessage(e as MlKitException)
       }
+      .addOnCanceledListener {
+        barcodeResultView!!.text = getString(R.string.error_scanner_cancelled)
+      }
   }
 
   override fun onSaveInstanceState(savedInstanceState: Bundle) {
@@ -85,7 +88,6 @@ class MainActivity : AppCompatActivity() {
 
   private fun getErrorMessage(e: MlKitException): String {
     return when (e.errorCode) {
-      MlKitException.CODE_SCANNER_CANCELLED -> getString(R.string.error_scanner_cancelled)
       MlKitException.CODE_SCANNER_CAMERA_PERMISSION_NOT_GRANTED ->
         getString(R.string.error_camera_permission_not_granted)
       MlKitException.CODE_SCANNER_APP_NAME_UNAVAILABLE ->
