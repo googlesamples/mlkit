@@ -439,7 +439,6 @@ class CameraViewController: UIViewController {
     } catch let error {
       labelingError = error
     }
-    self.updatePreviewOverlayViewWithLastFrame()
     weak var weakSelf = self
     DispatchQueue.main.sync {
       guard let strongSelf = weakSelf else {
