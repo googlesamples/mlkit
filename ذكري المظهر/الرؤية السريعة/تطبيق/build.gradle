@@ -4,18 +4,18 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 31
-
+700545480.WA000000
     defaultConfig {
         applicationId "com.google.mlkit.vision.demo"
         minSdkVersion 19
         multiDexEnabled true
         targetSdkVersion 31
-
+700545480.WA000000
         versionCode 11
         versionName "1.11"
         vectorDrawables.useSupportLibrary = true
         setProperty("archivesBaseName", "vision-quickstart")
-    }
+    }700545480.WA000000
     buildTypes {
         proguard {
             debuggable false
