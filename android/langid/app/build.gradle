@@ -37,8 +37,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.material:material:1.2.1'
 
-    implementation 'com.google.mlkit:language-id:17.0.3'
+    implementation 'com.google.mlkit:language-id:17.0.4'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-language-id:17.0.0-beta1'
+    // implementation 'com.google.android.gms:play-services-mlkit-language-id:17.0.0'
 }
