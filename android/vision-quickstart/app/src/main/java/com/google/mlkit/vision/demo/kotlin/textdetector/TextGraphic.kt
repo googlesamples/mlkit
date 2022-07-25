@@ -37,7 +37,8 @@ constructor(
   overlay: GraphicOverlay?,
   private val text: Text,
   private val shouldGroupTextInBlocks: Boolean,
-  private val showLanguageTag: Boolean
+  private val showLanguageTag: Boolean,
+  private val showConfidence: Boolean
 ) : Graphic(overlay) {
 
   private val rectPaint: Paint = Paint()
@@ -67,7 +68,7 @@ constructor(
       Log.d(TAG, "TextBlock cornerpoint is: " + Arrays.toString(textBlock.cornerPoints))
       if (shouldGroupTextInBlocks) {
         drawText(
-          getFormattedText(textBlock.text, textBlock.recognizedLanguage),
+          getFormattedText(textBlock.text, textBlock.recognizedLanguage, confidence = null),
           RectF(textBlock.boundingBox),
           TEXT_SIZE * textBlock.lines.size + 2 * STROKE_WIDTH,
           canvas
@@ -77,10 +78,11 @@ constructor(
           Log.d(TAG, "Line text is: " + line.text)
           Log.d(TAG, "Line boundingbox is: " + line.boundingBox)
           Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.cornerPoints))
+          Log.d(TAG, "Line confidence is: " + line.confidence)
           // Draws the bounding box around the TextBlock.
           val rect = RectF(line.boundingBox)
           drawText(
-            getFormattedText(line.text, line.recognizedLanguage),
+            getFormattedText(line.text, line.recognizedLanguage, line.confidence),
             rect,
             TEXT_SIZE + 2 * STROKE_WIDTH,
             canvas
@@ -90,21 +92,18 @@ constructor(
             Log.d(TAG, "Element boundingbox is: " + element.boundingBox)
             Log.d(TAG, "Element cornerpoint is: " + Arrays.toString(element.cornerPoints))
             Log.d(TAG, "Element language is: " + element.recognizedLanguage)
+            Log.d(TAG, "Element confidence is: " + element.confidence)
           }
         }
       }
     }
   }
 
-  private fun getFormattedText(text: String, languageTag: String): String {
-    if (showLanguageTag) {
-      return String.format(
-        TEXT_WITH_LANGUAGE_TAG_FORMAT,
-        languageTag,
-        text
-      )
-    }
-    return text
+  private fun getFormattedText(text: String, languageTag: String, confidence: Float?): String {
+    val res =
+      if (showLanguageTag) String.format(TEXT_WITH_LANGUAGE_TAG_FORMAT, languageTag, text) else text
+    return if (showConfidence && confidence != null) String.format("%s (%.2f)", res, confidence)
+    else res
   }
 
   private fun drawText(text: String, rect: RectF, textHeight: Float, canvas: Canvas) {
