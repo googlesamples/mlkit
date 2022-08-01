@@ -41,12 +41,14 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
   private final TextRecognizer textRecognizer;
   private final Boolean shouldGroupRecognizedTextInBlocks;
   private final Boolean showLanguageTag;
+  private final boolean showConfidence;
 
   public TextRecognitionProcessor(
       Context context, TextRecognizerOptionsInterface textRecognizerOptions) {
     super(context);
     shouldGroupRecognizedTextInBlocks = PreferenceUtils.shouldGroupRecognizedTextInBlocks(context);
     showLanguageTag = PreferenceUtils.showLanguageTag(context);
+    showConfidence = PreferenceUtils.shouldShowTextConfidence(context);
     textRecognizer = TextRecognition.getClient(textRecognizerOptions);
   }
 
@@ -66,7 +68,12 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
     Log.d(TAG, "On-device Text detection successful");
     logExtrasForTesting(text);
     graphicOverlay.add(
-        new TextGraphic(graphicOverlay, text, shouldGroupRecognizedTextInBlocks, showLanguageTag));
+        new TextGraphic(
+            graphicOverlay,
+            text,
+            shouldGroupRecognizedTextInBlocks,
+            showLanguageTag,
+            showConfidence));
   }
 
   private static void logExtrasForTesting(Text text) {

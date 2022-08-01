@@ -69,17 +69,23 @@ public class LabelGraphic extends GraphicOverlay.Graphic {
 
     if (!labels.isEmpty()) {
       float padding = 20;
-      canvas.drawRect(
-          x - padding, y - padding, x + maxWidth + padding, y + totalHeight + padding, labelPaint);
+      drawRect(
+          canvas,
+          x - padding,
+          y - padding,
+          x + maxWidth + padding,
+          y + totalHeight + padding,
+          labelPaint);
     }
 
     for (ImageLabel label : labels) {
       if (y + TEXT_SIZE * 2 > overlay.getHeight()) {
         break;
       }
-      canvas.drawText(label.getText(), x, y + TEXT_SIZE, textPaint);
+      drawText(canvas, label.getText(), x, y + TEXT_SIZE, textPaint);
       y += TEXT_SIZE;
-      canvas.drawText(
+      drawText(
+          canvas,
           String.format(Locale.US, LABEL_FORMAT, label.getConfidence() * 100, label.getIndex()),
           x,
           y + TEXT_SIZE,

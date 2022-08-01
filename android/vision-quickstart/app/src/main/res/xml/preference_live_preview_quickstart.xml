@@ -59,6 +59,12 @@
         android:persistent="true"
         android:title="@string/pref_title_show_language_tag"/>
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_key_show_text_confidence"
+        android:persistent="true"
+        android:title="@string/pref_title_show_text_confidence"/>
+
   </PreferenceCategory>
 
   <PreferenceCategory

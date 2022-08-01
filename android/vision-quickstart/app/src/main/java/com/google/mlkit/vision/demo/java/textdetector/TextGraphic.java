@@ -31,6 +31,7 @@ import com.google.mlkit.vision.text.Text.Element;
 import com.google.mlkit.vision.text.Text.Line;
 import com.google.mlkit.vision.text.Text.TextBlock;
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
@@ -50,16 +51,22 @@ public class TextGraphic extends Graphic {
   private final Paint textPaint;
   private final Paint labelPaint;
   private final Text text;
-  private final Boolean shouldGroupTextInBlocks;
-  private final Boolean showLanguageTag;
+  private final boolean shouldGroupTextInBlocks;
+  private final boolean showLanguageTag;
+  private final boolean showConfidence;
 
   TextGraphic(
-      GraphicOverlay overlay, Text text, boolean shouldGroupTextInBlocks, boolean showLanguageTag) {
+      GraphicOverlay overlay,
+      Text text,
+      boolean shouldGroupTextInBlocks,
+      boolean showLanguageTag,
+      boolean showConfidence) {
     super(overlay);
 
     this.text = text;
     this.shouldGroupTextInBlocks = shouldGroupTextInBlocks;
     this.showLanguageTag = showLanguageTag;
+    this.showConfidence = showConfidence;
 
     rectPaint = new Paint();
     rectPaint.setColor(MARKER_COLOR);
@@ -104,11 +111,16 @@ public class TextGraphic extends Graphic {
           Log.d(TAG, "Line text is: " + line.getText());
           Log.d(TAG, "Line boundingbox is: " + line.getBoundingBox());
           Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.getCornerPoints()));
+          Log.d(TAG, "Line confidence is: " + line.getConfidence());
           String text =
               showLanguageTag
                   ? String.format(
                       TEXT_WITH_LANGUAGE_TAG_FORMAT, line.getRecognizedLanguage(), line.getText())
                   : line.getText();
+          text =
+              showConfidence
+                  ? String.format(Locale.US, "%s (%.2f)", text, line.getConfidence())
+                  : text;
           drawText(text, new RectF(line.getBoundingBox()), TEXT_SIZE + 2 * STROKE_WIDTH, canvas);
 
           for (Element element : line.getElements()) {
@@ -116,6 +128,7 @@ public class TextGraphic extends Graphic {
             Log.d(TAG, "Element boundingbox is: " + element.getBoundingBox());
             Log.d(TAG, "Element cornerpoint is: " + Arrays.toString(element.getCornerPoints()));
             Log.d(TAG, "Element language is: " + element.getRecognizedLanguage());
+            Log.d(TAG, "Element confidence is: " + element.getConfidence());
           }
         }
       }

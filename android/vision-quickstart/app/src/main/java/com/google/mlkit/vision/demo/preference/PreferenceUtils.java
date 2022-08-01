@@ -291,6 +291,12 @@ public class PreferenceUtils {
     return sharedPreferences.getBoolean(prefKey, false);
   }
 
+  public static boolean shouldShowTextConfidence(Context context) {
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    String prefKey = context.getString(R.string.pref_key_show_text_confidence);
+    return sharedPreferences.getBoolean(prefKey, false);
+  }
+
   public static boolean preferGPUForPoseDetection(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     String prefKey = context.getString(R.string.pref_key_pose_detector_prefer_gpu);

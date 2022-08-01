@@ -19,6 +19,7 @@ package com.google.mlkit.vision.demo;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import com.google.common.base.Preconditions;
@@ -90,6 +91,15 @@ public class GraphicOverlay extends View {
      * @param canvas drawing canvas
      */
     public abstract void draw(Canvas canvas);
+
+    protected void drawRect(
+        Canvas canvas, float left, float top, float right, float bottom, Paint paint) {
+      canvas.drawRect(left, top, right, bottom, paint);
+    }
+
+    protected void drawText(Canvas canvas, String text, float x, float y, Paint paint) {
+      canvas.drawText(text, x, y, paint);
+    }
 
     /** Adjusts the supplied value from the image scale to the view scale. */
     public float scale(float imagePixel) {

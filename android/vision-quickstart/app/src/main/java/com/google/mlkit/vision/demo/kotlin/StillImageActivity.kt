@@ -518,11 +518,11 @@ class StillImageActivity : AppCompatActivity() {
           imageProcessor =
             PoseDetectorProcessor(
               this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ,
-              runClassification, /* isStreamMode = */ false
+              runClassification, isStreamMode = false
             )
         }
         SELFIE_SEGMENTATION -> {
-          imageProcessor = SegmenterProcessor(this, /* isStreamMode= */ false)
+          imageProcessor = SegmenterProcessor(this, isStreamMode = false)
         }
         else -> Log.e(
           TAG,
