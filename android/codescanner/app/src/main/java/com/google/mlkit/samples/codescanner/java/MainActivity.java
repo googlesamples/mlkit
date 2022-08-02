@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
     gmsBarcodeScanner
         .startScan()
         .addOnSuccessListener(barcode -> barcodeResultView.setText(getSuccessfulMessage(barcode)))
-        .addOnFailureListener(e -> barcodeResultView.setText(getErrorMessage((MlKitException) e)))
+        .addOnFailureListener(
+            e -> barcodeResultView.setText(getErrorMessage(e)))
         .addOnCanceledListener(
             () -> barcodeResultView.setText(getString(R.string.error_scanner_cancelled)));
   }
@@ -90,14 +91,18 @@ public class MainActivity extends AppCompatActivity {
   }
 
   @SuppressLint("SwitchIntDef")
-  private String getErrorMessage(MlKitException e) {
-    switch (e.getErrorCode()) {
-      case MlKitException.CODE_SCANNER_CAMERA_PERMISSION_NOT_GRANTED:
-        return getString(R.string.error_camera_permission_not_granted);
-      case MlKitException.CODE_SCANNER_APP_NAME_UNAVAILABLE:
-        return getString(R.string.error_app_name_unavailable);
-      default:
-        return getString(R.string.error_default_message, e);
+  private String getErrorMessage(Exception e) {
+    if (e instanceof MlKitException) {
+      switch (((MlKitException) e).getErrorCode()) {
+        case MlKitException.CODE_SCANNER_CAMERA_PERMISSION_NOT_GRANTED:
+          return getString(R.string.error_camera_permission_not_granted);
+        case MlKitException.CODE_SCANNER_APP_NAME_UNAVAILABLE:
+          return getString(R.string.error_app_name_unavailable);
+        default:
+          return getString(R.string.error_default_message, e);
+      }
+    } else {
+      return e.getMessage();
     }
   }
 }

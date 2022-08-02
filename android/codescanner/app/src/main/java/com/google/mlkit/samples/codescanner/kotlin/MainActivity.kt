@@ -55,9 +55,7 @@ class MainActivity : AppCompatActivity() {
       .addOnSuccessListener { barcode: Barcode ->
         barcodeResultView!!.text = getSuccessfulMessage(barcode)
       }
-      .addOnFailureListener { e: Exception ->
-        barcodeResultView!!.text = getErrorMessage(e as MlKitException)
-      }
+      .addOnFailureListener { e: Exception -> barcodeResultView!!.text = getErrorMessage(e) }
       .addOnCanceledListener {
         barcodeResultView!!.text = getString(R.string.error_scanner_cancelled)
       }
@@ -86,13 +84,17 @@ class MainActivity : AppCompatActivity() {
     return getString(R.string.barcode_result, barcodeValue)
   }
 
-  private fun getErrorMessage(e: MlKitException): String {
-    return when (e.errorCode) {
-      MlKitException.CODE_SCANNER_CAMERA_PERMISSION_NOT_GRANTED ->
-        getString(R.string.error_camera_permission_not_granted)
-      MlKitException.CODE_SCANNER_APP_NAME_UNAVAILABLE ->
-        getString(R.string.error_app_name_unavailable)
-      else -> getString(R.string.error_default_message, e)
+  private fun getErrorMessage(e: Exception): String? {
+    return if (e is MlKitException) {
+      when (e.errorCode) {
+        MlKitException.CODE_SCANNER_CAMERA_PERMISSION_NOT_GRANTED ->
+          getString(R.string.error_camera_permission_not_granted)
+        MlKitException.CODE_SCANNER_APP_NAME_UNAVAILABLE ->
+          getString(R.string.error_app_name_unavailable)
+        else -> getString(R.string.error_default_message, e)
+      }
+    } else {
+      e.message
     }
   }
 
