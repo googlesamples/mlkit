@@ -8,6 +8,12 @@
       android:label="@string/app_name"
       android:theme="@style/AppTheme">
 
+    <!-- Optional: Add it to automatically download ML model to device after
+      your app is installed.-->
+    <meta-data
+        android:name="com.google.mlkit.vision.DEPENDENCIES"
+        android:value="smart_reply"/>
+
     <activity
         android:name=".EntryChoiceActivity"
         android:exported="true">
