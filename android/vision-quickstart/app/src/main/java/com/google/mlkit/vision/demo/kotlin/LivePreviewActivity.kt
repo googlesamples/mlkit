@@ -353,7 +353,7 @@ class LivePreviewActivity :
     private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"
     private const val POSE_DETECTION = "Pose Detection"
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
-    private const val FACE_MESH_DETECTION = "Face Mesh Detection";
+    private const val FACE_MESH_DETECTION = "Face Mesh Detection (Beta)";
 
     private const val TAG = "LivePreviewActivity"
   }
