@@ -50,4 +50,16 @@
     <item>@string/pref_entry_values_pose_detector_performance_mode_fast</item>
     <item>@string/pref_entry_values_pose_detector_performance_mode_accurate</item>
   </string-array>
+
+  <string-array name="pref_entry_titles_face_mesh_use_case">
+    <item>Bounding Box Only</item>
+    <item>Face Mesh</item>
+    <item>Face Mesh(Simplified Contours only)</item>
+  </string-array>
+
+  <string-array name="pref_entry_values_face_mesh_use_case">
+    <item>0</item>
+    <item>1</item>
+    <item>999</item>
+  </string-array>
 </resources>

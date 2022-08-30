@@ -29,6 +29,7 @@ import com.google.mlkit.vision.demo.GraphicOverlay.Graphic;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.Text.Element;
 import com.google.mlkit.vision.text.Text.Line;
+import com.google.mlkit.vision.text.Text.Symbol;
 import com.google.mlkit.vision.text.Text.TextBlock;
 import java.util.Arrays;
 import java.util.Locale;
@@ -112,6 +113,7 @@ public class TextGraphic extends Graphic {
           Log.d(TAG, "Line boundingbox is: " + line.getBoundingBox());
           Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.getCornerPoints()));
           Log.d(TAG, "Line confidence is: " + line.getConfidence());
+          Log.d(TAG, "Line angle is: " + line.getAngle());
           String text =
               showLanguageTag
                   ? String.format(
@@ -129,6 +131,14 @@ public class TextGraphic extends Graphic {
             Log.d(TAG, "Element cornerpoint is: " + Arrays.toString(element.getCornerPoints()));
             Log.d(TAG, "Element language is: " + element.getRecognizedLanguage());
             Log.d(TAG, "Element confidence is: " + element.getConfidence());
+            Log.d(TAG, "Element angle is: " + element.getAngle());
+            for (Symbol symbol : element.getSymbols()) {
+              Log.d(TAG, "Symbol text is: " + symbol.getText());
+              Log.d(TAG, "Symbol boundingbox is: " + symbol.getBoundingBox());
+              Log.d(TAG, "Symbol cornerpoint is: " + Arrays.toString(symbol.getCornerPoints()));
+              Log.d(TAG, "Symbol confidence is: " + symbol.getConfidence());
+              Log.d(TAG, "Symbol angle is: " + symbol.getAngle());
+            }
           }
         }
       }

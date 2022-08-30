@@ -41,6 +41,7 @@ import com.google.mlkit.vision.demo.java.labeldetector.LabelDetectorProcessor;
 import com.google.mlkit.vision.demo.java.objectdetector.ObjectDetectorProcessor;
 import com.google.mlkit.vision.demo.java.posedetector.PoseDetectorProcessor;
 import com.google.mlkit.vision.demo.java.segmenter.SegmenterProcessor;
+import com.google.mlkit.vision.demo.java.facemeshdetector.FaceMeshDetectorProcessor;
 import com.google.mlkit.vision.demo.java.textdetector.TextRecognitionProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
@@ -78,6 +79,7 @@ public final class LivePreviewActivity extends AppCompatActivity
   private static final String TEXT_RECOGNITION_DEVANAGARI = "Text Recognition Devanagari (Beta)";
   private static final String TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese (Beta)";
   private static final String TEXT_RECOGNITION_KOREAN = "Text Recognition Korean (Beta)";
+  private static final String FACE_MESH_DETECTION = "Face Mesh Detection";
 
   private static final String TAG = "LivePreviewActivity";
 
@@ -119,6 +121,7 @@ public final class LivePreviewActivity extends AppCompatActivity
     options.add(TEXT_RECOGNITION_DEVANAGARI);
     options.add(TEXT_RECOGNITION_JAPANESE);
     options.add(TEXT_RECOGNITION_KOREAN);
+    options.add(FACE_MESH_DETECTION);
 
     // Creating adapter for spinner
     ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_style, options);
@@ -294,6 +297,9 @@ public final class LivePreviewActivity extends AppCompatActivity
           break;
         case SELFIE_SEGMENTATION:
           cameraSource.setMachineLearningFrameProcessor(new SegmenterProcessor(this));
+          break;
+        case FACE_MESH_DETECTION:
+          cameraSource.setMachineLearningFrameProcessor(new FaceMeshDetectorProcessor(this));
           break;
         default:
           Log.e(TAG, "Unknown model: " + model);

@@ -129,4 +129,13 @@
         android:title="@string/pref_title_face_detector_performance_mode"/>
   </PreferenceCategory>
 
+  <PreferenceCategory android:title="@string/pref_group_title_face_mesh">
+    <ListPreference
+        android:key="@string/pref_key_face_mesh_use_case"
+        android:persistent="true"
+        android:title="@string/pref_title_face_mesh_use_case"
+        android:defaultValue="1"
+        android:entries="@array/pref_entry_titles_face_mesh_use_case"
+        android:entryValues="@array/pref_entry_values_face_mesh_use_case" />
+  </PreferenceCategory>
 </PreferenceScreen>

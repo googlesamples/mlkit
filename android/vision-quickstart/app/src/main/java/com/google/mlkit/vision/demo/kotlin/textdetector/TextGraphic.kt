@@ -79,6 +79,7 @@ constructor(
           Log.d(TAG, "Line boundingbox is: " + line.boundingBox)
           Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.cornerPoints))
           Log.d(TAG, "Line confidence is: " + line.confidence)
+          Log.d(TAG, "Line angle is: " + line.angle)
           // Draws the bounding box around the TextBlock.
           val rect = RectF(line.boundingBox)
           drawText(
@@ -93,6 +94,7 @@ constructor(
             Log.d(TAG, "Element cornerpoint is: " + Arrays.toString(element.cornerPoints))
             Log.d(TAG, "Element language is: " + element.recognizedLanguage)
             Log.d(TAG, "Element confidence is: " + element.confidence)
+            Log.d(TAG, "Element angle is: " + element.angle)
           }
         }
       }

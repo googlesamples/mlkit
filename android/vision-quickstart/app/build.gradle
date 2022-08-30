@@ -74,14 +74,14 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.1.0'
 
     // Text features
-    implementation 'com.google.mlkit:text-recognition:16.0.0-beta5'
+    implementation 'com.google.mlkit:text-recognition:16.0.0-beta6'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.1'
-    implementation 'com.google.mlkit:text-recognition-chinese:16.0.0-beta5'
-    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0-beta5'
-    implementation 'com.google.mlkit:text-recognition-japanese:16.0.0-beta5'
-    implementation 'com.google.mlkit:text-recognition-korean:16.0.0-beta5'
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.2'
+    implementation 'com.google.mlkit:text-recognition-chinese:16.0.0-beta6'
+    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0-beta6'
+    implementation 'com.google.mlkit:text-recognition-japanese:16.0.0-beta6'
+    implementation 'com.google.mlkit:text-recognition-korean:16.0.0-beta6'
 
     // Image labeling
     implementation 'com.google.mlkit:image-labeling:17.0.7'
@@ -96,14 +96,17 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta4'
 
     // Pose detection with default models
-    implementation 'com.google.mlkit:pose-detection:18.0.0-beta2'
+    implementation 'com.google.mlkit:pose-detection:18.0.0-beta3'
     // Pose detection with accurate models
-    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta2'
+    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta3'
 
     // Selfie segmentation
     implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta4'
 
     implementation 'com.google.mlkit:camera:16.0.0-beta3'
+
+    // Face Mesh Detection
+    implementation 'com.google.mlkit:face-mesh-detection:16.0.0-beta1'
 
     // -------------------------------------------------------
 

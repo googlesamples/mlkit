@@ -41,6 +41,7 @@ import com.google.mlkit.vision.demo.kotlin.labeldetector.LabelDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.objectdetector.ObjectDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.posedetector.PoseDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.segmenter.SegmenterProcessor
+import com.google.mlkit.vision.demo.kotlin.facemeshdetector.FaceMeshDetectorProcessor;
 import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
@@ -97,6 +98,7 @@ class LivePreviewActivity :
     options.add(TEXT_RECOGNITION_DEVANAGARI)
     options.add(TEXT_RECOGNITION_JAPANESE)
     options.add(TEXT_RECOGNITION_KOREAN)
+    options.add(FACE_MESH_DETECTION);
 
     // Creating adapter for spinner
     val dataAdapter = ArrayAdapter(this, R.layout.spinner_style, options)
@@ -276,6 +278,9 @@ class LivePreviewActivity :
         SELFIE_SEGMENTATION -> {
           cameraSource!!.setMachineLearningFrameProcessor(SegmenterProcessor(this))
         }
+        FACE_MESH_DETECTION -> {
+          cameraSource!!.setMachineLearningFrameProcessor(FaceMeshDetectorProcessor (this));
+        }
         else -> Log.e(TAG, "Unknown model: $model")
       }
     } catch (e: Exception) {
@@ -338,16 +343,17 @@ class LivePreviewActivity :
     private const val CUSTOM_AUTOML_OBJECT_DETECTION = "Custom AutoML Object Detection (Flower)"
     private const val FACE_DETECTION = "Face Detection"
     private const val TEXT_RECOGNITION_LATIN = "Text Recognition Latin"
-    private const val TEXT_RECOGNITION_CHINESE = "Text Recognition Chinese"
-    private const val TEXT_RECOGNITION_DEVANAGARI = "Text Recognition Devanagari"
-    private const val TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese"
-    private const val TEXT_RECOGNITION_KOREAN = "Text Recognition Korean"
+    private const val TEXT_RECOGNITION_CHINESE = "Text Recognition Chinese (Beta)"
+    private const val TEXT_RECOGNITION_DEVANAGARI = "Text Recognition Devanagari (Beta)"
+    private const val TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese (Beta)"
+    private const val TEXT_RECOGNITION_KOREAN = "Text Recognition Korean (Beta)"
     private const val BARCODE_SCANNING = "Barcode Scanning"
     private const val IMAGE_LABELING = "Image Labeling"
     private const val IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Birds)"
     private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"
     private const val POSE_DETECTION = "Pose Detection"
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
+    private const val FACE_MESH_DETECTION = "Face Mesh Detection";
 
     private const val TAG = "LivePreviewActivity"
   }

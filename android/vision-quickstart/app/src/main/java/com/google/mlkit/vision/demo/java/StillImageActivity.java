@@ -50,6 +50,7 @@ import com.google.mlkit.vision.demo.java.labeldetector.LabelDetectorProcessor;
 import com.google.mlkit.vision.demo.java.objectdetector.ObjectDetectorProcessor;
 import com.google.mlkit.vision.demo.java.posedetector.PoseDetectorProcessor;
 import com.google.mlkit.vision.demo.java.segmenter.SegmenterProcessor;
+import com.google.mlkit.vision.demo.java.facemeshdetector.FaceMeshDetectorProcessor;
 import com.google.mlkit.vision.demo.java.textdetector.TextRecognitionProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
@@ -89,6 +90,7 @@ public final class StillImageActivity extends AppCompatActivity {
   private static final String TEXT_RECOGNITION_DEVANAGARI = "Text Recognition Devanagari (Beta)";
   private static final String TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese (Beta)";
   private static final String TEXT_RECOGNITION_KOREAN = "Text Recognition Korean (Beta)";
+  private static final String FACE_MESH_DETECTION = "Face Mesh Detection";
 
   private static final String SIZE_SCREEN = "w:screen"; // Match screen width
   private static final String SIZE_1024_768 = "w:1024"; // ~1024*768 in a normal ratio
@@ -222,6 +224,7 @@ public final class StillImageActivity extends AppCompatActivity {
     options.add(TEXT_RECOGNITION_DEVANAGARI);
     options.add(TEXT_RECOGNITION_JAPANESE);
     options.add(TEXT_RECOGNITION_KOREAN);
+    options.add(FACE_MESH_DETECTION);
 
     // Creating adapter for featureSpinner
     ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_style, options);
@@ -517,6 +520,9 @@ public final class StillImageActivity extends AppCompatActivity {
           break;
         case SELFIE_SEGMENTATION:
           imageProcessor = new SegmenterProcessor(this, /* isStreamMode= */ false);
+          break;
+        case FACE_MESH_DETECTION:
+          imageProcessor = new FaceMeshDetectorProcessor(this);
           break;
         default:
           Log.e(TAG, "Unknown selectedMode: " + selectedMode);
