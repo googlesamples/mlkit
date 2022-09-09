@@ -50,6 +50,8 @@ public class FaceMeshGraphic extends Graphic {
   private final Paint boxPaint;
   private volatile FaceMesh faceMesh;
   private final int useCase;
+  private float zMin;
+  private float zMax;
 
   @ContourType
   private static final int[] DISPLAY_CONTOURS = {
@@ -107,8 +109,23 @@ public class FaceMeshGraphic extends Graphic {
         useCase == USE_CASE_CONTOUR_ONLY ? getContourPoints(faceMesh) : faceMesh.getAllPoints();
     List<Triangle<FaceMeshPoint>> triangles = faceMesh.getAllTriangles();
 
+    zMin = Float.MAX_VALUE;
+    zMax = Float.MIN_VALUE;
+    for (FaceMeshPoint point : points) {
+      zMin = min(zMin, point.getPosition().getZ());
+      zMax = max(zMax, point.getPosition().getZ());
+    }
+
     // Draw face mesh points
     for (FaceMeshPoint point : points) {
+      updatePaintColorByZValue(
+          positionPaint,
+          canvas,
+          /* visualizeZ= */ true,
+          /* rescaleZForVisualization= */ true,
+          point.getPosition().getZ(),
+          zMin,
+          zMax);
       canvas.drawCircle(
           translateX(point.getPosition().getX()),
           translateY(point.getPosition().getY()),
@@ -140,6 +157,14 @@ public class FaceMeshGraphic extends Graphic {
   }
 
   private void drawLine(Canvas canvas, PointF3D point1, PointF3D point2) {
+    updatePaintColorByZValue(
+        positionPaint,
+        canvas,
+        /* visualizeZ= */ true,
+        /* rescaleZForVisualization= */ true,
+        (point1.getZ() + point2.getZ()) / 2,
+        zMin,
+        zMax);
     canvas.drawLine(
         translateX(point1.getX()),
         translateY(point1.getY()),

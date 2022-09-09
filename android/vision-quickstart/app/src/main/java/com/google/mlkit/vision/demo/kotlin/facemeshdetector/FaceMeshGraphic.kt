@@ -36,6 +36,8 @@ class FaceMeshGraphic(overlay: GraphicOverlay, private val faceMesh: FaceMesh) :
   private val positionPaint: Paint
   private val boxPaint: Paint
   private val useCase: Int
+  private var zMin: Float
+  private var zMax: Float
 
   @FaceMesh.ContourType
   private val DISPLAY_CONTOURS =
@@ -69,14 +71,27 @@ class FaceMeshGraphic(overlay: GraphicOverlay, private val faceMesh: FaceMesh) :
     canvas.drawRect(rect, boxPaint)
 
     // Draw face mesh
-
-    // Draw face mesh
     val points =
       if (useCase == USE_CASE_CONTOUR_ONLY) getContourPoints(faceMesh) else faceMesh.allPoints
     val triangles = faceMesh.allTriangles
 
+    zMin = Float.MAX_VALUE
+    zMax = Float.MIN_VALUE
+    for (point in points) {
+      zMin = Math.min(zMin, point.position.z)
+      zMax = Math.max(zMax, point.position.z)
+    }
+
     // Draw face mesh points
     for (point in points) {
+      updatePaintColorByZValue(
+        positionPaint,
+        canvas,
+        /* visualizeZ= */true,
+        /* rescaleZForVisualization= */true,
+        point.position.z,
+        zMin,
+        zMax)
       canvas.drawCircle(
         translateX(point.position.x),
         translateY(point.position.y),
@@ -99,6 +114,14 @@ class FaceMeshGraphic(overlay: GraphicOverlay, private val faceMesh: FaceMesh) :
   }
 
   private fun drawLine(canvas: Canvas, point1: PointF3D, point2: PointF3D) {
+    updatePaintColorByZValue(
+      positionPaint,
+      canvas,
+      /* visualizeZ= */true,
+      /* rescaleZForVisualization= */true,
+      (point1.z + point2.z) / 2,
+      zMin,
+      zMax)
     canvas.drawLine(
       translateX(point1.x),
       translateY(point1.y),
@@ -133,5 +156,7 @@ class FaceMeshGraphic(overlay: GraphicOverlay, private val faceMesh: FaceMesh) :
     boxPaint.strokeWidth = BOX_STROKE_WIDTH
 
     useCase = PreferenceUtils.getFaceMeshUseCase(applicationContext)
+    zMin = java.lang.Float.MAX_VALUE
+    zMax = java.lang.Float.MIN_VALUE
   }
 }

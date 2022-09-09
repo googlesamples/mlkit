@@ -22,7 +22,6 @@ import static java.lang.Math.min;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import com.google.common.primitives.Ints;
 import com.google.mlkit.vision.common.PointF3D;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.GraphicOverlay.Graphic;
@@ -93,13 +92,11 @@ public class PoseGraphic extends Graphic {
     // Draw pose classification text.
     float classificationX = POSE_CLASSIFICATION_TEXT_SIZE * 0.5f;
     for (int i = 0; i < poseClassification.size(); i++) {
-      float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
-          * (poseClassification.size() - i));
+      float classificationY =
+          (canvas.getHeight()
+              - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f * (poseClassification.size() - i));
       canvas.drawText(
-          poseClassification.get(i),
-          classificationX,
-          classificationY,
-          classificationTextPaint);
+          poseClassification.get(i), classificationX, classificationY, classificationTextPaint);
     }
 
     // Draw all the points
@@ -199,9 +196,10 @@ public class PoseGraphic extends Graphic {
     }
   }
 
-    void drawPoint(Canvas canvas, PoseLandmark landmark, Paint paint) {
+  void drawPoint(Canvas canvas, PoseLandmark landmark, Paint paint) {
     PointF3D point = landmark.getPosition3D();
-    maybeUpdatePaintColor(paint, canvas, point.getZ());
+    updatePaintColorByZValue(
+        paint, canvas, visualizeZ, rescaleZForVisualization, point.getZ(), zMin, zMax);
     canvas.drawCircle(translateX(point.getX()), translateY(point.getY()), DOT_RADIUS, paint);
   }
 
@@ -211,52 +209,14 @@ public class PoseGraphic extends Graphic {
 
     // Gets average z for the current body line
     float avgZInImagePixel = (start.getZ() + end.getZ()) / 2;
-    maybeUpdatePaintColor(paint, canvas, avgZInImagePixel);
+    updatePaintColorByZValue(
+        paint, canvas, visualizeZ, rescaleZForVisualization, avgZInImagePixel, zMin, zMax);
 
     canvas.drawLine(
-          translateX(start.getX()),
-          translateY(start.getY()),
-          translateX(end.getX()),
-          translateY(end.getY()),
-          paint);
-  }
-
-  private void maybeUpdatePaintColor(Paint paint, Canvas canvas, float zInImagePixel) {
-    if (!visualizeZ) {
-      return;
-    }
-
-    // When visualizeZ is true, sets up the paint to different colors based on z values.
-    // Gets the range of z value.
-    float zLowerBoundInScreenPixel;
-    float zUpperBoundInScreenPixel;
-
-    if (rescaleZForVisualization) {
-      zLowerBoundInScreenPixel = min(-0.001f, scale(zMin));
-      zUpperBoundInScreenPixel = max(0.001f, scale(zMax));
-    } else {
-      // By default, assume the range of z value in screen pixel is [-canvasWidth, canvasWidth].
-      float defaultRangeFactor = 1f;
-      zLowerBoundInScreenPixel = -defaultRangeFactor * canvas.getWidth();
-      zUpperBoundInScreenPixel = defaultRangeFactor * canvas.getWidth();
-    }
-
-    float zInScreenPixel = scale(zInImagePixel);
-
-    if (zInScreenPixel < 0) {
-      // Sets up the paint to draw the body line in red if it is in front of the z origin.
-      // Maps values within [zLowerBoundInScreenPixel, 0) to [255, 0) and use it to control the
-      // color. The larger the value is, the more red it will be.
-      int v = (int) (zInScreenPixel / zLowerBoundInScreenPixel * 255);
-      v = Ints.constrainToRange(v, 0, 255);
-      paint.setARGB(255, 255, 255 - v, 255 - v);
-    } else {
-      // Sets up the paint to draw the body line in blue if it is behind the z origin.
-      // Maps values within [0, zUpperBoundInScreenPixel] to [0, 255] and use it to control the
-      // color. The larger the value is, the more blue it will be.
-      int v = (int) (zInScreenPixel / zUpperBoundInScreenPixel * 255);
-      v = Ints.constrainToRange(v, 0, 255);
-      paint.setARGB(255, 255 - v, 255 - v, 255);
-    }
+        translateX(start.getX()),
+        translateY(start.getY()),
+        translateX(end.getX()),
+        translateY(end.getY()),
+        paint);
   }
 }

@@ -19,7 +19,6 @@ package com.google.mlkit.vision.demo.kotlin.posedetector
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.google.common.primitives.Ints
 import com.google.mlkit.vision.demo.GraphicOverlay
 import com.google.mlkit.vision.demo.GraphicOverlay.Graphic
 import com.google.mlkit.vision.pose.Pose
@@ -28,8 +27,9 @@ import java.lang.Math.max
 import java.lang.Math.min
 import java.util.Locale
 
-/** Draw the detected pose in preview.  */
-class PoseGraphic internal constructor(
+/** Draw the detected pose in preview. */
+class PoseGraphic
+internal constructor(
   overlay: GraphicOverlay,
   private val pose: Pose,
   private val showInFrameLikelihood: Boolean,
@@ -71,9 +71,9 @@ class PoseGraphic internal constructor(
     // Draw pose classification text.
     val classificationX = POSE_CLASSIFICATION_TEXT_SIZE * 0.5f
     for (i in poseClassification.indices) {
-      val classificationY = canvas.height - (
-        POSE_CLASSIFICATION_TEXT_SIZE * 1.5f * (poseClassification.size - i).toFloat()
-        )
+      val classificationY =
+        canvas.height -
+          (POSE_CLASSIFICATION_TEXT_SIZE * 1.5f * (poseClassification.size - i).toFloat())
       canvas.drawText(
         poseClassification[i],
         classificationX,
@@ -182,7 +182,15 @@ class PoseGraphic internal constructor(
 
   internal fun drawPoint(canvas: Canvas, landmark: PoseLandmark, paint: Paint) {
     val point = landmark.position3D
-    maybeUpdatePaintColor(paint, canvas, point.z)
+    updatePaintColorByZValue(
+      paint,
+      canvas,
+      visualizeZ,
+      rescaleZForVisualization,
+      point.z,
+      zMin,
+      zMax
+    )
     canvas.drawCircle(translateX(point.x), translateY(point.y), DOT_RADIUS, paint)
   }
 
@@ -193,62 +201,27 @@ class PoseGraphic internal constructor(
     paint: Paint
   ) {
     val start = startLandmark!!.position3D
-      val end = endLandmark!!.position3D
+    val end = endLandmark!!.position3D
 
     // Gets average z for the current body line
     val avgZInImagePixel = (start.z + end.z) / 2
-    maybeUpdatePaintColor(paint, canvas, avgZInImagePixel)
+    updatePaintColorByZValue(
+      paint,
+      canvas,
+      visualizeZ,
+      rescaleZForVisualization,
+      avgZInImagePixel,
+      zMin,
+      zMax
+    )
 
     canvas.drawLine(
-        translateX(start.x),
-        translateY(start.y),
-        translateX(end.x),
-        translateY(end.y),
-        paint
-      )
-  }
-
-  internal fun maybeUpdatePaintColor(
-    paint: Paint,
-    canvas: Canvas,
-    zInImagePixel: Float
-  ) {
-    if (!visualizeZ) {
-      return
-    }
-
-    // When visualizeZ is true, sets up the paint to different colors based on z values.
-    // Gets the range of z value.
-    val zLowerBoundInScreenPixel: Float
-    val zUpperBoundInScreenPixel: Float
-
-    if (rescaleZForVisualization) {
-      zLowerBoundInScreenPixel = min(-0.001f, scale(zMin))
-      zUpperBoundInScreenPixel = max(0.001f, scale(zMax))
-    } else {
-      // By default, assume the range of z value in screen pixel is [-canvasWidth, canvasWidth].
-      val defaultRangeFactor = 1f
-      zLowerBoundInScreenPixel = -defaultRangeFactor * canvas.width
-      zUpperBoundInScreenPixel = defaultRangeFactor * canvas.width
-    }
-
-    val zInScreenPixel = scale(zInImagePixel)
-
-    if (zInScreenPixel < 0) {
-      // Sets up the paint to draw the body line in red if it is in front of the z origin.
-      // Maps values within [zLowerBoundInScreenPixel, 0) to [255, 0) and use it to control the
-      // color. The larger the value is, the more red it will be.
-      var v = (zInScreenPixel / zLowerBoundInScreenPixel * 255).toInt()
-      v = Ints.constrainToRange(v, 0, 255)
-      paint.setARGB(255, 255, 255 - v, 255 - v)
-    } else {
-      // Sets up the paint to draw the body line in blue if it is behind the z origin.
-      // Maps values within [0, zUpperBoundInScreenPixel] to [0, 255] and use it to control the
-      // color. The larger the value is, the more blue it will be.
-      var v = (zInScreenPixel / zUpperBoundInScreenPixel * 255).toInt()
-      v = Ints.constrainToRange(v, 0, 255)
-      paint.setARGB(255, 255 - v, 255 - v, 255)
-    }
+      translateX(start.x),
+      translateY(start.y),
+      translateX(end.x),
+      translateY(end.y),
+      paint
+    )
   }
 
   companion object {
