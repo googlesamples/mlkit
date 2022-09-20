@@ -187,4 +187,5 @@
         android:entries="@array/pref_entry_titles_face_mesh_use_case"
         android:entryValues="@array/pref_entry_values_face_mesh_use_case" />
   </PreferenceCategory>
+
 </PreferenceScreen>

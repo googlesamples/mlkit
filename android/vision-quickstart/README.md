@@ -9,6 +9,7 @@ This ML Kit Quickstart app demonstrates how to use and integrate various vision 
 Features that are included in this Quickstart app:
 * [Object Detection](https://developers.google.com/ml-kit/vision/object-detection/android) - Detect, track, and classify objects in real time and static images
 * [Face Detection](https://developers.google.com/ml-kit/vision/face-detection/android) - Detect faces in real time and static images
+* [Face Mesh Detection](https://developers.google.com/ml-kit/vision/face-mesh-detection/android) - Detect face mesh in real time and static images
 * [Text Recognition](https://developers.google.com/ml-kit/vision/text-recognition/android) - Recognize text in real time and static images
 * [Barcode Scanning](https://developers.google.com/ml-kit/vision/barcode-scanning/android)  - Scan barcodes in real time and static images
 * [Image Labeling](https://developers.google.com/ml-kit/vision/image-labeling/android) - Label images in real time and static images
@@ -28,7 +29,7 @@ Features that are included in this Quickstart app:
 This app supports three usage scenarios: Live Camera, Static Image, and CameraX enabled live camera.
 
 ### Live Camera scenario
-It uses the camera preview as input and contains these API workflows: Object detection & tracking, Face Detection, Text Recognition, Barcode Scanning, Image Labeling, and Pose Detection. There's also a settings page that allows you to configure several options:
+It uses the camera preview as input and contains these API workflows: Object detection & tracking, Face Detection, Face Mesh Detection, Text Recognition, Barcode Scanning, Image Labeling, and Pose Detection. There's also a settings page that allows you to configure several options:
 * Camera
     * Preview size - Specify the preview size of rear/front camera manually (Default size is chosen appropriately based on screen size)
     * Enable live viewport - Toggle between blocking camera preview by API processing and result rendering or not
@@ -42,6 +43,8 @@ It uses the camera preview as input and contains these API workflows: Object det
     * Performance mode -- Toggle between two operating modes (Fast or Accurate)
     * Face tracking -- Enable or disable face tracking
     * Minimum face size -- Choose the proportion of the head width to the image width
+* Face Mesh Detection
+    * Use Case -- Selects from `Bounding Box only` and `Face Mesh`
 * Pose Detection
     * Performance mode -- Allows you to switch between "Fast" and "Accurate" operation mode
     * Show in-frame likelihood -- Displays InFrameLikelihood score for each landmark
