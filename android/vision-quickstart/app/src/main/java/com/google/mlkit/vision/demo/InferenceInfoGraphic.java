@@ -85,5 +85,7 @@ public class InferenceInfoGraphic extends GraphicOverlay.Graphic {
     }
     canvas.drawText(
         "Detector latency: " + detectorLatency + " ms", x, y + TEXT_SIZE * 2, textPaint);
+    canvas.drawText(
+            "HighKneesCount: "+PoseCounter.getCount(), x, y + TEXT_SIZE * 3, textPaint);
   }
 }

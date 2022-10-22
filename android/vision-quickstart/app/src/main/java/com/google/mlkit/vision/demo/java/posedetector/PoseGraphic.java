@@ -38,6 +38,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.mlkit.vision.common.PointF3D;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.GraphicOverlay.Graphic;
+import com.google.mlkit.vision.demo.PoseCounter;
 import com.google.mlkit.vision.demo.R;
 import com.google.mlkit.vision.pose.Pose;
 import com.google.mlkit.vision.pose.PoseLandmark;
@@ -158,6 +159,61 @@ public class PoseGraphic extends Graphic {
     PoseLandmark leftFootIndex = pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX);
     PoseLandmark rightFootIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX);
 
+    assert lefyEyeInner != null;
+    assert rightMouth != null;
+    assert leftMouth != null;
+    assert rightEar != null;
+    assert rightEyeOuter != null;
+    assert rightEyeInner != null;
+    assert rightEye != null;
+    assert leftEar != null;
+    assert leftEyeOuter != null;
+    assert lefyEye != null;
+    assert leftShoulder != null;
+    assert leftHip != null;
+    assert leftKnee != null;
+    assert leftFootIndex != null;
+    assert rightFootIndex != null;
+    assert rightShoulder != null;
+    assert rightHip != null;
+    assert rightKnee != null;
+
+
+
+    float screenWidth = 360;
+    float screenHeight = 640;
+
+    //Check whether the object is in frame or not
+    assert leftAnkle != null;
+    assert nose != null;
+    assert rightAnkle != null;
+    if(leftAnkle.getPosition().x<0 || leftAnkle.getPosition().y<0 || rightAnkle.getPosition().x<0 || rightAnkle.getPosition().y<0 || nose.getPosition().x<0 || nose.getPosition().y<0){
+      Toast.makeText(getApplicationContext(), "Object is out of frame", Toast.LENGTH_SHORT).show();
+    }
+    if(leftAnkle.getPosition().x>screenWidth || leftAnkle.getPosition().y>screenHeight || rightAnkle.getPosition().x>screenWidth || rightAnkle.getPosition().y>screenHeight || nose.getPosition().x>screenWidth || nose.getPosition().y>screenHeight) {
+      Toast.makeText(getApplicationContext(), "Object is out of frame", Toast.LENGTH_SHORT).show();
+    }
+
+    //Count left high knees.
+    if((int)(getAngle(leftHip, leftKnee, leftAnkle)) >150){
+      PoseCounter.countInit();
+    }
+    if ((int)(getAngle(leftHip, leftKnee, leftAnkle))>60 && (int)(getAngle(leftHip, leftKnee, leftAnkle))<120) {
+      if(PoseCounter.getInit()==1){
+        PoseCounter.count();
+        PoseCounter.countDeInit();
+      }}
+
+    //Count right high knees.
+    if((int)(getAngle(rightHip, rightKnee, rightAnkle)) >150){
+      PoseCounter.countInit();
+    }
+    if ((int)(getAngle(rightHip, rightKnee, rightAnkle))>60 && (int)(getAngle(rightHip, rightKnee, rightAnkle))<120) {
+      if(PoseCounter.getInit()==1){
+        PoseCounter.count();
+        PoseCounter.countDeInit();
+      }}
+
     // Face
     drawLine(canvas, nose, lefyEyeInner, whitePaint);
     drawLine(canvas, lefyEyeInner, lefyEye, whitePaint);
@@ -168,11 +224,16 @@ public class PoseGraphic extends Graphic {
     drawLine(canvas, rightEye, rightEyeOuter, whitePaint);
     drawLine(canvas, rightEyeOuter, rightEar, whitePaint);
     drawLine(canvas, leftMouth, rightMouth, whitePaint);
-
     drawLine(canvas, leftShoulder, rightShoulder, whitePaint);
     drawLine(canvas, leftHip, rightHip, whitePaint);
 
     // Left body
+    assert leftElbow != null;
+    assert leftWrist != null;
+    assert leftThumb != null;
+    assert leftPinky != null;
+    assert leftIndex != null;
+    assert leftHeel != null;
     drawLine(canvas, leftShoulder, leftElbow, leftPaint);
     drawLine(canvas, leftElbow, leftWrist, leftPaint);
     drawLine(canvas, leftShoulder, leftHip, leftPaint);
@@ -186,6 +247,12 @@ public class PoseGraphic extends Graphic {
     drawLine(canvas, leftHeel, leftFootIndex, leftPaint);
 
     // Right body
+    assert rightElbow != null;
+    assert rightWrist != null;
+    assert rightThumb != null;
+    assert rightPinky != null;
+    assert rightIndex != null;
+    assert rightHeel != null;
     drawLine(canvas, rightShoulder, rightElbow, rightPaint);
     drawLine(canvas, rightElbow, rightWrist, rightPaint);
     drawLine(canvas, rightShoulder, rightHip, rightPaint);
@@ -232,6 +299,19 @@ public class PoseGraphic extends Graphic {
         translateX(end.getX()),
         translateY(end.getY()),
         paint);
+  }
+  static double getAngle(PoseLandmark firstPoint, PoseLandmark midPoint, PoseLandmark lastPoint) {
+    double result =
+            Math.toDegrees(
+                    atan2(lastPoint.getPosition().y - midPoint.getPosition().y,
+                            lastPoint.getPosition().x - midPoint.getPosition().x)
+                            - atan2(firstPoint.getPosition().y - midPoint.getPosition().y,
+                            firstPoint.getPosition().x - midPoint.getPosition().x));
+    result = Math.abs(result); // Angle should never be negative
+    if (result > 180) {
+      result = (360.0 - result); // Always get the acute representation of the angle
+    }
+    return result;
   }
 
 }
