@@ -16,18 +16,29 @@
 
 package com.google.mlkit.vision.demo.java.posedetector;
 
+import static java.lang.Math.atan2;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.util.Log;
+import android.view.Display;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.mlkit.vision.common.PointF3D;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.GraphicOverlay.Graphic;
+import com.google.mlkit.vision.demo.R;
 import com.google.mlkit.vision.pose.Pose;
 import com.google.mlkit.vision.pose.PoseLandmark;
 import java.util.List;
@@ -40,14 +51,12 @@ public class PoseGraphic extends Graphic {
   private static final float IN_FRAME_LIKELIHOOD_TEXT_SIZE = 30.0f;
   private static final float STROKE_WIDTH = 10.0f;
   private static final float POSE_CLASSIFICATION_TEXT_SIZE = 60.0f;
-
   private final Pose pose;
   private final boolean showInFrameLikelihood;
   private final boolean visualizeZ;
   private final boolean rescaleZForVisualization;
   private float zMin = Float.MAX_VALUE;
   private float zMax = Float.MIN_VALUE;
-
   private final List<String> poseClassification;
   private final Paint classificationTextPaint;
   private final Paint leftPaint;
@@ -62,6 +71,8 @@ public class PoseGraphic extends Graphic {
       boolean rescaleZForVisualization,
       List<String> poseClassification) {
     super(overlay);
+
+
     this.pose = pose;
     this.showInFrameLikelihood = showInFrameLikelihood;
     this.visualizeZ = visualizeZ;
@@ -222,4 +233,5 @@ public class PoseGraphic extends Graphic {
         translateY(end.getY()),
         paint);
   }
+
 }
