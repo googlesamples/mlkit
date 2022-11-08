@@ -56,7 +56,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Barcode model
-    implementation 'com.google.mlkit:barcode-scanning:17.0.2'
+    implementation 'com.google.mlkit:barcode-scanning:17.0.3'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
     // implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:18.1.0'

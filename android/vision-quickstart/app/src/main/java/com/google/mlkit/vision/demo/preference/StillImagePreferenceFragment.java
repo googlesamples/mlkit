@@ -27,6 +27,5 @@ public class StillImagePreferenceFragment extends PreferenceFragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     addPreferencesFromResource(R.xml.preference_still_image);
-    FaceDetectionUtils.setUpFaceDetectionPreferences(this, /* isStreamMode = */false);
   }
 }
