@@ -40,6 +40,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     implementation 'com.google.mlkit:smart-reply:17.0.2'
+    // Or comment the dependency above and uncomment the dependency below to
+    // use unbundled model that depends on Google Play Services
+    // implementation 'com.google.android.gms:play-services-mlkit-smart-reply:16.0.0-beta1'
 
     implementation 'com.google.guava:guava:27.0.1-android'
 }
