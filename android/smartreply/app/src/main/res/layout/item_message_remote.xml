@@ -10,12 +10,12 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/margin_message_text_icon"
-      android:layout_marginLeft="@dimen/margin_message_text_icon"
       android:padding="8dp"
       android:background="@drawable/rounded_rectangle_light_gray"
       android:gravity="start"
       android:textSize="14sp"
-      app:layout_constraintBottom_toBottomOf="@id/messageAuthor"
+      android:maxEms="20"
+      android:singleLine="false"
       app:layout_constraintStart_toEndOf="@id/messageAuthor"
       app:layout_constraintTop_toTopOf="@id/messageAuthor" />
 
