@@ -1,9 +1,9 @@
 package com.google.mlkit.samples.vision.digitalink;
 
 import android.os.Handler;
-import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.MotionEvent;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;

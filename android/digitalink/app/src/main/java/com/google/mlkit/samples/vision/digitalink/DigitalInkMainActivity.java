@@ -1,7 +1,6 @@
 package com.google.mlkit.samples.vision.digitalink;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
@@ -22,6 +22,7 @@ import java.util.Set;
 public class DigitalInkMainActivity extends AppCompatActivity
     implements DownloadedModelsChangedListener {
   private static final String TAG = "MLKDI.Activity";
+  private static final String GESTURE_EXTENSION = "-x-gesture";
   private static final ImmutableMap<String, String> NON_TEXT_MODELS =
       ImmutableMap.of(
           "zxx-Zsym-x-autodraw",
@@ -176,21 +177,42 @@ public class DigitalInkMainActivity extends AppCompatActivity
       if (NON_TEXT_MODELS.containsKey(modelIdentifier.getLanguageTag())) {
         continue;
       }
-
-      StringBuilder label = new StringBuilder();
-      label.append(new Locale(modelIdentifier.getLanguageSubtag()).getDisplayName());
-      if (modelIdentifier.getRegionSubtag() != null) {
-        label.append(" (").append(modelIdentifier.getRegionSubtag()).append(")");
+      if (modelIdentifier.getLanguageTag().endsWith(GESTURE_EXTENSION)) {
+        continue;
       }
 
-      if (modelIdentifier.getScriptSubtag() != null) {
-        label.append(", ").append(modelIdentifier.getScriptSubtag()).append(" Script");
-      }
-      textModels.add(
-          ModelLanguageContainer.createModelContainer(
-              label.toString(), modelIdentifier.getLanguageTag()));
+      textModels.add(buildModelContainer(modelIdentifier, "Script"));
     }
     languageAdapter.addAll(textModels.build());
+
+    languageAdapter.add(ModelLanguageContainer.createLabelOnly("Gesture Models"));
+
+    ImmutableSortedSet.Builder<ModelLanguageContainer> gestureModels =
+        ImmutableSortedSet.naturalOrder();
+    for (DigitalInkRecognitionModelIdentifier modelIdentifier :
+        DigitalInkRecognitionModelIdentifier.allModelIdentifiers()) {
+      if (!modelIdentifier.getLanguageTag().endsWith(GESTURE_EXTENSION)) {
+        continue;
+      }
+
+      gestureModels.add(buildModelContainer(modelIdentifier, "Script gesture classifier"));
+    }
+    languageAdapter.addAll(gestureModels.build());
     return languageAdapter;
+  }
+
+  private static ModelLanguageContainer buildModelContainer(
+      DigitalInkRecognitionModelIdentifier modelIdentifier, String labelSuffix) {
+    StringBuilder label = new StringBuilder();
+    label.append(new Locale(modelIdentifier.getLanguageSubtag()).getDisplayName());
+    if (modelIdentifier.getRegionSubtag() != null) {
+      label.append(" (").append(modelIdentifier.getRegionSubtag()).append(")");
+    }
+
+    if (modelIdentifier.getScriptSubtag() != null) {
+      label.append(", ").append(modelIdentifier.getScriptSubtag()).append(" ").append(labelSuffix);
+    }
+    return ModelLanguageContainer.createModelContainer(
+        label.toString(), modelIdentifier.getLanguageTag());
   }
 }

@@ -122,20 +122,40 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
       if (NON_TEXT_MODELS.containsKey(modelIdentifier.languageTag)) {
         continue
       }
-      val label = StringBuilder()
-      label.append(Locale(modelIdentifier.languageSubtag).displayName)
-      if (modelIdentifier.regionSubtag != null) {
-        label.append(" (").append(modelIdentifier.regionSubtag).append(")")
+      if (modelIdentifier.languageTag.endsWith(Companion.GESTURE_EXTENSION)) {
+        continue
       }
-      if (modelIdentifier.scriptSubtag != null) {
-        label.append(", ").append(modelIdentifier.scriptSubtag).append(" Script")
-      }
-      textModels.add(
-        ModelLanguageContainer.createModelContainer(label.toString(), modelIdentifier.languageTag)
-      )
+      textModels.add(buildModelContainer(modelIdentifier, "Script"))
     }
     languageAdapter.addAll(textModels.build())
+    languageAdapter.add(ModelLanguageContainer.createLabelOnly("Gesture Models"))
+    val gestureModels = ImmutableSortedSet.naturalOrder<ModelLanguageContainer>()
+    for (modelIdentifier in DigitalInkRecognitionModelIdentifier.allModelIdentifiers()) {
+      if (!modelIdentifier.languageTag.endsWith(Companion.GESTURE_EXTENSION)) {
+        continue
+      }
+      gestureModels.add(buildModelContainer(modelIdentifier, "Script gesture classifier"))
+    }
+    languageAdapter.addAll(gestureModels.build())
     return languageAdapter
+  }
+
+  private fun buildModelContainer(
+    modelIdentifier: DigitalInkRecognitionModelIdentifier,
+    labelSuffix: String
+  ): ModelLanguageContainer {
+    val label = StringBuilder()
+    label.append(Locale(modelIdentifier.languageSubtag).displayName)
+    if (modelIdentifier.regionSubtag != null) {
+      label.append(" (").append(modelIdentifier.regionSubtag).append(")")
+    }
+    if (modelIdentifier.scriptSubtag != null) {
+      label.append(", ").append(modelIdentifier.scriptSubtag).append(" ").append(labelSuffix)
+    }
+    return ModelLanguageContainer.createModelContainer(
+      label.toString(),
+      modelIdentifier.languageTag
+    )
   }
 
   override fun onDownloadedModelsChanged(downloadedLanguageTags: Set<String>) {
@@ -157,5 +177,6 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
         "zxx-Zsym-x-shapes",
         "Shapes"
       )
+    private const val GESTURE_EXTENSION = "-x-gesture"
   }
 }
