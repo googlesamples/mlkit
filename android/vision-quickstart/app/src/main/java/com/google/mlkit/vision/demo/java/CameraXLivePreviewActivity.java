@@ -92,10 +92,10 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
   private static final String POSE_DETECTION = "Pose Detection";
   private static final String SELFIE_SEGMENTATION = "Selfie Segmentation";
   private static final String TEXT_RECOGNITION_LATIN = "Text Recognition Latin";
-  private static final String TEXT_RECOGNITION_CHINESE = "Text Recognition Chinese (Beta)";
-  private static final String TEXT_RECOGNITION_DEVANAGARI = "Text Recognition Devanagari (Beta)";
-  private static final String TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese (Beta)";
-  private static final String TEXT_RECOGNITION_KOREAN = "Text Recognition Korean (Beta)";
+  private static final String TEXT_RECOGNITION_CHINESE = "Text Recognition Chinese";
+  private static final String TEXT_RECOGNITION_DEVANAGARI = "Text Recognition Devanagari";
+  private static final String TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese";
+  private static final String TEXT_RECOGNITION_KOREAN = "Text Recognition Korean";
   private static final String FACE_MESH_DETECTION = "Face Mesh Detection (Beta)";
 
   private static final String STATE_SELECTED_MODEL = "selected_model";

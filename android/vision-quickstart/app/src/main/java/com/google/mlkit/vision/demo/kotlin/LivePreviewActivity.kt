@@ -37,11 +37,11 @@ import com.google.mlkit.vision.demo.GraphicOverlay
 import com.google.mlkit.vision.demo.R
 import com.google.mlkit.vision.demo.kotlin.barcodescanner.BarcodeScannerProcessor
 import com.google.mlkit.vision.demo.kotlin.facedetector.FaceDetectorProcessor
+import com.google.mlkit.vision.demo.kotlin.facemeshdetector.FaceMeshDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.labeldetector.LabelDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.objectdetector.ObjectDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.posedetector.PoseDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.segmenter.SegmenterProcessor
-import com.google.mlkit.vision.demo.kotlin.facemeshdetector.FaceMeshDetectorProcessor;
 import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
@@ -343,10 +343,10 @@ class LivePreviewActivity :
     private const val CUSTOM_AUTOML_OBJECT_DETECTION = "Custom AutoML Object Detection (Flower)"
     private const val FACE_DETECTION = "Face Detection"
     private const val TEXT_RECOGNITION_LATIN = "Text Recognition Latin"
-    private const val TEXT_RECOGNITION_CHINESE = "Text Recognition Chinese (Beta)"
-    private const val TEXT_RECOGNITION_DEVANAGARI = "Text Recognition Devanagari (Beta)"
-    private const val TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese (Beta)"
-    private const val TEXT_RECOGNITION_KOREAN = "Text Recognition Korean (Beta)"
+    private const val TEXT_RECOGNITION_CHINESE = "Text Recognition Chinese"
+    private const val TEXT_RECOGNITION_DEVANAGARI = "Text Recognition Devanagari"
+    private const val TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese"
+    private const val TEXT_RECOGNITION_KOREAN = "Text Recognition Korean"
     private const val BARCODE_SCANNING = "Barcode Scanning"
     private const val IMAGE_LABELING = "Image Labeling"
     private const val IMAGE_LABELING_CUSTOM = "Custom Image Labeling (Birds)"

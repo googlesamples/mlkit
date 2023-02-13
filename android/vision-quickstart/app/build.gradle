@@ -74,14 +74,26 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.1.0'
 
     // Text features
-    implementation 'com.google.mlkit:text-recognition:16.0.0-beta6'
+    implementation 'com.google.mlkit:text-recognition:16.0.0'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.2'
-    implementation 'com.google.mlkit:text-recognition-chinese:16.0.0-beta6'
-    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0-beta6'
-    implementation 'com.google.mlkit:text-recognition-japanese:16.0.0-beta6'
-    implementation 'com.google.mlkit:text-recognition-korean:16.0.0-beta6'
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition:19.0.0'
+    implementation 'com.google.mlkit:text-recognition-chinese:16.0.0'
+    // Or comment the dependency above and uncomment the dependency below to
+    // use unbundled model that depends on Google Play Services
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-chinese:16.0.0'
+    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0'
+    // Or comment the dependency above and uncomment the dependency below to
+    // use unbundled model that depends on Google Play Services
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-devanagari:16.0.0'
+    implementation 'com.google.mlkit:text-recognition-japanese:16.0.0'
+    // Or comment the dependency above and uncomment the dependency below to
+    // use unbundled model that depends on Google Play Services
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-japanese:16.0.0'
+    implementation 'com.google.mlkit:text-recognition-korean:16.0.0'
+    // Or comment the dependency above and uncomment the dependency below to
+    // use unbundled model that depends on Google Play Services
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-korean:16.0.0'
 
     // Image labeling
     implementation 'com.google.mlkit:image-labeling:17.0.7'
