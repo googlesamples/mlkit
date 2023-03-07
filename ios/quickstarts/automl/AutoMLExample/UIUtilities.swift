@@ -45,6 +45,7 @@ public class UIUtilities {
     rectangleView.layer.cornerRadius = Constants.rectangleViewCornerRadius
     rectangleView.alpha = Constants.rectangleViewAlpha
     rectangleView.backgroundColor = color
+    rectangleView.accessibilityIdentifier = "MLKit Rectangle View"
     view.addSubview(rectangleView)
   }
 

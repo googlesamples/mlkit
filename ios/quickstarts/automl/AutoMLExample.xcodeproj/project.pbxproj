@@ -49,7 +49,7 @@
 		10224B572087E43100A77316 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		10224B5B2087E49F00A77316 /* MLKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MLKitExtensions.swift; sourceTree = "<group>"; };
 		10B3184D22EB9C5E00E834FF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "AutoMLExample/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		10E114E020E5CBAA0013E4A4 /* AutoMLExampleObjc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoMLExampleObjc.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		10E114E020E5CBAA0013E4A4 /* AutoMLExampleObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoMLExampleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10E114E220E5CBAA0013E4A4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		10E114E320E5CBAA0013E4A4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		10E114E520E5CBAA0013E4A4 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -108,7 +108,7 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		10E114E120E5CBAA0013E4A4 /* AutoMLExampleObjc */ = {
+		10E114E120E5CBAA0013E4A4 /* AutoMLExampleObjC */ = {
 			isa = PBXGroup;
 			children = (
 				10E114E220E5CBAA0013E4A4 /* AppDelegate.h */,
@@ -123,7 +123,7 @@
 				10E1151820EBF7E10013E4A4 /* UIImage+VisionDetection.h */,
 				10E1151920EBF7E10013E4A4 /* UIImage+VisionDetection.m */,
 			);
-			path = AutoMLExampleObjc;
+			path = AutoMLExampleObjC;
 			sourceTree = "<group>";
 		};
 		BB287B2C20729CE90069707A = {
@@ -133,7 +133,7 @@
 				1001E6FC20CF0C8F00445CB3 /* Assets.xcassets */,
 				10224B642087E52600A77316 /* Resources */,
 				BB287B3720729CE90069707A /* AutoMLExample */,
-				10E114E120E5CBAA0013E4A4 /* AutoMLExampleObjc */,
+				10E114E120E5CBAA0013E4A4 /* AutoMLExampleObjC */,
 				BB287B3620729CE90069707A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -142,7 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				BB287B3520729CE90069707A /* AutoMLExample.app */,
-				10E114E020E5CBAA0013E4A4 /* AutoMLExampleObjc.app */,
+				10E114E020E5CBAA0013E4A4 /* AutoMLExampleObjC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -172,9 +172,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		10E114DF20E5CBAA0013E4A4 /* AutoMLExampleObjc */ = {
+		10E114DF20E5CBAA0013E4A4 /* AutoMLExampleObjC */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 10E1150F20E5CBAE0013E4A4 /* Build configuration list for PBXNativeTarget "AutoMLExampleObjc" */;
+			buildConfigurationList = 10E1150F20E5CBAE0013E4A4 /* Build configuration list for PBXNativeTarget "AutoMLExampleObjC" */;
 			buildPhases = (
 				10E114DC20E5CBAA0013E4A4 /* Sources */,
 				10E114DD20E5CBAA0013E4A4 /* Frameworks */,
@@ -184,9 +184,9 @@
 			);
 			dependencies = (
 			);
-			name = AutoMLExampleObjc;
-			productName = AutoMLExampleObjc;
-			productReference = 10E114E020E5CBAA0013E4A4 /* AutoMLExampleObjc.app */;
+			name = AutoMLExampleObjC;
+			productName = AutoMLExampleObjC;
+			productReference = 10E114E020E5CBAA0013E4A4 /* AutoMLExampleObjC.app */;
 			productType = "com.apple.product-type.application";
 		};
 		BB287B3420729CE90069707A /* AutoMLExample */ = {
@@ -212,7 +212,7 @@
 		BB287B2D20729CE90069707A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0930;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Google Inc.";
 				TargetAttributes = {
@@ -241,7 +241,7 @@
 			projectRoot = "";
 			targets = (
 				BB287B3420729CE90069707A /* AutoMLExample */,
-				10E114DF20E5CBAA0013E4A4 /* AutoMLExampleObjc */,
+				10E114DF20E5CBAA0013E4A4 /* AutoMLExampleObjC */,
 			);
 		};
 /* End PBXProject section */
@@ -408,7 +408,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -463,7 +463,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -536,7 +536,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		10E1150F20E5CBAE0013E4A4 /* Build configuration list for PBXNativeTarget "AutoMLExampleObjc" */ = {
+		10E1150F20E5CBAE0013E4A4 /* Build configuration list for PBXNativeTarget "AutoMLExampleObjC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				10E1150920E5CBAE0013E4A4 /* Debug */,

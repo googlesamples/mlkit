@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
   rectangleView.layer.cornerRadius = rectangleViewCornerRadius;
   rectangleView.alpha = rectangleViewAlpha;
   rectangleView.backgroundColor = color;
+  rectangleView.accessibilityIdentifier = @"MLKit Rectangle View";
   [view addSubview:rectangleView];
 }
 
