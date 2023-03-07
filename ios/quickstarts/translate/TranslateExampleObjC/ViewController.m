@@ -57,8 +57,11 @@ NS_ASSUME_NONNULL_BEGIN
   self.inputPicker.delegate = self;
   self.outputPicker.delegate = self;
   self.inputTextView.delegate = self;
+  self.inputTextView.accessibilityIdentifier = @"inputTextView";
   self.inputTextView.returnKeyType = UIReturnKeyDone;
-
+  self.statusTextView.accessibilityIdentifier = @"statusTextView";
+  self.outputTextView.accessibilityIdentifier = @"outputTextView";
+  self.sourceDownloadDeleteButton.accessibilityIdentifier = @"InputModelButton";
   [self pickerView:self.inputPicker didSelectRow:0 inComponent:0];
   [self updateDownloadDeleteButtonLabels];
 
@@ -90,6 +93,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)textViewDidChange:(UITextView *)textView {
   [self translate];
+}
+
+/**
+ * Make all text selected when the text view is activated for editing, so that the newly input
+ * context will override the existing content.
+ */
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+  textView.selectedTextRange = [textView textRangeFromPosition:textView.beginningOfDocument
+                                                    toPosition:textView.endOfDocument];
 }
 
 - (BOOL)textView:(UITextView *)textView
