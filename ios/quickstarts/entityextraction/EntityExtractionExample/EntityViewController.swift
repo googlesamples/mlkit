@@ -32,7 +32,7 @@ class EntityViewController: UIViewController, UITextViewDelegate, UIPickerViewDa
     options: EntityExtractorOptions(modelIdentifier: EntityExtractionModelIdentifier.english))
   let colorPalette: [UIColor]! = EntityViewController.simplePalette()
   let languages = EntityExtractionModelIdentifier.allModelIdentifiersSorted()
-  var outputTextAttributes:[NSAttributedString.Key: Any] {
+  var outputTextAttributes: [NSAttributedString.Key: Any] {
     if #available(iOS 13.0, *) {
       // Support Dark Mode
       return [
@@ -58,8 +58,11 @@ class EntityViewController: UIViewController, UITextViewDelegate, UIPickerViewDa
   override func viewDidLoad() {
     inputTextView.delegate = self
     inputTextView.returnKeyType = .done
+    inputTextView.accessibilityIdentifier = "Input Box"
+    outputTextView.accessibilityIdentifier = "Result View"
     languagePicker.delegate = self
     languagePicker.dataSource = self
+    languagePicker.accessibilityIdentifier = "Language Picker"
 
     let languageRow = languages.firstIndex(of: EntityExtractionModelIdentifier.english)!
     languagePicker.selectRow(languageRow, inComponent: 0, animated: false)
@@ -99,6 +102,13 @@ class EntityViewController: UIViewController, UITextViewDelegate, UIPickerViewDa
       return false
     }
     return true
+  }
+
+  // Make all text selected when the text view is activated for editing, so that the newly
+  // input context will override the existing content.
+  func textViewDidBeginEditing(_ textView: UITextView) {
+    textView.selectedTextRange = textView.textRange(
+      from: textView.beginningOfDocument, to: textView.endOfDocument)
   }
 
   func textViewDidChange(_ textView: UITextView) {
@@ -191,37 +201,38 @@ class EntityViewController: UIViewController, UITextViewDelegate, UIPickerViewDa
       if entity.entityType == EntityType.address {
         // Identifies a physical address.
         // No structured data available.
-        output = "Address"
+        output = "address"
       } else if entity.entityType == EntityType.dateTime {
         // Identifies a date and time reference that may include a specific time. May be absolute
         // such as "01/01/2000 5:30pm" or relative like "tomorrow at 5:30pm".
-        output = "Datetime: "
+        output = "datetime: "
         let formatter = DateFormatter()
         formatter.timeZone = TimeZone.current
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         output.append(formatter.string(from: entity.dateTimeEntity!.dateTime))
-        output.append(" (")
+        output.append(" (granularity ")
         output.append(
           EntityViewController.stringFromGranularity(entity.dateTimeEntity!.dateTimeGranularity))
+        output.append(")")
       } else if entity.entityType == EntityType.email {
         // Identifies an e-mail address.
         // No structured data available.
-        output = "E-mail"
+        output = "email"
       } else if entity.entityType == EntityType.flightNumber {
         // Identifies a flight number in IATA format.
-        output = "Flight number: "
+        output = "flight: "
         output.append(entity.flightNumberEntity!.airlineCode)
         output.append(" ")
         output.append(entity.flightNumberEntity!.flightNumber)
       } else if entity.entityType == EntityType.IBAN {
         // Identifies an International Bank Account Number (IBAN).
-        output = "IBAN: "
+        output = "iban: "
         output.append(entity.ibanEntity!.countryCode)
         output.append(" ")
         output.append(entity.ibanEntity!.iban)
       } else if entity.entityType == EntityType.ISBN {
         // Identifies an International Standard Book Number (ISBN).
-        output = "ISBN: "
+        output = "isbn: "
         output.append(entity.isbnEntity!.isbn)
       } else if entity.entityType == EntityType.paymentCard {
         // Identifies a payment card.
@@ -234,10 +245,10 @@ class EntityViewController: UIViewController, UITextViewDelegate, UIPickerViewDa
       } else if entity.entityType == EntityType.phone {
         // Identifies a phone number.
         // No structured data available.
-        output = "Phone number"
+        output = "phone"
       } else if entity.entityType == EntityType.trackingNumber {
         // Identifies a shipment tracking number.
-        output = "Tracking number: "
+        output = "tracking_number: "
         output.append(
           EntityViewController.stringFromCarrier(entity.trackingNumberEntity!.parcelCarrier))
         output.append(" ")
@@ -245,10 +256,10 @@ class EntityViewController: UIViewController, UITextViewDelegate, UIPickerViewDa
       } else if entity.entityType == EntityType.URL {
         // Identifies a URL.
         // No structured data available.
-        output = "URL"
+        output = "url"
       } else if entity.entityType == EntityType.money {
         // Identifies currencies.
-        output = "Money: "
+        output = "money: "
         output.append(entity.moneyEntity!.description)
       }
       outputs.append(output)

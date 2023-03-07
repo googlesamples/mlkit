@@ -56,8 +56,12 @@ NS_ASSUME_NONNULL_BEGIN
 
   self.inputTextView.delegate = self;
   self.inputTextView.returnKeyType = UIReturnKeyDone;
+  self.inputTextView.accessibilityIdentifier = @"Input Box";
+  self.inputTextView.delegate = self;
+  self.outputTextView.accessibilityIdentifier = @"Result View";
   self.languagePicker.delegate = self;
   self.languagePicker.dataSource = self;
+  self.languagePicker.accessibilityIdentifier = @"Language Picker";
 
   NSUInteger languageRow = [self.languages indexOfObject:MLKEntityExtractionModelIdentifierEnglish];
   [self.languagePicker selectRow:languageRow inComponent:0 animated:NO];
@@ -327,6 +331,15 @@ NS_ASSUME_NONNULL_BEGIN
     return NO;
   }
   return YES;
+}
+
+/**
+ * Make all text selected when the text view is activated for editing, so that the newly input
+ * context will override the existing content.
+ */
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+  textView.selectedTextRange = [textView textRangeFromPosition:textView.beginningOfDocument
+                                                    toPosition:textView.endOfDocument];
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
