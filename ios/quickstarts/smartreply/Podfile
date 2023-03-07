@@ -3,7 +3,7 @@ platform :ios, '12.0'
 
 project 'SmartReplyExample.xcodeproj'
 
-pod 'GoogleMLKit/SmartReply', '3.2.0'
+pod 'GoogleMLKit/SmartReply', '4.0.0'
 
 pod 'MaterialComponents'
 pod 'SwiftLint'
@@ -11,4 +11,15 @@ pod 'SwiftLint'
 target 'SmartReplyExampleObjC' do
 end
 target 'SmartReplyExample' do
+end
+
+# Disable signing for pods
+post_install do |installer|
+  installer.generated_projects.each do |project|
+    project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+         end
+    end
+  end
 end

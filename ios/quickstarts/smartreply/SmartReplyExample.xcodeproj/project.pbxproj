@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1036DA002087CA10003253C9 /* SmartReplyExampleObjCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1036D9FF2087CA10003253C9 /* SmartReplyExampleObjCTests.m */; };
-		1036DA0E2087CA25003253C9 /* SmartReplyExampleObjCUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1036DA0D2087CA25003253C9 /* SmartReplyExampleObjCUITests.m */; };
-		1036DA1C2087CA66003253C9 /* SmartReplyExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1036DA1B2087CA66003253C9 /* SmartReplyExampleUITests.swift */; };
 		1091729C22066E9D0059D03D /* UITextView+Placeholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1091729B22066E9D0059D03D /* UITextView+Placeholder.m */; };
 		1091729F2206767C0059D03D /* NSDate+Format.m in Sources */ = {isa = PBXBuildFile; fileRef = 1091729E2206767C0059D03D /* NSDate+Format.m */; };
 		109172A022067F750059D03D /* UITextViewPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106C558821F7958B00908FF7 /* UITextViewPlaceholder.swift */; };
@@ -28,13 +25,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1036DA022087CA10003253C9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5F5A53441ADE670C00F81DF0 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5F5A534B1ADE670C00F81DF0;
-			remoteInfo = SmartReplyExampleObjC;
-		};
 		1036DA102087CA25003253C9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5F5A53441ADE670C00F81DF0 /* Project object */;
@@ -52,15 +42,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1036D9FD2087CA10003253C9 /* SmartReplyExampleObjCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartReplyExampleObjCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1036D9FF2087CA10003253C9 /* SmartReplyExampleObjCTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmartReplyExampleObjCTests.m; sourceTree = "<group>"; };
-		1036DA012087CA10003253C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1036DA0B2087CA25003253C9 /* SmartReplyExampleObjCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartReplyExampleObjCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1036DA0D2087CA25003253C9 /* SmartReplyExampleObjCUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmartReplyExampleObjCUITests.m; sourceTree = "<group>"; };
-		1036DA0F2087CA25003253C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1036DA192087CA66003253C9 /* SmartReplyExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartReplyExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1036DA1B2087CA66003253C9 /* SmartReplyExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartReplyExampleUITests.swift; sourceTree = "<group>"; };
-		1036DA1D2087CA66003253C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		106C558821F7958B00908FF7 /* UITextViewPlaceholder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextViewPlaceholder.swift; sourceTree = "<group>"; };
 		108F913D21FB8F1A0069ADDA /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		1091729A22066E9D0059D03D /* UITextView+Placeholder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITextView+Placeholder.h"; sourceTree = "<group>"; };
@@ -83,13 +64,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1036D9FA2087CA10003253C9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1036DA082087CA25003253C9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -121,41 +95,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1036D9FE2087CA10003253C9 /* SmartReplyExampleObjCTests */ = {
-			isa = PBXGroup;
-			children = (
-				1036D9FF2087CA10003253C9 /* SmartReplyExampleObjCTests.m */,
-				1036DA012087CA10003253C9 /* Info.plist */,
-			);
-			path = SmartReplyExampleObjCTests;
-			sourceTree = "<group>";
-		};
-		1036DA0C2087CA25003253C9 /* SmartReplyExampleObjCUITests */ = {
-			isa = PBXGroup;
-			children = (
-				1036DA0D2087CA25003253C9 /* SmartReplyExampleObjCUITests.m */,
-				1036DA0F2087CA25003253C9 /* Info.plist */,
-			);
-			path = SmartReplyExampleObjCUITests;
-			sourceTree = "<group>";
-		};
-		1036DA1A2087CA66003253C9 /* SmartReplyExampleUITests */ = {
-			isa = PBXGroup;
-			children = (
-				1036DA1B2087CA66003253C9 /* SmartReplyExampleUITests.swift */,
-				1036DA1D2087CA66003253C9 /* Info.plist */,
-			);
-			path = SmartReplyExampleUITests;
-			sourceTree = "<group>";
-		};
 		5F5A53431ADE670C00F81DF0 = {
 			isa = PBXGroup;
 			children = (
 				5F5A534E1ADE670C00F81DF0 /* SmartReplyExampleObjC */,
 				5F5A537A1ADE67D500F81DF0 /* SmartReplyExample */,
-				1036D9FE2087CA10003253C9 /* SmartReplyExampleObjCTests */,
-				1036DA0C2087CA25003253C9 /* SmartReplyExampleObjCUITests */,
-				1036DA1A2087CA66003253C9 /* SmartReplyExampleUITests */,
 				5F5A534D1ADE670C00F81DF0 /* Products */,
 				84AF1DBB4C2C1A28DF953D03 /* Pods */,
 			);
@@ -167,9 +111,6 @@
 			children = (
 				5F5A534C1ADE670C00F81DF0 /* SmartReplyExampleObjC.app */,
 				5F5A53791ADE67D500F81DF0 /* SmartReplyExample.app */,
-				1036D9FD2087CA10003253C9 /* SmartReplyExampleObjCTests.xctest */,
-				1036DA0B2087CA25003253C9 /* SmartReplyExampleObjCUITests.xctest */,
-				1036DA192087CA66003253C9 /* SmartReplyExampleUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -223,61 +164,7 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1036D9FC2087CA10003253C9 /* SmartReplyExampleObjCTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1036DA062087CA10003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjCTests" */;
-			buildPhases = (
-				1036D9F92087CA10003253C9 /* Sources */,
-				1036D9FA2087CA10003253C9 /* Frameworks */,
-				1036D9FB2087CA10003253C9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1036DA032087CA10003253C9 /* PBXTargetDependency */,
-			);
-			name = SmartReplyExampleObjCTests;
-			productName = SmartReplyExampleObjCTests;
-			productReference = 1036D9FD2087CA10003253C9 /* SmartReplyExampleObjCTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		1036DA0A2087CA25003253C9 /* SmartReplyExampleObjCUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1036DA122087CA25003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjCUITests" */;
-			buildPhases = (
-				1036DA072087CA25003253C9 /* Sources */,
-				1036DA082087CA25003253C9 /* Frameworks */,
-				1036DA092087CA25003253C9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1036DA112087CA25003253C9 /* PBXTargetDependency */,
-			);
-			name = SmartReplyExampleObjCUITests;
-			productName = SmartReplyExampleObjCUITests;
-			productReference = 1036DA0B2087CA25003253C9 /* SmartReplyExampleObjCUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		1036DA182087CA66003253C9 /* SmartReplyExampleUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1036DA202087CA66003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleUITests" */;
-			buildPhases = (
-				1036DA152087CA66003253C9 /* Sources */,
-				1036DA162087CA66003253C9 /* Frameworks */,
-				1036DA172087CA66003253C9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1036DA1F2087CA66003253C9 /* PBXTargetDependency */,
-			);
-			name = SmartReplyExampleUITests;
-			productName = SmartReplyExampleUITests;
-			productReference = 1036DA192087CA66003253C9 /* SmartReplyExampleUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		5F5A534B1ADE670C00F81DF0 /* SmartReplyExample */ = {
+		5F5A534B1ADE670C00F81DF0 /* SmartReplyExampleObjC */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5F5A536F1ADE670C00F81DF0 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjC" */;
 			buildPhases = (
@@ -322,22 +209,6 @@
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Google Inc.";
 				TargetAttributes = {
-					1036D9FC2087CA10003253C9 = {
-						CreatedOnToolsVersion = 9.3;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 5F5A534B1ADE670C00F81DF0;
-					};
-					1036DA0A2087CA25003253C9 = {
-						CreatedOnToolsVersion = 9.3;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 5F5A534B1ADE670C00F81DF0;
-					};
-					1036DA182087CA66003253C9 = {
-						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 1130;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 5F5A53781ADE67D500F81DF0;
-					};
 					5F5A534B1ADE670C00F81DF0 = {
 						CreatedOnToolsVersion = 6.3;
 						LastSwiftMigration = 0920;
@@ -382,21 +253,11 @@
 			targets = (
 				5F5A534B1ADE670C00F81DF0 /* SmartReplyExampleObjC */,
 				5F5A53781ADE67D500F81DF0 /* SmartReplyExample */,
-				1036D9FC2087CA10003253C9 /* SmartReplyExampleObjCTests */,
-				1036DA0A2087CA25003253C9 /* SmartReplyExampleObjCUITests */,
-				1036DA182087CA66003253C9 /* SmartReplyExampleUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1036D9FB2087CA10003253C9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1036DA092087CA25003253C9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -454,19 +315,10 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1036D9F92087CA10003253C9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1036DA002087CA10003253C9 /* SmartReplyExampleObjCTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1036DA072087CA25003253C9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1036DA0E2087CA25003253C9 /* SmartReplyExampleObjCUITests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,7 +326,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1036DA1C2087CA66003253C9 /* SmartReplyExampleUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,21 +355,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1036DA032087CA10003253C9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5F5A534B1ADE670C00F81DF0 /* SmartReplyExampleObjC */;
-			targetProxy = 1036DA022087CA10003253C9 /* PBXContainerItemProxy */;
-		};
-		1036DA112087CA25003253C9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5F5A534B1ADE670C00F81DF0 /* SmartReplyExampleObjC */;
-			targetProxy = 1036DA102087CA25003253C9 /* PBXContainerItemProxy */;
-		};
-		1036DA1F2087CA66003253C9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5F5A53781ADE67D500F81DF0 /* SmartReplyExample */;
-			targetProxy = 1036DA1E2087CA66003253C9 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -533,172 +369,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1036DA042087CA10003253C9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleObjCTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleObjCTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "x86_64 arm64 arm64e";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartReplyExampleObjC.app/SmartReplyExampleObjC";
-			};
-			name = Debug;
-		};
-		1036DA052087CA10003253C9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleObjCTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleObjCTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "x86_64 arm64 arm64e";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartReplyExampleObjC.app/SmartReplyExampleObjC";
-			};
-			name = Release;
-		};
-		1036DA132087CA25003253C9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleObjCUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleObjCUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "x86_64 arm64 arm64e";
-				TEST_TARGET_NAME = SmartReplyExampleObjC;
-			};
-			name = Debug;
-		};
-		1036DA142087CA25003253C9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleObjCUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleObjCUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = SmartReplyExampleObjC;
-				VALID_ARCHS = "x86_64 arm64 arm64e";
-			};
-			name = Release;
-		};
-		1036DA212087CA66003253C9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = SmartReplyExample;
-				VALID_ARCHS = "x86_64 arm64 arm64e";
-			};
-			name = Debug;
-		};
-		1036DA222087CA66003253C9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SmartReplyExampleUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.google.friendlypix.SmartReplyExampleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = SmartReplyExample;
-				VALID_ARCHS = "x86_64 arm64 arm64e";
-			};
-			name = Release;
-		};
 		5F5A536D1ADE670C00F81DF0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -900,33 +570,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1036DA062087CA10003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjCTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1036DA042087CA10003253C9 /* Debug */,
-				1036DA052087CA10003253C9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1036DA122087CA25003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleObjCUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1036DA132087CA25003253C9 /* Debug */,
-				1036DA142087CA25003253C9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1036DA202087CA66003253C9 /* Build configuration list for PBXNativeTarget "SmartReplyExampleUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1036DA212087CA66003253C9 /* Debug */,
-				1036DA222087CA66003253C9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		5F5A53471ADE670C00F81DF0 /* Build configuration list for PBXProject "SmartReplyExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

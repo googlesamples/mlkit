@@ -46,6 +46,7 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
     let textView = UITextView(placeholder: "Write a message")
     textView.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.callout)
     textView.isScrollEnabled = false
+    textView.accessibilityIdentifier = "Input Box"
     return textView
   }()
 
@@ -56,6 +57,7 @@ class MainViewController: UICollectionViewController, UITextViewDelegate {
       let chipView = MDCChipView()
       chipView.isHidden = true
       chipView.setTitleColor(UIColor.red, for: .selected)
+      chipView.accessibilityIdentifier = "Smart Reply Suggestion"
       let widthConstraint = chipView.widthAnchor.constraint(equalToConstant: 0)
       widthConstraint.identifier = "width"
       widthConstraint.isActive = true
