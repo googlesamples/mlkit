@@ -1,12 +1,23 @@
-platform :ios, '10.0'
+platform :ios, '11.0'
 use_frameworks!
 
 project 'DigitalInkRecognitionExample.xcodeproj'
 
-pod 'GoogleMLKit/DigitalInkRecognition', '3.2.0'
+pod 'GoogleMLKit/DigitalInkRecognition', '4.0.0'
 
 target 'DigitalInkRecognitionExample' do
 end
 
 target 'DigitalInkRecognitionExampleObjC' do
+end
+
+# Disable signing for pods
+post_install do |installer|
+  installer.generated_projects.each do |project|
+    project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+         end
+    end
+  end
 end
