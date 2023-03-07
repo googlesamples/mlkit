@@ -81,15 +81,15 @@ NS_ASSUME_NONNULL_BEGIN
                                                  handler:^(UIAlertAction *action) {
                                                    [self generateChatHistoryWithSensitiveContent];
                                                  }]];
-    [_moreAlert addAction:[UIAlertAction actionWithTitle:@"Clear chat history"
-                                                   style:UIAlertActionStyleDestructive
-                                                 handler:^(UIAlertAction *action) {
-                                                   self.messages = [NSMutableArray new];
-                                                   [self updateReplies];
-                                                   [self.collectionView reloadData];
-                                                   [self.collectionView
-                                                           .collectionViewLayout invalidateLayout];
-                                                 }]];
+    [_moreAlert addAction:[UIAlertAction
+                              actionWithTitle:@"Clear chat history"
+                                        style:UIAlertActionStyleDestructive
+                                      handler:^(UIAlertAction *action) {
+                                        self.messages = [NSMutableArray new];
+                                        [self updateReplies];
+                                        [self.collectionView reloadData];
+                                        [self.collectionView.collectionViewLayout invalidateLayout];
+                                      }]];
     [_moreAlert addAction:[UIAlertAction actionWithTitle:@"Cancel"
                                                    style:UIAlertActionStyleCancel
                                                  handler:nil]];
@@ -113,6 +113,7 @@ NS_ASSUME_NONNULL_BEGIN
   self.inputTextView = [[UITextView alloc] initWithPlaceholder:@"Write a message"];
   _inputTextView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCallout];
   _inputTextView.scrollEnabled = NO;
+  _inputTextView.accessibilityIdentifier = @"Input Box";
   self.smartReplyView = [UIStackView new];
   _smartReplyView.distribution = UIStackViewDistributionEqualSpacing;
 
@@ -304,6 +305,7 @@ NS_ASSUME_NONNULL_BEGIN
                        for (int i = 0; i < 3; i++) {
                          MDCChipView *chip = self.smartReplyView.arrangedSubviews[i];
                          chip.titleLabel.text = result.suggestions[i].text;
+                         chip.accessibilityIdentifier = @"Smart Reply Suggestion";
                          [chip sizeToFit];
                          chip.hidden = NO;
                          for (NSLayoutConstraint *constraint in chip.constraints) {
