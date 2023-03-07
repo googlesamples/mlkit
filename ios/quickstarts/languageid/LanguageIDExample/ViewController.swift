@@ -19,7 +19,7 @@ import UIKit
 import MLKit
 
 @objc(ViewController)
-final class ViewController: UIViewController {
+final class ViewController: UIViewController, UITextViewDelegate {
   @IBOutlet weak var inputTextView: UITextView!
   @IBOutlet weak var outputTextView: UITextView!
 
@@ -28,6 +28,9 @@ final class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     inputTextView.text = "Type here"
+    inputTextView.delegate = self
+    inputTextView.accessibilityIdentifier = "inputTextView"
+    outputTextView.accessibilityIdentifier = "outputTextView"
   }
 
   func displayName(for languageTag: String) -> String {
@@ -61,5 +64,14 @@ final class ViewController: UIViewController {
           String(format: "(%@, %.2f)", self.displayName(for: $0.languageTag), $0.confidence)
         }.joined(separator: "\n")
     }
+  }
+
+  /// Pragma mark - UITextViewDelegate
+
+  // Make all text selected when the text view is activated for editing, so that the newly
+  // input context will override the existing content.
+  func textViewDidBeginEditing(_ textView: UITextView) {
+    textView.selectedTextRange = textView.textRange(
+      from: textView.beginningOfDocument, to: textView.endOfDocument)
   }
 }

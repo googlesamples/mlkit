@@ -30,6 +30,9 @@
   [super viewDidLoad];
   self.languageId = [MLKLanguageIdentification languageIdentification];
   _inputTextView.text = @"Type here";
+  _inputTextView.delegate = self;
+  _inputTextView.accessibilityIdentifier = @"inputTextView";
+  _outputTextView.accessibilityIdentifier = @"outputTextView";
 }
 
 - (NSString *)displayNameForLanguageTag:(NSString *)languageTag {
@@ -77,6 +80,28 @@
                               }
                               self.outputTextView.text = outputText;
                             }];
+}
+
+#pragma mark - TextEditView delegate
+
+/**
+ * Make all text selected when the text view is activated for editing, so that the newly input
+ * context will override the existing content.
+ */
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+  textView.selectedTextRange = [textView textRangeFromPosition:textView.beginningOfDocument
+                                                    toPosition:textView.endOfDocument];
+}
+
+/** Hide the keyboard when "Done" is pressed. */
+- (BOOL)textView:(UITextView *)textView
+    shouldChangeTextInRange:(NSRange)range
+            replacementText:(NSString *)text {
+  if ([text isEqualToString:@"\n"]) {
+    [textView resignFirstResponder];
+    return NO;
+  }
+  return YES;
 }
 
 @end
