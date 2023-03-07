@@ -1,16 +1,27 @@
-platform :ios, '10.0'
+platform :ios, '11.0'
 use_frameworks!
 
 project 'AutoMLExample.xcodeproj'
 
-pod 'GoogleMLKit/Common', '3.2.0'
-pod 'GoogleMLKit/ImageLabelingCustom', '3.2.0'
-pod 'GoogleMLKit/LinkFirebase', '3.2.0'
-pod 'GoogleMLKit/ObjectDetectionCustom', '3.2.0'
-pod 'GoogleMLKit/Vision', '3.2.0'
+pod 'GoogleMLKit/Common', '4.0.0'
+pod 'GoogleMLKit/ImageLabelingCustom', '4.0.0'
+pod 'GoogleMLKit/LinkFirebase', '4.0.0'
+pod 'GoogleMLKit/ObjectDetectionCustom', '4.0.0'
+pod 'GoogleMLKit/Vision', '4.0.0'
 
 target 'AutoMLExample' do
 end
 
-target 'AutoMLExampleObjc' do
+target 'AutoMLExampleObjC' do
+end
+
+# Disable signing for pods
+post_install do |installer|
+  installer.generated_projects.each do |project|
+    project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+         end
+    end
+  end
 end
