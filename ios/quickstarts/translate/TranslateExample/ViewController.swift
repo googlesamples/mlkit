@@ -48,9 +48,14 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDataSour
     inputPicker.delegate = self
     outputPicker.delegate = self
     inputTextView.delegate = self
+    inputTextView.accessibilityIdentifier = "inputTextView"
     inputTextView.returnKeyType = .done
     pickerView(inputPicker, didSelectRow: 0, inComponent: 0)
     setDownloadDeleteButtonLabels()
+
+    outputTextView.accessibilityIdentifier = "outputTextView"
+    sourceDownloadDeleteButton.accessibilityIdentifier = "InputModelButton"
+    statusTextView.accessibilityIdentifier = "statusTextView"
 
     NotificationCenter.default.addObserver(
       self, selector: #selector(remoteModelDownloadDidComplete(notification:)),
@@ -89,6 +94,13 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDataSour
 
   func textViewDidChange(_ textView: UITextView) {
     translate()
+  }
+
+  // Make all text selected when the text view is activated for editing, so that the newly
+  // input context will override the existing content.
+  func textViewDidBeginEditing(_ textView: UITextView) {
+    textView.selectedTextRange = textView.textRange(
+      from: textView.beginningOfDocument, to: textView.endOfDocument)
   }
 
   @IBAction func didTapSwap() {
@@ -145,7 +157,7 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDataSour
 
   @IBAction func listDownloadedModels() {
     let msg =
-      "Downloaded models:"
+      "Downloaded models: "
       + ModelManager.modelManager()
       .downloadedTranslateModels
       .map { model in Locale.current.localizedString(forLanguageCode: model.language.rawValue)! }
@@ -185,15 +197,15 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDataSour
     let inputLanguage = allLanguages[inputPicker.selectedRow(inComponent: 0)]
     let outputLanguage = allLanguages[outputPicker.selectedRow(inComponent: 0)]
     if self.isLanguageDownloaded(inputLanguage) {
-      self.sourceDownloadDeleteButton.setTitle("Delete model", for: .normal)
+      self.sourceDownloadDeleteButton.setTitle("Delete Model", for: .normal)
     } else {
-      self.sourceDownloadDeleteButton.setTitle("Download model", for: .normal)
+      self.sourceDownloadDeleteButton.setTitle("Download Model", for: .normal)
     }
     self.sourceDownloadDeleteButton.isHidden = inputLanguage == .english
     if self.isLanguageDownloaded(outputLanguage) {
-      self.targetDownloadDeleteButton.setTitle("Delete model", for: .normal)
+      self.targetDownloadDeleteButton.setTitle("Delete Model", for: .normal)
     } else {
-      self.targetDownloadDeleteButton.setTitle("Download model", for: .normal)
+      self.targetDownloadDeleteButton.setTitle("Download Model", for: .normal)
     }
     self.targetDownloadDeleteButton.isHidden = outputLanguage == .english
   }
