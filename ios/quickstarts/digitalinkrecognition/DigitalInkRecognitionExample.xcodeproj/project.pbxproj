@@ -707,8 +707,6 @@
 					"\"Security\"",
 					"-framework",
 					"\"nanopb\"",
-					"-framework",
-					"\"protobuf\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.DigitalInkRecognitionExampleObjC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
