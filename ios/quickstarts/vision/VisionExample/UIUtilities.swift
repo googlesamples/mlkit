@@ -451,7 +451,7 @@ public class UIUtilities {
   ///
   /// - Parameters:
   ///   - fromPoint: The starting point.
-  ///   - endPoint: The end point.
+  ///   - toPoint: The end point.
   /// - Returns: The distance.
   private static func distance(fromPoint: Vision3DPoint, toPoint: Vision3DPoint) -> CGFloat {
     let xDiff = fromPoint.x - toPoint.x
