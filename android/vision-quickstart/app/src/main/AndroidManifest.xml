@@ -35,7 +35,7 @@
           your app is installed.-->
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="barcode,face,ocr,ica,custom_ica"/>
+            android:value="barcode,face,ocr,ocr_chinese,ocr_devanagari,ocr_japanese,ocr_korean,ica,custom_ica"/>
 
         <activity
             android:name=".EntryChoiceActivity"
