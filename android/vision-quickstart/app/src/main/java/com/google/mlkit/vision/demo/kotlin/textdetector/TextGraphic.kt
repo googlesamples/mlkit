@@ -95,6 +95,13 @@ constructor(
             Log.d(TAG, "Element language is: " + element.recognizedLanguage)
             Log.d(TAG, "Element confidence is: " + element.confidence)
             Log.d(TAG, "Element angle is: " + element.angle)
+            for (symbol in element.symbols) {
+            Log.d(TAG, "Symbol text is: " + symbol.text)
+            Log.d(TAG, "Symbol boundingbox is: " + symbol.boundingBox)
+            Log.d(TAG, "Symbol cornerpoint is: " + Arrays.toString(symbol.cornerPoints))
+            Log.d(TAG, "Symbol confidence is: " + symbol.confidence)
+            Log.d(TAG, "Symbol angle is: " + symbol.angle)
+          }
           }
         }
       }
