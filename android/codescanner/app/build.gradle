@@ -43,7 +43,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.material:material:1.5.0'
 
-    implementation 'com.google.android.gms:play-services-code-scanner:16.0.0-beta3'
+    implementation 'com.google.android.gms:play-services-code-scanner:16.1.0'
 
     androidTestImplementation 'androidx.test:rules:1.4.0'
     androidTestImplementation 'androidx.test:runner:1.4.0'

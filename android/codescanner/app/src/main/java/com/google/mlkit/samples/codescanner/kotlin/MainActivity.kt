@@ -32,6 +32,7 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
 
   private var allowManualInput = false
+  private var enableAutoZoom = false
   private var barcodeResultView: TextView? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,10 +45,17 @@ class MainActivity : AppCompatActivity() {
     allowManualInput = (view as CheckBox).isChecked
   }
 
+  fun onEnableAutoZoomCheckboxClicked(view: View) {
+    enableAutoZoom = (view as CheckBox).isChecked
+  }
+
   fun onScanButtonClicked(view: View) {
     val optionsBuilder = GmsBarcodeScannerOptions.Builder()
     if (allowManualInput) {
       optionsBuilder.allowManualInput()
+    }
+    if (enableAutoZoom) {
+      optionsBuilder.enableAutoZoom()
     }
     val gmsBarcodeScanner = GmsBarcodeScanning.getClient(this, optionsBuilder.build())
     gmsBarcodeScanner
@@ -63,12 +71,14 @@ class MainActivity : AppCompatActivity() {
 
   override fun onSaveInstanceState(savedInstanceState: Bundle) {
     savedInstanceState.putBoolean(KEY_ALLOW_MANUAL_INPUT, allowManualInput)
+    savedInstanceState.putBoolean(KEY_ENABLE_AUTO_ZOOM, enableAutoZoom)
     super.onSaveInstanceState(savedInstanceState)
   }
 
   override fun onRestoreInstanceState(savedInstanceState: Bundle) {
     super.onRestoreInstanceState(savedInstanceState)
     allowManualInput = savedInstanceState.getBoolean(KEY_ALLOW_MANUAL_INPUT)
+    enableAutoZoom = savedInstanceState.getBoolean(KEY_ENABLE_AUTO_ZOOM)
   }
 
   private fun getSuccessfulMessage(barcode: Barcode): String {
@@ -100,5 +110,6 @@ class MainActivity : AppCompatActivity() {
 
   companion object {
     private const val KEY_ALLOW_MANUAL_INPUT = "allow_manual_input"
+    private const val KEY_ENABLE_AUTO_ZOOM = "enable_auto_zoom"
   }
 }

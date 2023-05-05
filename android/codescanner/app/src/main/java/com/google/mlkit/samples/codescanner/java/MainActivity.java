@@ -34,8 +34,10 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
   private static final String KEY_ALLOW_MANUAL_INPUT = "allow_manual_input";
+  private static final String KEY_ENABLE_AUTO_ZOOM = "enable_auto_zoom";
 
   private boolean allowManualInput;
+  private boolean enableAutoZoom;
   private TextView barcodeResultView;
 
   @Override
@@ -50,10 +52,17 @@ public class MainActivity extends AppCompatActivity {
     allowManualInput = ((CheckBox) view).isChecked();
   }
 
+  public void onEnableAutoZoomCheckboxClicked(View view) {
+    enableAutoZoom = ((CheckBox) view).isChecked();
+  }
+
   public void onScanButtonClicked(View view) {
     GmsBarcodeScannerOptions.Builder optionsBuilder = new GmsBarcodeScannerOptions.Builder();
     if (allowManualInput) {
       optionsBuilder.allowManualInput();
+    }
+    if (enableAutoZoom) {
+      optionsBuilder.enableAutoZoom();
     }
     GmsBarcodeScanner gmsBarcodeScanner =
         GmsBarcodeScanning.getClient(this, optionsBuilder.build());
@@ -69,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onSaveInstanceState(Bundle savedInstanceState) {
     savedInstanceState.putBoolean(KEY_ALLOW_MANUAL_INPUT, allowManualInput);
+    savedInstanceState.putBoolean(KEY_ENABLE_AUTO_ZOOM, enableAutoZoom);
     super.onSaveInstanceState(savedInstanceState);
   }
 
@@ -76,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
   protected void onRestoreInstanceState(Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
     allowManualInput = savedInstanceState.getBoolean(KEY_ALLOW_MANUAL_INPUT);
+    enableAutoZoom = savedInstanceState.getBoolean(KEY_ENABLE_AUTO_ZOOM);
   }
 
   private String getSuccessfulMessage(Barcode barcode) {

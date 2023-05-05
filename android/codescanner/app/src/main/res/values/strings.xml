@@ -1,6 +1,7 @@
 <resources>
   <string name="app_name" translatable="false">Code Scanner Demo</string>
   <string name="allow_manual_input" translatable="false">Allow input code manually</string>
+  <string name="enable_auto_zoom" translatable="false">Enable auto-zoom feature</string>
   <string name="scan_barcode_button" translatable="false">Scan Barcode</string>
   <string name="barcode_result" translatable="false">Barcode detected.\n%1$s</string>
   <string name="error_scanner_cancelled" translatable="false">Code scanner is cancelled.</string>

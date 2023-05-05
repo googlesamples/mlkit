@@ -11,6 +11,12 @@
       android:layout_height="wrap_content"
       android:onClick="onAllowManualInputCheckboxClicked"
       android:text="@string/allow_manual_input" />
+  <CheckBox
+      android:id="@+id/enable_auto_zoom"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:onClick="onEnableAutoZoomCheckboxClicked"
+      android:text="@string/enable_auto_zoom" />
   <Button
       android:id="@+id/scan_barcode_button"
       android:layout_width="wrap_content"
