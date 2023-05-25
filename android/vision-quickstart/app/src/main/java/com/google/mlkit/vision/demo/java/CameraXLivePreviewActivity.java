@@ -34,6 +34,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.camera.core.Camera;
 import androidx.camera.core.CameraInfoUnavailableException;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
@@ -44,19 +45,21 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 import com.google.android.gms.common.annotation.KeepName;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.common.MlKitException;
 import com.google.mlkit.common.model.LocalModel;
+import com.google.mlkit.vision.barcode.ZoomSuggestionOptions.ZoomCallback;
 import com.google.mlkit.vision.demo.CameraXViewModel;
 import com.google.mlkit.vision.demo.GraphicOverlay;
 import com.google.mlkit.vision.demo.R;
 import com.google.mlkit.vision.demo.VisionImageProcessor;
 import com.google.mlkit.vision.demo.java.barcodescanner.BarcodeScannerProcessor;
 import com.google.mlkit.vision.demo.java.facedetector.FaceDetectorProcessor;
+import com.google.mlkit.vision.demo.java.facemeshdetector.FaceMeshDetectorProcessor;
 import com.google.mlkit.vision.demo.java.labeldetector.LabelDetectorProcessor;
 import com.google.mlkit.vision.demo.java.objectdetector.ObjectDetectorProcessor;
 import com.google.mlkit.vision.demo.java.posedetector.PoseDetectorProcessor;
 import com.google.mlkit.vision.demo.java.segmenter.SegmenterProcessor;
-import com.google.mlkit.vision.demo.java.facemeshdetector.FaceMeshDetectorProcessor;
 import com.google.mlkit.vision.demo.java.textdetector.TextRecognitionProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
@@ -104,6 +107,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
   private GraphicOverlay graphicOverlay;
 
   @Nullable private ProcessCameraProvider cameraProvider;
+  @Nullable private Camera camera;
   @Nullable private Preview previewUseCase;
   @Nullable private ImageAnalysis analysisUseCase;
   @Nullable private VisionImageProcessor imageProcessor;
@@ -282,7 +286,8 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
     }
     previewUseCase = builder.build();
     previewUseCase.setSurfaceProvider(previewView.getSurfaceProvider());
-    cameraProvider.bindToLifecycle(/* lifecycleOwner= */ this, cameraSelector, previewUseCase);
+    camera =
+        cameraProvider.bindToLifecycle(/* lifecycleOwner= */ this, cameraSelector, previewUseCase);
   }
 
   private void bindAnalysisUseCase() {
@@ -357,7 +362,18 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
           break;
         case BARCODE_SCANNING:
           Log.i(TAG, "Using Barcode Detector Processor");
-          imageProcessor = new BarcodeScannerProcessor(this);
+          ZoomCallback zoomCallback = null;
+          if (PreferenceUtils.shouldEnableAutoZoom(this)) {
+            zoomCallback =
+                zoomLevel -> {
+                  Log.i(TAG, "Set zoom ratio " + zoomLevel);
+                  @SuppressWarnings("FutureReturnValueIgnored")
+                  ListenableFuture<Void> ignored =
+                      camera.getCameraControl().setZoomRatio(zoomLevel);
+                  return true;
+                };
+          }
+          imageProcessor = new BarcodeScannerProcessor(this, zoomCallback);
           break;
         case IMAGE_LABELING:
           Log.i(TAG, "Using Image Label Detector Processor");

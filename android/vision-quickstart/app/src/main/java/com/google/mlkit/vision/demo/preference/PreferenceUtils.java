@@ -280,6 +280,12 @@ public class PreferenceUtils {
     }
   }
 
+  public static boolean shouldEnableAutoZoom(Context context) {
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    String prefKey = context.getString(R.string.pref_key_enable_auto_zoom);
+    return sharedPreferences.getBoolean(prefKey, true);
+  }
+
   public static boolean shouldGroupRecognizedTextInBlocks(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     String prefKey = context.getString(R.string.pref_key_group_recognized_text_in_blocks);

@@ -31,6 +31,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.annotation.RequiresApi
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraInfoUnavailableException
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -44,6 +45,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.common.annotation.KeepName
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.common.model.LocalModel
+import com.google.mlkit.vision.barcode.ZoomSuggestionOptions.ZoomCallback
 import com.google.mlkit.vision.demo.CameraXViewModel
 import com.google.mlkit.vision.demo.GraphicOverlay
 import com.google.mlkit.vision.demo.R
@@ -66,7 +68,6 @@ import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import java.util.ArrayList
 
 /** Live preview demo app for ML Kit APIs using CameraX. */
 @KeepName
@@ -77,6 +78,7 @@ class CameraXLivePreviewActivity :
   private var previewView: PreviewView? = null
   private var graphicOverlay: GraphicOverlay? = null
   private var cameraProvider: ProcessCameraProvider? = null
+  private var camera: Camera? = null
   private var previewUseCase: Preview? = null
   private var analysisUseCase: ImageAnalysis? = null
   private var imageProcessor: VisionImageProcessor? = null
@@ -239,7 +241,8 @@ class CameraXLivePreviewActivity :
     }
     previewUseCase = builder.build()
     previewUseCase!!.setSurfaceProvider(previewView!!.getSurfaceProvider())
-    cameraProvider!!.bindToLifecycle(/* lifecycleOwner= */ this, cameraSelector!!, previewUseCase)
+    camera =
+      cameraProvider!!.bindToLifecycle(/* lifecycleOwner= */ this, cameraSelector!!, previewUseCase)
   }
 
   private fun bindAnalysisUseCase() {
@@ -306,7 +309,15 @@ class CameraXLivePreviewActivity :
           }
           BARCODE_SCANNING -> {
             Log.i(TAG, "Using Barcode Detector Processor")
-            BarcodeScannerProcessor(this)
+            var zoomCallback: ZoomCallback? = null
+            if (PreferenceUtils.shouldEnableAutoZoom(this)) {
+              zoomCallback = ZoomCallback { zoomLevel: Float ->
+                Log.i(TAG, "Set zoom ratio $zoomLevel")
+                val ignored = camera!!.cameraControl.setZoomRatio(zoomLevel)
+                true
+              }
+            }
+            BarcodeScannerProcessor(this, zoomCallback)
           }
           IMAGE_LABELING -> {
             Log.i(TAG, "Using Image Label Detector Processor")
@@ -414,7 +425,7 @@ class CameraXLivePreviewActivity :
     private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"
     private const val POSE_DETECTION = "Pose Detection"
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
-    private const val FACE_MESH_DETECTION = "Face Mesh Detection (Beta)";
+    private const val FACE_MESH_DETECTION = "Face Mesh Detection (Beta)"
 
     private const val STATE_SELECTED_MODEL = "selected_model"
   }

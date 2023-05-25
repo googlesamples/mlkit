@@ -46,11 +46,11 @@ import com.google.mlkit.vision.demo.R;
 import com.google.mlkit.vision.demo.VisionImageProcessor;
 import com.google.mlkit.vision.demo.java.barcodescanner.BarcodeScannerProcessor;
 import com.google.mlkit.vision.demo.java.facedetector.FaceDetectorProcessor;
+import com.google.mlkit.vision.demo.java.facemeshdetector.FaceMeshDetectorProcessor;
 import com.google.mlkit.vision.demo.java.labeldetector.LabelDetectorProcessor;
 import com.google.mlkit.vision.demo.java.objectdetector.ObjectDetectorProcessor;
 import com.google.mlkit.vision.demo.java.posedetector.PoseDetectorProcessor;
 import com.google.mlkit.vision.demo.java.segmenter.SegmenterProcessor;
-import com.google.mlkit.vision.demo.java.facemeshdetector.FaceMeshDetectorProcessor;
 import com.google.mlkit.vision.demo.java.textdetector.TextRecognitionProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
@@ -436,7 +436,7 @@ public final class StillImageActivity extends AppCompatActivity {
           imageProcessor = new FaceDetectorProcessor(this);
           break;
         case BARCODE_SCANNING:
-          imageProcessor = new BarcodeScannerProcessor(this);
+          imageProcessor = new BarcodeScannerProcessor(this, /* zoomCallback= */ null);
           break;
         case TEXT_RECOGNITION_LATIN:
           if (imageProcessor != null) {

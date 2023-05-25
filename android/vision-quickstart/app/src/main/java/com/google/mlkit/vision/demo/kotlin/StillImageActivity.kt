@@ -45,11 +45,11 @@ import com.google.mlkit.vision.demo.R
 import com.google.mlkit.vision.demo.VisionImageProcessor
 import com.google.mlkit.vision.demo.kotlin.barcodescanner.BarcodeScannerProcessor
 import com.google.mlkit.vision.demo.kotlin.facedetector.FaceDetectorProcessor
+import com.google.mlkit.vision.demo.kotlin.facemeshdetector.FaceMeshDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.labeldetector.LabelDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.objectdetector.ObjectDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.posedetector.PoseDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.segmenter.SegmenterProcessor
-import com.google.mlkit.vision.demo.kotlin.facemeshdetector.FaceMeshDetectorProcessor;
 import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
@@ -64,15 +64,13 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.IOException
 import java.util.ArrayList
 
-/** Activity demonstrating different image detector features with a still image from camera.  */
+/** Activity demonstrating different image detector features with a still image from camera. */
 @KeepName
 class StillImageActivity : AppCompatActivity() {
   private var preview: ImageView? = null
   private var graphicOverlay: GraphicOverlay? = null
-  private var selectedMode =
-    OBJECT_DETECTION
-  private var selectedSize: String? =
-    SIZE_SCREEN
+  private var selectedMode = OBJECT_DETECTION
+  private var selectedSize: String? = SIZE_SCREEN
   private var isLandScape = false
   private var imageUri: Uri? = null
   // Max width (portrait mode)
@@ -84,43 +82,35 @@ class StillImageActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_still_image)
-    findViewById<View>(R.id.select_image_button)
-      .setOnClickListener { view: View ->
-        // Menu for selecting either: a) take new photo b) select from existing
-        val popup =
-          PopupMenu(this@StillImageActivity, view)
-        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-          val itemId =
-            menuItem.itemId
-          if (itemId == R.id.select_images_from_local) {
-            startChooseImageIntentForResult()
-            return@setOnMenuItemClickListener true
-          } else if (itemId == R.id.take_photo_using_camera) {
-            startCameraIntentForResult()
-            return@setOnMenuItemClickListener true
-          }
-          false
+    findViewById<View>(R.id.select_image_button).setOnClickListener { view: View ->
+      // Menu for selecting either: a) take new photo b) select from existing
+      val popup = PopupMenu(this@StillImageActivity, view)
+      popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+        val itemId = menuItem.itemId
+        if (itemId == R.id.select_images_from_local) {
+          startChooseImageIntentForResult()
+          return@setOnMenuItemClickListener true
+        } else if (itemId == R.id.take_photo_using_camera) {
+          startCameraIntentForResult()
+          return@setOnMenuItemClickListener true
         }
-        val inflater = popup.menuInflater
-        inflater.inflate(R.menu.camera_button_menu, popup.menu)
-        popup.show()
+        false
       }
+      val inflater = popup.menuInflater
+      inflater.inflate(R.menu.camera_button_menu, popup.menu)
+      popup.show()
+    }
     preview = findViewById(R.id.preview)
     graphicOverlay = findViewById(R.id.graphic_overlay)
 
     populateFeatureSelector()
     populateSizeSelector()
-    isLandScape =
-      resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    isLandScape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     if (savedInstanceState != null) {
-      imageUri =
-        savedInstanceState.getParcelable(KEY_IMAGE_URI)
-      imageMaxWidth =
-        savedInstanceState.getInt(KEY_IMAGE_MAX_WIDTH)
-      imageMaxHeight =
-        savedInstanceState.getInt(KEY_IMAGE_MAX_HEIGHT)
-      selectedSize =
-        savedInstanceState.getString(KEY_SELECTED_SIZE)
+      imageUri = savedInstanceState.getParcelable(KEY_IMAGE_URI)
+      imageMaxWidth = savedInstanceState.getInt(KEY_IMAGE_MAX_WIDTH)
+      imageMaxHeight = savedInstanceState.getInt(KEY_IMAGE_MAX_HEIGHT)
+      selectedSize = savedInstanceState.getString(KEY_SELECTED_SIZE)
     }
 
     val rootView = findViewById<View>(R.id.root)
@@ -129,25 +119,18 @@ class StillImageActivity : AppCompatActivity() {
         override fun onGlobalLayout() {
           rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
           imageMaxWidth = rootView.width
-          imageMaxHeight =
-            rootView.height - findViewById<View>(R.id.control).height
+          imageMaxHeight = rootView.height - findViewById<View>(R.id.control).height
           if (SIZE_SCREEN == selectedSize) {
             tryReloadAndDetectInImage()
           }
         }
-      })
+      }
+    )
 
     val settingsButton = findViewById<ImageView>(R.id.settings_button)
     settingsButton.setOnClickListener {
-      val intent =
-        Intent(
-          applicationContext,
-          SettingsActivity::class.java
-        )
-      intent.putExtra(
-        SettingsActivity.EXTRA_LAUNCH_SOURCE,
-        LaunchSource.STILL_IMAGE
-      )
+      val intent = Intent(applicationContext, SettingsActivity::class.java)
+      intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, LaunchSource.STILL_IMAGE)
       startActivity(intent)
     }
   }
@@ -161,16 +144,12 @@ class StillImageActivity : AppCompatActivity() {
 
   public override fun onPause() {
     super.onPause()
-    imageProcessor?.run {
-      this.stop()
-    }
+    imageProcessor?.run { this.stop() }
   }
 
   public override fun onDestroy() {
     super.onDestroy()
-    imageProcessor?.run {
-      this.stop()
-    }
+    imageProcessor?.run { this.stop() }
   }
 
   private fun populateFeatureSelector() {
@@ -191,31 +170,31 @@ class StillImageActivity : AppCompatActivity() {
     options.add(TEXT_RECOGNITION_DEVANAGARI)
     options.add(TEXT_RECOGNITION_JAPANESE)
     options.add(TEXT_RECOGNITION_KOREAN)
-    options.add(FACE_MESH_DETECTION);
+    options.add(FACE_MESH_DETECTION)
 
     // Creating adapter for featureSpinner
-    val dataAdapter =
-      ArrayAdapter(this, R.layout.spinner_style, options)
+    val dataAdapter = ArrayAdapter(this, R.layout.spinner_style, options)
     // Drop down layout style - list view with radio button
     dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
     // attaching data adapter to spinner
     featureSpinner.adapter = dataAdapter
-    featureSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-      override fun onItemSelected(
-        parentView: AdapterView<*>,
-        selectedItemView: View?,
-        pos: Int,
-        id: Long
-      ) {
-        if (pos >= 0) {
-          selectedMode = parentView.getItemAtPosition(pos).toString()
-          createImageProcessor()
-          tryReloadAndDetectInImage()
+    featureSpinner.onItemSelectedListener =
+      object : OnItemSelectedListener {
+        override fun onItemSelected(
+          parentView: AdapterView<*>,
+          selectedItemView: View?,
+          pos: Int,
+          id: Long
+        ) {
+          if (pos >= 0) {
+            selectedMode = parentView.getItemAtPosition(pos).toString()
+            createImageProcessor()
+            tryReloadAndDetectInImage()
+          }
         }
-      }
 
-      override fun onNothingSelected(arg0: AdapterView<*>?) {}
-    }
+        override fun onNothingSelected(arg0: AdapterView<*>?) {}
+      }
   }
 
   private fun populateSizeSelector() {
@@ -226,47 +205,35 @@ class StillImageActivity : AppCompatActivity() {
     options.add(SIZE_640_480)
     options.add(SIZE_ORIGINAL)
     // Creating adapter for featureSpinner
-    val dataAdapter =
-      ArrayAdapter(this, R.layout.spinner_style, options)
+    val dataAdapter = ArrayAdapter(this, R.layout.spinner_style, options)
     // Drop down layout style - list view with radio button
     dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
     // attaching data adapter to spinner
     sizeSpinner.adapter = dataAdapter
-    sizeSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-      override fun onItemSelected(
-        parentView: AdapterView<*>,
-        selectedItemView: View?,
-        pos: Int,
-        id: Long
-      ) {
-        if (pos >= 0) {
-          selectedSize = parentView.getItemAtPosition(pos).toString()
-          tryReloadAndDetectInImage()
+    sizeSpinner.onItemSelectedListener =
+      object : OnItemSelectedListener {
+        override fun onItemSelected(
+          parentView: AdapterView<*>,
+          selectedItemView: View?,
+          pos: Int,
+          id: Long
+        ) {
+          if (pos >= 0) {
+            selectedSize = parentView.getItemAtPosition(pos).toString()
+            tryReloadAndDetectInImage()
+          }
         }
-      }
 
-      override fun onNothingSelected(arg0: AdapterView<*>?) {}
-    }
+        override fun onNothingSelected(arg0: AdapterView<*>?) {}
+      }
   }
 
   public override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putParcelable(
-      KEY_IMAGE_URI,
-      imageUri
-    )
-    outState.putInt(
-      KEY_IMAGE_MAX_WIDTH,
-      imageMaxWidth
-    )
-    outState.putInt(
-      KEY_IMAGE_MAX_HEIGHT,
-      imageMaxHeight
-    )
-    outState.putString(
-      KEY_SELECTED_SIZE,
-      selectedSize
-    )
+    outState.putParcelable(KEY_IMAGE_URI, imageUri)
+    outState.putInt(KEY_IMAGE_MAX_WIDTH, imageMaxWidth)
+    outState.putInt(KEY_IMAGE_MAX_HEIGHT, imageMaxHeight)
+    outState.putString(KEY_SELECTED_SIZE, selectedSize)
   }
 
   private fun startCameraIntentForResult() { // Clean up last time's image
@@ -279,10 +246,7 @@ class StillImageActivity : AppCompatActivity() {
       values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
       imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
       takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-      startActivityForResult(
-        takePictureIntent,
-        REQUEST_IMAGE_CAPTURE
-      )
+      startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
     }
   }
 
@@ -290,17 +254,10 @@ class StillImageActivity : AppCompatActivity() {
     val intent = Intent()
     intent.type = "image/*"
     intent.action = Intent.ACTION_GET_CONTENT
-    startActivityForResult(
-      Intent.createChooser(intent, "Select Picture"),
-      REQUEST_CHOOSE_IMAGE
-    )
+    startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CHOOSE_IMAGE)
   }
 
-  override fun onActivityResult(
-    requestCode: Int,
-    resultCode: Int,
-    data: Intent?
-  ) {
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
       tryReloadAndDetectInImage()
     } else if (requestCode == REQUEST_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
@@ -313,10 +270,7 @@ class StillImageActivity : AppCompatActivity() {
   }
 
   private fun tryReloadAndDetectInImage() {
-    Log.d(
-      TAG,
-      "Try reload and detect image"
-    )
+    Log.d(TAG, "Try reload and detect image")
     try {
       if (imageUri == null) {
         return
@@ -332,42 +286,40 @@ class StillImageActivity : AppCompatActivity() {
       graphicOverlay!!.clear()
 
       val resizedBitmap: Bitmap
-      resizedBitmap = if (selectedSize == SIZE_ORIGINAL) {
-        imageBitmap
-      } else {
-        // Get the dimensions of the image view
-        val targetedSize: Pair<Int, Int> = targetedWidthHeight
+      resizedBitmap =
+        if (selectedSize == SIZE_ORIGINAL) {
+          imageBitmap
+        } else {
+          // Get the dimensions of the image view
+          val targetedSize: Pair<Int, Int> = targetedWidthHeight
 
-        // Determine how much to scale down the image
-        val scaleFactor = Math.max(
-          imageBitmap.width.toFloat() / targetedSize.first.toFloat(),
-          imageBitmap.height.toFloat() / targetedSize.second.toFloat()
-        )
-        Bitmap.createScaledBitmap(
-          imageBitmap,
-          (imageBitmap.width / scaleFactor).toInt(),
-          (imageBitmap.height / scaleFactor).toInt(),
-          true
-        )
-      }
+          // Determine how much to scale down the image
+          val scaleFactor =
+            Math.max(
+              imageBitmap.width.toFloat() / targetedSize.first.toFloat(),
+              imageBitmap.height.toFloat() / targetedSize.second.toFloat()
+            )
+          Bitmap.createScaledBitmap(
+            imageBitmap,
+            (imageBitmap.width / scaleFactor).toInt(),
+            (imageBitmap.height / scaleFactor).toInt(),
+            true
+          )
+        }
 
       preview!!.setImageBitmap(resizedBitmap)
       if (imageProcessor != null) {
         graphicOverlay!!.setImageSourceInfo(
-          resizedBitmap.width, resizedBitmap.height, /* isFlipped= */false
+          resizedBitmap.width,
+          resizedBitmap.height,
+          /* isFlipped= */ false
         )
         imageProcessor!!.processBitmap(resizedBitmap, graphicOverlay)
       } else {
-        Log.e(
-          TAG,
-          "Null imageProcessor, please check adb logs for imageProcessor creation error"
-        )
+        Log.e(TAG, "Null imageProcessor, please check adb logs for imageProcessor creation error")
       }
     } catch (e: IOException) {
-      Log.e(
-        TAG,
-        "Error retrieving saved image"
-      )
+      Log.e(TAG, "Error retrieving saved image")
       imageUri = null
     }
   }
@@ -398,63 +350,37 @@ class StillImageActivity : AppCompatActivity() {
     try {
       when (selectedMode) {
         OBJECT_DETECTION -> {
-          Log.i(
-            TAG,
-            "Using Object Detector Processor"
-          )
-          val objectDetectorOptions =
-            PreferenceUtils.getObjectDetectorOptionsForStillImage(this)
-          imageProcessor =
-            ObjectDetectorProcessor(
-              this,
-              objectDetectorOptions
-            )
+          Log.i(TAG, "Using Object Detector Processor")
+          val objectDetectorOptions = PreferenceUtils.getObjectDetectorOptionsForStillImage(this)
+          imageProcessor = ObjectDetectorProcessor(this, objectDetectorOptions)
         }
         OBJECT_DETECTION_CUSTOM -> {
-          Log.i(
-            TAG,
-            "Using Custom Object Detector Processor"
-          )
-          val localModel = LocalModel.Builder()
-            .setAssetFilePath("custom_models/object_labeler.tflite")
-            .build()
+          Log.i(TAG, "Using Custom Object Detector Processor")
+          val localModel =
+            LocalModel.Builder().setAssetFilePath("custom_models/object_labeler.tflite").build()
           val customObjectDetectorOptions =
             PreferenceUtils.getCustomObjectDetectorOptionsForStillImage(this, localModel)
-          imageProcessor =
-            ObjectDetectorProcessor(
-              this,
-              customObjectDetectorOptions
-            )
+          imageProcessor = ObjectDetectorProcessor(this, customObjectDetectorOptions)
         }
         CUSTOM_AUTOML_OBJECT_DETECTION -> {
-          Log.i(
-            TAG,
-            "Using Custom AutoML Object Detector Processor"
-          )
-          val customAutoMLODTLocalModel = LocalModel.Builder()
-            .setAssetManifestFilePath("automl/manifest.json")
-            .build()
-          val customAutoMLODTOptions = PreferenceUtils
-            .getCustomObjectDetectorOptionsForStillImage(this, customAutoMLODTLocalModel)
-          imageProcessor =
-            ObjectDetectorProcessor(
+          Log.i(TAG, "Using Custom AutoML Object Detector Processor")
+          val customAutoMLODTLocalModel =
+            LocalModel.Builder().setAssetManifestFilePath("automl/manifest.json").build()
+          val customAutoMLODTOptions =
+            PreferenceUtils.getCustomObjectDetectorOptionsForStillImage(
               this,
-              customAutoMLODTOptions
+              customAutoMLODTLocalModel
             )
+          imageProcessor = ObjectDetectorProcessor(this, customAutoMLODTOptions)
         }
         FACE_DETECTION -> {
           Log.i(TAG, "Using Face Detector Processor")
-           val faceDetectorOptions =
-            PreferenceUtils.getFaceDetectorOptions(this)
-           imageProcessor =
-            FaceDetectorProcessor(this, faceDetectorOptions)
+          val faceDetectorOptions = PreferenceUtils.getFaceDetectorOptions(this)
+          imageProcessor = FaceDetectorProcessor(this, faceDetectorOptions)
         }
-        BARCODE_SCANNING ->
-          imageProcessor =
-            BarcodeScannerProcessor(this)
+        BARCODE_SCANNING -> imageProcessor = BarcodeScannerProcessor(this, zoomCallback = null)
         TEXT_RECOGNITION_LATIN ->
-          imageProcessor =
-            TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build())
+          imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build())
         TEXT_RECOGNITION_CHINESE ->
           imageProcessor =
             TextRecognitionProcessor(this, ChineseTextRecognizerOptions.Builder().build())
@@ -468,48 +394,26 @@ class StillImageActivity : AppCompatActivity() {
           imageProcessor =
             TextRecognitionProcessor(this, KoreanTextRecognizerOptions.Builder().build())
         IMAGE_LABELING ->
-          imageProcessor =
-            LabelDetectorProcessor(
-              this,
-              ImageLabelerOptions.DEFAULT_OPTIONS
-            )
+          imageProcessor = LabelDetectorProcessor(this, ImageLabelerOptions.DEFAULT_OPTIONS)
         IMAGE_LABELING_CUSTOM -> {
-          Log.i(
-            TAG,
-            "Using Custom Image Label Detector Processor"
-          )
-          val localClassifier = LocalModel.Builder()
-            .setAssetFilePath("custom_models/bird_classifier.tflite")
-            .build()
-          val customImageLabelerOptions =
-            CustomImageLabelerOptions.Builder(localClassifier).build()
-          imageProcessor =
-            LabelDetectorProcessor(
-              this,
-              customImageLabelerOptions
-            )
+          Log.i(TAG, "Using Custom Image Label Detector Processor")
+          val localClassifier =
+            LocalModel.Builder().setAssetFilePath("custom_models/bird_classifier.tflite").build()
+          val customImageLabelerOptions = CustomImageLabelerOptions.Builder(localClassifier).build()
+          imageProcessor = LabelDetectorProcessor(this, customImageLabelerOptions)
         }
         CUSTOM_AUTOML_LABELING -> {
-          Log.i(
-            TAG,
-            "Using Custom AutoML Image Label Detector Processor"
-          )
-          val customAutoMLLabelLocalModel = LocalModel.Builder()
-            .setAssetManifestFilePath("automl/manifest.json")
-            .build()
-          val customAutoMLLabelOptions = CustomImageLabelerOptions
-            .Builder(customAutoMLLabelLocalModel)
-            .setConfidenceThreshold(0f)
-            .build()
-          imageProcessor =
-            LabelDetectorProcessor(
-              this,
-              customAutoMLLabelOptions
-            )
+          Log.i(TAG, "Using Custom AutoML Image Label Detector Processor")
+          val customAutoMLLabelLocalModel =
+            LocalModel.Builder().setAssetManifestFilePath("automl/manifest.json").build()
+          val customAutoMLLabelOptions =
+            CustomImageLabelerOptions.Builder(customAutoMLLabelLocalModel)
+              .setConfidenceThreshold(0f)
+              .build()
+          imageProcessor = LabelDetectorProcessor(this, customAutoMLLabelOptions)
         }
         POSE_DETECTION -> {
-          val poseDetectorOptions =
-            PreferenceUtils.getPoseDetectorOptionsForStillImage(this)
+          val poseDetectorOptions = PreferenceUtils.getPoseDetectorOptionsForStillImage(this)
           Log.i(TAG, "Using Pose Detector with options $poseDetectorOptions")
           val shouldShowInFrameLikelihood =
             PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodStillImage(this)
@@ -518,8 +422,13 @@ class StillImageActivity : AppCompatActivity() {
           val runClassification = PreferenceUtils.shouldPoseDetectionRunClassification(this)
           imageProcessor =
             PoseDetectorProcessor(
-              this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ,
-              runClassification, isStreamMode = false
+              this,
+              poseDetectorOptions,
+              shouldShowInFrameLikelihood,
+              visualizeZ,
+              rescaleZ,
+              runClassification,
+              isStreamMode = false
             )
         }
         SELFIE_SEGMENTATION -> {
@@ -528,22 +437,15 @@ class StillImageActivity : AppCompatActivity() {
         FACE_MESH_DETECTION -> {
           imageProcessor = FaceMeshDetectorProcessor(this)
         }
-        else -> Log.e(
-          TAG,
-          "Unknown selectedMode: $selectedMode"
-        )
+        else -> Log.e(TAG, "Unknown selectedMode: $selectedMode")
       }
     } catch (e: Exception) {
-      Log.e(
-        TAG,
-        "Can not create image processor: $selectedMode",
-        e
-      )
+      Log.e(TAG, "Can not create image processor: $selectedMode", e)
       Toast.makeText(
-        applicationContext,
-        "Can not create image processor: " + e.message,
-        Toast.LENGTH_LONG
-      )
+          applicationContext,
+          "Can not create image processor: " + e.message,
+          Toast.LENGTH_LONG
+        )
         .show()
     }
   }
@@ -565,7 +467,7 @@ class StillImageActivity : AppCompatActivity() {
     private const val CUSTOM_AUTOML_LABELING = "Custom AutoML Image Labeling (Flower)"
     private const val POSE_DETECTION = "Pose Detection"
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
-    private const val FACE_MESH_DETECTION = "Face Mesh Detection (Beta)";
+    private const val FACE_MESH_DETECTION = "Face Mesh Detection (Beta)"
 
     private const val SIZE_SCREEN = "w:screen" // Match screen width
     private const val SIZE_1024_768 = "w:1024" // ~1024*768 in a normal ratio

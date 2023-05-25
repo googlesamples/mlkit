@@ -20,10 +20,14 @@ import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.google.android.gms.tasks.Task;
 import com.google.android.odml.image.MlImage;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.barcode.ZoomSuggestionOptions;
+import com.google.mlkit.vision.barcode.ZoomSuggestionOptions.ZoomCallback;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.demo.GraphicOverlay;
@@ -37,14 +41,22 @@ public class BarcodeScannerProcessor extends VisionProcessorBase<List<Barcode>> 
 
   private final BarcodeScanner barcodeScanner;
 
-  public BarcodeScannerProcessor(Context context) {
+  public BarcodeScannerProcessor(Context context, @Nullable ZoomCallback zoomCallback) {
     super(context);
     // Note that if you know which format of barcode your app is dealing with, detection will be
     // faster to specify the supported barcode formats one by one, e.g.
     // new BarcodeScannerOptions.Builder()
     //     .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
     //     .build();
-    barcodeScanner = BarcodeScanning.getClient();
+    if (zoomCallback != null) {
+      BarcodeScannerOptions options =
+          new BarcodeScannerOptions.Builder()
+              .setZoomSuggestionOptions(new ZoomSuggestionOptions.Builder(zoomCallback).build())
+              .build();
+      barcodeScanner = BarcodeScanning.getClient(options);
+    } else {
+      barcodeScanner = BarcodeScanning.getClient();
+    }
   }
 
   @Override

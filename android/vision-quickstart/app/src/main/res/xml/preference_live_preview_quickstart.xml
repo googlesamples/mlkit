@@ -45,6 +45,16 @@
         android:title="@string/pref_title_info_hide"/>
   </PreferenceCategory>
 
+  <PreferenceCategory android:title="@string/pref_category_barcode_scanning">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_key_enable_auto_zoom"
+        android:persistent="true"
+        android:title="@string/pref_title_enable_auto_zoom"/>
+
+  </PreferenceCategory>
+
   <PreferenceCategory android:title="@string/pref_category_text_recognition">
 
     <SwitchPreference

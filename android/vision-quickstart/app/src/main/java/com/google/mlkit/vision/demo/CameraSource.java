@@ -24,6 +24,7 @@ import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.Parameters;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -241,6 +242,47 @@ public class CameraSource {
    */
   public int getCameraFacing() {
     return facing;
+  }
+
+  public boolean setZoom(float zoomRatio) {
+    Log.d(TAG, "setZoom: " + zoomRatio);
+    if (camera == null) {
+      return false;
+    }
+
+    Parameters parameters = camera.getParameters();
+    parameters.setZoom(getZoomValue(parameters, zoomRatio));
+    camera.setParameters(parameters);
+    return true;
+  }
+
+  /**
+   * Calculate the zoom value of the target zoom ratio.
+   *
+   * <p>According to the camera API, {@link Parameters#getZoomRatios()} will return a list of zoom
+   * ratios with length {@link Parameters#getMaxZoom()}+1. Each of this value indicates a actual
+   * zoom ratio of the camera.
+   *
+   * <p>E.g. Assume {@link Parameters#getZoomRatios()} return {@code [100, 114, 131, 151, 174, 200,
+   * 234, 268, 300]}, where {@link Parameters#getMaxZoom()}=8. It means, {@code setZoom(0)} will
+   * actual perform 1.00x to the camera, {@code setZoom(1)} will actual perform 1.14x to the camera,
+   * {@code setZoom(2)} will actual perform 1.31x to the camera, ..., {@code setZoom(8)} will actual
+   * perform 3.00x to the camera.
+   *
+   * @param params The parameters of the camera.
+   * @param zoomRatio The target zoom ratio.
+   * @return The maximum zoom value that will not exceed the target {@code zoomRatio}.
+   */
+  private static int getZoomValue(Camera.Parameters params, float zoomRatio) {
+    int zoom = (int) (Math.max(zoomRatio, 1) * 100);
+    List<Integer> zoomRatios = params.getZoomRatios();
+    int maxZoom = params.getMaxZoom();
+    for (int i = 0; i < maxZoom; ++i) {
+      if (zoomRatios.get(i + 1) > zoom) {
+        return i;
+      }
+    }
+    return maxZoom;
   }
 
   /**
