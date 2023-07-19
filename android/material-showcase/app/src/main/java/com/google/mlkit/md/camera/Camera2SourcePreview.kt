@@ -28,7 +28,7 @@ import com.google.mlkit.md.Utils
 import java.io.IOException
 
 /** Preview the camera image in the screen.  */
-class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
+class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
     private val surfaceView: SurfaceView = SurfaceView(context).apply {
         holder.addCallback(SurfaceCallback())
@@ -88,7 +88,7 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
             } else {
                 size.width.toFloat() / size.height
             }
-        } ?: layoutWidth.toFloat() / layoutHeight.toFloat()
+        } ?: (layoutWidth.toFloat() / layoutHeight.toFloat())
 
         // Match the width of the child view to its parent.
         val childHeight = (layoutWidth / previewSizeRatio).toInt()
