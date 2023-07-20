@@ -38,6 +38,7 @@ import android.media.Image
 import android.net.Uri
 import android.util.Log
 import android.view.Surface
+import android.view.SurfaceHolder
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.exifinterface.media.ExifInterface
@@ -154,7 +155,7 @@ object Utils {
      */
     fun generateValidPreviewSizeList(characteristics: CameraCharacteristics): List<CameraSizePair> {
 
-        val supportedPreviewSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!.getOutputSizes(Surface::class.java)
+        val supportedPreviewSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!.getOutputSizes(SurfaceHolder::class.java)
         val supportedPictureSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!.getOutputSizes(Camera2Source.IMAGE_FORMAT)
         val validPreviewSizes = ArrayList<CameraSizePair>()
         for (previewSize in supportedPreviewSizes) {

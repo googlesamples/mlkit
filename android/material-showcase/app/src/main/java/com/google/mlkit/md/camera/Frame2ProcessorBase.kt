@@ -55,6 +55,7 @@ abstract class Frame2ProcessorBase<T> : Frame2Processor {
 
     @Synchronized
     private fun processLatestFrame(graphicOverlay: GraphicOverlay) {
+        processingFrame?.close()
         processingFrame = latestFrame
         processingFrameRotation = latestFrameRotation
         latestFrame = null
@@ -62,15 +63,17 @@ abstract class Frame2ProcessorBase<T> : Frame2Processor {
         val frame = processingFrame ?: return
         val frameRotation = processingFrameRotation ?: return
         val image = InputImage.fromMediaImage(frame, frameRotation)
-
         val startMs = SystemClock.elapsedRealtime()
         detectInImage(image)
             .addOnSuccessListener(executor) { results: T ->
-                Log.d(TAG, "Latency is: ${SystemClock.elapsedRealtime() - startMs}")
+                //Log.d(TAG, "Latency is: ${SystemClock.elapsedRealtime() - startMs}")
                 this@Frame2ProcessorBase.onSuccess(Camera2InputInfo(frame, frameRotation), results, graphicOverlay)
                 processLatestFrame(graphicOverlay)
             }
-            .addOnFailureListener(executor) { e -> OnFailureListener { this@Frame2ProcessorBase.onFailure(it) } }
+            .addOnFailureListener(executor) { e -> OnFailureListener {
+                Log.d(TAG, "Detect In Image Failure: ${e.message}")
+                this@Frame2ProcessorBase.onFailure(it) }
+            }
     }
 
     override fun stop() {

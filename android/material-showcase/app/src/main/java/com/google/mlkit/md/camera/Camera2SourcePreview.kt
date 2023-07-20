@@ -29,15 +29,16 @@ import java.io.IOException
 
 /** Preview the camera image in the screen.  */
 class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
-
+    
     private val surfaceView: SurfaceView = SurfaceView(context).apply {
         holder.addCallback(SurfaceCallback())
         addView(this)
     }
     private var graphicOverlay: GraphicOverlay? = null
     private var startRequested = false
+    private var startProcessing = false
     private var surfaceAvailable = false
-    private var cameraSource: CameraSource? = null
+    private var cameraSource: Camera2Source? = null
     private var cameraPreviewSize: Size? = null
 
     override fun onFinishInflate() {
@@ -45,13 +46,14 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
         graphicOverlay = findViewById(R.id.camera_preview_graphic_overlay)
     }
 
-    @Throws(IOException::class)
-    fun start(cameraSource: CameraSource) {
+    @Throws(Exception::class)
+    fun start(cameraSource: Camera2Source) {
         this.cameraSource = cameraSource
         startRequested = true
         startIfReady()
     }
 
+    @Throws(Exception::class)
     fun stop() {
         cameraSource?.let {
             it.stop()
@@ -60,18 +62,34 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
         }
     }
 
-    @Throws(IOException::class)
+    @Throws(Exception::class)
     private fun startIfReady() {
-        if (startRequested && surfaceAvailable) {
-            cameraSource?.start(surfaceView.holder)
-            requestLayout()
-            graphicOverlay?.let { overlay ->
-                cameraSource?.let {
-                    overlay.setCameraInfo(it)
+        if (startRequested && surfaceAvailable && !startProcessing) {
+            startProcessing = true
+            Log.d(TAG, "Starting camera")
+            cameraSource?.start(surfaceView.holder, object : CameraStartCallback{
+                override fun onSuccess() {
+                    post {
+                        /*requestLayout()
+                        graphicOverlay?.let { overlay ->
+                            cameraSource?.let {
+                                overlay.setCameraInfo(it)
+                            }
+                            overlay.clear()
+                        }*/
+                        startRequested = false
+                        startProcessing = false
+                    }
+
                 }
-                overlay.clear()
-            }
-            startRequested = false
+
+                override fun onFailure(error: Exception?) {
+                    startRequested = false
+                    startProcessing = false
+                }
+
+            })
+
         }
     }
 
@@ -88,7 +106,7 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
             } else {
                 size.width.toFloat() / size.height
             }
-        } ?: (layoutWidth.toFloat() / layoutHeight.toFloat())
+        } ?: layoutWidth.toFloat() / layoutHeight.toFloat()
 
         // Match the width of the child view to its parent.
         val childHeight = (layoutWidth / previewSizeRatio).toInt()
@@ -119,7 +137,7 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
 
         try {
             startIfReady()
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Log.e(TAG, "Could not start camera source.", e)
         }
     }
@@ -129,7 +147,7 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
             surfaceAvailable = true
             try {
                 startIfReady()
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Log.e(TAG, "Could not start camera source.", e)
             }
         }

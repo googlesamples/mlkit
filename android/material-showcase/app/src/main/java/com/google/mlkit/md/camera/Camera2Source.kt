@@ -20,10 +20,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
+import android.hardware.camera2.*
 import android.media.Image
 import android.media.ImageReader
 import android.os.Handler
@@ -32,7 +29,6 @@ import android.util.Log
 import android.util.Size
 import android.view.Surface
 import android.view.SurfaceHolder
-import android.view.WindowManager
 import androidx.core.app.ActivityCompat
 import com.google.mlkit.md.R
 import com.google.mlkit.md.Utils
@@ -40,10 +36,8 @@ import com.google.mlkit.md.settings.PreferenceUtils
 import com.google.mlkit.md.utils.OrientationLiveData
 import com.google.mlkit.md.utils.computeExifOrientation
 import java.io.IOException
-import java.nio.ByteBuffer
 import java.util.*
 import kotlin.math.abs
-import kotlin.math.ceil
 
 /**
  * Manages the camera and allows UI updates on top of it (e.g. overlaying extra Graphics). This
@@ -57,14 +51,20 @@ import kotlin.math.ceil
  */
 
 //TODO: Remove this interface once start using coroutine suspend functions
-interface CameraCreateCallback{
+private interface CameraCreateCallback{
     fun onSuccess(cameraDevice: CameraDevice)
     fun onFailure(error: Exception?)
 }
 
 //TODO: Remove this interface once start using coroutine suspend functions
-interface CameraSessionCreateCallback{
+private interface CameraSessionCreateCallback{
     fun onSuccess(cameraCaptureSession: CameraCaptureSession)
+    fun onFailure(error: Exception?)
+}
+
+//TODO: Remove this interface once start using coroutine suspend functions
+interface CameraStartCallback{
+    fun onSuccess()
     fun onFailure(error: Exception?)
 }
 
@@ -77,7 +77,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
         context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
     }
 
-    /** [CameraId] corresponding to the provided Camera facing back property */
+    /** [cameraId] corresponding to the provided Camera facing back property */
     private val cameraId: String by lazy {
         cameraManager.cameraIdList.forEach {
             val characteristics = cameraManager.getCameraCharacteristics(it)
@@ -93,11 +93,14 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
         cameraManager.getCameraCharacteristics(cameraId)
     }
 
-    /** The [CameraDevice] that will be opened in this fragment */
+    /** The [CameraDevice] that will be used for preview */
     private var camera: CameraDevice? = null
 
-    /** Readers used as buffers for camera still shots */
+    /** The [ImageReader] that will used for reading image frame buffers */
     private var imageReader: ImageReader? = null
+
+    /** The [CaptureRequest.Builder] that will be used for session */
+    private var captureRequest: CaptureRequest.Builder? = null
 
     /** Internal reference to the ongoing [CameraCaptureSession] configured with our parameters */
     private var session: CameraCaptureSession? = null
@@ -121,13 +124,11 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
 
     /** Observer for listening the changes in the [relativeOrientation] live data property */
     private val orientationObserver  = androidx.lifecycle.Observer<Int> { rotation ->
-        // Compute EXIF orientation metadata
-        //val mirrored = characteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT
-        exifOrientation = computeExifOrientation(rotation, false)
+        Log.d(TAG, "Orientation changed: $rotation")
     }
 
     /** Return the current exif orientation for processing image */
-    private var exifOrientation:Int = 0
+    //private var rotationDegrees:Int = 0
 
     /** Returns the preview size that is currently in use by the underlying camera.  */
     internal var previewSize: Size? = null
@@ -144,18 +145,6 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
     private var frameProcessor: Frame2Processor? = null
 
     /**
-     * Map to convert between a byte array, received from the camera, and its associated byte buffer.
-     * We use byte buffers internally because this is a more efficient way to call into native code
-     * later (avoids a potential copy).
-     *
-     *
-     * **Note:** uses IdentityHashMap here instead of HashMap because the behavior of an array's
-     * equals, hashCode and toString methods is both useless and unexpected. IdentityHashMap enforces
-     * identity ('==') check on the keys.
-     */
-    private val bytesToByteBuffer = IdentityHashMap<ByteArray, ByteBuffer>()
-
-    /**
      * Opens the camera and starts sending preview frames to the underlying detector. The supplied
      * surface holder is used for the preview so frames can be displayed to the user.
      *
@@ -164,7 +153,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
      */
     @Synchronized
     @Throws(Exception::class)
-    internal fun start(surfaceHolder: SurfaceHolder) {
+    internal fun start(surfaceHolder: SurfaceHolder, callback: CameraStartCallback) {
         if (camera != null) return
 
         createCamera(object : CameraCreateCallback{
@@ -175,12 +164,17 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
                         createCaptureSession(cameraDevice, listOf(surfaceHolder.surface, imageReader.surface), object : CameraSessionCreateCallback{
                                 override fun onSuccess(cameraCaptureSession: CameraCaptureSession) {
                                     session = cameraCaptureSession
-                                    startPreview(cameraDevice, surfaceHolder, imageReader, cameraCaptureSession)
-                                    relativeOrientation.observeForever(orientationObserver)
+                                    captureRequest = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
+                                        addTarget(surfaceHolder.surface)
+                                        //addTarget(imageReader.surface)
+                                        startPreview( this, imageReader, cameraCaptureSession)
+                                        callback.onSuccess()
+                                    }
+
                                 }
 
                                 override fun onFailure(error: Exception?) {
-                                    TODO("Not yet implemented")
+                                    callback.onFailure(error)
                                 }
                             }, cameraHandler)
                     }
@@ -190,7 +184,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
             }
 
             override fun onFailure(error: Exception?) {
-                TODO("Not yet implemented")
+                callback.onFailure(error)
             }
 
         })
@@ -199,37 +193,48 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
             processingRunnable.setActive(true)
             start()
         }
+
+        relativeOrientation.observeForever(orientationObserver)
     }
 
     /**
      * Start the camera preview on the provided surface and process images through image reader buffer
      *
-     * @param cameraDevice the camera device to select a preview from.
-     * @param surfaceHolder the surface holder to use for the preview frames.
+     * @param captureRequest the capture request builder to use for the session.
      * @param imageReader the image reader for receiving the preview images for processing.
      * @param session the configured camera capture session for the camera device.
+     *
      * @throws Exception if the supplied surface holder could not be used as the preview display.
      */
 
     @Throws(Exception::class)
-    private fun startPreview(cameraDevice: CameraDevice, surfaceHolder: SurfaceHolder, imageReader: ImageReader, session: CameraCaptureSession){
-        cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
-            addTarget(surfaceHolder.surface)
-            // This will keep sending the capture request as frequently as possible until the
-            // session is torn down or session.stopRepeating() is called
-            session.setRepeatingRequest(build(), null, cameraHandler)
+    private fun startPreview(captureRequest: CaptureRequest.Builder, imageReader: ImageReader, session: CameraCaptureSession){
+        // This will keep sending the capture request as frequently as possible until the
+        // session is torn down or session.stopRepeating() is called
+        session.setRepeatingRequest(captureRequest.build(), null, cameraHandler)
 
-            //Setup listener for receiving the preview frames for processing
-            imageReader.setOnImageAvailableListener({
-                it.acquireNextImage()?.let {image ->
-                    processingRunnable.setNextFrame(image, exifOrientation)
-                }
-            }, imageReaderHandler)
-
-            relativeOrientation.observeForever{rotation ->
-
+        //Setup listener for receiving the preview frames for processing
+        imageReader.setOnImageAvailableListener({
+            it.acquireNextImage()?.let {image ->
+                val rotation = relativeOrientation.value ?: 0
+                processingRunnable.setNextFrame(image, rotation)
             }
-        }
+        }, imageReaderHandler)
+
+    }
+
+    /**
+     * Update the camera preview with the changes in the capture request builder
+     *
+     * @param captureRequest the capture request builder to use for the session.
+     * @param session the configured camera capture session for the camera device.
+     *
+     * @throws Exception if the supplied surface holder could not be used as the preview display.
+     *
+     * */
+    @Throws(Exception::class)
+    private fun updatePreview(captureRequest: CaptureRequest.Builder, session: CameraCaptureSession){
+        session.setRepeatingRequest(captureRequest.build(), null, cameraHandler)
     }
 
     /**
@@ -243,7 +248,9 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
      * resources of the underlying detector.
      */
     @Synchronized
+    @Throws(Exception::class)
     internal fun stop() {
+        Log.d(TAG, "Stop is called")
         processingRunnable.setActive(false)
         processingThread?.let {
             try {
@@ -256,20 +263,27 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
             processingThread = null
         }
 
+        // Remove the reference image reader buffer & orientation change observer, since it will no longer be in use.
+        imageReader?.let {
+            it.setOnImageAvailableListener(null, null)
+            imageReader = null
+        }
+        relativeOrientation.removeObserver(orientationObserver)
+
+       /* session?.let {
+            it.stopRepeating()
+            it.close()
+            session = null
+        }*/
+
         camera?.let {
-            it.stopPreview()
-            it.setPreviewCallbackWithBuffer(null)
-            try {
-                it.setPreviewDisplay(null)
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to clear camera preview: $e")
-            }
-            it.release()
+            it.close()
             camera = null
         }
 
-        // Release the reference to any image buffers, since these will no longer be in use.
-        bytesToByteBuffer.clear()
+        cameraThread.quitSafely()
+        imageReaderThread.quitSafely()
+
     }
 
     /** Stops the camera and releases the resources of the camera and underlying detector.  */
@@ -289,10 +303,22 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
         }
     }
 
-    fun updateFlashMode(flashMode: String) {
-        val parameters = camera?.parameters
-        parameters?.flashMode = flashMode
-        camera?.parameters = parameters
+    fun updateFlashMode(enabled: Boolean) {
+        val flashAvailable = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) as Boolean
+        if(flashAvailable){
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                cameraManager.setTorchMode(cameraId, enabled)
+            }
+            else{*/
+                session?.let {session ->
+                    captureRequest?.let { captureRequest ->
+                        captureRequest.set(CaptureRequest.FLASH_MODE,
+                            if (enabled) CaptureRequest.FLASH_MODE_TORCH else CaptureRequest.FLASH_MODE_OFF)
+                        updatePreview(captureRequest, session)
+                    }
+                }
+            /*}*/
+        }
     }
 
     /**
@@ -392,30 +418,6 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
         return sizePair
     }
 
-    /**
-     * Creates one buffer for the camera preview callback. The size of the buffer is based off of the
-     * camera preview size and the format of the camera image.
-     *
-     * @return a new preview buffer of the appropriate size for the current camera settings.
-     */
-    private fun createPreviewBuffer(previewSize: Size): ByteArray {
-        val bitsPerPixel = ImageFormat.getBitsPerPixel(IMAGE_FORMAT)
-        val sizeInBits = previewSize.height.toLong() * previewSize.width.toLong() * bitsPerPixel.toLong()
-        val bufferSize = ceil(sizeInBits / 8.0).toInt() + 1
-
-        // Creating the byte array this way and wrapping it, as opposed to using .allocate(),
-        // should guarantee that there will be an array to work with.
-        val byteArray = ByteArray(bufferSize)
-        val byteBuffer = ByteBuffer.wrap(byteArray)
-        check(!(!byteBuffer.hasArray() || !byteBuffer.array()!!.contentEquals(byteArray))) {
-            // This should never happen. If it does, then we wouldn't be passing the preview content to
-            // the underlying detector later.
-            "Failed to create valid buffer for camera source."
-        }
-
-        bytesToByteBuffer[byteArray] = byteBuffer
-        return byteArray
-    }
 
     /**
      * This runnable controls access to the underlying receiver, calling it to process frames when
@@ -428,7 +430,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
      * associated processing is done for the previous frame, detection on the mostly recently received
      * frame will immediately start on the same thread.
      */
-    private inner class FrameProcessingRunnable internal constructor() : Runnable {
+    private inner class FrameProcessingRunnable : Runnable {
 
         // This lock guards all of the member variables below.
         private val lock = Object()
@@ -439,7 +441,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
         private var pendingFrameRotation: Int = 0
 
         /** Marks the runnable as active/not active. Signals any blocked threads to continue.  */
-        internal fun setActive(active: Boolean) {
+        fun setActive(active: Boolean) {
             synchronized(lock) {
                 this.active = active
                 lock.notifyAll()
@@ -450,7 +452,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
          * Sets the frame data received from the camera. This adds the previous unused frame buffer (if
          * present) back to the camera, and keeps a pending reference to the frame data for future use.
          */
-        internal fun setNextFrame(image: Image, rotation: Int) {
+        fun setNextFrame(image: Image, rotation: Int) {
             synchronized(lock) {
                 pendingFrame?.let {
                     it.close()
@@ -512,13 +514,15 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
                 try {
                     synchronized(processorLock) {
                         data?.let {
+                            //Log.d(TAG, "Processing Next Frame ${it.width} x ${it.height}")
                             frameProcessor?.process(it, pendingFrameRotation, graphicOverlay)
                         }
                     }
                 } catch (t: Exception) {
                     Log.e(TAG, "Exception thrown from receiver.", t)
                 } finally {
-                    data?.close()
+                    //Let the processor close image as it's required until frame is processed
+                    //data?.close()
                 }
             }
         }
@@ -538,7 +542,6 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
         private const val MAX_CAMERA_PREVIEW_WIDTH = 1300
         private const val DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH = 640
         private const val DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT = 360
-        private const val REQUESTED_CAMERA_FPS = 30.0f
 
         /**
          * Selects the most suitable preview and picture size, given the display aspect ratio in landscape
@@ -546,7 +549,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
          *
          *
          * It's firstly trying to pick the one that has closest aspect ratio to display view with its
-         * width be in the specified range [[.MIN_CAMERA_PREVIEW_WIDTH], [ ][.MAX_CAMERA_PREVIEW_WIDTH]]. If there're multiple candidates, choose the one having longest
+         * width be in the specified range [[.MIN_CAMERA_PREVIEW_WIDTH], [ ][.MAX_CAMERA_PREVIEW_WIDTH]]. If there are multiple candidates, choose the one having longest
          * width.
          *
          *
@@ -559,7 +562,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
          * ratio. On some hardware, if you would only set the preview size, you will get a distorted
          * image.
          *
-         * @param camera the camera to select a preview size from
+         * @param characteristics the selected camera characteristics to select a preview size from
          * @return the selected preview and picture size pair
          */
         private fun selectSizePair(characteristics: CameraCharacteristics, displayAspectRatioInLandscape: Float): CameraSizePair? {
