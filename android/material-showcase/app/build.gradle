@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 
 android {
-    compileSdkVersion 31
+    namespace 'com.google.mlkit.md'
+    compileSdk 33
     defaultConfig {
         applicationId "com.google.mlkit.md"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -36,10 +37,6 @@ android {
     sourceSets.main {
         assets.srcDirs = ['assets']
     }
-}
-
-androidExtensions {
-    experimental = true
 }
 
 dependencies {
