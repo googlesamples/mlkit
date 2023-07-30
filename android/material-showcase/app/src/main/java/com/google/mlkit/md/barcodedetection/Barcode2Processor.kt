@@ -20,6 +20,7 @@ import android.animation.ValueAnimator
 import android.util.Log
 import androidx.annotation.MainThread
 import com.google.android.gms.tasks.Task
+import com.google.android.odml.image.MlImage
 import com.google.mlkit.md.InputInfo
 import com.google.mlkit.md.camera.*
 import com.google.mlkit.md.camera.WorkflowModel.WorkflowState
@@ -36,7 +37,7 @@ class Barcode2Processor(graphicOverlay: GraphicOverlay, private val workflowMode
     private val scanner = BarcodeScanning.getClient()
     private val cameraReticleAnimator: CameraReticleAnimator = CameraReticleAnimator(graphicOverlay)
 
-    override fun detectInImage(image: InputImage): Task<List<Barcode>> =
+    override fun detectInImage(image: MlImage): Task<List<Barcode>> =
         scanner.process(image)
 
     @MainThread

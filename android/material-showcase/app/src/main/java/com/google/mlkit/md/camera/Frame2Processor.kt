@@ -17,13 +17,14 @@
 package com.google.mlkit.md.camera
 
 import android.media.Image
+import com.google.android.odml.image.MlImage
 import java.nio.ByteBuffer
 
 /** An interface to process the input camera frame and perform detection on it.  */
 interface Frame2Processor {
 
     /** Processes the input frame with the underlying detector.  */
-    fun process(image: Image, rotation: Int, graphicOverlay: GraphicOverlay)
+    fun process(image: MlImage, graphicOverlay: GraphicOverlay)
 
     /** Stops the underlying detector and release resources.  */
     fun stop()

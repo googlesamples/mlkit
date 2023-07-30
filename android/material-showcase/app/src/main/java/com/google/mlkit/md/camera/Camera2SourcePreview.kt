@@ -70,13 +70,13 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
             cameraSource?.start(surfaceView.holder, object : CameraStartCallback{
                 override fun onSuccess() {
                     post {
-                        /*requestLayout()
+                        requestLayout()
                         graphicOverlay?.let { overlay ->
                             cameraSource?.let {
                                 overlay.setCameraInfo(it)
                             }
                             overlay.clear()
-                        }*/
+                        }
                         startRequested = false
                         startProcessing = false
                     }

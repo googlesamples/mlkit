@@ -23,6 +23,8 @@ import androidx.annotation.GuardedBy
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskExecutors
+import com.google.android.odml.image.MediaImageExtractor
+import com.google.android.odml.image.MlImage
 import com.google.mlkit.md.*
 import com.google.mlkit.vision.common.InputImage
 
@@ -31,47 +33,39 @@ abstract class Frame2ProcessorBase<T> : Frame2Processor {
 
     // To keep the latest frame and its metadata.
     @GuardedBy("this")
-    private var latestFrame: Image? = null
-
-    @GuardedBy("this")
-    private var latestFrameRotation: Int? = null
+    private var latestFrame: MlImage? = null
 
     // To keep the frame and metadata in process.
     @GuardedBy("this")
-    private var processingFrame: Image? = null
+    private var processingFrame: MlImage? = null
 
-    @GuardedBy("this")
-    private var processingFrameRotation: Int? = null
     private val executor = ScopedExecutor(TaskExecutors.MAIN_THREAD)
 
     @Synchronized
-    override fun process(image: Image, rotation: Int, graphicOverlay: GraphicOverlay) {
+    override fun process(image: MlImage, graphicOverlay: GraphicOverlay) {
         latestFrame = image
-        latestFrameRotation = rotation
-        if (processingFrame == null && processingFrameRotation == null) {
+        if (processingFrame == null) {
             processLatestFrame(graphicOverlay)
         }
     }
 
     @Synchronized
     private fun processLatestFrame(graphicOverlay: GraphicOverlay) {
-        processingFrame?.close()
         processingFrame = latestFrame
-        processingFrameRotation = latestFrameRotation
         latestFrame = null
-        latestFrameRotation = null
         val frame = processingFrame ?: return
-        val frameRotation = processingFrameRotation ?: return
-        val image = InputImage.fromMediaImage(frame, frameRotation)
-        val startMs = SystemClock.elapsedRealtime()
-        detectInImage(image)
+        //val startMs = SystemClock.elapsedRealtime()
+        detectInImage(frame)
             .addOnSuccessListener(executor) { results: T ->
                 //Log.d(TAG, "Latency is: ${SystemClock.elapsedRealtime() - startMs}")
-                this@Frame2ProcessorBase.onSuccess(Camera2InputInfo(frame, frameRotation), results, graphicOverlay)
-                processLatestFrame(graphicOverlay)
+                MediaImageExtractor.extract(frame).let {
+                    this@Frame2ProcessorBase.onSuccess(CameraInputInfo(it.planes[0].buffer, FrameMetadata(frame.width,
+                        frame.height,frame.rotation)), results, graphicOverlay)
+                    processLatestFrame(graphicOverlay)
+                }
             }
             .addOnFailureListener(executor) { e -> OnFailureListener {
-                Log.d(TAG, "Detect In Image Failure: ${e.message}")
+                //Log.d(TAG, "Detect In Image Failure: ${e.message}")
                 this@Frame2ProcessorBase.onFailure(it) }
             }
     }
@@ -80,7 +74,7 @@ abstract class Frame2ProcessorBase<T> : Frame2Processor {
         executor.shutdown()
     }
 
-    protected abstract fun detectInImage(image: InputImage): Task<T>
+    protected abstract fun detectInImage(image: MlImage): Task<T>
 
     /** Be called when the detection succeeds.  */
     protected abstract fun onSuccess(

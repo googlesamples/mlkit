@@ -97,14 +97,14 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
      */
     fun setCameraInfo(cameraSource: Camera2Source) {
         val previewSize = cameraSource.previewSize ?: return
-        /*if (Utils.isPortraitMode(context)) {
+        if (Utils.isPortraitMode(context)) {
             // Swap width and height when in portrait, since camera's natural orientation is landscape.
             previewWidth = previewSize.height
             previewHeight = previewSize.width
-        } else {*/
+        } else {
             previewWidth = previewSize.width
             previewHeight = previewSize.height
-        /*}*/
+        }
     }
 
     fun translateX(x: Float): Float = x * widthScaleFactor

@@ -30,12 +30,15 @@ import android.util.Size
 import android.view.Surface
 import android.view.SurfaceHolder
 import androidx.core.app.ActivityCompat
+import com.google.android.odml.image.MediaMlImageBuilder
+import com.google.android.odml.image.MlImage
 import com.google.mlkit.md.R
 import com.google.mlkit.md.Utils
 import com.google.mlkit.md.settings.PreferenceUtils
 import com.google.mlkit.md.utils.OrientationLiveData
 import com.google.mlkit.md.utils.computeExifOrientation
 import java.io.IOException
+import java.lang.IllegalStateException
 import java.util.*
 import kotlin.math.abs
 
@@ -166,7 +169,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
                                     session = cameraCaptureSession
                                     captureRequest = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
                                         addTarget(surfaceHolder.surface)
-                                        //addTarget(imageReader.surface)
+                                        addTarget(imageReader.surface)
                                         startPreview( this, imageReader, cameraCaptureSession)
                                         callback.onSuccess()
                                     }
@@ -483,7 +486,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
          * FPS setting above to allow for some idle time in between frames.
          */
         override fun run() {
-            var data: Image?
+            var data: MlImage?
 
             while (true) {
                 synchronized(lock) {
@@ -507,22 +510,27 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
                     // Hold onto the frame data locally, so that we can use this for detection
                     // below.  We need to clear pendingFrameData to ensure that this buffer isn't
                     // recycled back to the camera before we are done using that data.
-                    data = pendingFrame
+                    data = pendingFrame?.let {
+                        MediaMlImageBuilder(it)
+                            .setRotation(pendingFrameRotation)
+                            .build()
+                    }
                     pendingFrame = null
+
                 }
 
                 try {
                     synchronized(processorLock) {
                         data?.let {
                             //Log.d(TAG, "Processing Next Frame ${it.width} x ${it.height}")
-                            frameProcessor?.process(it, pendingFrameRotation, graphicOverlay)
+                            frameProcessor?.process(it, graphicOverlay)
                         }
                     }
                 } catch (t: Exception) {
                     Log.e(TAG, "Exception thrown from receiver.", t)
                 } finally {
                     //Let the processor close image as it's required until frame is processed
-                    //data?.close()
+                    data?.close()
                 }
             }
         }
