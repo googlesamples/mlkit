@@ -103,7 +103,7 @@ class Barcode2Processor(graphicOverlay: GraphicOverlay, private val workflowMode
         }
     }
 
-    override fun onFailure(e: Exception) {
+    override fun onFailure(e: Exception?) {
         Log.e(TAG, "Barcode detection failed!", e)
     }
 

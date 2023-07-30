@@ -24,7 +24,7 @@ import java.nio.ByteBuffer
 interface Frame2Processor {
 
     /** Processes the input frame with the underlying detector.  */
-    fun process(image: MlImage, graphicOverlay: GraphicOverlay)
+    fun process(image: MlImage, graphicOverlay: GraphicOverlay): Boolean
 
     /** Stops the underlying detector and release resources.  */
     fun stop()

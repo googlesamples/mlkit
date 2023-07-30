@@ -284,9 +284,6 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
             camera = null
         }
 
-        cameraThread.quitSafely()
-        imageReaderThread.quitSafely()
-
     }
 
     /** Stops the camera and releases the resources of the camera and underlying detector.  */
@@ -295,6 +292,8 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
         synchronized(processorLock) {
             stop()
             frameProcessor?.stop()
+            cameraThread.quitSafely()
+            imageReaderThread.quitSafely()
         }
     }
 
@@ -523,13 +522,21 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
                     synchronized(processorLock) {
                         data?.let {
                             //Log.d(TAG, "Processing Next Frame ${it.width} x ${it.height}")
-                            frameProcessor?.process(it, graphicOverlay)
+                            if(frameProcessor?.process(it, graphicOverlay) == true){
+                                //Do nothing as frame processor accepted the image for processing
+                                // and it will close the image once the detection gets completed on it
+                            }
+                            else{
+                                //Close image immediately because either frame processor is
+                                // not set or it's currently busy processing previous image
+                                it.close()
+                            }
                         }
                     }
                 } catch (t: Exception) {
                     Log.e(TAG, "Exception thrown from receiver.", t)
-                } finally {
-                    //Let the processor close image as it's required until frame is processed
+                    //precautionary image close request in-case there is an exception occurred
+                    // while submitting the image to the frame processor
                     data?.close()
                 }
             }
@@ -544,7 +551,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
         private const val TAG = "CameraSource"
 
         /** Maximum number of images that will be held in the reader's buffer */
-        private const val IMAGE_BUFFER_SIZE: Int = 4
+        private const val IMAGE_BUFFER_SIZE: Int = 3
 
         private const val MIN_CAMERA_PREVIEW_WIDTH = 400
         private const val MAX_CAMERA_PREVIEW_WIDTH = 1300
