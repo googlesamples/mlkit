@@ -16,17 +16,43 @@
 
 package com.google.mlkit.md.settings
 
+import android.content.Context
 import android.hardware.Camera
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.os.Bundle
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.mlkit.md.camera.CameraSource
 import com.google.mlkit.md.R
 import com.google.mlkit.md.Utils
+import com.google.mlkit.md.camera.Camera2Source
+import java.io.IOException
 import java.util.HashMap
 
 /** Configures App settings.  */
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    /** Detects, characterizes, and connects to a CameraDevice (used for all camera operations) */
+    private val cameraManager: CameraManager by lazy {
+        requireContext().getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    }
+
+    /** [cameraId] corresponding to the provided Camera facing back property */
+    private val cameraId: String by lazy {
+        cameraManager.cameraIdList.forEach {
+            val characteristics = cameraManager.getCameraCharacteristics(it)
+            if (characteristics.get(CameraCharacteristics.LENS_FACING) == Camera2Source.CAMERA_FACING_BACK){
+                return@lazy it
+            }
+        }
+        throw IOException("No Camera found matching the back facing lens ${Camera2Source.CAMERA_FACING_BACK}")
+    }
+
+    /** [CameraCharacteristics] corresponding to the provided Camera ID */
+    private val characteristics: CameraCharacteristics by lazy {
+        cameraManager.getCameraCharacteristics(cameraId)
+    }
 
     override fun onCreatePreferences(bundle: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
@@ -37,11 +63,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val previewSizePreference =
             findPreference<ListPreference>(getString(R.string.pref_key_rear_camera_preview_size))!!
 
-        var camera: Camera? = null
+        //var camera: Camera? = null
 
         try {
-            camera = Camera.open(CameraSource.CAMERA_FACING_BACK)
-            val previewSizeList = Utils.generateValidPreviewSizeList(camera!!)
+            //camera = Camera.open(CameraSource.CAMERA_FACING_BACK)
+            val previewSizeList = Utils.generateValidPreviewSizeList(characteristics)
             val previewSizeStringValues = arrayOfNulls<String>(previewSizeList.size)
             val previewToPictureSizeStringMap = HashMap<String, String>()
             for (i in previewSizeList.indices) {
@@ -69,7 +95,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             // If there's no camera for the given camera id, hide the corresponding preference.
             previewSizePreference.parent?.removePreference(previewSizePreference)
         } finally {
-            camera?.release()
+            //camera?.release()
         }
     }
 }
