@@ -456,24 +456,29 @@ class CameraSource(private val graphicOverlay: GraphicOverlay) {
             var selectedPair: CameraSizePair? = null
             // Picks the preview size that has closest aspect ratio to display view.
             var minAspectRatioDiff = Float.MAX_VALUE
-
+            Log.d(TAG, "Display Aspect Ratio: $displayAspectRatioInLandscape")
             for (sizePair in validPreviewSizes) {
                 val previewSize = sizePair.preview
+                Log.d(TAG, "Preview Size: $previewSize")
                 if (previewSize.width < MIN_CAMERA_PREVIEW_WIDTH || previewSize.width > MAX_CAMERA_PREVIEW_WIDTH) {
                     continue
                 }
-
                 val previewAspectRatio = previewSize.width.toFloat() / previewSize.height.toFloat()
                 val aspectRatioDiff = abs(displayAspectRatioInLandscape - previewAspectRatio)
+                Log.d(TAG, "Preview Aspect Ratio: $previewAspectRatio Aspect Ratio Diff: $aspectRatioDiff Min Aspect Ratio: $minAspectRatioDiff")
                 if (abs(aspectRatioDiff - minAspectRatioDiff) < Utils.ASPECT_RATIO_TOLERANCE) {
                     if (selectedPair == null || selectedPair.preview.width < sizePair.preview.width) {
                         selectedPair = sizePair
+                        Log.d(TAG, "Selected Pair with Minimum Tolerance: ${selectedPair.preview} ${selectedPair.picture}")
                     }
                 } else if (aspectRatioDiff < minAspectRatioDiff) {
                     minAspectRatioDiff = aspectRatioDiff
                     selectedPair = sizePair
+                    Log.d(TAG, "Selected Pair with Minimum Aspect ratio difference: ${selectedPair.preview} ${selectedPair.picture}")
                 }
             }
+
+            Log.d(TAG, "Final Selected Pair: ${selectedPair?.preview} ${selectedPair?.picture}")
 
             if (selectedPair == null) {
                 // Picks the one that has the minimum sum of the differences between the desired values and

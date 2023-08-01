@@ -110,6 +110,12 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
 
         // Match the width of the child view to its parent.
         val childHeight = (layoutWidth / previewSizeRatio).toInt()
+
+        Log.d(TAG, "Layout: $layoutWidth x $layoutHeight")
+        Log.d(TAG, "Camera Preview: $cameraPreviewSize")
+        Log.d(TAG, "Child Height: $childHeight")
+
+
         if (childHeight <= layoutHeight) {
             for (i in 0 until childCount) {
                 getChildAt(i).layout(0, 0, layoutWidth, childHeight)
