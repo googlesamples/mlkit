@@ -23,6 +23,7 @@ import android.util.Size
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.FrameLayout
+import androidx.annotation.MainThread
 import com.google.mlkit.md.R
 import com.google.mlkit.md.Utils
 import kotlin.math.abs
@@ -37,7 +38,6 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
     }
     private var graphicOverlay: GraphicOverlay? = null
     private var startRequested = false
-    private var startProcessing = false
     private var surfaceAvailable = false
     private var cameraSource: Camera2Source? = null
     private var cameraPreviewSize: Size? = null
@@ -47,6 +47,7 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
         graphicOverlay = findViewById(R.id.camera_preview_graphic_overlay)
     }
 
+    @MainThread
     @Throws(Exception::class)
     fun start(cameraSource: Camera2Source) {
         this.cameraSource = cameraSource
@@ -54,6 +55,7 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
         startIfReady()
     }
 
+    @MainThread
     @Throws(Exception::class)
     fun stop() {
         cameraSource?.let {
@@ -65,32 +67,17 @@ class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(
 
     @Throws(Exception::class)
     private fun startIfReady() {
-        if (startRequested && surfaceAvailable && !startProcessing) {
-            startProcessing = true
+        if (startRequested && surfaceAvailable) {
             Log.d(TAG, "Starting camera")
-            cameraSource?.start(surfaceView.holder, object : CameraStartCallback{
-                override fun onSuccess() {
-                    post {
-                        requestLayout()
-                        graphicOverlay?.let { overlay ->
-                            cameraSource?.let {
-                                overlay.setCameraInfo(it)
-                            }
-                            overlay.clear()
-                        }
-                        startRequested = false
-                        startProcessing = false
-                    }
-
+            cameraSource?.apply {
+                start(surfaceView.holder)
+                requestLayout()
+                graphicOverlay?.let {
+                    it.setCameraInfo(this)
+                    it.clear()
                 }
-
-                override fun onFailure(error: Exception?) {
-                    startRequested = false
-                    startProcessing = false
-                }
-
-            })
-
+            }
+            startRequested = false
         }
     }
 
