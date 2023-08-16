@@ -36,10 +36,15 @@ import com.google.mlkit.md.R
 import com.google.mlkit.md.Utils
 import com.google.mlkit.md.settings.PreferenceUtils
 import com.google.mlkit.md.utils.OrientationLiveData
-import com.google.mlkit.md.utils.computeExifOrientation
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.IOException
-import java.lang.IllegalStateException
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 import kotlin.math.abs
 
 /**
@@ -145,7 +150,9 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
     private val processingRunnable = FrameProcessingRunnable()
 
     private val processorLock = Object()
+    private val mutex = Mutex()
     private var frameProcessor: Frame2Processor? = null
+
 
     /**
      * Opens the camera and starts sending preview frames to the underlying detector. The supplied
@@ -154,50 +161,34 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
      * @param surfaceHolder the surface holder to use for the preview frames.
      * @throws Exception if the supplied surface holder could not be used as the preview display.
      */
-    @Synchronized
     @Throws(Exception::class)
-    internal fun start(surfaceHolder: SurfaceHolder, callback: CameraStartCallback) {
-        if (camera != null) return
+    internal fun start(surfaceHolder: SurfaceHolder) {
+        runBlocking {
+            mutex.withLock {
 
-        createCamera(object : CameraCreateCallback{
-            override fun onSuccess(cameraDevice: CameraDevice) {
-                camera      = cameraDevice
-                previewSize = getPreviewAndPictureSize(characteristics).preview.also { previewSize ->
-                    imageReader = ImageReader.newInstance(previewSize.width, previewSize.height, IMAGE_FORMAT, IMAGE_BUFFER_SIZE).also {imageReader ->
-                        createCaptureSession(cameraDevice, listOf(surfaceHolder.surface, imageReader.surface), object : CameraSessionCreateCallback{
-                                override fun onSuccess(cameraCaptureSession: CameraCaptureSession) {
-                                    session = cameraCaptureSession
-                                    captureRequest = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
-                                        addTarget(surfaceHolder.surface)
-                                        addTarget(imageReader.surface)
-                                        startPreview( this, imageReader, cameraCaptureSession)
-                                        callback.onSuccess()
-                                    }
+                if (camera != null) return@withLock
 
+                camera = createCamera().also {cameraDevice ->
+                    previewSize = getPreviewAndPictureSize(characteristics).preview.also { previewSize ->
+                        imageReader = ImageReader.newInstance(previewSize.width, previewSize.height, IMAGE_FORMAT, IMAGE_BUFFER_SIZE).also { imageReader ->
+                            session = createCaptureSession(cameraDevice, listOf(surfaceHolder.surface, imageReader.surface), cameraHandler).also {cameraCaptureSession ->
+                                captureRequest = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
+                                    addTarget(surfaceHolder.surface)
+                                    addTarget(imageReader.surface)
+                                    startPreview( this, imageReader, cameraCaptureSession)
                                 }
-
-                                override fun onFailure(error: Exception?) {
-                                    callback.onFailure(error)
-                                }
-                            }, cameraHandler)
+                            }
+                        }
                     }
-
-
+                    processingThread = Thread(processingRunnable).apply {
+                        processingRunnable.setActive(true)
+                        start()
+                    }
+                    relativeOrientation.observeForever(orientationObserver)
                 }
+
             }
-
-            override fun onFailure(error: Exception?) {
-                callback.onFailure(error)
-            }
-
-        })
-
-        processingThread = Thread(processingRunnable).apply {
-            processingRunnable.setActive(true)
-            start()
         }
-
-        relativeOrientation.observeForever(orientationObserver)
     }
 
     /**
@@ -250,38 +241,36 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
      * Call [.release] instead to completely shut down this camera source and release the
      * resources of the underlying detector.
      */
-    @Synchronized
     @Throws(Exception::class)
     internal fun stop() {
-        Log.d(TAG, "Stop is called")
-        processingRunnable.setActive(false)
-        processingThread?.let {
-            try {
-                // Waits for the thread to complete to ensure that we can't have multiple threads executing
-                // at the same time (i.e., which would happen if we called start too quickly after stop).
-                it.join()
-            } catch (e: InterruptedException) {
-                Log.e(TAG, "Frame processing thread interrupted on stop.")
+        runBlocking {
+            mutex.withLock {
+                Log.d(TAG, "Stop is called")
+                processingRunnable.setActive(false)
+                processingThread?.let {
+                    try {
+                        // Waits for the thread to complete to ensure that we can't have multiple threads executing
+                        // at the same time (i.e., which would happen if we called start too quickly after stop).
+                        it.join()
+                    } catch (e: InterruptedException) {
+                        Log.e(TAG, "Frame processing thread interrupted on stop.")
+                    }
+                    processingThread = null
+                }
+
+                // Remove the reference image reader buffer & orientation change observer, since it will no longer be in use.
+                imageReader?.let {
+                    it.setOnImageAvailableListener(null, null)
+                    imageReader = null
+                }
+
+                relativeOrientation.removeObserver(orientationObserver)
+
+                camera?.let {
+                    it.close()
+                    camera = null
+                }
             }
-            processingThread = null
-        }
-
-        // Remove the reference image reader buffer & orientation change observer, since it will no longer be in use.
-        imageReader?.let {
-            it.setOnImageAvailableListener(null, null)
-            imageReader = null
-        }
-        relativeOrientation.removeObserver(orientationObserver)
-
-       /* session?.let {
-            it.stopRepeating()
-            it.close()
-            session = null
-        }*/
-
-        camera?.let {
-            it.close()
-            camera = null
         }
 
     }
@@ -329,19 +318,19 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
      * @throws Exception if camera cannot be found or preview cannot be processed.
      */
     @Throws(Exception::class)
-    private fun createCamera(callback: CameraCreateCallback) {
+    private suspend fun createCamera(): CameraDevice = suspendCancellableCoroutine {cont ->
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            throw IOException("Camera permission not granted")
+            if (cont.isActive) cont.resumeWithException(IOException("Camera permission not granted"))
         }
 
         cameraManager.openCamera(cameraId, object : CameraDevice.StateCallback() {
-            override fun onOpened(camera: CameraDevice) {
-                callback.onSuccess(camera)
-            }
+            override fun onOpened(camera: CameraDevice) = cont.resume(camera)
 
             override fun onDisconnected(camera: CameraDevice) {
-                callback.onFailure(null)
+                val exec = IOException("Camera $cameraId has been disconnected")
+                Log.e(TAG, exec.message, exec)
+                if (cont.isActive) cont.resumeWithException(exec)
             }
 
             override fun onError(camera: CameraDevice, error: Int) {
@@ -355,7 +344,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
                 }
                 val exc = IOException("Camera $cameraId error: ($error) $msg")
                 Log.e(TAG, exc.message, exc)
-                callback.onFailure(exc)
+                if(cont.isActive) cont.resumeWithException(exc)
             }
 
         }, cameraHandler)
@@ -368,17 +357,18 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
      * @throws Exception if session cannot be created.
      */
     @Throws(Exception::class)
-    private fun createCaptureSession(device: CameraDevice, targets: List<Surface>, callback: CameraSessionCreateCallback, handler: Handler? = null){
+    private suspend fun createCaptureSession(device: CameraDevice, targets: List<Surface>, handler: Handler? = null): CameraCaptureSession = suspendCoroutine{ cont ->
+
         // Create a capture session using the predefined targets; this also involves defining the
         // session state callback to be notified of when the session is ready
         device.createCaptureSession(targets, object : CameraCaptureSession.StateCallback() {
 
-            override fun onConfigured(session: CameraCaptureSession) = callback.onSuccess(session)
+            override fun onConfigured(session: CameraCaptureSession) = cont.resume(session)
 
             override fun onConfigureFailed(session: CameraCaptureSession) {
                 val exc = RuntimeException("Camera ${device.id} session configuration failed")
                 Log.e(TAG, exc.message, exc)
-                callback.onFailure(exc)
+                cont.resumeWithException(exc)
             }
         }, handler)
     }
@@ -389,7 +379,7 @@ class Camera2Source(private val graphicOverlay: GraphicOverlay) {
      * @throws Exception if cannot find a suitable size.
      */
     @Throws(Exception::class)
-    private fun getPreviewAndPictureSize(characteristics: CameraCharacteristics): CameraSizePair {
+    private fun getPreviewAndPictureSize(characteristics: CameraCharacteristics): CameraSizePair  {
 
         // Gives priority to the preview size specified by the user if exists.
         val sizePair: CameraSizePair = PreferenceUtils.getUserSpecifiedPreviewSize(context) ?: run {
