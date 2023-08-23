@@ -59,7 +59,7 @@ abstract class Frame2ProcessorBase<T> : Frame2Processor {
                 //Close the processing frame
                 frame.close()
             }
-            return true
+            true
         }
     }
 

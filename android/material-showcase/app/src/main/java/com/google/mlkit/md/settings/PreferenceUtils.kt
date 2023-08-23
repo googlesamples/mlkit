@@ -18,7 +18,7 @@ package com.google.mlkit.md.settings
 
 import android.content.Context
 import android.graphics.RectF
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Size
 import androidx.annotation.StringRes
 import com.google.mlkit.md.R
