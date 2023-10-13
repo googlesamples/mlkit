@@ -1,13 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 
 android {
-    compileSdkVersion 31
+    namespace "com.google.mlkit.samples.nl.entityextraction"
+    compileSdkVersion 34
+
     defaultConfig {
         applicationId "com.google.mlkit.samples.nl.entityextraction"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 34
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         setProperty("archivesBaseName", "nl-entity-extraction")
@@ -28,8 +31,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    lintOptions {
+        disable "Instantiatable"
+    }
+    viewBinding {
+        enabled = true
     }
 }
 
@@ -37,7 +46,7 @@ dependencies {
     implementation project(':internal:chooserx')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.google.mlkit:entity-extraction:16.0.0-beta4'
+    implementation 'com.google.mlkit:entity-extraction:16.0.0-beta5'
 
     // Optional dependency used for the Snackbar
     implementation 'com.google.android.material:material:1.2.0'
