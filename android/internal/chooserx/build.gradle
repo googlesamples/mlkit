@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
+    namespace "com.mlkit.example.internal"
     compileSdkVersion 31
 
     defaultConfig {
