@@ -23,6 +23,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,6 +53,7 @@ import com.google.mlkit.vision.demo.java.labeldetector.LabelDetectorProcessor;
 import com.google.mlkit.vision.demo.java.objectdetector.ObjectDetectorProcessor;
 import com.google.mlkit.vision.demo.java.posedetector.PoseDetectorProcessor;
 import com.google.mlkit.vision.demo.java.segmenter.SegmenterProcessor;
+import com.google.mlkit.vision.demo.java.subjectsegmenter.SubjectSegmenterProcessor;
 import com.google.mlkit.vision.demo.java.textdetector.TextRecognitionProcessor;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
 import com.google.mlkit.vision.demo.preference.SettingsActivity;
@@ -91,6 +94,7 @@ public final class StillImageActivity extends AppCompatActivity {
   private static final String TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese";
   private static final String TEXT_RECOGNITION_KOREAN = "Text Recognition Korean";
   private static final String FACE_MESH_DETECTION = "Face Mesh Detection (Beta)";
+  private static final String SUBJECT_SEGMENTATION = "Subject Segmentation";
 
   private static final String SIZE_SCREEN = "w:screen"; // Match screen width
   private static final String SIZE_1024_768 = "w:1024"; // ~1024*768 in a normal ratio
@@ -225,6 +229,9 @@ public final class StillImageActivity extends AppCompatActivity {
     options.add(TEXT_RECOGNITION_JAPANESE);
     options.add(TEXT_RECOGNITION_KOREAN);
     options.add(FACE_MESH_DETECTION);
+    if (VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      options.add(SUBJECT_SEGMENTATION);
+    }
 
     // Creating adapter for featureSpinner
     ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_style, options);
@@ -524,6 +531,12 @@ public final class StillImageActivity extends AppCompatActivity {
         case FACE_MESH_DETECTION:
           imageProcessor = new FaceMeshDetectorProcessor(this);
           break;
+        case SUBJECT_SEGMENTATION:
+          if (VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            imageProcessor = new SubjectSegmenterProcessor(this);
+            break;
+          }
+          // fall through
         default:
           Log.e(TAG, "Unknown selectedMode: " + selectedMode);
       }

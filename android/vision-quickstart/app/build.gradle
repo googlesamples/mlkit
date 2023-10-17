@@ -3,13 +3,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.google.mlkit.vision.demo"
         minSdkVersion 19
         multiDexEnabled true
-        targetSdkVersion 31
+        targetSdkVersion 34
 
         versionCode 11
         versionName "1.11"
@@ -52,7 +52,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.31'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Barcode model
@@ -65,7 +65,7 @@ dependencies {
     implementation 'com.google.mlkit:object-detection:17.0.0'
 
     // Object detection feature with custom classifier support
-    implementation 'com.google.mlkit:object-detection-custom:17.0.0'
+    implementation 'com.google.mlkit:object-detection-custom:17.0.1'
 
     // Face features
     implementation 'com.google.mlkit:face-detection:16.1.5'
@@ -102,10 +102,10 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-image-labeling:16.0.8'
 
     // Image labeling custom
-    implementation 'com.google.mlkit:image-labeling-custom:17.0.1'
+    implementation 'com.google.mlkit:image-labeling-custom:17.0.2'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta4'
+    // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta5'
 
     // Pose detection with default models
     implementation 'com.google.mlkit:pose-detection:18.0.0-beta3'
@@ -119,6 +119,9 @@ dependencies {
 
     // Face Mesh Detection
     implementation 'com.google.mlkit:face-mesh-detection:16.0.0-beta1'
+
+    // Subject Segmentation
+    implementation 'play-services-mlkit-subject-segmentation:16.0.0-beta1'
 
     // -------------------------------------------------------
 

@@ -22,6 +22,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
+import android.os.Build.VERSION
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
@@ -50,6 +52,7 @@ import com.google.mlkit.vision.demo.kotlin.labeldetector.LabelDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.objectdetector.ObjectDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.posedetector.PoseDetectorProcessor
 import com.google.mlkit.vision.demo.kotlin.segmenter.SegmenterProcessor
+import com.google.mlkit.vision.demo.kotlin.subjectsegmenter.SubjectSegmenterProcessor
 import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.google.mlkit.vision.demo.preference.PreferenceUtils
 import com.google.mlkit.vision.demo.preference.SettingsActivity
@@ -171,6 +174,9 @@ class StillImageActivity : AppCompatActivity() {
     options.add(TEXT_RECOGNITION_JAPANESE)
     options.add(TEXT_RECOGNITION_KOREAN)
     options.add(FACE_MESH_DETECTION)
+    if (VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      options.add(SUBJECT_SEGMENTATION)
+    }
 
     // Creating adapter for featureSpinner
     val dataAdapter = ArrayAdapter(this, R.layout.spinner_style, options)
@@ -437,6 +443,11 @@ class StillImageActivity : AppCompatActivity() {
         FACE_MESH_DETECTION -> {
           imageProcessor = FaceMeshDetectorProcessor(this)
         }
+        SUBJECT_SEGMENTATION -> {
+          if (VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            imageProcessor = SubjectSegmenterProcessor(this)
+          }
+        }
         else -> Log.e(TAG, "Unknown selectedMode: $selectedMode")
       }
     } catch (e: Exception) {
@@ -468,6 +479,7 @@ class StillImageActivity : AppCompatActivity() {
     private const val POSE_DETECTION = "Pose Detection"
     private const val SELFIE_SEGMENTATION = "Selfie Segmentation"
     private const val FACE_MESH_DETECTION = "Face Mesh Detection (Beta)"
+    private const val SUBJECT_SEGMENTATION = "Subject Segmentation"
 
     private const val SIZE_SCREEN = "w:screen" // Match screen width
     private const val SIZE_1024_768 = "w:1024" // ~1024*768 in a normal ratio
