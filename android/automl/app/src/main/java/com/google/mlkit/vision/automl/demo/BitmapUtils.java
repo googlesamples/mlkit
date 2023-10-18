@@ -18,7 +18,6 @@ package com.google.mlkit.vision.automl.demo;
 
 import static java.lang.Math.min;
 
-import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -305,7 +304,6 @@ public final class BitmapUtils {
    * before the U buffer and the planes have a pixelStride of 2. If this is case, we can just copy
    * them to the NV21 array.
    */
-  @RequiresApi(VERSION_CODES.KITKAT)
   private static ByteBuffer yuv420ThreePlanesToNV21(
       Plane[] yuv420888planes, int width, int height) {
     int imageSize = width * height;
@@ -335,7 +333,6 @@ public final class BitmapUtils {
   }
 
   /** Checks if the UV plane buffers of a YUV_420_888 image are in the NV21 format. */
-  @RequiresApi(VERSION_CODES.KITKAT)
   private static boolean areUVPlanesNV21(Plane[] planes, int width, int height) {
     int imageSize = width * height;
 
@@ -368,7 +365,6 @@ public final class BitmapUtils {
    * <p>The input plane data will be copied in 'out', starting at 'offset' and every pixel will be
    * spaced by 'pixelStride'. Note that there is no row padding on the output.
    */
-  @TargetApi(VERSION_CODES.KITKAT)
   private static void unpackPlane(
       Plane plane, int width, int height, byte[] out, int offset, int pixelStride) {
     ByteBuffer buffer = plane.getBuffer();
