@@ -94,7 +94,7 @@ public final class StillImageActivity extends AppCompatActivity {
   private static final String TEXT_RECOGNITION_JAPANESE = "Text Recognition Japanese";
   private static final String TEXT_RECOGNITION_KOREAN = "Text Recognition Korean";
   private static final String FACE_MESH_DETECTION = "Face Mesh Detection (Beta)";
-  private static final String SUBJECT_SEGMENTATION = "Subject Segmentation";
+  private static final String SUBJECT_SEGMENTATION = "Subject Segmentation (Beta)";
 
   private static final String SIZE_SCREEN = "w:screen"; // Match screen width
   private static final String SIZE_1024_768 = "w:1024"; // ~1024*768 in a normal ratio
