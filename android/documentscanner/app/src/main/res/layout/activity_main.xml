@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical">
+  <Spinner
+      android:id="@+id/mode_selector"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"/>
+  <CheckBox
+      android:id="@+id/enable_gallery_import"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:onClick="onEnableGalleryImportCheckboxClicked"
+      android:checked="true"
+      android:text="@string/enable_gallery_import" />
+  <EditText
+      android:id="@+id/page_limit_input"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:inputType="number"
+      android:autofillHints=""
+      android:hint="@string/set_page_limit" />
+  <Button
+      android:id="@+id/scan_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:onClick="onScanButtonClicked"
+      android:text="@string/scan_button" />
+
+  <TextView
+      android:id="@+id/result_info"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="" />
+
+  <ImageView
+      android:id="@+id/first_page_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:contentDescription="@string/first_page_view"
+      android:scaleType="fitCenter" />
+</LinearLayout>
