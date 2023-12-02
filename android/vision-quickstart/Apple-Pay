@@ -1,0 +1,45 @@
+// For more details, see https://aka.ms/devcontainer.json.
+{
+  "name": "Apple Pay",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "postCreateCommand": "cd advanced-integration && npm install",
+  "postAttachCommand": {
+    "Start server": "cd advanced-integration && CI=true npx kill-port --yes 8888 && npm start"
+  },
+  "forwardPorts": [
+    8888
+  ],
+  "portsAttributes": {
+    "8888": {
+      "label": "Preview of Apple Pay Flow",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "secrets": {
+    "CLIENT_ID": {
+      "description": "Sandbox client ID of the application.",
+      "documentationUrl": "https://developer.paypal.com/dashboard/applications/sandbox"
+    },
+    "APP_SECRET": {
+      "description": "Sandbox secret of the application.",
+      "documentationUrl": "https://developer.paypal.com/dashboard/applications/sandbox"
+    },
+    "MERCHANT_ID":{
+      "description": "Sandbox merchant ID of the application.",
+      "documentationUrl": "https://www.sandbox.paypal.com/businessmanage/account/aboutBusiness"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vsls-contrib.codetour"
+      ],
+      "settings": {
+        "git.openRepositoryInParentFolders": "always",
+        "files.exclude": {
+          "**/.devcontainer": true
+        }
+      }
+    }
+  }
