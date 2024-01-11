@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 34
@@ -62,13 +61,13 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.0'
 
     // Object detection feature with bundled default classifier
-    implementation 'com.google.mlkit:object-detection:17.0.0'
+    implementation 'com.google.mlkit:object-detection:17.0.1'
 
     // Object detection feature with custom classifier support
     implementation 'com.google.mlkit:object-detection-custom:17.0.1'
 
     // Face features
-    implementation 'com.google.mlkit:face-detection:16.1.5'
+    implementation 'com.google.mlkit:face-detection:16.1.6'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
     // implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.1.0'
@@ -96,7 +95,7 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-korean:16.0.0'
 
     // Image labeling
-    implementation 'com.google.mlkit:image-labeling:17.0.7'
+    implementation 'com.google.mlkit:image-labeling:17.0.8'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
     // implementation 'com.google.android.gms:play-services-mlkit-image-labeling:16.0.8'
@@ -113,7 +112,7 @@ dependencies {
     implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta3'
 
     // Selfie segmentation
-    implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta4'
+    implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta5'
 
     implementation 'com.google.mlkit:camera:16.0.0-beta3'
 
