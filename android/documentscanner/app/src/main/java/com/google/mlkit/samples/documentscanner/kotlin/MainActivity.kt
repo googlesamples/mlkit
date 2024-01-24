@@ -19,7 +19,6 @@ package com.google.mlkit.samples.documentscanner.kotlin
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
-import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log

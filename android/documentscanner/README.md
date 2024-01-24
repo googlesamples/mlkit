@@ -1,21 +1,21 @@
 # ML Kit Document Scanner API Quickstart
 
-* [Read more about ML Kit Document Scanner API](https://developers.google.com/ml-kit/document-scanner)
+* [Read more about ML Kit Document Scanner API](https://developers.google.com/ml-kit/vision/doc-scanner)
 
 ## Introduction
 
 The ML Kit Document Scanner API Quickstart app demonstrates how to use the
-document scanner feature to scan documents without requiring to request camera
+document scanner feature to scan documents without app requesting camera
 permission.
 
 ## Getting Started
 
-* Run the sample code on your Android device or emulator.
+* Run the sample code on your Android device.
 * Tap on the SCAN button.
 
 ## Support
 
-* [Documentation](https://developers.google.com/ml-kit/document-scanner)
+* [Documentation](https://developers.google.com/ml-kit/vision/doc-scanner)
 * [Stack Overflow](https://stackoverflow.com/questions/tagged/mlkit)
 
 ## License
