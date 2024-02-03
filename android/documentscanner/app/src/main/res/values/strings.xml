@@ -4,7 +4,8 @@
   <string name="scan_result" translatable="false">Scan result:\n%1$s</string>
   <string name="error_scanner_cancelled" translatable="false">Scanner is cancelled.</string>
   <string name="error_default_message" translatable="false">Failed to scan: %1$s</string>
-  <string name="enable_gallery_import" translatable="false">Enable gallery import</string>
-  <string name="set_page_limit" translatable="false">Enter a page limit</string>
+  <string name="label_mode_selector" translatable="false">Scanner feature mode: </string>
+  <string name="label_enable_gallery_import" translatable="false">Enable gallery import: </string>
+  <string name="label_set_page_limit" translatable="false">Set page limit per scan: </string>
   <string name="first_page_view" translatable="false">First page of the scanned document</string>
 </resources>

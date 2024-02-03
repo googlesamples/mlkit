@@ -4,24 +4,53 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical">
-  <Spinner
-      android:id="@+id/mode_selector"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
-  <CheckBox
-      android:id="@+id/enable_gallery_import"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:onClick="onEnableGalleryImportCheckboxClicked"
-      android:checked="true"
-      android:text="@string/enable_gallery_import" />
-  <EditText
-      android:id="@+id/page_limit_input"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:inputType="number"
-      android:autofillHints=""
-      android:hint="@string/set_page_limit" />
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_mode_selector" />
+    <Spinner
+        android:id="@+id/mode_selector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_enable_gallery_import" />
+    <CheckBox
+        android:id="@+id/enable_gallery_import"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onEnableGalleryImportCheckboxClicked"
+        android:checked="true"
+        android:text="" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_set_page_limit" />
+    <EditText
+        android:id="@+id/page_limit_input"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:autofillHints="" />
+ </LinearLayout>
+
   <Button
       android:id="@+id/scan_button"
       android:layout_width="wrap_content"
