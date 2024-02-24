@@ -107,17 +107,17 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta5'
 
     // Pose detection with default models
-    implementation 'com.google.mlkit:pose-detection:18.0.0-beta3'
+    implementation 'com.google.mlkit:pose-detection:18.0.0-beta4'
     // Pose detection with accurate models
-    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta3'
+    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta4'
 
     // Selfie segmentation
-    implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta4'
+    implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta5'
 
     implementation 'com.google.mlkit:camera:16.0.0-beta3'
 
     // Face Mesh Detection
-    implementation 'com.google.mlkit:face-mesh-detection:16.0.0-beta1'
+    implementation 'com.google.mlkit:face-mesh-detection:16.0.0-beta2'
 
     // Subject Segmentation
     implementation 'com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1'
