@@ -1,9 +1,9 @@
-platform :ios, '12.0'
+platform :ios, '15.5'
 use_frameworks!
 
 project 'DigitalInkRecognitionExample.xcodeproj'
 
-pod 'GoogleMLKit/DigitalInkRecognition', '5.0.0'
+pod 'GoogleMLKit/DigitalInkRecognition', '6.0.0'
 
 target 'DigitalInkRecognitionExample' do
 end
