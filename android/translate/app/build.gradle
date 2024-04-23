@@ -6,7 +6,7 @@ android {
     compileSdkVersion 34
     defaultConfig {
         applicationId 'com.google.mlkit.samples.nl.translate'
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 34
         multiDexEnabled true
         versionCode 1
@@ -38,7 +38,7 @@ android {
 
 dependencies {
     implementation project(':internal:chooserx')
-    implementation 'com.google.mlkit:translate:17.0.2'
+    implementation 'com.google.mlkit:translate:17.0.3'
 
     // Those dependencies are not required by the SDK. They are used for the sample itself.
     implementation 'androidx.core:core-ktx:1.3.0'
