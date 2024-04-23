@@ -139,7 +139,7 @@ class CameraXLivePreviewActivity :
         Observer { provider: ProcessCameraProvider? ->
           cameraProvider = provider
           bindAllCameraUseCases()
-        }
+        },
       )
 
     val settingsButton = findViewById<ImageView>(R.id.settings_button)
@@ -193,7 +193,7 @@ class CameraXLivePreviewActivity :
     Toast.makeText(
         applicationContext,
         "This device does not have lens with facing: $newLensFacing",
-        Toast.LENGTH_SHORT
+        Toast.LENGTH_SHORT,
       )
       .show()
   }
@@ -241,8 +241,7 @@ class CameraXLivePreviewActivity :
     }
     previewUseCase = builder.build()
     previewUseCase!!.setSurfaceProvider(previewView!!.getSurfaceProvider())
-    camera =
-      cameraProvider!!.bindToLifecycle(/* lifecycleOwner= */ this, cameraSelector!!, previewUseCase)
+    camera = cameraProvider!!.bindToLifecycle(this, cameraSelector!!, previewUseCase)
   }
 
   private fun bindAnalysisUseCase() {
@@ -278,7 +277,7 @@ class CameraXLivePreviewActivity :
             val customAutoMLODTOptions =
               PreferenceUtils.getCustomObjectDetectorOptionsForLivePreview(
                 this,
-                customAutoMLODTLocalModel
+                customAutoMLODTLocalModel,
               )
             ObjectDetectorProcessor(this, customAutoMLODTOptions)
           }
@@ -355,7 +354,7 @@ class CameraXLivePreviewActivity :
               visualizeZ,
               rescaleZ,
               runClassification,
-              /* isStreamMode = */ true
+              /* isStreamMode = */ true,
             )
           }
           SELFIE_SEGMENTATION -> SegmenterProcessor(this)
@@ -367,7 +366,7 @@ class CameraXLivePreviewActivity :
         Toast.makeText(
             applicationContext,
             "Can not create image processor: " + e.localizedMessage,
-            Toast.LENGTH_LONG
+            Toast.LENGTH_LONG,
           )
           .show()
         return
@@ -403,9 +402,9 @@ class CameraXLivePreviewActivity :
           Log.e(TAG, "Failed to process image. Error: " + e.localizedMessage)
           Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_SHORT).show()
         }
-      }
+      },
     )
-    cameraProvider!!.bindToLifecycle(/* lifecycleOwner= */ this, cameraSelector!!, analysisUseCase)
+    cameraProvider!!.bindToLifecycle(this, cameraSelector!!, analysisUseCase)
   }
 
   companion object {

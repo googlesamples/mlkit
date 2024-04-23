@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.google.mlkit.vision.demo"
-        minSdkVersion 19
+        minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion 34
 
@@ -55,69 +55,69 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Barcode model
-    implementation 'com.google.mlkit:barcode-scanning:17.2.0'
+    implementation 'com.google.mlkit:barcode-scanning:17.3.0'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.0'
+    // implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1'
 
     // Object detection feature with bundled default classifier
-    implementation 'com.google.mlkit:object-detection:17.0.1'
+    implementation 'com.google.mlkit:object-detection:17.0.2'
 
     // Object detection feature with custom classifier support
-    implementation 'com.google.mlkit:object-detection-custom:17.0.1'
+    implementation 'com.google.mlkit:object-detection-custom:17.0.2'
 
     // Face features
-    implementation 'com.google.mlkit:face-detection:16.1.6'
+    implementation 'com.google.mlkit:face-detection:16.1.7'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
     // implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.1.0'
 
     // Text features
-    implementation 'com.google.mlkit:text-recognition:16.0.0'
+    implementation 'com.google.mlkit:text-recognition:16.0.1'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition:19.0.0'
-    implementation 'com.google.mlkit:text-recognition-chinese:16.0.0'
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition:19.0.1'
+    implementation 'com.google.mlkit:text-recognition-chinese:16.0.1'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-chinese:16.0.0'
-    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0'
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-chinese:16.0.1'
+    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.1'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-devanagari:16.0.0'
-    implementation 'com.google.mlkit:text-recognition-japanese:16.0.0'
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-devanagari:16.0.1'
+    implementation 'com.google.mlkit:text-recognition-japanese:16.0.1'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-japanese:16.0.0'
-    implementation 'com.google.mlkit:text-recognition-korean:16.0.0'
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-japanese:16.0.1'
+    implementation 'com.google.mlkit:text-recognition-korean:16.0.1'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
-    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-korean:16.0.0'
+    // implementation 'com.google.android.gms:play-services-mlkit-text-recognition-korean:16.0.1'
 
     // Image labeling
-    implementation 'com.google.mlkit:image-labeling:17.0.8'
+    implementation 'com.google.mlkit:image-labeling:17.0.9'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
     // implementation 'com.google.android.gms:play-services-mlkit-image-labeling:16.0.8'
 
     // Image labeling custom
-    implementation 'com.google.mlkit:image-labeling-custom:17.0.2'
+    implementation 'com.google.mlkit:image-labeling-custom:17.0.3'
     // Or comment the dependency above and uncomment the dependency below to
     // use unbundled model that depends on Google Play Services
     // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta5'
 
     // Pose detection with default models
-    implementation 'com.google.mlkit:pose-detection:18.0.0-beta4'
+    implementation 'com.google.mlkit:pose-detection:18.0.0-beta5'
     // Pose detection with accurate models
-    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta4'
+    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta5'
 
     // Selfie segmentation
-    implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta5'
+    implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta6'
 
     implementation 'com.google.mlkit:camera:16.0.0-beta3'
 
     // Face Mesh Detection
-    implementation 'com.google.mlkit:face-mesh-detection:16.0.0-beta2'
+    implementation 'com.google.mlkit:face-mesh-detection:16.0.0-beta3'
 
     // Subject Segmentation
     implementation 'com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1'
