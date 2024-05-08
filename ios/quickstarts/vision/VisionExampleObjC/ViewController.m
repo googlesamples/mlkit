@@ -1208,7 +1208,7 @@ typedef NS_ENUM(NSInteger, DetectorPickerRow) {
     }
     case DetectorPickerRowSegmentationSelfie: {
       MLKSelfieSegmenterOptions *options = [[MLKSelfieSegmenterOptions alloc] init];
-      options.segmenterMode = MLKSegmenterModeSingleImage;
+      options.segmenterMode = MLKSegmenterModeStream;
       self.segmenter = [MLKSegmenter segmenterWithOptions:options];
       break;
     }

@@ -287,32 +287,39 @@ class CameraViewController: UIViewController {
       segmentationError = error
     }
     weak var weakSelf = self
+    guard let strongSelf = weakSelf else {
+      print("Self is nil!")
+      return
+    }
+
+    if let segmentationError = segmentationError {
+      print(
+        "Failed to perform segmentation with error: \(segmentationError.localizedDescription).")
+      return
+    }
+    guard let mask = mask else {
+      print("Segmenter returned empty mask.")
+      return
+    }
+    guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+      print("Failed to get image buffer from sample buffer.")
+      return
+    }
+
+    let orientation: UIImage.Orientation = isUsingFrontCamera ? .leftMirrored : .right
+
+    let maskPixelBuffer = mask.buffer
+    let maskImage = CIImage(cvPixelBuffer: maskPixelBuffer)
+    let ciImage = CIImage(cvPixelBuffer: imageBuffer).applyingFilter("CIBlendWithMask", parameters: [
+      "inputMaskImage": maskImage
+    ]).composited(over: CIImage(cvPixelBuffer: imageBuffer).applyingGaussianBlur(sigma: .pi))
+    let context = CIContext(options: nil)
+    guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return }
+    let image = UIImage(cgImage: cgImage, scale: 1.0, orientation: orientation)
+
     DispatchQueue.main.sync {
-      guard let strongSelf = weakSelf else {
-        print("Self is nil!")
-        return
-      }
       strongSelf.removeDetectionAnnotations()
-
-      if let segmentationError = segmentationError {
-        print(
-          "Failed to perform segmentation with error: \(segmentationError.localizedDescription).")
-        return
-      }
-      guard let mask = mask else {
-        print("Segmenter returned empty mask.")
-        return
-      }
-      guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-        print("Failed to get image buffer from sample buffer.")
-        return
-      }
-
-      UIUtilities.applySegmentationMask(
-        mask: mask, to: imageBuffer,
-        backgroundColor: UIColor.purple.withAlphaComponent(Constant.segmentationMaskAlpha),
-        foregroundColor: nil)
-      strongSelf.updatePreviewOverlayViewWithImageBuffer(imageBuffer)
+      previewOverlayView.image = image
     }
   }
 
@@ -559,7 +566,7 @@ class CameraViewController: UIViewController {
         (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA
       ]
       output.alwaysDiscardsLateVideoFrames = true
-      let outputQueue = DispatchQueue(label: Constant.videoDataOutputQueueLabel)
+      let outputQueue = DispatchQueue(label: Constant.videoDataOutputQueueLabel, qos: .userInteractive)
       output.setSampleBufferDelegate(strongSelf, queue: outputQueue)
       guard strongSelf.captureSession.canAddOutput(output) else {
         print("Failed to add capture session output.")
