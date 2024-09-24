@@ -4,7 +4,7 @@ platform :ios, '15.5'
 
 project 'TranslateExample.xcodeproj'
 
-pod 'GoogleMLKit/Translate', '6.0.0'
+pod 'GoogleMLKit/Translate', '7.0.0'
 
 target 'TranslateExample' do
 end
