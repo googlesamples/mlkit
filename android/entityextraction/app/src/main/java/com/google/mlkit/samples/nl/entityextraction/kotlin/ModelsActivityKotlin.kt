@@ -40,16 +40,12 @@ class ModelsActivityKotlin : AppCompatActivity() {
     val languageAdapter = LanguageAdapter(languages)
     listView.adapter = languageAdapter
 
-    listView.onItemClickListener =
-      OnItemClickListener { _, _, position, _ ->
-        val intent = Intent(this@ModelsActivityKotlin, MainActivityKotlin::class.java)
-        intent.putExtra(
-          MODEL_KEY,
-          listView.getItemAtPosition(position).toString()
-        )
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-      }
+    listView.onItemClickListener = OnItemClickListener { _, _, position, _ ->
+      val intent = Intent(this@ModelsActivityKotlin, MainActivityKotlin::class.java)
+      intent.putExtra(MODEL_KEY, listView.getItemAtPosition(position).toString())
+      setResult(Activity.RESULT_OK, intent)
+      finish()
+    }
   }
 
   internal inner class LanguageAdapter(private val languageList: List<String>) : BaseAdapter() {
@@ -145,14 +141,15 @@ class ModelsActivityKotlin : AppCompatActivity() {
         }
     }
 
-    private fun getSnackbarMessage(): String = resources.getQuantityString(
-      R.plurals.snackbar_message,
-      downloadingModels.size,
-      getFormattedListOfDownloadingModels()
-    )
+    private fun getSnackbarMessage(): String =
+      resources.getQuantityString(
+        R.plurals.snackbar_message,
+        downloadingModels.size,
+        getFormattedListOfDownloadingModels(),
+      )
 
     private fun getFormattedListOfDownloadingModels(): String {
-      return downloadingModels.map { it.toUpperCase(Locale.US) }.joinToString { ", " }
+      return downloadingModels.map { it.uppercase(Locale.US) }.joinToString { ", " }
     }
   }
 }

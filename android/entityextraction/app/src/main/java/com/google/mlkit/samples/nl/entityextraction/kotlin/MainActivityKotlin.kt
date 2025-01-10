@@ -25,7 +25,7 @@ import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
 
-/** Default launcher activity.  */
+/** Default launcher activity. */
 class MainActivityKotlin : AppCompatActivity() {
 
   companion object {
@@ -38,8 +38,7 @@ class MainActivityKotlin : AppCompatActivity() {
     }
   }
 
-  @ModelIdentifier
-  private var currentModel: String = EntityExtractorOptions.ENGLISH
+  @ModelIdentifier private var currentModel: String = EntityExtractorOptions.ENGLISH
 
   private lateinit var entityExtractor: EntityExtractor
   private lateinit var currentModelView: TextView
@@ -50,15 +49,16 @@ class MainActivityKotlin : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    currentModel = savedInstanceState?.getString(CURRENT_MODEL_KEY, EntityExtractorOptions.ENGLISH)
-      ?: EntityExtractorOptions.ENGLISH
+    currentModel =
+      savedInstanceState?.getString(CURRENT_MODEL_KEY, EntityExtractorOptions.ENGLISH)
+        ?: EntityExtractorOptions.ENGLISH
 
     val options = EntityExtractorOptions.Builder(currentModel).build()
     entityExtractor = EntityExtraction.getClient(options)
     lifecycle.addObserver(entityExtractor)
 
     currentModelView = findViewById(R.id.current_model)
-    currentModelView.text = getString(R.string.current_model, currentModel.toUpperCase(Locale.US))
+    currentModelView.text = getString(R.string.current_model, currentModel.uppercase(Locale.US))
     val currentLocaleView: TextView = findViewById(R.id.current_locale)
     currentLocaleView.text = getString(R.string.current_locale, Locale.getDefault())
     input = findViewById(R.id.text_input)
@@ -67,10 +67,7 @@ class MainActivityKotlin : AppCompatActivity() {
     findViewById<Button>(R.id.button).setOnClickListener {
       val newInput = input.text.toString()
       if (newInput.isEmpty()) {
-        Toast.makeText(
-          this@MainActivityKotlin,
-          R.string.empty_input, Toast.LENGTH_LONG
-        ).show()
+        Toast.makeText(this@MainActivityKotlin, R.string.empty_input, Toast.LENGTH_LONG).show()
         return@setOnClickListener
       }
       extractEntities(newInput)
@@ -81,13 +78,7 @@ class MainActivityKotlin : AppCompatActivity() {
     output.setText(R.string.wait_message)
     entityExtractor
       .downloadModelIfNeeded()
-      .onSuccessTask {
-        entityExtractor.annotate(
-          getEntityExtractionParams(
-            input
-          )
-        )
-      }
+      .onSuccessTask { entityExtractor.annotate(getEntityExtractionParams(input)) }
       .addOnFailureListener { e: Exception? ->
         Log.e(TAG, "Annotation failed", e)
         output.text = getString(R.string.entity_extraction_error)
@@ -116,10 +107,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if (item.itemId == R.id.action_btn) {
-      startActivityForResult(
-        Intent(this, ModelsActivityKotlin::class.java),
-        REQUEST_CODE
-      )
+      startActivityForResult(Intent(this, ModelsActivityKotlin::class.java), REQUEST_CODE)
       return true
     }
     return super.onOptionsItemSelected(item)
@@ -138,7 +126,7 @@ class MainActivityKotlin : AppCompatActivity() {
       if (newModel != null) {
         currentModel = newModel
       }
-      currentModelView.text = getString(R.string.current_model, currentModel.toUpperCase(Locale.US))
+      currentModelView.text = getString(R.string.current_model, currentModel.uppercase(Locale.US))
       entityExtractor =
         EntityExtraction.getClient(EntityExtractorOptions.Builder(currentModel).build())
     }
@@ -174,7 +162,7 @@ class MainActivityKotlin : AppCompatActivity() {
       getString(
         R.string.phone_entity_info_formatted,
         annotatedText,
-        PhoneNumberUtils.formatNumber(annotatedText)
+        PhoneNumberUtils.formatNumber(annotatedText),
       )
     )
   }
@@ -188,14 +176,15 @@ class MainActivityKotlin : AppCompatActivity() {
   }
 
   private fun displayDateTimeInfo(entity: Entity, annotatedText: String) {
-    val dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG)
-      .format(Date(entity.asDateTimeEntity()!!.timestampMillis))
+    val dateTimeFormat =
+      DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG)
+        .format(Date(entity.asDateTimeEntity()!!.timestampMillis))
     output.append(
       getString(
         R.string.date_time_entity_info,
         annotatedText,
         dateTimeFormat,
-        convertGranularityToString(entity)
+        convertGranularityToString(entity),
       )
     )
   }
@@ -221,7 +210,7 @@ class MainActivityKotlin : AppCompatActivity() {
         R.string.tracking_number_entity_info,
         annotatedText,
         trackingNumberEntity!!.parcelCarrier,
-        trackingNumberEntity.parcelTrackingNumber
+        trackingNumberEntity.parcelTrackingNumber,
       )
     )
   }
@@ -233,15 +222,13 @@ class MainActivityKotlin : AppCompatActivity() {
         R.string.payment_card_entity_info,
         annotatedText,
         paymentCardEntity!!.paymentCardNetwork,
-        paymentCardEntity.paymentCardNumber
+        paymentCardEntity.paymentCardNumber,
       )
     )
   }
 
   private fun displayIsbnInfo(entity: Entity, annotatedText: String) {
-    output.append(
-      getString(R.string.isbn_entity_info, annotatedText, entity.asIsbnEntity()!!.isbn)
-    )
+    output.append(getString(R.string.isbn_entity_info, annotatedText, entity.asIsbnEntity()!!.isbn))
   }
 
   private fun displayIbanInfo(entity: Entity, annotatedText: String) {
@@ -251,7 +238,7 @@ class MainActivityKotlin : AppCompatActivity() {
         R.string.iban_entity_info,
         annotatedText,
         ibanEntity!!.iban,
-        ibanEntity.ibanCountryCode
+        ibanEntity.ibanCountryCode,
       )
     )
   }
@@ -263,7 +250,7 @@ class MainActivityKotlin : AppCompatActivity() {
         R.string.flight_number_entity_info,
         annotatedText,
         flightNumberEntity!!.airlineCode,
-        flightNumberEntity.flightNumber
+        flightNumberEntity.flightNumber,
       )
     )
   }
@@ -276,7 +263,7 @@ class MainActivityKotlin : AppCompatActivity() {
         annotatedText,
         moneyEntity!!.unnormalizedCurrency,
         moneyEntity.integerPart,
-        moneyEntity.fractionalPart
+        moneyEntity.fractionalPart,
       )
     )
   }

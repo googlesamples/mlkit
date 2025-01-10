@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.google.mlkit.samples.nl.entityextraction"
-        minSdkVersion 19
+        minSdkVersion 26
         targetSdkVersion 34
         multiDexEnabled true
         versionCode 1
@@ -46,7 +46,7 @@ dependencies {
     implementation project(':internal:chooserx')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.google.mlkit:entity-extraction:16.0.0-beta5'
+    implementation 'com.google.mlkit:entity-extraction:16.0.0-beta6'
 
     // Optional dependency used for the Snackbar
     implementation 'com.google.android.material:material:1.2.0'
