@@ -78,7 +78,24 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
      * Sets the camera attributes for size and facing direction, which informs how to transform image
      * coordinates later.
      */
+    @Deprecated("This method is deprecated. Use setCameraInfo(cameraSource: Camera2Source) instead")
     fun setCameraInfo(cameraSource: CameraSource) {
+        val previewSize = cameraSource.previewSize ?: return
+        if (Utils.isPortraitMode(context)) {
+            // Swap width and height when in portrait, since camera's natural orientation is landscape.
+            previewWidth = previewSize.height
+            previewHeight = previewSize.width
+        } else {
+            previewWidth = previewSize.width
+            previewHeight = previewSize.height
+        }
+    }
+
+    /**
+     * Sets the camera attributes for size and facing direction, which informs how to transform image
+     * coordinates later.
+     */
+    fun setCameraInfo(cameraSource: Camera2Source) {
         val previewSize = cameraSource.previewSize ?: return
         if (Utils.isPortraitMode(context)) {
             // Swap width and height when in portrait, since camera's natural orientation is landscape.

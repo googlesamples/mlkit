@@ -22,10 +22,10 @@ import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
 import android.hardware.Camera.Parameters
 import android.util.Log
+import android.util.Size
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.WindowManager
-import com.google.android.gms.common.images.Size
 import com.google.mlkit.md.R
 import com.google.mlkit.md.Utils
 import com.google.mlkit.md.settings.PreferenceUtils

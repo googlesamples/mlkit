@@ -23,13 +23,15 @@ import android.util.Size
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.FrameLayout
+import androidx.annotation.MainThread
 import com.google.mlkit.md.R
 import com.google.mlkit.md.Utils
-import java.io.IOException
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 /** Preview the camera image in the screen.  */
-class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
-
+class Camera2SourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
+    
     private val surfaceView: SurfaceView = SurfaceView(context).apply {
         holder.addCallback(SurfaceCallback())
         addView(this)
@@ -37,7 +39,7 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
     private var graphicOverlay: GraphicOverlay? = null
     private var startRequested = false
     private var surfaceAvailable = false
-    private var cameraSource: CameraSource? = null
+    private var cameraSource: Camera2Source? = null
     private var cameraPreviewSize: Size? = null
 
     override fun onFinishInflate() {
@@ -45,13 +47,16 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
         graphicOverlay = findViewById(R.id.camera_preview_graphic_overlay)
     }
 
-    @Throws(IOException::class)
-    fun start(cameraSource: CameraSource) {
+    @MainThread
+    @Throws(Exception::class)
+    fun start(cameraSource: Camera2Source) {
         this.cameraSource = cameraSource
         startRequested = true
         startIfReady()
     }
 
+    @MainThread
+    @Throws(Exception::class)
     fun stop() {
         cameraSource?.let {
             it.stop()
@@ -60,16 +65,17 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
         }
     }
 
-    @Throws(IOException::class)
+    @Throws(Exception::class)
     private fun startIfReady() {
         if (startRequested && surfaceAvailable) {
-            cameraSource?.start(surfaceView.holder)
-            requestLayout()
-            graphicOverlay?.let { overlay ->
-                cameraSource?.let {
-                    overlay.setCameraInfo(it)
+            Log.d(TAG, "Starting camera")
+            cameraSource?.apply {
+                start(surfaceView.holder)
+                requestLayout()
+                graphicOverlay?.let {
+                    it.setCameraInfo(this)
+                    it.clear()
                 }
-                overlay.clear()
             }
             startRequested = false
         }
@@ -88,38 +94,37 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
             } else {
                 size.width.toFloat() / size.height
             }
-        } ?: layoutWidth.toFloat() / layoutHeight.toFloat()
+        } ?: (layoutWidth.toFloat() / layoutHeight.toFloat())
 
-        // Match the width of the child view to its parent.
-        val childHeight = (layoutWidth / previewSizeRatio).toInt()
-        if (childHeight <= layoutHeight) {
-            for (i in 0 until childCount) {
-                getChildAt(i).layout(0, 0, layoutWidth, childHeight)
-            }
+        //Calculate the new surface view size by scaling the layout width/height based on aspect ratio
+        val newLayoutWidth: Int
+        val newLayoutHeight: Int
+        if (width < height * previewSizeRatio) {
+            newLayoutHeight = height
+            newLayoutWidth = (height * previewSizeRatio).roundToInt()
         } else {
-            // When the child view is too tall to be fitted in its parent: If the child view is
-            // static overlay view container (contains views such as bottom prompt chip), we apply
-            // the size of the parent view to it. Otherwise, we offset the top/bottom position
-            // equally to position it in the center of the parent.
-            val excessLenInHalf = (childHeight - layoutHeight) / 2
-            for (i in 0 until childCount) {
-                val childView = getChildAt(i)
-                when (childView.id) {
-                    R.id.static_overlay_container -> {
-                        childView.layout(0, 0, layoutWidth, layoutHeight)
-                    }
-                    else -> {
-                        childView.layout(
-                            0, -excessLenInHalf, layoutWidth, layoutHeight + excessLenInHalf
-                        )
-                    }
-                }
+            newLayoutWidth = width
+            newLayoutHeight = (width / previewSizeRatio).roundToInt()
+        }
+
+        //Apply the new width & height to surface view only in a way that it should center crop the camera preview
+        val excessWidthInHalf = abs(newLayoutWidth - layoutWidth) / 2
+        val excessHeightInHalf = abs(newLayoutHeight - layoutHeight) / 2
+        surfaceView.layout(
+            -excessWidthInHalf, -excessHeightInHalf, newLayoutWidth, newLayoutHeight
+        )
+
+        //Apply the actual layout width & height to rest of its child views
+        for (i in 0 until childCount) {
+            val childView = getChildAt(i)
+            if (!childView.equals(surfaceView)){
+                childView.layout(0, 0, layoutWidth, layoutHeight)
             }
         }
 
         try {
             startIfReady()
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Log.e(TAG, "Could not start camera source.", e)
         }
     }
@@ -129,7 +134,7 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
             surfaceAvailable = true
             try {
                 startIfReady()
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Log.e(TAG, "Could not start camera source.", e)
             }
         }

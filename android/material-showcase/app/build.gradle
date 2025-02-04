@@ -5,8 +5,8 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 31
     defaultConfig {
-        applicationId "com.google.mlkit.md"
-        minSdkVersion 19
+        applicationId "com.google.mlkit.mdn"
+        minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"

@@ -17,7 +17,7 @@
 package com.google.mlkit.md.camera
 
 import android.hardware.Camera
-import com.google.android.gms.common.images.Size
+import android.util.Size
 
 /**
  * Stores a preview size and a corresponding same-aspect-ratio picture size. To avoid distorted
