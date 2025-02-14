@@ -28,6 +28,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -42,6 +43,7 @@ import com.google.mlkit.md.camera.GraphicOverlay
 import com.google.mlkit.md.camera.WorkflowModel
 import com.google.mlkit.md.camera.WorkflowModel.WorkflowState
 import com.google.mlkit.md.camera.CameraSource
+import com.google.mlkit.md.camera.CameraSourceFactory
 import com.google.mlkit.md.camera.CameraSourcePreview
 import com.google.mlkit.md.objectdetection.MultiObjectProcessor
 import com.google.mlkit.md.objectdetection.ProminentObjectProcessor
@@ -85,7 +87,7 @@ class LiveObjectDetectionActivity : AppCompatActivity(), OnClickListener {
         preview = findViewById(R.id.camera_preview)
         graphicOverlay = findViewById<GraphicOverlay>(R.id.camera_preview_graphic_overlay).apply {
             setOnClickListener(this@LiveObjectDetectionActivity)
-            cameraSource = CameraSource(this)
+            cameraSource = CameraSourceFactory.createCameraSource(this)
         }
         promptChip = findViewById(R.id.bottom_prompt_chip)
         promptChipAnimator =
@@ -160,10 +162,10 @@ class LiveObjectDetectionActivity : AppCompatActivity(), OnClickListener {
             R.id.flash_button -> {
                 if (flashButton?.isSelected == true) {
                     flashButton?.isSelected = false
-                    cameraSource?.updateFlashMode(Camera.Parameters.FLASH_MODE_OFF)
+                    cameraSource?.setFlashStatus(false)
                 } else {
                     flashButton?.isSelected = true
-                    cameraSource?.updateFlashMode(Camera.Parameters.FLASH_MODE_TORCH)
+                    cameraSource?.setFlashStatus(true)
                 }
             }
             R.id.settings_button -> {

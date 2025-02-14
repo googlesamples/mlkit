@@ -39,6 +39,7 @@ import java.util.ArrayList
  * Associated [Graphic] items should use [.translateX] and [ ][.translateY] to convert to view coordinate from the preview's coordinate.
  */
 class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attrs) {
+
     private val lock = Any()
 
     private var previewWidth: Int = 0
@@ -78,25 +79,13 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
      * Sets the camera attributes for size and facing direction, which informs how to transform image
      * coordinates later.
      */
-    @Deprecated("This method is deprecated. Use setCameraInfo(cameraSource: Camera2Source) instead")
     fun setCameraInfo(cameraSource: CameraSource) {
-        val previewSize = cameraSource.previewSize ?: return
-        if (Utils.isPortraitMode(context)) {
-            // Swap width and height when in portrait, since camera's natural orientation is landscape.
-            previewWidth = previewSize.height
-            previewHeight = previewSize.width
-        } else {
-            previewWidth = previewSize.width
-            previewHeight = previewSize.height
-        }
-    }
-
-    /**
-     * Sets the camera attributes for size and facing direction, which informs how to transform image
-     * coordinates later.
-     */
-    fun setCameraInfo(cameraSource: Camera2Source) {
-        val previewSize = cameraSource.previewSize ?: return
+        //Adding picture size and also as a preferred way because now with the Camera 2 API we have to
+        //always define the size for the preview frames where we always have to give preference to
+        //picture size (if it exists) as compare to preview size. This change is to fix barcode detection issue
+        //in-cases where picture size is higher than preview size(e.g. preview size: 1088 x 1088 & picture
+        // size: 3024 x 3024).
+        val previewSize = cameraSource.getSelectedPictureSize() ?: cameraSource.getSelectedPreviewSize() ?: return
         if (Utils.isPortraitMode(context)) {
             // Swap width and height when in portrait, since camera's natural orientation is landscape.
             previewWidth = previewSize.height

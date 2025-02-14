@@ -28,11 +28,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.chip.Chip
 import com.google.common.base.Objects
-import com.google.mlkit.md.barcodedetection.Barcode2Processor
+import com.google.mlkit.md.barcodedetection.BarcodeProcessor
 import com.google.mlkit.md.barcodedetection.BarcodeField
 import com.google.mlkit.md.barcodedetection.BarcodeResultFragment
-import com.google.mlkit.md.camera.Camera2Source
-import com.google.mlkit.md.camera.Camera2SourcePreview
+import com.google.mlkit.md.camera.CameraSource
+import com.google.mlkit.md.camera.CameraSourcePreview
+import com.google.mlkit.md.camera.CameraSourceFactory
 import com.google.mlkit.md.camera.GraphicOverlay
 import com.google.mlkit.md.camera.WorkflowModel
 import com.google.mlkit.md.camera.WorkflowModel.WorkflowState
@@ -42,8 +43,8 @@ import java.io.IOException
 /** Demonstrates the barcode scanning workflow using camera preview.  */
 class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
 
-    private var cameraSource: Camera2Source? = null
-    private var preview: Camera2SourcePreview? = null
+    private var cameraSource: CameraSource? = null
+    private var preview: CameraSourcePreview? = null
     private var graphicOverlay: GraphicOverlay? = null
     private var settingsButton: View? = null
     private var flashButton: View? = null
@@ -59,7 +60,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
         preview = findViewById(R.id.camera_preview)
         graphicOverlay = findViewById<GraphicOverlay>(R.id.camera_preview_graphic_overlay).apply {
             setOnClickListener(this@LiveBarcodeScanningActivity)
-            cameraSource = Camera2Source(this)
+            cameraSource = CameraSourceFactory.createCameraSource(this)
         }
 
         promptChip = findViewById(R.id.bottom_prompt_chip)
@@ -85,7 +86,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
         workflowModel?.markCameraFrozen()
         settingsButton?.isEnabled = true
         currentWorkflowState = WorkflowState.NOT_STARTED
-        cameraSource?.setFrameProcessor(Barcode2Processor(graphicOverlay!!, workflowModel!!))
+        cameraSource?.setFrameProcessor(BarcodeProcessor(graphicOverlay!!, workflowModel!!))
         workflowModel?.setWorkflowState(WorkflowState.DETECTING)
     }
 
@@ -113,10 +114,10 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                 flashButton?.let {
                     if (it.isSelected) {
                         it.isSelected = false
-                        cameraSource?.updateFlashMode(false)
+                        cameraSource?.setFlashStatus(false)
                     } else {
                         it.isSelected = true
-                        cameraSource!!.updateFlashMode(true)
+                        cameraSource!!.setFlashStatus(true)
                     }
                 }
             }

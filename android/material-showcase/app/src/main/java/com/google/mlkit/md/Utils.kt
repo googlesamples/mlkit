@@ -32,24 +32,19 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.YuvImage
-import android.hardware.Camera
-import android.hardware.camera2.CameraCharacteristics
 import android.media.Image
 import android.net.Uri
 import android.util.Log
-import android.view.Surface
-import android.view.SurfaceHolder
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.exifinterface.media.ExifInterface
-import com.google.mlkit.md.camera.Camera2Source
 import com.google.mlkit.md.camera.CameraSizePair
+import com.google.mlkit.md.camera.CameraSource
 import com.google.mlkit.vision.common.InputImage
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
-import java.util.ArrayList
 import kotlin.math.abs
 
 /** Utility class to provide helper methods.  */
@@ -97,8 +92,6 @@ object Utils {
         context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     /**
-     * Use [generateValidPreviewSizeList] instead.
-     *
      * Generates a list of acceptable preview sizes. Preview sizes are not acceptable if there is not
      * a corresponding picture size of the same aspect ratio. If there is a corresponding picture size
      * of the same aspect ratio, the picture size is paired up with the preview size.
@@ -108,55 +101,10 @@ object Utils {
      * be set to a size that is the same aspect ratio as the preview size we choose. Otherwise, the
      * preview images may be distorted on some devices.
      */
-    @Deprecated("This method is deprecated.")
-    fun generateValidPreviewSizeList(camera: Camera): List<CameraSizePair> {
-        val parameters = camera.parameters
-        val supportedPreviewSizes = parameters.supportedPreviewSizes
-        val supportedPictureSizes = parameters.supportedPictureSizes
-        val validPreviewSizes = ArrayList<CameraSizePair>()
-        for (previewSize in supportedPreviewSizes) {
-            val previewAspectRatio = previewSize.width.toFloat() / previewSize.height.toFloat()
+    fun generateValidPreviewSizeList(cameraSource: CameraSource): List<CameraSizePair> {
 
-            // By looping through the picture sizes in order, we favor the higher resolutions.
-            // We choose the highest resolution in order to support taking the full resolution
-            // picture later.
-            for (pictureSize in supportedPictureSizes) {
-                val pictureAspectRatio = pictureSize.width.toFloat() / pictureSize.height.toFloat()
-                if (abs(previewAspectRatio - pictureAspectRatio) < ASPECT_RATIO_TOLERANCE) {
-                    validPreviewSizes.add(CameraSizePair(previewSize, pictureSize))
-                    break
-                }
-            }
-        }
-
-        // If there are no picture sizes with the same aspect ratio as any preview sizes, allow all of
-        // the preview sizes and hope that the camera can handle it.  Probably unlikely, but we still
-        // account for it.
-        if (validPreviewSizes.isEmpty()) {
-            Log.w(TAG, "No preview sizes have a corresponding same-aspect-ratio picture size.")
-            for (previewSize in supportedPreviewSizes) {
-                // The null picture size will let us know that we shouldn't set a picture size.
-                validPreviewSizes.add(CameraSizePair(previewSize, null))
-            }
-        }
-
-        return validPreviewSizes
-    }
-
-    /**
-     * Generates a list of acceptable preview sizes. Preview sizes are not acceptable if there is not
-     * a corresponding picture size of the same aspect ratio. If there is a corresponding picture size
-     * of the same aspect ratio, the picture size is paired up with the preview size.
-     *
-     *
-     * This is necessary because even if we don't use still pictures, the still picture size must
-     * be set to a size that is the same aspect ratio as the preview size we choose. Otherwise, the
-     * preview images may be distorted on some devices.
-     */
-    fun generateValidPreviewSizeList(characteristics: CameraCharacteristics): List<CameraSizePair> {
-
-        val supportedPreviewSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!.getOutputSizes(SurfaceHolder::class.java)
-        val supportedPictureSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!.getOutputSizes(Camera2Source.IMAGE_FORMAT)
+        val supportedPreviewSizes = cameraSource.getSupportedPreviewSizes()
+        val supportedPictureSizes = cameraSource.getSupportedPictureSizes()
         val validPreviewSizes = ArrayList<CameraSizePair>()
         for (previewSize in supportedPreviewSizes) {
             val previewAspectRatio = previewSize.width.toFloat() / previewSize.height.toFloat()
