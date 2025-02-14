@@ -169,7 +169,7 @@ class CustomModelObjectDetectionActivity : AppCompatActivity(), OnClickListener 
             }
             R.id.settings_button -> {
                 settingsButton?.isEnabled = false
-                startActivity(Intent(this, SettingsActivity::class.java))
+                startActivity(SettingsActivity.newIntent(this, cameraSource))
             }
         }
     }
