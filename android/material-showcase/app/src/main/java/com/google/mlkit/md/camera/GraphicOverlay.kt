@@ -80,12 +80,7 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
      * coordinates later.
      */
     fun setCameraInfo(cameraSource: CameraSource) {
-        //Adding picture size and also as a preferred way because now with the Camera 2 API we have to
-        //always define the size for the preview frames where we always have to give preference to
-        //picture size (if it exists) as compare to preview size. This change is to fix barcode detection issue
-        //in-cases where picture size is higher than preview size(e.g. preview size: 1088 x 1088 & picture
-        // size: 3024 x 3024).
-        val previewSize = cameraSource.getSelectedPictureSize() ?: cameraSource.getSelectedPreviewSize() ?: return
+        val previewSize = cameraSource.getSelectedPreviewSize() ?: return
         if (Utils.isPortraitMode(context)) {
             // Swap width and height when in portrait, since camera's natural orientation is landscape.
             previewWidth = previewSize.height

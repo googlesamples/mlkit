@@ -250,8 +250,6 @@ class CameraAPISource(private val graphicOverlay: GraphicOverlay) : CameraSource
 
     override fun getSelectedPreviewSize(): Size? = previewSize
 
-    override fun getSelectedPictureSize(): Size? = null
-
     @Synchronized
     override fun start(surfaceHolder: SurfaceHolder) {
         if (camera != null) return

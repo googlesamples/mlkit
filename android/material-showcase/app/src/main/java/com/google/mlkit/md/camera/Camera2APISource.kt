@@ -114,9 +114,6 @@ class Camera2APISource(private val graphicOverlay: GraphicOverlay): CameraSource
     /** [Size] that is currently in use by the [camera] */
     private var previewSize: Size? = null
 
-    /** [Size] that is use by the [imageReader] as a preference over [previewSize] If it exists */
-    private var pictureSize: Size? = null
-
     /** [Thread] for detecting & processing [imageReader] frames */
     private var processingThread: Thread? = null
 
@@ -312,21 +309,16 @@ class Camera2APISource(private val graphicOverlay: GraphicOverlay): CameraSource
 
     override fun getSelectedPreviewSize() = previewSize
 
-    override fun getSelectedPictureSize() = pictureSize
-
     override fun start(surfaceHolder: SurfaceHolder) {
         runBlocking {
             mutex.withLock {
 
                 if (camera != null) return@withLock
 
-                camera = createCamera().also {cameraDevice ->
-                    getPreviewAndPictureSize(this@Camera2APISource).also { sizePair ->
-                        previewSize = sizePair.preview
-                        pictureSize = sizePair.picture
-                        val imageSize = sizePair.picture ?: sizePair.preview
-                        imageReader = ImageReader.newInstance(imageSize.width, imageSize.height, IMAGE_FORMAT, IMAGE_BUFFER_SIZE).also { imageReader ->
-                            session = createCaptureSession(cameraDevice, listOf(surfaceHolder.surface, imageReader.surface), cameraHandler).also {cameraCaptureSession ->
+                camera = createCamera().also { cameraDevice ->
+                    getPreviewAndPictureSize(this@Camera2APISource).preview.let { previewSize ->
+                        imageReader = ImageReader.newInstance(previewSize.width, previewSize.height, IMAGE_FORMAT, IMAGE_BUFFER_SIZE).also { imageReader ->
+                            session = createCaptureSession(cameraDevice, listOf(surfaceHolder.surface, imageReader.surface), cameraHandler).also { cameraCaptureSession ->
                                 captureRequest = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
                                     addTarget(surfaceHolder.surface)
                                     addTarget(imageReader.surface)

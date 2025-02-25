@@ -47,11 +47,6 @@ abstract class CameraSource {
     internal abstract fun getSelectedPreviewSize(): Size?
 
     /**
-     * Returns the selected picture [Size] by the Camera
-     */
-    internal abstract fun getSelectedPictureSize(): Size?
-
-    /**
      * Opens the camera and starts sending preview frames to the underlying detector. The supplied
      * surface holder is used for the preview so frames can be displayed to the user.
      *
