@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskExecutors
 import com.google.android.odml.image.MediaImageExtractor
 import com.google.android.odml.image.MlImage
+import com.google.mlkit.md.Camera2InputInfo
 import com.google.mlkit.md.CameraInputInfo
 import com.google.mlkit.md.InputInfo
 import com.google.mlkit.md.ScopedExecutor
@@ -109,12 +110,7 @@ abstract class FrameProcessorBase<T> : FrameProcessor {
                     //Log.d(TAG, "Latency is: ${SystemClock.elapsedRealtime() - startMs}")
                     MediaImageExtractor.extract(frame).let {
                         this@FrameProcessorBase.onSuccess(
-                            CameraInputInfo(
-                                it.planes[0].buffer, FrameMetadata(
-                                    frame.width,
-                                    frame.height, frame.rotation
-                                )
-                            ), task.result, graphicOverlay
+                            Camera2InputInfo(it, frame.rotation), task.result, graphicOverlay
                         )
                     }
                 } else {

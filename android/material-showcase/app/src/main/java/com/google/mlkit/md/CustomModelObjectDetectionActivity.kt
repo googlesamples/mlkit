@@ -276,11 +276,11 @@ class CustomModelObjectDetectionActivity : AppCompatActivity(), OnClickListener 
 
             // Observes changes on the object to search, if happens, show detected object labels as
             // product search results.
-            objectToSearch.observe(this@CustomModelObjectDetectionActivity, Observer { detectObject ->
-                val productList: List<Product> = detectObject.labels.map { label ->
+            objectToSearch.observe(this@CustomModelObjectDetectionActivity, Observer { confirmedObject ->
+                val productList: List<Product> = confirmedObject.labels.map { label ->
                     Product("" /* imageUrl */, label.text, "" /* subtitle */)
                 }
-                workflowModel?.onSearchCompleted(detectObject, productList)
+                workflowModel?.onSearchCompleted(confirmedObject, productList)
             })
 
             // Observes changes on the object that has search completed, if happens, show the bottom sheet
