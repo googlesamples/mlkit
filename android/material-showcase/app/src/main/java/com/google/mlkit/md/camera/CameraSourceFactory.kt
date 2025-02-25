@@ -32,7 +32,7 @@ object CameraSourceFactory {
             CameraAPISource(graphicOverlay)
         } else {
             Log.d(TAG, "Camera2 API source used")
-            CameraAPISource(graphicOverlay)
+            Camera2APISource(graphicOverlay)
         }
     }
 
