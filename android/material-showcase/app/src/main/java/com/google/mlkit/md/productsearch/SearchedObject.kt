@@ -21,12 +21,13 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import com.google.mlkit.md.R
 import com.google.mlkit.md.Utils
+import com.google.mlkit.md.objectdetection.ConfirmedObjectInfo
 import com.google.mlkit.md.objectdetection.DetectedObjectInfo
 
 /** Hosts the detected object info and its search result.  */
 class SearchedObject(
     resources: Resources,
-    private val detectedObject: DetectedObjectInfo,
+    private val confirmedObject: ConfirmedObjectInfo,
     val productList: List<Product>
 ) {
 
@@ -34,14 +35,14 @@ class SearchedObject(
     private var objectThumbnail: Bitmap? = null
 
     val objectIndex: Int
-        get() = detectedObject.objectIndex
+        get() = confirmedObject.objectIndex
 
     val boundingBox: Rect
-        get() = detectedObject.boundingBox
+        get() = confirmedObject.boundingBox
 
     @Synchronized
     fun getObjectThumbnail(): Bitmap = objectThumbnail ?: let {
-        Utils.getCornerRoundedBitmap(detectedObject.getBitmap(), objectThumbnailCornerRadius)
+        Utils.getCornerRoundedBitmap(confirmedObject.bitmap, objectThumbnailCornerRadius)
             .also { objectThumbnail = it }
     }
 }

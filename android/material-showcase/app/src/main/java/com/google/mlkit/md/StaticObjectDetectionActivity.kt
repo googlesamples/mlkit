@@ -40,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import com.google.common.collect.ImmutableList
+import com.google.mlkit.md.objectdetection.ConfirmedObjectInfo
 import com.google.mlkit.md.productsearch.BottomSheetScrimView
 import com.google.mlkit.md.objectdetection.DetectedObjectInfo
 import com.google.mlkit.md.objectdetection.StaticObjectDotView
@@ -249,16 +250,16 @@ class StaticObjectDetectionActivity : AppCompatActivity(), View.OnClickListener 
         } else {
             searchedObjectMap.clear()
             for (i in objects.indices) {
-                searchEngine?.search(DetectedObjectInfo(objects[i], i, image)) { detectedObject, products ->
-                    onSearchCompleted(detectedObject, products)
+                searchEngine?.search(ConfirmedObjectInfo.from(DetectedObjectInfo(objects[i], i, image))) { confirmedObject, products ->
+                    onSearchCompleted(confirmedObject, products)
                 }
             }
         }
     }
 
-    private fun onSearchCompleted(detectedObject: DetectedObjectInfo, productList: List<Product>) {
-        Log.d(TAG, "Search completed for object index: ${detectedObject.objectIndex}")
-        searchedObjectMap[detectedObject.objectIndex] = SearchedObject(resources, detectedObject, productList)
+    private fun onSearchCompleted(confirmedObject: ConfirmedObjectInfo, productList: List<Product>) {
+        Log.d(TAG, "Search completed for object index: ${confirmedObject.objectIndex}")
+        searchedObjectMap[confirmedObject.objectIndex] = SearchedObject(resources, confirmedObject, productList)
         if (searchedObjectMap.size < detectedObjectNum) {
             // Hold off showing the result until the search of all detected objects completes.
             return
