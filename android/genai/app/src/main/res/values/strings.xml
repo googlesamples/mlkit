@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright 2025 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+  <string name="app_name" translatable="false">ML Kit GenAI API Demo</string>
+  <string name="summarization_entry_title_kotlin" translatable="false">Summarization API (Kotlin)</string>
+  <string name="summarization_entry_title_java" translatable="false">Summarization API (Java)</string>
+  <string name="rewriting_entry_title_kotlin" translatable="false">Rewriting API (Kotlin)</string>
+  <string name="rewriting_entry_title_java" translatable="false">Rewriting API (Java)</string>
+  <string name="proofreading_entry_title_kotlin" translatable="false">Proofreading API (Kotlin)</string>
+  <string name="proofreading_entry_title_java" translatable="false">Proofreading API (Java)</string>
+  <string name="image_description_entry_title_kotlin" translatable="false">Image Description API (Kotlin)</string>
+  <string name="image_description_entry_title_java" translatable="false">Image Description API (Java)</string>
+  <string name="button_send" translatable="false">Send</string>
+  <string name="button_select_image" translatable="false">Select Image</string>
+  <string name="button_cancel" translatable="false">Cancel</string>
+  <string name="generating" translatable="false">Generating...</string>
+  <string name="input_message_is_empty" translatable="false">Please enter an non empty message</string>
+  <string name="debug_info" translatable="false">Latency: %d ms</string>
+  <string name="debug_info_streaming" translatable="false">Latency: first token %d ms, total %d ms</string>
+  <string name="base_model_name" translatable="false">Base model name: %s</string>
+  <string name="streaming" translatable="false">Streaming</string>
+  <string name="batch_run" translatable="false">Batch Run</string>
+  <string name="batch_run_start_message" translatable="false">Start processing...</string>
+  <string name="empty" translatable="false"/>
+  <string name="input_type_label" translatable="false">Input:</string>
+  <string name="output_type_label" translatable="false">Output:</string>
+  <string name="language_label" translatable="false">Language:</string>
+  <string-array name="summarization_input_types" translatable="false">
+    <item>Article</item>
+    <item>Conversation</item>
+  </string-array>
+  <string-array name="summarization_output_types" translatable="false">
+    <item>One Bullet</item>
+    <item>Two Bullets</item>
+    <item>Three Bullets</item>
+  </string-array>
+  <string-array name="summarization_languages" translatable="false">
+    <item>English</item>
+    <item>Japanese</item>
+    <item>Korean</item>
+  </string-array>
+  <string-array name="rewriting_output_types" translatable="false">
+    <item>Elaborate</item>
+    <item>Emojify</item>
+    <item>Shorten</item>
+    <item>Friendly</item>
+    <item>Professional</item>
+    <item>Rephrase</item>
+  </string-array>
+  <string-array name="rewriting_languages" translatable="false">
+    <item>English</item>
+    <item>Japanese</item>
+    <item>German</item>
+    <item>French</item>
+    <item>Italian</item>
+    <item>Spanish</item>
+    <item>Korean</item>
+  </string-array>
+  <string-array name="proofreading_input_types" translatable="false">
+    <item>Keyboard</item>
+    <item>Voice</item>
+  </string-array>
+  <string-array name="proofreading_languages" translatable="false">
+    <item>English</item>
+    <item>Japanese</item>
+    <item>German</item>
+    <item>French</item>
+    <item>Italian</item>
+    <item>Spanish</item>
+    <item>Korean</item>
+  </string-array>
+</resources>
