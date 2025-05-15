@@ -17,7 +17,9 @@
 package com.google.mlkit.md.camera
 
 import android.hardware.Camera
-import com.google.android.gms.common.images.Size
+import android.os.Parcelable
+import android.util.Size
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Stores a preview size and a corresponding same-aspect-ratio picture size. To avoid distorted
@@ -25,17 +27,11 @@ import com.google.android.gms.common.images.Size
  * ratio as the preview size or the preview may end up being distorted. If the picture size is null,
  * then there is no picture size with the same aspect ratio as the preview size.
  */
-class CameraSizePair {
-    val preview: Size
-    val picture: Size?
+@Parcelize
+data class CameraSizePair(val preview: Size, val picture: Size?): Parcelable {
 
-    constructor(previewSize: Camera.Size, pictureSize: Camera.Size?) {
-        preview = Size(previewSize.width, previewSize.height)
-        picture = pictureSize?.let { Size(it.width, it.height) }
+    constructor(previewSize: Camera.Size, pictureSize: Camera.Size?) : this(Size(previewSize.width, previewSize.height),
+        pictureSize?.let { Size(it.width, it.height) }) {
     }
 
-    constructor(previewSize: Size, pictureSize: Size?) {
-        preview = previewSize
-        picture = pictureSize
-    }
 }

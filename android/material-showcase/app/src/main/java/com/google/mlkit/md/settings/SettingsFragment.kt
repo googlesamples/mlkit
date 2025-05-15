@@ -16,14 +16,11 @@
 
 package com.google.mlkit.md.settings
 
-import android.hardware.Camera
 import android.os.Bundle
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
-import com.google.mlkit.md.camera.CameraSource
 import com.google.mlkit.md.R
-import com.google.mlkit.md.Utils
-import java.util.HashMap
+import com.google.mlkit.md.camera.CameraSizePair
 
 /** Configures App settings.  */
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -34,14 +31,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setUpRearCameraPreviewSizePreference() {
-        val previewSizePreference =
-            findPreference<ListPreference>(getString(R.string.pref_key_rear_camera_preview_size))!!
-
-        var camera: Camera? = null
-
-        try {
-            camera = Camera.open(CameraSource.CAMERA_FACING_BACK)
-            val previewSizeList = Utils.generateValidPreviewSizeList(camera!!)
+        val previewSizePreference = findPreference<ListPreference>(getString(R.string.pref_key_rear_camera_preview_size))!!
+        val previewSizeList = arguments?.getParcelableArrayList<CameraSizePair>(ARG_PREVIEW_SIZE_LIST) ?: arrayListOf()
+        if (previewSizeList.isEmpty()){
+            previewSizePreference.parent?.removePreference(previewSizePreference)
+        }
+        else{
             val previewSizeStringValues = arrayOfNulls<String>(previewSizeList.size)
             val previewToPictureSizeStringMap = HashMap<String, String>()
             for (i in previewSizeList.indices) {
@@ -65,11 +60,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 )
                 true
             }
-        } catch (e: Exception) {
-            // If there's no camera for the given camera id, hide the corresponding preference.
-            previewSizePreference.parent?.removePreference(previewSizePreference)
-        } finally {
-            camera?.release()
+        }
+    }
+
+    companion object {
+        private const val ARG_PREVIEW_SIZE_LIST = "arg_preview_size_list"
+
+        fun newInstance(previewSizeList: ArrayList<CameraSizePair>) = SettingsFragment().apply {
+            arguments = Bundle().apply {
+                putParcelableArrayList(ARG_PREVIEW_SIZE_LIST, previewSizeList)
+            }
         }
     }
 }

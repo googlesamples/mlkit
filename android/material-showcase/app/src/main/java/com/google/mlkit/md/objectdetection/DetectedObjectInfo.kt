@@ -35,26 +35,12 @@ class DetectedObjectInfo(
 ) {
 
     private var bitmap: Bitmap? = null
-    private var jpegBytes: ByteArray? = null
 
     val objectId: Int? = detectedObject.trackingId
     val boundingBox: Rect = detectedObject.boundingBox
     val labels: List<DetectedObject.Label> = detectedObject.labels
 
-    val imageData: ByteArray?
-        @Synchronized get() {
-            if (jpegBytes == null) {
-                try {
-                    ByteArrayOutputStream().use { stream ->
-                        getBitmap().compress(CompressFormat.JPEG, /* quality= */ 100, stream)
-                        jpegBytes = stream.toByteArray()
-                    }
-                } catch (e: IOException) {
-                    Log.e(TAG, "Error getting object image data!")
-                }
-            }
-            return jpegBytes
-        }
+
 
     @Synchronized
     fun getBitmap(): Bitmap {
@@ -67,11 +53,15 @@ class DetectedObjectInfo(
                 boundingBox.width(),
                 boundingBox.height()
             )
-            if (createdBitmap.width > MAX_IMAGE_WIDTH) {
+            (if (createdBitmap.width > MAX_IMAGE_WIDTH) {
                 val dstHeight = (MAX_IMAGE_WIDTH.toFloat() / createdBitmap.width * createdBitmap.height).toInt()
-                bitmap = Bitmap.createScaledBitmap(createdBitmap, MAX_IMAGE_WIDTH, dstHeight, /* filter= */ false)
+                Bitmap.createScaledBitmap(createdBitmap, MAX_IMAGE_WIDTH, dstHeight, /* filter= */ false)
             }
-            createdBitmap
+            else{
+                createdBitmap
+            }).also {
+                bitmap = it
+            }
         }
     }
 
