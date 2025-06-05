@@ -22,6 +22,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.genai.common.DownloadCallback
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.common.StreamingCallback
+import com.google.mlkit.genai.demo.ContentItem
 import com.google.mlkit.genai.demo.R
 import com.google.mlkit.genai.proofreading.Proofreader
 import com.google.mlkit.genai.proofreading.ProofreaderOptions.InputType
@@ -31,7 +32,7 @@ import com.google.mlkit.genai.proofreading.Proofreading
 import com.google.mlkit.genai.proofreading.ProofreadingRequest
 
 /** Demonstrates the Proofreading API usage. */
-class ProofreadingActivity : TextInputBasedActivity() {
+class ProofreadingActivity : TextInputBaseActivity() {
   private var inputType = InputType.KEYBOARD
   private var language = Language.ENGLISH
   private var proofreader: Proofreader? = null
@@ -67,7 +68,7 @@ class ProofreadingActivity : TextInputBasedActivity() {
   }
 
   override fun getBaseModelName(): ListenableFuture<String> {
-    return checkNotNull(proofreader).getBaseModelName()
+    return checkNotNull(proofreader).baseModelName
   }
 
   override fun checkFeatureStatus(): @FeatureStatus ListenableFuture<Int> {
@@ -79,10 +80,10 @@ class ProofreadingActivity : TextInputBasedActivity() {
   }
 
   override fun runInferenceImpl(
-    request: String,
+    request: ContentItem.TextItem,
     streamingCallback: StreamingCallback?,
   ): ListenableFuture<List<String>> {
-    val proofreadingRequest = ProofreadingRequest.builder(request).build()
+    val proofreadingRequest = ProofreadingRequest.builder(request.text).build()
     val inferenceFuture =
       checkNotNull(proofreader).let { proofreader ->
         streamingCallback?.let { proofreader.runInference(proofreadingRequest, it) }

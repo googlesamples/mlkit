@@ -28,6 +28,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.genai.common.DownloadCallback;
 import com.google.mlkit.genai.common.FeatureStatus;
 import com.google.mlkit.genai.common.StreamingCallback;
+import com.google.mlkit.genai.demo.ContentItem.TextItem;
 import com.google.mlkit.genai.demo.R;
 import com.google.mlkit.genai.summarization.Summarization;
 import com.google.mlkit.genai.summarization.SummarizationRequest;
@@ -42,7 +43,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /** Demonstrates the Summarization API usage. */
-public class SummarizationActivity extends TextInputBasedActivity {
+public class SummarizationActivity extends TextInputBaseActivity {
   private static final String TAG = SummarizationActivity.class.getSimpleName();
 
   private int inputType = InputType.ARTICLE;
@@ -89,8 +90,9 @@ public class SummarizationActivity extends TextInputBasedActivity {
 
   @Override
   protected ListenableFuture<List<String>> runInferenceImpl(
-      String request, @Nullable StreamingCallback streamingCallback) {
-    SummarizationRequest summarizationRequest = SummarizationRequest.builder(request).build();
+      TextItem request, @Nullable StreamingCallback streamingCallback) {
+    SummarizationRequest summarizationRequest =
+        SummarizationRequest.builder(request.getText()).build();
     return Futures.transform(
         streamingCallback != null
             ? summarizer.runInference(summarizationRequest, streamingCallback)
@@ -156,7 +158,7 @@ public class SummarizationActivity extends TextInputBasedActivity {
     try {
       SummarizationResult result =
           summarizer.runInference(SummarizationRequest.builder(request).build()).get();
-      return Arrays.asList(result.getSummary());
+      return ImmutableList.of(result.getSummary());
     } catch (ExecutionException | InterruptedException e) {
       Log.e(TAG, "Failed to run inference.", e);
       return Arrays.asList("Failed to run inference: " + e.getMessage(), "0");

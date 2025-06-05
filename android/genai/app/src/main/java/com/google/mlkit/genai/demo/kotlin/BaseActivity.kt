@@ -17,28 +17,19 @@ package com.google.mlkit.genai.demo.kotlin
 
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.SpannedString
-import android.text.TextUtils
-import android.text.style.StyleSpan
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
@@ -51,6 +42,7 @@ import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.common.GenAiException
 import com.google.mlkit.genai.common.StreamingCallback
 import com.google.mlkit.genai.demo.ContentAdapter
+import com.google.mlkit.genai.demo.ContentItem
 import com.google.mlkit.genai.demo.R
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
@@ -62,11 +54,9 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.Executors
 
-/** Base Activity for APIs that accept text input as request. */
-abstract class TextInputBasedActivity : AppCompatActivity() {
+/** Base Activity for ML Kit GenAI APIs. */
+abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
 
-  private lateinit var requestEditText: EditText
-  private lateinit var sendButton: Button
   private lateinit var debugInfoTextView: TextView
   private lateinit var contentAdapter: ContentAdapter
 
@@ -88,28 +78,10 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(getLayoutResId())
 
-    requestEditText = findViewById(R.id.request_edit_text)
     debugInfoTextView = findViewById(R.id.debug_info_text_view)
 
-    sendButton = findViewById(R.id.send_button)
-    sendButton.setOnClickListener {
-      val request = requestEditText.text.toString()
-      if (TextUtils.isEmpty(request)) {
-        Toast.makeText(this, R.string.input_message_is_empty, Toast.LENGTH_SHORT).show()
-        return@setOnClickListener
-      }
-
-      contentAdapter.addContent(ContentAdapter.VIEW_TYPE_REQUEST_TEXT, request)
-      startGeneratingUi()
-      if (modelDownloaded) {
-        runInference(request)
-      } else {
-        checkFeatureStatus(request)
-      }
-    }
-
     findViewById<RecyclerView>(R.id.content_recycler_view).apply {
-      layoutManager = LinearLayoutManager(this@TextInputBasedActivity)
+      layoutManager = LinearLayoutManager(this@BaseActivity)
       adapter = ContentAdapter().also { contentAdapter = it }
     }
 
@@ -146,6 +118,16 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
     )
   }
 
+  protected fun onSend(request: RequestT) {
+    contentAdapter.addContent(request)
+    startGeneratingUi()
+    if (modelDownloaded) {
+      runInference(request)
+    } else {
+      checkFeatureStatus(request)
+    }
+  }
+
   protected abstract fun getBaseModelName(): ListenableFuture<String>
 
   protected abstract fun getLayoutResId(): Int
@@ -170,13 +152,16 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
     }
   }
 
-  private fun checkFeatureStatus(request: String) {
+  private fun checkFeatureStatus(request: RequestT) {
     Futures.addCallback(
       checkFeatureStatus(),
       object : FutureCallback<Int> {
         override fun onSuccess(featureStatus: Int) {
           when (featureStatus) {
-            FeatureStatus.AVAILABLE -> runInference(request)
+            FeatureStatus.AVAILABLE -> {
+              modelDownloaded = true
+              runInference(request)
+            }
             FeatureStatus.UNAVAILABLE -> displayErrorMessage("Feature is unavailable.")
             else -> downloadAndRunInference(request)
           }
@@ -193,7 +178,7 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
 
   protected abstract fun checkFeatureStatus(): @FeatureStatus ListenableFuture<Int>
 
-  private fun downloadAndRunInference(request: String) {
+  private fun downloadAndRunInference(request: RequestT) {
     Futures.addCallback(
       downloadFeature(
         object : DownloadCallback {
@@ -241,28 +226,23 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
 
   protected abstract fun downloadFeature(callback: DownloadCallback): ListenableFuture<Void>
 
-  private fun runInference(request: String) {
+  private fun runInference(request: RequestT) {
     val startMs = System.currentTimeMillis()
     if (streaming) {
       hasFirstStreamingResult = false
-      val resultBuilder = SpannableStringBuilder(STREAMING_INDICATOR)
-      resultBuilder.setSpan(
-        StyleSpan(Typeface.BOLD),
-        0,
-        STREAMING_INDICATOR.length,
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
-      )
-
+      val resultBuilder = StringBuilder()
       Futures.addCallback(
         runInferenceImpl(request) { additionalText ->
           runOnUiThread {
             resultBuilder.append(additionalText)
             if (hasFirstStreamingResult) {
-              contentAdapter.updateStreamingResponse(SpannedString(resultBuilder))
+              contentAdapter.updateStreamingResponse(resultBuilder.toString())
             } else {
               contentAdapter.addContent(
-                ContentAdapter.VIEW_TYPE_RESPONSE,
-                SpannedString(resultBuilder),
+                ContentItem.TextItem(
+                  resultBuilder.toString(),
+                  ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING,
+                )
               )
               hasFirstStreamingResult = true
               firstTokenLatency = Instant.now().minusMillis(startMs).toEpochMilli()
@@ -272,7 +252,7 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
         object : FutureCallback<List<String>> {
           override fun onSuccess(results: List<String>) {
             results.forEach { result ->
-              contentAdapter.addContent(ContentAdapter.VIEW_TYPE_RESPONSE, result)
+              contentAdapter.addContent(ContentItem.TextItem.fromResponse(result))
             }
             val totalLatency: Long = Instant.now().minusMillis(startMs).toEpochMilli()
             val debugInfo =
@@ -294,7 +274,7 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
         object : FutureCallback<List<String>> {
           override fun onSuccess(results: List<String>) {
             results.forEach { result ->
-              contentAdapter.addContent(ContentAdapter.VIEW_TYPE_RESPONSE, result)
+              contentAdapter.addContent(ContentItem.TextItem.fromResponse(result))
             }
             val debugInfo =
               getString(R.string.debug_info, Instant.now().minusMillis(startMs).toEpochMilli())
@@ -312,7 +292,7 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
   }
 
   protected abstract fun runInferenceImpl(
-    request: String,
+    request: RequestT,
     streamingCallback: StreamingCallback?,
   ): ListenableFuture<List<String>>
 
@@ -335,20 +315,17 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
   }
 
   private fun displayErrorMessage(errorMessage: String) {
-    contentAdapter.addContent(ContentAdapter.VIEW_TYPE_RESPONSE_ERROR, errorMessage)
+    contentAdapter.addContent(
+      ContentItem.TextItem(errorMessage, ContentAdapter.VIEW_TYPE_RESPONSE_ERROR)
+    )
     endGeneratingUi(getString(R.string.empty))
   }
 
-  private fun startGeneratingUi() {
-    sendButton.isEnabled = false
-    sendButton.setText(R.string.generating)
-    requestEditText.setText(R.string.empty)
+  protected open fun startGeneratingUi() {
     debugInfoTextView.visibility = View.GONE
   }
 
-  private fun endGeneratingUi(debugInfo: String) {
-    sendButton.isEnabled = true
-    sendButton.setText(R.string.button_send)
+  protected open fun endGeneratingUi(debugInfo: String) {
     debugInfoTextView.run {
       text = debugInfo
       visibility = if (debugInfo.isEmpty()) View.GONE else View.VISIBLE
@@ -429,7 +406,6 @@ abstract class TextInputBasedActivity : AppCompatActivity() {
 
   companion object {
     private const val TAG = "TextInputBasedActivity"
-    private const val STREAMING_INDICATOR = "STREAMING...\n"
     private const val MEGABYTE = 1024 * 1024L
     private const val MIN_INFERENCE_INTERVAL_MS = 6000L
   }

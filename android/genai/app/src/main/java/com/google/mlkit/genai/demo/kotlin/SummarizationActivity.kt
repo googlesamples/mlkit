@@ -22,6 +22,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.genai.common.DownloadCallback
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.common.StreamingCallback
+import com.google.mlkit.genai.demo.ContentItem
 import com.google.mlkit.genai.demo.R
 import com.google.mlkit.genai.summarization.Summarization
 import com.google.mlkit.genai.summarization.SummarizationRequest
@@ -33,7 +34,7 @@ import com.google.mlkit.genai.summarization.SummarizerOptions.Language
 import com.google.mlkit.genai.summarization.SummarizerOptions.OutputType
 
 /** Demonstrates the Summarization API usage. */
-class SummarizationActivity : TextInputBasedActivity() {
+class SummarizationActivity : TextInputBaseActivity() {
   private var inputType = InputType.ARTICLE
   private var outputType = OutputType.ONE_BULLET
   private var language = Language.ENGLISH
@@ -66,7 +67,7 @@ class SummarizationActivity : TextInputBasedActivity() {
   }
 
   override fun getBaseModelName(): ListenableFuture<String> {
-    return checkNotNull(summarizer).getBaseModelName()
+    return checkNotNull(summarizer).baseModelName
   }
 
   override fun checkFeatureStatus(): @FeatureStatus ListenableFuture<Int> {
@@ -78,10 +79,10 @@ class SummarizationActivity : TextInputBasedActivity() {
   }
 
   override fun runInferenceImpl(
-    request: String,
+    request: ContentItem.TextItem,
     streamingCallback: StreamingCallback?,
   ): ListenableFuture<List<String>> {
-    val summarizeRequest = SummarizationRequest.builder(request).build()
+    val summarizeRequest = SummarizationRequest.builder(request.text).build()
     val inferenceFuture =
       checkNotNull(summarizer).let { summarizer ->
         streamingCallback?.let { summarizer.runInference(summarizeRequest, it) }

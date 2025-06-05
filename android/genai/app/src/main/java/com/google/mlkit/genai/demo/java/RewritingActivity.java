@@ -28,6 +28,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.genai.common.DownloadCallback;
 import com.google.mlkit.genai.common.FeatureStatus;
 import com.google.mlkit.genai.common.StreamingCallback;
+import com.google.mlkit.genai.demo.ContentItem.TextItem;
 import com.google.mlkit.genai.demo.R;
 import com.google.mlkit.genai.rewriting.Rewriter;
 import com.google.mlkit.genai.rewriting.RewriterOptions;
@@ -43,7 +44,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /** Demonstrates the Rewriting API usage. */
-public class RewritingActivity extends TextInputBasedActivity {
+public class RewritingActivity extends TextInputBaseActivity {
   private static final String TAG = RewritingActivity.class.getSimpleName();
 
   private int outputType = OutputType.ELABORATE;
@@ -89,8 +90,8 @@ public class RewritingActivity extends TextInputBasedActivity {
 
   @Override
   protected ListenableFuture<List<String>> runInferenceImpl(
-      String request, @Nullable StreamingCallback streamingCallback) {
-    RewritingRequest rewritingRequest = RewritingRequest.builder(request).build();
+      TextItem request, @Nullable StreamingCallback streamingCallback) {
+    RewritingRequest rewritingRequest = RewritingRequest.builder(request.getText()).build();
     return Futures.transform(
         streamingCallback != null
             ? rewriter.runInference(rewritingRequest, streamingCallback)

@@ -22,6 +22,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.genai.common.DownloadCallback
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.common.StreamingCallback
+import com.google.mlkit.genai.demo.ContentItem
 import com.google.mlkit.genai.demo.R
 import com.google.mlkit.genai.rewriting.Rewriter
 import com.google.mlkit.genai.rewriting.RewriterOptions
@@ -31,7 +32,7 @@ import com.google.mlkit.genai.rewriting.Rewriting
 import com.google.mlkit.genai.rewriting.RewritingRequest
 
 /** Demonstrates the Rewriting API usage. */
-class RewritingActivity : TextInputBasedActivity() {
+class RewritingActivity : TextInputBaseActivity() {
   private var outputType = OutputType.ELABORATE
   private var language = Language.ENGLISH
   private var rewriter: Rewriter? = null
@@ -67,7 +68,7 @@ class RewritingActivity : TextInputBasedActivity() {
   }
 
   override fun getBaseModelName(): ListenableFuture<String> {
-    return checkNotNull(rewriter).getBaseModelName()
+    return checkNotNull(rewriter).baseModelName
   }
 
   override fun checkFeatureStatus(): @FeatureStatus ListenableFuture<Int> {
@@ -79,10 +80,10 @@ class RewritingActivity : TextInputBasedActivity() {
   }
 
   override fun runInferenceImpl(
-    request: String,
+    request: ContentItem.TextItem,
     streamingCallback: StreamingCallback?,
   ): ListenableFuture<List<String>> {
-    val rewritingRequest = RewritingRequest.builder(request).build()
+    val rewritingRequest = RewritingRequest.builder(request.text).build()
     val inferenceFuture =
       checkNotNull(rewriter).let { rewriter ->
         streamingCallback?.let { rewriter.runInference(rewritingRequest, it) }

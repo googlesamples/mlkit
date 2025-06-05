@@ -28,6 +28,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.genai.common.DownloadCallback;
 import com.google.mlkit.genai.common.FeatureStatus;
 import com.google.mlkit.genai.common.StreamingCallback;
+import com.google.mlkit.genai.demo.ContentItem.TextItem;
 import com.google.mlkit.genai.demo.R;
 import com.google.mlkit.genai.proofreading.Proofreader;
 import com.google.mlkit.genai.proofreading.ProofreaderOptions;
@@ -43,7 +44,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /** Demonstrates the Proofreading API usage. */
-public class ProofreadingActivity extends TextInputBasedActivity {
+public class ProofreadingActivity extends TextInputBaseActivity {
   private static final String TAG = ProofreadingActivity.class.getSimpleName();
 
   private int inputType = InputType.KEYBOARD;
@@ -89,8 +90,9 @@ public class ProofreadingActivity extends TextInputBasedActivity {
 
   @Override
   protected ListenableFuture<List<String>> runInferenceImpl(
-      String request, @Nullable StreamingCallback streamingCallback) {
-    ProofreadingRequest proofreadingRequest = ProofreadingRequest.builder(request).build();
+      TextItem request, @Nullable StreamingCallback streamingCallback) {
+    ProofreadingRequest proofreadingRequest =
+        ProofreadingRequest.builder(request.getText()).build();
     return Futures.transform(
         streamingCallback != null
             ? proofreader.runInference(proofreadingRequest, streamingCallback)

@@ -19,28 +19,19 @@ package com.google.mlkit.genai.demo.java;
 import static java.util.Objects.requireNonNull;
 
 import android.app.AlertDialog;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.SpannedString;
-import android.text.TextUtils;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument;
 import androidx.activity.result.contract.ActivityResultContracts.GetContent;
@@ -55,6 +46,8 @@ import com.google.mlkit.genai.common.FeatureStatus;
 import com.google.mlkit.genai.common.GenAiException;
 import com.google.mlkit.genai.common.StreamingCallback;
 import com.google.mlkit.genai.demo.ContentAdapter;
+import com.google.mlkit.genai.demo.ContentItem;
+import com.google.mlkit.genai.demo.ContentItem.TextItem;
 import com.google.mlkit.genai.demo.R;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -73,16 +66,13 @@ import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-/** Base Activity for APIs that accept text input as request. */
-abstract class TextInputBasedActivity extends AppCompatActivity {
+/** Base Activity for ML Kit GenAI APIs. */
+abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActivity {
 
-  private static final String TAG = TextInputBasedActivity.class.getSimpleName();
-  private static final String STREAMING_INDICATOR = "STREAMING...\n";
+  private static final String TAG = BaseActivity.class.getSimpleName();
   private static final long MEGABYTE = 1024 * 1024L;
   private static final long MIN_INFERENCE_INTERVAL_MS = 6000;
 
-  private EditText requestEditText;
-  private Button sendButton;
   private TextView debugInfoTextView;
 
   private boolean modelDownloaded;
@@ -106,26 +96,7 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(getLayoutResId());
 
-    requestEditText = findViewById(R.id.request_edit_text);
     debugInfoTextView = findViewById(R.id.debug_info_text_view);
-
-    sendButton = findViewById(R.id.send_button);
-    sendButton.setOnClickListener(
-        view -> {
-          String request = requestEditText.getText().toString();
-          if (TextUtils.isEmpty(request)) {
-            Toast.makeText(this, R.string.input_message_is_empty, Toast.LENGTH_SHORT).show();
-            return;
-          }
-
-          contentAdapter.addContent(ContentAdapter.VIEW_TYPE_REQUEST_TEXT, request);
-          startGeneratingUi();
-          if (modelDownloaded) {
-            runInference(request);
-          } else {
-            checkFeatureStatus(request);
-          }
-        });
 
     RecyclerView contentRecyclerView = findViewById(R.id.content_recycler_view);
     contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -167,11 +138,21 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
           }
 
           @Override
-          public void onFailure(Throwable t) {
+          public void onFailure(@NonNull Throwable t) {
             Log.e(TAG, "Failed to get base model name.", t);
           }
         },
         ContextCompat.getMainExecutor(this));
+  }
+
+  protected void onSend(RequestT request) {
+    contentAdapter.addContent(request);
+    startGeneratingUi();
+    if (modelDownloaded) {
+      runInference(request);
+    } else {
+      checkFeatureStatus(request);
+    }
   }
 
   protected abstract int getLayoutResId();
@@ -196,14 +177,17 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
     return super.onOptionsItemSelected(item);
   }
 
-  private void checkFeatureStatus(String request) {
+  private void checkFeatureStatus(RequestT request) {
     Futures.addCallback(
         checkFeatureStatus(),
         new FutureCallback<>() {
           @Override
           public void onSuccess(Integer featureStatus) {
             switch (featureStatus) {
-              case FeatureStatus.AVAILABLE -> runInference(request);
+              case FeatureStatus.AVAILABLE -> {
+                modelDownloaded = true;
+                runInference(request);
+              }
               case FeatureStatus.UNAVAILABLE -> displayErrorMessage("Feature is unavailable.");
               default -> downloadAndRunInference(request);
             }
@@ -218,12 +202,12 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
         ContextCompat.getMainExecutor(this));
   }
 
-  protected abstract ListenableFuture<String> getBaseModelName();
-
   @FeatureStatus
   protected abstract ListenableFuture<Integer> checkFeatureStatus();
 
-  private void downloadAndRunInference(String request) {
+  protected abstract ListenableFuture<String> getBaseModelName();
+
+  private void downloadAndRunInference(RequestT request) {
     Futures.addCallback(
         downloadFeature(
             new DownloadCallback() {
@@ -272,17 +256,11 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
 
   protected abstract ListenableFuture<Void> downloadFeature(DownloadCallback callback);
 
-  private void runInference(String request) {
+  private void runInference(RequestT request) {
     long startMs = System.currentTimeMillis();
     if (streaming) {
       hasFirstStreamingResult = false;
-      SpannableStringBuilder resultBuilder = new SpannableStringBuilder(STREAMING_INDICATOR);
-      resultBuilder.setSpan(
-          new StyleSpan(Typeface.BOLD),
-          0,
-          STREAMING_INDICATOR.length(),
-          Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
+      StringBuilder resultBuilder = new StringBuilder();
       Futures.addCallback(
           runInferenceImpl(
               request,
@@ -291,10 +269,10 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
                       () -> {
                         resultBuilder.append(additionalText);
                         if (hasFirstStreamingResult) {
-                          contentAdapter.updateStreamingResponse(new SpannedString(resultBuilder));
+                          contentAdapter.updateStreamingResponse(resultBuilder.toString());
                         } else {
                           contentAdapter.addContent(
-                              ContentAdapter.VIEW_TYPE_RESPONSE, new SpannedString(resultBuilder));
+                              TextItem.Companion.fromResponse(resultBuilder.toString()));
                           hasFirstStreamingResult = true;
                           firstTokenLatency = Instant.now().minusMillis(startMs).toEpochMilli();
                         }
@@ -303,7 +281,7 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<String> results) {
               results.forEach(
-                  result -> contentAdapter.addContent(ContentAdapter.VIEW_TYPE_RESPONSE, result));
+                  result -> contentAdapter.addContent(TextItem.Companion.fromResponse(result)));
               long totalLatency = Instant.now().minusMillis(startMs).toEpochMilli();
               String debugInfo =
                   getString(R.string.debug_info_streaming, firstTokenLatency, totalLatency);
@@ -326,7 +304,7 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<String> results) {
               results.forEach(
-                  result -> contentAdapter.addContent(ContentAdapter.VIEW_TYPE_RESPONSE, result));
+                  result -> contentAdapter.addContent(TextItem.Companion.fromResponse(result)));
               String debugInfo =
                   getString(R.string.debug_info, Instant.now().minusMillis(startMs).toEpochMilli());
               endGeneratingUi(debugInfo);
@@ -343,7 +321,7 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
   }
 
   protected abstract ListenableFuture<List<String>> runInferenceImpl(
-      String request, @Nullable StreamingCallback streamingCallback);
+      RequestT request, @Nullable StreamingCallback streamingCallback);
 
   protected void setupSpinner(int spinnerId, int arrayId, Consumer<Integer> onItemSelected) {
     Spinner spinner = findViewById(spinnerId);
@@ -364,20 +342,15 @@ abstract class TextInputBasedActivity extends AppCompatActivity {
   }
 
   private void displayErrorMessage(String errorMessage) {
-    contentAdapter.addContent(ContentAdapter.VIEW_TYPE_RESPONSE_ERROR, errorMessage);
+    contentAdapter.addContent(new TextItem(errorMessage, ContentAdapter.VIEW_TYPE_RESPONSE_ERROR));
     endGeneratingUi(getString(R.string.empty));
   }
 
-  private void startGeneratingUi() {
-    sendButton.setEnabled(false);
-    sendButton.setText(R.string.generating);
-    requestEditText.setText(R.string.empty);
+  protected void startGeneratingUi() {
     debugInfoTextView.setVisibility(View.GONE);
   }
 
-  private void endGeneratingUi(String debugInfo) {
-    sendButton.setEnabled(true);
-    sendButton.setText(R.string.button_send);
+  protected void endGeneratingUi(String debugInfo) {
     debugInfoTextView.setText(debugInfo);
     debugInfoTextView.setVisibility(debugInfo.isEmpty() ? View.GONE : View.VISIBLE);
   }
