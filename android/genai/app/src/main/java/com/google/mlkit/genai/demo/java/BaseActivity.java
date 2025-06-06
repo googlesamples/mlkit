@@ -130,7 +130,7 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
     super.onPostCreate(savedInstanceState);
     Futures.addCallback(
         getBaseModelName(),
-        new FutureCallback<String>() {
+        new FutureCallback<>() {
           @Override
           public void onSuccess(String result) {
             debugInfoTextView.setVisibility(View.VISIBLE);
@@ -272,7 +272,7 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
                           contentAdapter.updateStreamingResponse(resultBuilder.toString());
                         } else {
                           contentAdapter.addContent(
-                              TextItem.Companion.fromResponse(resultBuilder.toString()));
+                              TextItem.Companion.fromStreamingResponse(resultBuilder.toString()));
                           hasFirstStreamingResult = true;
                           firstTokenLatency = Instant.now().minusMillis(startMs).toEpochMilli();
                         }
@@ -342,7 +342,7 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
   }
 
   private void displayErrorMessage(String errorMessage) {
-    contentAdapter.addContent(new TextItem(errorMessage, ContentAdapter.VIEW_TYPE_RESPONSE_ERROR));
+    contentAdapter.addContent(TextItem.Companion.fromErrorResponse(errorMessage));
     endGeneratingUi(getString(R.string.empty));
   }
 

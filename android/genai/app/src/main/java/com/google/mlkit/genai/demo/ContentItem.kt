@@ -19,6 +19,8 @@ import android.net.Uri
 import com.google.mlkit.genai.demo.ContentAdapter.Companion.VIEW_TYPE_REQUEST_IMAGE
 import com.google.mlkit.genai.demo.ContentAdapter.Companion.VIEW_TYPE_REQUEST_TEXT
 import com.google.mlkit.genai.demo.ContentAdapter.Companion.VIEW_TYPE_RESPONSE
+import com.google.mlkit.genai.demo.ContentAdapter.Companion.VIEW_TYPE_RESPONSE_ERROR
+import com.google.mlkit.genai.demo.ContentAdapter.Companion.VIEW_TYPE_RESPONSE_STREAMING
 
 /**
  * Represents a generic content item that can be rendered in a RecyclerView and holds GenAI API
@@ -34,6 +36,12 @@ sealed interface ContentItem {
       fun fromRequest(request: String): TextItem = TextItem(request, VIEW_TYPE_REQUEST_TEXT)
 
       fun fromResponse(response: String): TextItem = TextItem(response, VIEW_TYPE_RESPONSE)
+
+      fun fromErrorResponse(response: String): TextItem =
+        TextItem(response, VIEW_TYPE_RESPONSE_ERROR)
+
+      fun fromStreamingResponse(response: String): TextItem =
+        TextItem(response, VIEW_TYPE_RESPONSE_STREAMING)
     }
   }
 

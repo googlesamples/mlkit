@@ -46,12 +46,9 @@ class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
   }
 
   fun updateStreamingResponse(response: String) {
-    if (contentList.isNotEmpty() && contentList.last().viewType == VIEW_TYPE_RESPONSE_STREAMING) {
-      contentList[contentList.size - 1] = TextItem(response, VIEW_TYPE_RESPONSE_STREAMING)
-      notifyItemChanged(contentList.size - 1)
-    } else {
-      addContent(TextItem(response, VIEW_TYPE_RESPONSE_STREAMING))
-    }
+    contentList[contentList.size - 1] = TextItem.fromStreamingResponse(response)
+    notifyDataSetChanged()
+    recyclerView?.post { recyclerView?.smoothScrollToPosition(contentList.size - 1) }
   }
 
   override fun getItemViewType(position: Int): Int {
@@ -97,7 +94,7 @@ class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
     private val defaultTextColors: ColorStateList = contentTextView.textColors
 
     override fun bind(item: ContentItem) {
-      if (item is ContentItem.TextItem) {
+      if (item is TextItem) {
         if (item.viewType == VIEW_TYPE_RESPONSE_ERROR) {
           contentTextView.text = item.text
           contentTextView.setTextColor(Color.RED)

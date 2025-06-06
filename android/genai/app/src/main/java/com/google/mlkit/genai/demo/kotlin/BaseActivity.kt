@@ -239,10 +239,7 @@ abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
               contentAdapter.updateStreamingResponse(resultBuilder.toString())
             } else {
               contentAdapter.addContent(
-                ContentItem.TextItem(
-                  resultBuilder.toString(),
-                  ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING,
-                )
+                ContentItem.TextItem.fromStreamingResponse(resultBuilder.toString())
               )
               hasFirstStreamingResult = true
               firstTokenLatency = Instant.now().minusMillis(startMs).toEpochMilli()
@@ -315,9 +312,7 @@ abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
   }
 
   private fun displayErrorMessage(errorMessage: String) {
-    contentAdapter.addContent(
-      ContentItem.TextItem(errorMessage, ContentAdapter.VIEW_TYPE_RESPONSE_ERROR)
-    )
+    contentAdapter.addContent(ContentItem.TextItem.fromErrorResponse(errorMessage))
     endGeneratingUi(getString(R.string.empty))
   }
 
