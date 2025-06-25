@@ -41,6 +41,7 @@ import com.google.mlkit.md.camera.GraphicOverlay
 import com.google.mlkit.md.camera.WorkflowModel
 import com.google.mlkit.md.camera.WorkflowModel.WorkflowState
 import com.google.mlkit.md.camera.CameraSource
+import com.google.mlkit.md.camera.CameraSourceFactory
 import com.google.mlkit.md.camera.CameraSourcePreview
 import com.google.mlkit.md.objectdetection.MultiObjectProcessor
 import com.google.mlkit.md.objectdetection.ProminentObjectProcessor
@@ -81,7 +82,7 @@ class CustomModelObjectDetectionActivity : AppCompatActivity(), OnClickListener 
         preview = findViewById(R.id.camera_preview)
         graphicOverlay = findViewById<GraphicOverlay>(R.id.camera_preview_graphic_overlay).apply {
             setOnClickListener(this@CustomModelObjectDetectionActivity)
-            cameraSource = CameraSource(this)
+            cameraSource = CameraSourceFactory.createCameraSource(this)
         }
         promptChip = findViewById(R.id.bottom_prompt_chip)
         promptChipAnimator =
@@ -160,15 +161,15 @@ class CustomModelObjectDetectionActivity : AppCompatActivity(), OnClickListener 
             R.id.flash_button -> {
                 if (flashButton?.isSelected == true) {
                     flashButton?.isSelected = false
-                    cameraSource?.updateFlashMode(Camera.Parameters.FLASH_MODE_OFF)
+                    cameraSource?.setFlashStatus(false)
                 } else {
                     flashButton?.isSelected = true
-                    cameraSource?.updateFlashMode(Camera.Parameters.FLASH_MODE_TORCH)
+                    cameraSource?.setFlashStatus(true)
                 }
             }
             R.id.settings_button -> {
                 settingsButton?.isEnabled = false
-                startActivity(Intent(this, SettingsActivity::class.java))
+                startActivity(SettingsActivity.newIntent(this, cameraSource))
             }
         }
     }
@@ -275,11 +276,11 @@ class CustomModelObjectDetectionActivity : AppCompatActivity(), OnClickListener 
 
             // Observes changes on the object to search, if happens, show detected object labels as
             // product search results.
-            objectToSearch.observe(this@CustomModelObjectDetectionActivity, Observer { detectObject ->
-                val productList: List<Product> = detectObject.labels.map { label ->
+            objectToSearch.observe(this@CustomModelObjectDetectionActivity, Observer { confirmedObject ->
+                val productList: List<Product> = confirmedObject.labels.map { label ->
                     Product("" /* imageUrl */, label.text, "" /* subtitle */)
                 }
-                workflowModel?.onSearchCompleted(detectObject, productList)
+                workflowModel?.onSearchCompleted(confirmedObject, productList)
             })
 
             // Observes changes on the object that has search completed, if happens, show the bottom sheet

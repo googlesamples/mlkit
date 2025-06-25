@@ -18,9 +18,9 @@ package com.google.mlkit.md.settings
 
 import android.content.Context
 import android.graphics.RectF
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
+import android.util.Size
 import androidx.annotation.StringRes
-import com.google.android.gms.common.images.Size
 import com.google.mlkit.md.R
 import com.google.mlkit.md.camera.CameraSizePair
 import com.google.mlkit.md.camera.GraphicOverlay
