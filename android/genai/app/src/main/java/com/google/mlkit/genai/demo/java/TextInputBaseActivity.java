@@ -50,6 +50,7 @@ abstract class TextInputBaseActivity extends BaseActivity<TextItem> {
 
   @Override
   protected void startGeneratingUi() {
+    super.startGeneratingUi();
     sendButton.setEnabled(false);
     sendButton.setText(R.string.generating);
     requestEditText.setText(R.string.empty);
@@ -57,6 +58,7 @@ abstract class TextInputBaseActivity extends BaseActivity<TextItem> {
 
   @Override
   protected void endGeneratingUi(String debugInfo) {
+    super.endGeneratingUi(debugInfo);
     sendButton.setEnabled(true);
     sendButton.setText(R.string.button_send);
   }

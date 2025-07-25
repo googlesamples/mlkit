@@ -46,12 +46,14 @@ abstract class TextInputBaseActivity : BaseActivity<ContentItem.TextItem>() {
   }
 
   override fun startGeneratingUi() {
+    super.startGeneratingUi()
     sendButton.isEnabled = false
     sendButton.setText(R.string.generating)
     requestEditText.setText(R.string.empty)
   }
 
   override fun endGeneratingUi(debugInfo: String) {
+    super.endGeneratingUi(debugInfo)
     sendButton.isEnabled = true
     sendButton.setText(R.string.button_send)
   }

@@ -112,11 +112,13 @@ class ImageDescriptionActivity : BaseActivity<ContentItem.ImageItem>() {
   }
 
   override fun startGeneratingUi() {
+    super.startGeneratingUi()
     selectImageButton.isEnabled = false
     selectImageButton.setText(R.string.generating)
   }
 
   override fun endGeneratingUi(debugInfo: String) {
+    super.endGeneratingUi(debugInfo)
     selectImageButton.isEnabled = true
     selectImageButton.setText(R.string.button_select_image)
   }
