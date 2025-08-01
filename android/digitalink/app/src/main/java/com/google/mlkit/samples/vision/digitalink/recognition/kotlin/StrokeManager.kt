@@ -1,45 +1,42 @@
-package com.google.mlkit.samples.vision.digitalink.kotlin
+package com.google.mlkit.samples.vision.digitalink.recognition.kotlin
 
 import android.os.Handler
 import android.os.Message
-import androidx.annotation.VisibleForTesting
 import android.util.Log
 import android.view.MotionEvent
+import androidx.annotation.VisibleForTesting
 import com.google.android.gms.tasks.SuccessContinuation
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.mlkit.samples.vision.digitalink.kotlin.RecognitionTask.RecognizedInk
-import com.google.mlkit.vision.digitalink.Ink
-import com.google.mlkit.vision.digitalink.Ink.Stroke
+import com.google.mlkit.samples.vision.digitalink.recognition.kotlin.RecognitionTask.RecognizedInk
+import com.google.mlkit.vision.digitalink.recognition.Ink
+import com.google.mlkit.vision.digitalink.recognition.Ink.Stroke
 import java.util.ArrayList
 
-/** Manages the recognition logic and the content that has been added to the current page.  */
+/** Manages the recognition logic and the content that has been added to the current page. */
 class StrokeManager {
-  /** Interface to register to be notified of changes in the recognized content.  */
+  /** Interface to register to be notified of changes in the recognized content. */
   interface ContentChangedListener {
-    /** This method is called when the recognized content changes.  */
+    /** This method is called when the recognized content changes. */
     fun onContentChanged()
   }
 
-  /** Interface to register to be notified of changes in the status.  */
+  /** Interface to register to be notified of changes in the status. */
   interface StatusChangedListener {
-    /** This method is called when the recognized content changes.  */
+    /** This method is called when the recognized content changes. */
     fun onStatusChanged()
   }
 
-  /** Interface to register to be notified of changes in the downloaded model state.  */
+  /** Interface to register to be notified of changes in the downloaded model state. */
   interface DownloadedModelsChangedListener {
-    /** This method is called when the downloaded models changes.  */
+    /** This method is called when the downloaded models changes. */
     fun onDownloadedModelsChanged(downloadedLanguageTags: Set<String>)
   }
 
   // For handling recognition and model downloading.
   private var recognitionTask: RecognitionTask? = null
 
-  @JvmField
-  @VisibleForTesting
-  var modelManager =
-    ModelManager()
+  @JvmField @VisibleForTesting var modelManager = ModelManager()
 
   // Managing the recognition queue.
   private val content: MutableList<RecognizedInk> = ArrayList()
@@ -71,19 +68,17 @@ class StrokeManager {
   // This handler is only used to trigger the UI timeout. Each time a UI interaction happens,
   // the timer is reset by clearing the queue on this handler and sending a new delayed message (in
   // addNewTouchEvent).
-  private val uiHandler = Handler(
-    Handler.Callback { msg: Message ->
-      if (msg.what == TIMEOUT_TRIGGER) {
-        Log.i(
-          TAG,
-          "Handling timeout trigger."
-        )
-        commitResult()
-        return@Callback true
+  private val uiHandler =
+    Handler(
+      Handler.Callback { msg: Message ->
+        if (msg.what == TIMEOUT_TRIGGER) {
+          Log.i(TAG, "Handling timeout trigger.")
+          commitResult()
+          return@Callback true
+        }
+        false
       }
-      false
-    }
-  )
+    )
 
   private fun commitResult() {
     recognitionTask!!.result()?.let {
@@ -118,7 +113,6 @@ class StrokeManager {
    * This method is called when a new touch event happens on the drawing client and notifies the
    * StrokeManager of new content being added.
    *
-   *
    * This method takes care of triggering the UI timeout and scheduling recognitions on the
    * background thread.
    *
@@ -133,24 +127,19 @@ class StrokeManager {
     // A new event happened -> clear all pending timeout messages.
     uiHandler.removeMessages(TIMEOUT_TRIGGER)
     when (action) {
-      MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> strokeBuilder.addPoint(
-        Ink.Point.create(
-          x,
-          y,
-          t
-        )
-      )
+      MotionEvent.ACTION_DOWN,
+      MotionEvent.ACTION_MOVE -> strokeBuilder.addPoint(Ink.Point.create(x, y, t))
       MotionEvent.ACTION_UP -> {
         strokeBuilder.addPoint(Ink.Point.create(x, y, t))
         inkBuilder.addStroke(strokeBuilder.build())
         strokeBuilder = Stroke.builder()
         stateChangedSinceLastRequest = true
         if (triggerRecognitionAfterInput) {
-          recognize()
+          val unused = recognize()
         }
       }
       else -> // Indicate touch event wasn't handled.
-        return false
+      return false
     }
     return true
   }
@@ -214,41 +203,27 @@ class StrokeManager {
       status = "Recognizer not set"
       return Tasks.forResult(null)
     }
-    return modelManager
-      .checkIsModelDownloaded()
-      .onSuccessTask { result: Boolean? ->
-        if (!result!!) {
-          status = "Model not downloaded yet"
-          return@onSuccessTask Tasks.forResult<String?>(
-            null
-          )
-        }
-        stateChangedSinceLastRequest = false
-        recognitionTask =
-          RecognitionTask(
-            modelManager.recognizer,
-            inkBuilder.build()
-          )
-        uiHandler.sendMessageDelayed(
-          uiHandler.obtainMessage(TIMEOUT_TRIGGER),
-          CONVERSION_TIMEOUT_MS
-        )
-        recognitionTask!!.run()
+    return modelManager.checkIsModelDownloaded().onSuccessTask { result: Boolean? ->
+      if (!result!!) {
+        status = "Model not downloaded yet"
+        return@onSuccessTask Tasks.forResult<String?>(null)
       }
+      stateChangedSinceLastRequest = false
+      recognitionTask = RecognitionTask(modelManager.recognizer, inkBuilder.build())
+      uiHandler.sendMessageDelayed(uiHandler.obtainMessage(TIMEOUT_TRIGGER), CONVERSION_TIMEOUT_MS)
+      recognitionTask!!.run()
+    }
   }
 
   fun refreshDownloadedModelsStatus() {
-    modelManager
-      .downloadedModelLanguages
-      .addOnSuccessListener { downloadedLanguageTags: Set<String> ->
-        downloadedModelsChangedListener?.onDownloadedModelsChanged(downloadedLanguageTags)
-      }
+    modelManager.downloadedModelLanguages.addOnSuccessListener { downloadedLanguageTags: Set<String>
+      ->
+      downloadedModelsChangedListener?.onDownloadedModelsChanged(downloadedLanguageTags)
+    }
   }
 
   companion object {
-    @JvmField
-    @VisibleForTesting
-    val CONVERSION_TIMEOUT_MS: Long = 1000
+    @JvmField @VisibleForTesting val CONVERSION_TIMEOUT_MS: Long = 1000
     private const val TAG = "MLKD.StrokeManager"
 
     // This is a constant that is used as a message identifier to trigger the timeout.

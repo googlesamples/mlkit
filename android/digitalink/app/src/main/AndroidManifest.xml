@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.mlkit.samples.vision.digitalink" android:versionCode="1"
+    package="com.google.mlkit.samples.vision.digitalink.recognition" android:versionCode="1"
     android:versionName="1.0">
 
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,7 +12,7 @@
       android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
 
     <activity
-        android:name="com.google.mlkit.samples.vision.digitalink.DigitalInkMainActivity"
+        android:name="com.google.mlkit.samples.vision.digitalink.recognition.DigitalInkMainActivity"
         android:label="@string/title_activity_main"
         android:exported="true"
         android:screenOrientation="portrait">
@@ -24,7 +24,7 @@
     </activity>
     <!-- Replace the activity declaration above with the following one for trying out the kotlin version of the app.
     <activity
-       android:name="com.google.mlkit.samples.vision.digitalink.kotlin.DigitalInkMainActivity"
+       android:name="com.google.mlkit.samples.vision.digitalink.recognition.kotlin.DigitalInkMainActivity"
        android:label="@string/title_activity_main"
        android:exported="true"
        android:screenOrientation="portrait" >

@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.mlkit.samples.vision.digitalink.DrawingView
+    <com.google.mlkit.samples.vision.digitalink.recognition.DrawingView
         android:id="@+id/drawing_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <com.google.mlkit.samples.vision.digitalink.StatusTextView
+            <com.google.mlkit.samples.vision.digitalink.recognition.StatusTextView
                 android:id="@+id/status_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.google.mlkit.samples.vision.digitalink;
+package com.google.mlkit.samples.vision.digitalink.recognition;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +11,11 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import com.google.android.gms.tasks.Task;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.mlkit.samples.vision.digitalink.StrokeManager.DownloadedModelsChangedListener;
-import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier;
+import com.google.mlkit.samples.vision.digitalink.recognition.StrokeManager.DownloadedModelsChangedListener;
+import com.google.mlkit.vision.digitalink.recognition.DigitalInkRecognitionModelIdentifier;
 import java.util.Locale;
 import java.util.Set;
 
@@ -80,11 +81,11 @@ public class DigitalInkMainActivity extends AppCompatActivity
   }
 
   public void downloadClick(View v) {
-    strokeManager.download();
+    Task<Void> unused = strokeManager.download();
   }
 
   public void recognizeClick(View v) {
-    strokeManager.recognize();
+    Task<String> unused = strokeManager.recognize();
   }
 
   public void clearClick(View v) {
@@ -94,10 +95,10 @@ public class DigitalInkMainActivity extends AppCompatActivity
   }
 
   public void deleteClick(View v) {
-    strokeManager.deleteActiveModel();
+    Task<Void> unused = strokeManager.deleteActiveModel();
   }
 
-  private static class ModelLanguageContainer implements Comparable<ModelLanguageContainer> {
+    private static class ModelLanguageContainer implements Comparable<ModelLanguageContainer> {
     private final String label;
     @Nullable private final String languageTag;
     private boolean downloaded;

@@ -1,4 +1,4 @@
-package com.google.mlkit.samples.vision.digitalink.kotlin
+package com.google.mlkit.samples.vision.digitalink.recognition.kotlin
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,21 +12,17 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import com.google.mlkit.samples.vision.digitalink.kotlin.StrokeManager.ContentChangedListener
-import com.google.mlkit.vision.digitalink.Ink
-import com.google.mlkit.vision.digitalink.Ink.Stroke
+import com.google.mlkit.samples.vision.digitalink.recognition.kotlin.StrokeManager.ContentChangedListener
+import com.google.mlkit.vision.digitalink.common.Stroke
+import com.google.mlkit.vision.digitalink.recognition.Ink
 
 /**
  * Main view for rendering content.
  *
- *
  * The view accepts touch inputs, renders them on screen, and passes the content to the
  * StrokeManager. The view is also able to draw content from the StrokeManager.
  */
-class DrawingView @JvmOverloads constructor(
-  context: Context?,
-  attributeSet: AttributeSet? = null
-) :
+class DrawingView @JvmOverloads constructor(context: Context?, attributeSet: AttributeSet? = null) :
   View(context, attributeSet), ContentChangedListener {
   private val recognizedStrokePaint: Paint
   private val textPaint: TextPaint
@@ -40,12 +36,7 @@ class DrawingView @JvmOverloads constructor(
     this.strokeManager = strokeManager
   }
 
-  override fun onSizeChanged(
-    width: Int,
-    height: Int,
-    oldWidth: Int,
-    oldHeight: Int
-  ) {
+  override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
     Log.i(TAG, "onSizeChanged")
     canvasBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     drawCanvas = Canvas(canvasBitmap)
@@ -98,8 +89,8 @@ class DrawingView @JvmOverloads constructor(
   private fun drawStroke(s: Stroke, paint: Paint) {
     Log.i(TAG, "drawstroke")
     var path: Path = Path()
-    path.moveTo(s.points[0].x, s.points[0].y)
-    for (p in s.points.drop(1)) {
+    path.moveTo(s.pointsInGlobalCoordinates[0].x, s.pointsInGlobalCoordinates[0].y)
+    for (p in s.pointsInGlobalCoordinates.drop(1)) {
       path.lineTo(p.x, p.y)
     }
     drawCanvas.drawPath(path, paint)
@@ -107,12 +98,7 @@ class DrawingView @JvmOverloads constructor(
 
   fun clear() {
     currentStroke.reset()
-    onSizeChanged(
-      canvasBitmap.width,
-      canvasBitmap.height,
-      canvasBitmap.width,
-      canvasBitmap.height
-    )
+    onSizeChanged(canvasBitmap.width, canvasBitmap.height, canvasBitmap.width, canvasBitmap.height)
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -132,10 +118,9 @@ class DrawingView @JvmOverloads constructor(
         drawCanvas.drawPath(currentStroke, currentStrokePaint)
         currentStroke.reset()
       }
-      else -> {
-      }
+      else -> {}
     }
-    strokeManager.addNewTouchEvent(event)
+    val unused = strokeManager.addNewTouchEvent(event)
     invalidate()
     return true
   }
@@ -157,7 +142,7 @@ class DrawingView @JvmOverloads constructor(
       var bottom = Float.MIN_VALUE
       var right = Float.MIN_VALUE
       for (s in ink.strokes) {
-        for (p in s.points) {
+        for (p in s.pointsInGlobalCoordinates) {
           top = Math.min(top, p.y)
           left = Math.min(left, p.x)
           bottom = Math.max(bottom, p.y)
@@ -166,9 +151,9 @@ class DrawingView @JvmOverloads constructor(
       }
       val centerX = (left + right) / 2
       val centerY = (top + bottom) / 2
-      val bb =
-        Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
-      // Enforce a minimum size of the bounding box such that recognitions for small inks are readable
+      val bb = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
+      // Enforce a minimum size of the bounding box such that recognitions for small inks are
+      // readable
       bb.union(
         (centerX - MIN_BB_WIDTH / 2).toInt(),
         (centerY - MIN_BB_HEIGHT / 2).toInt(),
@@ -192,11 +177,12 @@ class DrawingView @JvmOverloads constructor(
     currentStrokePaint.color = -0xff01 // pink.
     currentStrokePaint.isAntiAlias = true
     // Set stroke width based on display density.
-    currentStrokePaint.strokeWidth = TypedValue.applyDimension(
-      TypedValue.COMPLEX_UNIT_DIP,
-      STROKE_WIDTH_DP.toFloat(),
-      resources.displayMetrics
-    )
+    currentStrokePaint.strokeWidth =
+      TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        STROKE_WIDTH_DP.toFloat(),
+        resources.displayMetrics
+      )
     currentStrokePaint.style = Paint.Style.STROKE
     currentStrokePaint.strokeJoin = Paint.Join.ROUND
     currentStrokePaint.strokeCap = Paint.Cap.ROUND

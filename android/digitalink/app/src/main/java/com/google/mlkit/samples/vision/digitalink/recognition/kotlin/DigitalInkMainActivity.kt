@@ -1,4 +1,4 @@
-package com.google.mlkit.samples.vision.digitalink.kotlin
+package com.google.mlkit.samples.vision.digitalink.recognition.kotlin
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -11,8 +11,8 @@ import android.widget.Spinner
 import androidx.annotation.VisibleForTesting
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSortedSet
-import com.google.mlkit.samples.vision.digitalink.R
-import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
+import com.google.mlkit.samples.vision.digitalink.recognition.R
+import com.google.mlkit.vision.digitalink.recognition.DigitalInkRecognitionModelIdentifier
 import java.util.Locale
 
 /** Main activity which creates a StrokeManager and connects it to the DrawingView. */
@@ -55,11 +55,11 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
   }
 
   fun downloadClick(v: View?) {
-    strokeManager.download()
+    val unused = strokeManager.download()
   }
 
   fun recognizeClick(v: View?) {
-    strokeManager.recognize()
+    val unused = strokeManager.recognize()
   }
 
   fun clearClick(v: View?) {
@@ -69,7 +69,7 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
   }
 
   fun deleteClick(v: View?) {
-    strokeManager.deleteActiveModel()
+    val unused = strokeManager.deleteActiveModel()
   }
 
   private class ModelLanguageContainer

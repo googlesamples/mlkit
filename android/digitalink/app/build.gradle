@@ -1,18 +1,18 @@
 apply plugin: "com.android.application"
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 31
+    namespace "com.google.mlkit.samples.vision.digitalink.recognition"
+    compileSdkVersion 34
     defaultConfig {
-        applicationId "com.google.mlkit.samples.vision.digitalink"
-        minSdkVersion 19
-        targetSdkVersion 31
+        applicationId "com.google.mlkit.samples.vision.digitalink.recognition"
+        minSdkVersion 23
+        targetSdkVersion 34
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
         setProperty("archivesBaseName", "vision-digital-ink")
-        testApplicationId "com.google.mlkit.vision.digitalink"
+        testApplicationId "com.google.mlkit.vision.digitalink.recognition"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -27,8 +27,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -42,5 +45,5 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
-    implementation 'com.google.mlkit:digital-ink-recognition:18.1.0'
+    implementation 'com.google.mlkit:digital-ink-recognition:19.0.0'
 }

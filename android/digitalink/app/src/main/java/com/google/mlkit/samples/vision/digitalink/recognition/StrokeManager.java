@@ -1,4 +1,4 @@
-package com.google.mlkit.samples.vision.digitalink;
+package com.google.mlkit.samples.vision.digitalink.recognition;
 
 import android.os.Handler;
 import android.util.Log;
@@ -7,8 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.mlkit.vision.digitalink.Ink;
-import com.google.mlkit.vision.digitalink.Ink.Point;
+import com.google.mlkit.vision.digitalink.recognition.Ink;
+import com.google.mlkit.vision.digitalink.recognition.Ink.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -154,7 +154,7 @@ public class StrokeManager {
         strokeBuilder = Ink.Stroke.builder();
         stateChangedSinceLastRequest = true;
         if (triggerRecognitionAfterInput) {
-          recognize();
+          Task<String> unused = recognize();
         }
         break;
       default:

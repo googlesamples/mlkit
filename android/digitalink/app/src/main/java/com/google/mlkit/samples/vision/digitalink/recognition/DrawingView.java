@@ -1,4 +1,4 @@
-package com.google.mlkit.samples.vision.digitalink;
+package com.google.mlkit.samples.vision.digitalink.recognition;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,8 +12,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import com.google.mlkit.samples.vision.digitalink.StrokeManager.ContentChangedListener;
-import com.google.mlkit.vision.digitalink.Ink;
+import com.google.mlkit.samples.vision.digitalink.recognition.StrokeManager.ContentChangedListener;
+import com.google.mlkit.vision.digitalink.common.Point;
+import com.google.mlkit.vision.digitalink.common.Stroke;
+import com.google.mlkit.vision.digitalink.recognition.Ink;
 import java.util.List;
 
 /**
@@ -72,8 +74,8 @@ public class DrawingView extends View implements ContentChangedListener {
     float left = Float.MAX_VALUE;
     float bottom = Float.MIN_VALUE;
     float right = Float.MIN_VALUE;
-    for (Ink.Stroke s : ink.getStrokes()) {
-      for (Ink.Point p : s.getPoints()) {
+    for (Stroke s : ink.getStrokes()) {
+      for (Point p : s.getPointsInGlobalCoordinates()) {
         top = Math.min(top, p.getY());
         left = Math.min(left, p.getX());
         bottom = Math.max(bottom, p.getY());
@@ -151,15 +153,15 @@ public class DrawingView extends View implements ContentChangedListener {
   }
 
   private void drawInk(Ink ink, Paint paint) {
-    for (Ink.Stroke s : ink.getStrokes()) {
+    for (Stroke s : ink.getStrokes()) {
       drawStroke(s, paint);
     }
   }
 
-  private void drawStroke(Ink.Stroke s, Paint paint) {
+  private void drawStroke(Stroke s, Paint paint) {
     Log.i(TAG, "drawstroke");
     Path path = null;
-    for (Ink.Point p : s.getPoints()) {
+    for (Point p : s.getPointsInGlobalCoordinates()) {
       if (path == null) {
         path = new Path();
         path.moveTo(p.getX(), p.getY());
@@ -206,7 +208,7 @@ public class DrawingView extends View implements ContentChangedListener {
       default:
         break;
     }
-    strokeManager.addNewTouchEvent(event);
+    boolean unused = strokeManager.addNewTouchEvent(event);
     invalidate();
     return true;
   }
