@@ -2,7 +2,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.google.mlkit.vision.automl.demo"
     android:installLocation="auto">
 
   <!-- CameraX libraries require minSdkVersion 21, while this quickstart app
