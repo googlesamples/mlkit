@@ -17,10 +17,12 @@
 package com.google.mlkit.md
 
 import android.graphics.Bitmap
+import android.media.Image
 import com.google.mlkit.md.camera.FrameMetadata
 import java.nio.ByteBuffer
 
 interface InputInfo {
+    //TODO: Make it optional
     fun getBitmap(): Bitmap
 }
 
@@ -37,6 +39,22 @@ class CameraInputInfo(
             bitmap = Utils.convertToBitmap(
                 frameByteBuffer, frameMetadata.width, frameMetadata.height, frameMetadata.rotation
             )
+            bitmap!!
+        }
+    }
+}
+
+class Camera2InputInfo(
+    private val frameImage: Image,
+    private val frameRotation: Int
+) : InputInfo {
+
+    private var bitmap: Bitmap? = null
+
+    @Synchronized
+    override fun getBitmap(): Bitmap {
+        return bitmap ?: let {
+            bitmap = Utils.convertToBitmap(frameImage, frameRotation)
             bitmap!!
         }
     }

@@ -25,6 +25,7 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.ImageFormat
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.PorterDuff
@@ -32,20 +33,21 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.YuvImage
-import android.hardware.Camera
+import android.media.Image
 import android.net.Uri
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.exifinterface.media.ExifInterface
 import com.google.mlkit.md.camera.CameraSizePair
+import com.google.mlkit.md.camera.CameraSource
 import com.google.mlkit.vision.common.InputImage
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
-import java.util.ArrayList
 import kotlin.math.abs
+import kotlin.math.min
 
 /** Utility class to provide helper methods.  */
 object Utils {
@@ -101,10 +103,10 @@ object Utils {
      * be set to a size that is the same aspect ratio as the preview size we choose. Otherwise, the
      * preview images may be distorted on some devices.
      */
-    fun generateValidPreviewSizeList(camera: Camera): List<CameraSizePair> {
-        val parameters = camera.parameters
-        val supportedPreviewSizes = parameters.supportedPreviewSizes
-        val supportedPictureSizes = parameters.supportedPictureSizes
+    fun generateValidPreviewSizeList(cameraSource: CameraSource): List<CameraSizePair> {
+
+        val supportedPreviewSizes = cameraSource.getSupportedPreviewSizes()
+        val supportedPictureSizes = cameraSource.getSupportedPictureSizes()
         val validPreviewSizes = ArrayList<CameraSizePair>()
         for (previewSize in supportedPreviewSizes) {
             val previewAspectRatio = previewSize.width.toFloat() / previewSize.height.toFloat()
@@ -149,27 +151,103 @@ object Utils {
 
     /** Convert NV21 format byte buffer to bitmap. */
     fun convertToBitmap(data: ByteBuffer, width: Int, height: Int, rotationDegrees: Int): Bitmap? {
-        data.rewind()
-        val imageInBuffer = ByteArray(data.limit())
-        data.get(imageInBuffer, 0, imageInBuffer.size)
         try {
-            val image = YuvImage(
-                imageInBuffer, InputImage.IMAGE_FORMAT_NV21, width, height, null
-            )
-            val stream = ByteArrayOutputStream()
-            image.compressToJpeg(Rect(0, 0, width, height), 80, stream)
-            val bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size())
-            stream.close()
-
-            // Rotate the image back to straight.
-            val matrix = Matrix()
-            matrix.postRotate(rotationDegrees.toFloat())
-            return Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, matrix, true)
-        } catch (e: java.lang.Exception) {
-            Log.e(TAG, "Error: " + e.message)
+            data.rewind()
+            val imageInBuffer = ByteArray(data.limit())
+            data.get(imageInBuffer, 0, imageInBuffer.size)
+            return convertToBitmapInternal(imageInBuffer, width, height, rotationDegrees)
+        }
+        catch (e: Exception){
+            Log.e(TAG, "Error at converting Byte Buffer to Bitmap: " + e.message)
         }
         return null
     }
+
+    /** Convert YUV_420_888 format byte buffer to bitmap. */
+    fun convertToBitmap(image: Image, rotationDegrees: Int): Bitmap? {
+        try {
+            return convertToBitmapInternal(yuv_420_888toNv21(image), image.width, image.height, rotationDegrees)
+        }
+        catch (e: Exception){
+            Log.e(TAG, "Error at converting Image to Bitmap: " + e.message)
+        }
+        return null
+    }
+
+    private fun convertToBitmapInternal(imageData: ByteArray, width: Int, height: Int, rotationDegrees: Int): Bitmap {
+        val image = YuvImage(
+            imageData, InputImage.IMAGE_FORMAT_NV21, width, height, null
+        )
+        val stream = ByteArrayOutputStream()
+        image.compressToJpeg(Rect(0, 0, width, height), 80, stream)
+        val bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size())
+        stream.close()
+
+        // Rotate the image back to straight.
+        val matrix = Matrix()
+        matrix.postRotate(rotationDegrees.toFloat())
+        return Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, matrix, true)
+    }
+
+    @Throws(IllegalArgumentException::class)
+    private fun yuv_420_888toNv21(image: Image): ByteArray {
+        require(image.format == ImageFormat.YUV_420_888) {
+            "only support ImageFormat.YUV_420_888 image conversion"
+        }
+        val yPlane = image.planes[0]
+        val uPlane = image.planes[1]
+        val vPlane = image.planes[2]
+
+        val yBuffer = yPlane.buffer
+        val uBuffer = uPlane.buffer
+        val vBuffer = vPlane.buffer
+        yBuffer.rewind()
+        uBuffer.rewind()
+        vBuffer.rewind()
+
+        val ySize = yBuffer.remaining()
+
+        var position = 0
+        // TODO(b/115743986): Pull these bytes from a pool instead of allocating for every image.
+        val nv21 = ByteArray(ySize + (image.width * image.height / 2))
+
+        // Add the full y buffer to the array. If rowStride > 1, some padding may be skipped.
+        for (row in 0 until image.height) {
+            yBuffer[nv21, position, image.width]
+            position += image.width
+            yBuffer.position(
+                min(ySize.toDouble(), (yBuffer.position() - image.width + yPlane.rowStride).toDouble())
+                    .toInt()
+            )
+        }
+
+        val chromaHeight = image.height / 2
+        val chromaWidth = image.width / 2
+        val vRowStride = vPlane.rowStride
+        val uRowStride = uPlane.rowStride
+        val vPixelStride = vPlane.pixelStride
+        val uPixelStride = uPlane.pixelStride
+
+        // Interleave the u and v frames, filling up the rest of the buffer. Use two line buffers to
+        // perform faster bulk gets from the byte buffers.
+        val vLineBuffer = ByteArray(vRowStride)
+        val uLineBuffer = ByteArray(uRowStride)
+        for (row in 0 until chromaHeight) {
+            vBuffer[vLineBuffer, 0, min(vRowStride.toDouble(), vBuffer.remaining().toDouble()).toInt()]
+            uBuffer[uLineBuffer, 0, min(uRowStride.toDouble(), uBuffer.remaining().toDouble()).toInt()]
+            var vLineBufferPosition = 0
+            var uLineBufferPosition = 0
+            for (col in 0 until chromaWidth) {
+                nv21[position++] = vLineBuffer[vLineBufferPosition]
+                nv21[position++] = uLineBuffer[uLineBufferPosition]
+                vLineBufferPosition += vPixelStride
+                uLineBufferPosition += uPixelStride
+            }
+        }
+
+        return nv21
+    }
+
 
     internal fun openImagePicker(activity: Activity) {
         val intent = Intent(Intent.ACTION_GET_CONTENT)

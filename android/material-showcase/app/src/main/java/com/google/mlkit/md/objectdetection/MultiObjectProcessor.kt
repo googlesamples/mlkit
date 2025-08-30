@@ -23,6 +23,7 @@ import androidx.annotation.MainThread
 import androidx.core.util.forEach
 import androidx.core.util.set
 import com.google.android.gms.tasks.Task
+import com.google.android.odml.image.MlImage
 import com.google.mlkit.md.camera.CameraReticleAnimator
 import com.google.mlkit.md.camera.GraphicOverlay
 import com.google.mlkit.md.R
@@ -31,6 +32,7 @@ import com.google.mlkit.md.camera.FrameProcessorBase
 import com.google.mlkit.md.settings.PreferenceUtils
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.md.InputInfo
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
@@ -92,9 +94,10 @@ class MultiObjectProcessor(
         }
     }
 
-    override fun detectInImage(image: InputImage): Task<List<DetectedObject>> {
-        return detector.process(image)
-    }
+    override fun detectInImage(image: MlImage): Task<List<DetectedObject>> = detector.process(image)
+
+    @Deprecated("Keeping it only to support Camera API frame processing")
+    override fun detectInImage(image: InputImage): Task<List<DetectedObject>> = detector.process(image)
 
     @MainThread
     override fun onSuccess(
@@ -204,7 +207,7 @@ class MultiObjectProcessor(
         return distance < objectSelectionDistanceThreshold
     }
 
-    override fun onFailure(e: Exception) {
+    override fun onFailure(e: Exception?) {
         Log.e(TAG, "Object detection failed!", e)
     }
 

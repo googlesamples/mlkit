@@ -19,7 +19,6 @@ package com.google.mlkit.md
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Intent
-import android.hardware.Camera
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -29,17 +28,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.chip.Chip
 import com.google.common.base.Objects
-import com.google.mlkit.md.camera.GraphicOverlay
-import com.google.mlkit.md.camera.WorkflowModel
-import com.google.mlkit.md.camera.WorkflowModel.WorkflowState
-import com.google.mlkit.md.barcodedetection.BarcodeField
 import com.google.mlkit.md.barcodedetection.BarcodeProcessor
+import com.google.mlkit.md.barcodedetection.BarcodeField
 import com.google.mlkit.md.barcodedetection.BarcodeResultFragment
 import com.google.mlkit.md.camera.CameraSource
 import com.google.mlkit.md.camera.CameraSourcePreview
+import com.google.mlkit.md.camera.CameraSourceFactory
+import com.google.mlkit.md.camera.GraphicOverlay
+import com.google.mlkit.md.camera.WorkflowModel
+import com.google.mlkit.md.camera.WorkflowModel.WorkflowState
 import com.google.mlkit.md.settings.SettingsActivity
 import java.io.IOException
-import java.util.ArrayList
 
 /** Demonstrates the barcode scanning workflow using camera preview.  */
 class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
@@ -61,7 +60,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
         preview = findViewById(R.id.camera_preview)
         graphicOverlay = findViewById<GraphicOverlay>(R.id.camera_preview_graphic_overlay).apply {
             setOnClickListener(this@LiveBarcodeScanningActivity)
-            cameraSource = CameraSource(this)
+            cameraSource = CameraSourceFactory.createCameraSource(this)
         }
 
         promptChip = findViewById(R.id.bottom_prompt_chip)
@@ -115,16 +114,16 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                 flashButton?.let {
                     if (it.isSelected) {
                         it.isSelected = false
-                        cameraSource?.updateFlashMode(Camera.Parameters.FLASH_MODE_OFF)
+                        cameraSource?.setFlashStatus(false)
                     } else {
                         it.isSelected = true
-                        cameraSource!!.updateFlashMode(Camera.Parameters.FLASH_MODE_TORCH)
+                        cameraSource!!.setFlashStatus(true)
                     }
                 }
             }
             R.id.settings_button -> {
                 settingsButton?.isEnabled = false
-                startActivity(Intent(this, SettingsActivity::class.java))
+                startActivity(SettingsActivity.newIntent(this, cameraSource))
             }
         }
     }
@@ -149,12 +148,18 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
         if (workflowModel.isCameraLive) {
             workflowModel.markCameraFrozen()
             flashButton?.isSelected = false
-            preview?.stop()
+            try {
+                preview?.stop()
+            }
+            catch (e: Throwable){
+               Log.e(TAG, "Failed to stop camera preview: ${e.message}")
+            }
+
         }
     }
 
     private fun setUpWorkflowModel() {
-        workflowModel = ViewModelProviders.of(this).get(WorkflowModel::class.java)
+        workflowModel = ViewModelProviders.of(this)[WorkflowModel::class.java]
 
         // Observes the workflow state changes, if happens, update the overlay view indicators and
         // camera preview state.
@@ -197,13 +202,13 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
             }
         })
 
-        workflowModel?.detectedBarcode?.observe(this, Observer { barcode ->
+        workflowModel?.detectedBarcode?.observe(this) { barcode ->
             if (barcode != null) {
                 val barcodeFieldList = ArrayList<BarcodeField>()
                 barcodeFieldList.add(BarcodeField("Raw Value", barcode.rawValue ?: ""))
                 BarcodeResultFragment.show(supportFragmentManager, barcodeFieldList)
             }
-        })
+        }
     }
 
     companion object {
