@@ -35,6 +35,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.genai.common.DownloadCallback;
 import com.google.mlkit.genai.common.StreamingCallback;
+import com.google.mlkit.genai.demo.ContentItem;
 import com.google.mlkit.genai.demo.ContentItem.ImageItem;
 import com.google.mlkit.genai.demo.R;
 import com.google.mlkit.genai.imagedescription.ImageDescriber;
@@ -120,7 +121,7 @@ public class ImageDescriptionActivity extends BaseActivity<ImageItem> {
   }
 
   @Override
-  protected ListenableFuture<List<String>> runInferenceImpl(
+  protected ListenableFuture<List<ContentItem>> runInferenceImpl(
       ImageItem request, @Nullable StreamingCallback streamingCallback) {
     try {
       Bitmap bitmap =
@@ -132,7 +133,10 @@ public class ImageDescriptionActivity extends BaseActivity<ImageItem> {
           streamingCallback != null
               ? imageDescriber.runInference(imageDescriptionRequest, streamingCallback)
               : imageDescriber.runInference(imageDescriptionRequest),
-          result -> ImmutableList.of(requireNonNull(result).getDescription()),
+          result ->
+              ImmutableList.of(
+                  ContentItem.TextItem.Companion.fromResponse(
+                      requireNonNull(result).getDescription(), null)),
           ContextCompat.getMainExecutor(this));
     } catch (IOException e) {
       return immediateFailedFuture(e);

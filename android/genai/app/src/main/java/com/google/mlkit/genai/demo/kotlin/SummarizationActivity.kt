@@ -27,12 +27,12 @@ import com.google.mlkit.genai.demo.R
 import com.google.mlkit.genai.prompt.CountTokensResponse
 import com.google.mlkit.genai.summarization.Summarization
 import com.google.mlkit.genai.summarization.SummarizationRequest
-import com.google.mlkit.genai.summarization.SummarizationResult
 import com.google.mlkit.genai.summarization.Summarizer
 import com.google.mlkit.genai.summarization.SummarizerOptions
 import com.google.mlkit.genai.summarization.SummarizerOptions.InputType
 import com.google.mlkit.genai.summarization.SummarizerOptions.Language
 import com.google.mlkit.genai.summarization.SummarizerOptions.OutputType
+import kotlinx.coroutines.flow.map
 
 /** Demonstrates the Summarization API usage. */
 class SummarizationActivity : TextInputBaseActivity() {
@@ -82,7 +82,7 @@ class SummarizationActivity : TextInputBaseActivity() {
   override fun runInferenceImpl(
     request: ContentItem.TextItem,
     streamingCallback: StreamingCallback?,
-  ): ListenableFuture<List<String>> {
+  ): ListenableFuture<List<ContentItem>> {
     val summarizeRequest = SummarizationRequest.builder(request.text).build()
     val inferenceFuture =
       checkNotNull(summarizer).let { summarizer ->
@@ -90,9 +90,11 @@ class SummarizationActivity : TextInputBaseActivity() {
           ?: summarizer.runInference(summarizeRequest)
       }
 
-    return Futures.transform<SummarizationResult, List<String>>(
+    return Futures.transform(
       inferenceFuture,
-      { summarizeResult -> listOf(summarizeResult.summary) },
+      { summarizeResult ->
+        listOf(ContentItem.TextItem.fromResponse(summarizeResult.summary, null))
+      },
       ContextCompat.getMainExecutor(this),
     )
   }

@@ -31,6 +31,7 @@ import com.google.mlkit.genai.proofreading.ProofreaderOptions.Language
 import com.google.mlkit.genai.proofreading.ProofreaderOptions.builder
 import com.google.mlkit.genai.proofreading.Proofreading
 import com.google.mlkit.genai.proofreading.ProofreadingRequest
+import kotlinx.coroutines.flow.map
 
 /** Demonstrates the Proofreading API usage. */
 class ProofreadingActivity : TextInputBaseActivity() {
@@ -83,7 +84,7 @@ class ProofreadingActivity : TextInputBaseActivity() {
   override fun runInferenceImpl(
     request: ContentItem.TextItem,
     streamingCallback: StreamingCallback?,
-  ): ListenableFuture<List<String>> {
+  ): ListenableFuture<List<ContentItem>> {
     val proofreadingRequest = ProofreadingRequest.builder(request.text).build()
     val inferenceFuture =
       checkNotNull(proofreader).let { proofreader ->
@@ -93,7 +94,9 @@ class ProofreadingActivity : TextInputBaseActivity() {
 
     return Futures.transform(
       inferenceFuture,
-      { proofreadingResult -> proofreadingResult.results.map { it.text } },
+      { proofreadingResult ->
+        proofreadingResult.results.map { ContentItem.TextItem.fromResponse(it.text, null) }
+      },
       ContextCompat.getMainExecutor(this),
     )
   }

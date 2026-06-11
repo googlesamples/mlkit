@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="48dp"
+    android:paddingEnd="4dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:id="@+id/chat_bubble_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="end"
+        android:background="@drawable/request_item_background"
+        android:padding="10dp">
+        <!-- Dynamic views will be added here -->
+    </LinearLayout>
+
+</FrameLayout>

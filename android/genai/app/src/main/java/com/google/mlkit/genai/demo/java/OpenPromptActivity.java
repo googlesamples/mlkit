@@ -21,9 +21,13 @@ import static com.google.common.util.concurrent.Futures.immediateFuture;
 import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,23 +39,24 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts.PickMultipleVisualMedia;
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import com.bumptech.glide.Glide;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.genai.common.DownloadCallback;
 import com.google.mlkit.genai.common.StreamingCallback;
-import com.google.mlkit.genai.demo.ContentAdapter;
 import com.google.mlkit.genai.demo.ContentItem;
 import com.google.mlkit.genai.demo.GenerationConfigDialog;
 import com.google.mlkit.genai.demo.GenerationConfigUtils;
 import com.google.mlkit.genai.demo.R;
 import com.google.mlkit.genai.prompt.CachedContext;
 import com.google.mlkit.genai.prompt.Candidate;
+import com.google.mlkit.genai.prompt.Content;
 import com.google.mlkit.genai.prompt.CountTokensResponse;
 import com.google.mlkit.genai.prompt.CreateCachedContextRequest;
 import com.google.mlkit.genai.prompt.GenerateContentRequest;
@@ -60,14 +65,18 @@ import com.google.mlkit.genai.prompt.Generation;
 import com.google.mlkit.genai.prompt.GenerationConfig;
 import com.google.mlkit.genai.prompt.GenerativeModel;
 import com.google.mlkit.genai.prompt.ImagePart;
+import com.google.mlkit.genai.prompt.Part;
 import com.google.mlkit.genai.prompt.PromptPrefix;
+import com.google.mlkit.genai.prompt.SystemInstruction;
 import com.google.mlkit.genai.prompt.TextPart;
 import com.google.mlkit.genai.prompt.java.CachesFutures;
 import com.google.mlkit.genai.prompt.java.GenerativeModelFutures;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An activity that demonstrates a chat-like interface for the Open Prompt API in Java, allowing
@@ -86,6 +95,8 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
   private ImageButton selectImageButton;
   private ImageView imagePreview;
   private Button configButton;
+  private Button modelReleaseStageButton;
+  private Button modelPreferenceButton;
   private EditText prefixEditText;
   private CheckBox createCacheCheckBox;
 
@@ -98,20 +109,24 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
   @Nullable private Integer curCandidateCount = null;
   private boolean useDefaultConfig = false;
   private boolean useExplicitCache = false;
+  private EditText systemPromptEditText;
 
-  private final ActivityResultLauncher<String> pickImageLauncher =
-      registerForActivityResult(
-          new ActivityResultContracts.GetContent(),
-          uri -> {
-            if (uri != null) {
-              selectedImageUri = uri;
-              Glide.with(this).load(uri).into(imagePreview);
-              imagePreview.setVisibility(View.VISIBLE);
-              Toast.makeText(this, "1 image selected", Toast.LENGTH_SHORT).show();
-            } else {
-              Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
-            }
-          });
+  private ActivityResultLauncher<PickVisualMediaRequest> pickImageLauncher;
+
+  private void insertMediaToEditText(Uri uri) {
+    Editable editable = requestEditText.getEditableText();
+    int cursorPosition = requestEditText.getSelectionStart();
+
+    editable.insert(cursorPosition, " ");
+
+    Drawable drawable = getResources().getDrawable(android.R.drawable.ic_menu_gallery, null);
+    int thumbnailSize = getResources().getDimensionPixelSize(R.dimen.interleaved_thumbnail_size);
+    drawable.setBounds(0, 0, thumbnailSize, thumbnailSize); // Set fixed bounds for thumbnail
+    ImageSpan span = new ImageSpan(drawable, uri.toString());
+
+    editable.setSpan(span, cursorPosition, cursorPosition + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    requestEditText.setSelection(cursorPosition + 1);
+  }
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,6 +139,7 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
     configButton = findViewById(R.id.config_button);
     prefixEditText = findViewById(R.id.prefix_edit_text);
     createCacheCheckBox = findViewById(R.id.create_cache_checkbox);
+    systemPromptEditText = findViewById(R.id.system_prompt_edit_text);
     createCacheCheckBox.setOnCheckedChangeListener(
         (buttonView, isChecked) -> {
           prefixEditText.setText("");
@@ -131,16 +147,24 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
           updatePrefixEditTextState();
         });
 
-    selectImageButton.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
+    pickImageLauncher =
+        registerForActivityResult(
+            new PickMultipleVisualMedia(10),
+            uris -> {
+              if (uris != null && !uris.isEmpty()) {
+                for (Uri uri : uris) {
+                  insertMediaToEditText(uri);
+                }
+                Toast.makeText(this, uris.size() + " images selected", Toast.LENGTH_SHORT).show();
+              } else {
+                Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+              }
+            });
 
-    // Remove the selected image when the user clicks on the image preview.
-    imagePreview.setOnClickListener(
-        v -> {
-          selectedImageUri = null;
-          Glide.with(this).clear(imagePreview);
-          imagePreview.setVisibility(View.GONE);
-          Toast.makeText(this, "Image removed", Toast.LENGTH_SHORT).show();
-        });
+    selectImageButton.setOnClickListener(
+        v ->
+            pickImageLauncher.launch(
+                new PickVisualMediaRequest.Builder().setMediaType(ImageOnly.INSTANCE).build()));
 
     configButton.setOnClickListener(
         v -> new GenerationConfigDialog().show(getSupportFragmentManager(), null));
@@ -153,7 +177,8 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
               Toast.makeText(this, R.string.cache_name_empty, Toast.LENGTH_SHORT).show();
               return;
             }
-            String text = requestEditText.getText().toString().trim();
+            Editable requestEditable = requestEditText.getText();
+            String text = requestEditable != null ? requestEditable.toString().trim() : "";
             if (createCacheCheckBox.isChecked()) {
               if (TextUtils.isEmpty(text)) {
                 Toast.makeText(this, R.string.prefix_to_cache_empty, Toast.LENGTH_SHORT).show();
@@ -171,35 +196,44 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
             return;
           }
 
-          String requestText = requestEditText.getText().toString().trim();
-          if (TextUtils.isEmpty(requestText)) {
-            Toast.makeText(this, R.string.input_message_is_empty, Toast.LENGTH_SHORT).show();
-            return;
-          }
-
           String prefixText = prefixEditText.getText().toString().trim();
-          if (!TextUtils.isEmpty(prefixText) && selectedImageUri != null) {
-            Toast.makeText(this, R.string.warning_prefix_used_with_image, Toast.LENGTH_LONG).show();
-            return;
-          }
+          CompletableFuture<Void> unused =
+              getContentFromEditText()
+                  .thenAccept(
+                      parts -> {
+                        if (parts.isEmpty()
+                            || (parts.size() == 1
+                                && parts.get(0) instanceof TextPart
+                                && ((TextPart) parts.get(0)).getTextString().trim().isEmpty())) {
+                          runOnUiThread(
+                              () ->
+                                  Toast.makeText(
+                                          OpenPromptActivity.this,
+                                          R.string.input_message_is_empty,
+                                          Toast.LENGTH_SHORT)
+                                      .show());
+                          return;
+                        }
 
-          ContentItem requestItem;
-          if (selectedImageUri != null) {
-            requestItem =
-                new ContentItem.TextAndImagesItem(
-                    requestText,
-                    new ArrayList<>(ImmutableList.of(selectedImageUri)),
-                    ContentAdapter.VIEW_TYPE_REQUEST_TEXT_AND_IMAGES);
-          } else if (!TextUtils.isEmpty(prefixText)) {
-            requestItem =
-                ContentItem.TextWithPromptPrefixItem.Companion.fromRequest(prefixText, requestText);
-          } else {
-            requestItem = ContentItem.TextItem.Companion.fromRequest(requestText);
-          }
-          onSend(requestItem);
-          requestEditText.setText("");
-          imagePreview.setVisibility(View.GONE);
-          selectedImageUri = null;
+                        List<Part> resolvedParts = new ArrayList<>(parts);
+                        if (!TextUtils.isEmpty(prefixText)) {
+                          resolvedParts.add(0, new TextPart(prefixText));
+                        }
+
+                        String systemInstruction = systemPromptEditText.getText().toString().trim();
+                        ContentItem requestItem =
+                            ContentItem.InterleavedContentItem.Companion.fromRequest(
+                                resolvedParts, systemInstruction);
+
+                        runOnUiThread(
+                            () -> {
+                              onSend(requestItem);
+                              requestEditText.setText("");
+                              systemPromptEditText.setText("");
+                              imagePreview.setVisibility(View.GONE);
+                              selectedImageUri = null;
+                            });
+                      });
         });
 
     onConfigUpdated();
@@ -314,7 +348,7 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
   }
 
   @Override
-  protected ListenableFuture<List<String>> runInferenceImpl(
+  protected ListenableFuture<List<ContentItem>> runInferenceImpl(
       ContentItem request, @Nullable StreamingCallback streamingCallback) {
     if (request instanceof ContentItem.CacheRequestItem cacheRequestItem) {
       return createCache(cacheRequestItem);
@@ -343,14 +377,22 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
               return ImmutableList.of();
             }
 
-            ImmutableList.Builder<String> listBuilder = new ImmutableList.Builder<>();
+            ImmutableList.Builder<ContentItem> listBuilder = new ImmutableList.Builder<>();
+            if (GenerationConfigUtils.getShowThinking(getApplicationContext())) {
+              for (Candidate thought : result.getThoughtProcess()) {
+                listBuilder.add(
+                    ContentItem.TextItem.Companion.fromThoughtResponse(thought.getText()));
+              }
+            }
+
             for (Candidate candidate : result.getCandidates()) {
               String text = candidate.getText();
-              if (candidate.getFinishReason() == Candidate.FinishReason.MAX_TOKENS) {
-                listBuilder.add(text + "\n(FinishReason: MAX_TOKENS)");
-              } else {
-                listBuilder.add(text);
+              Integer finishReason = candidate.getFinishReason();
+              String formattedText = text;
+              if (finishReason != null && finishReason == Candidate.FinishReason.MAX_TOKENS) {
+                formattedText = text + "\n(FinishReason: MAX_TOKENS)";
               }
+              listBuilder.add(ContentItem.TextItem.Companion.fromResponse(formattedText, null));
             }
             return listBuilder.build();
           },
@@ -388,22 +430,47 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
     String promptPrefixText = "";
     Bitmap imageBitmap = null;
     String cachedContextNameText = null;
-    if (request instanceof ContentItem.TextAndImagesItem tiRequest) {
-      if (tiRequest.getText() != null) {
-        requestText = tiRequest.getText();
+    String systemPromptText = "";
+
+    if (request instanceof ContentItem.InterleavedContentItem interleavedContentItem) {
+      Content.Builder contentBuilder = new Content.Builder();
+      for (Part part : interleavedContentItem.getParts()) {
+        contentBuilder.addPart(part);
       }
-      for (Uri uri : tiRequest.getImageUris()) {
+      GenerateContentRequest.Builder requestBuilder =
+          new GenerateContentRequest.Builder(contentBuilder.build());
+
+      String systemInstruction = interleavedContentItem.getSystemInstruction();
+      if (systemInstruction != null && !systemInstruction.isEmpty()) {
+        requestBuilder.setSystemInstruction(new SystemInstruction(systemInstruction));
+      }
+      requestBuilder.setTemperature(curTemperature);
+      requestBuilder.setTopK(curTopK);
+      requestBuilder.setSeed(curSeed);
+      requestBuilder.setMaxOutputTokens(curMaxOutputTokens);
+      requestBuilder.setCandidateCount(curCandidateCount);
+
+      return requestBuilder.build();
+    } else if (request instanceof ContentItem.TextAndImagesItem tiRequest) {
+      requestText = tiRequest.getText();
+      systemPromptText = tiRequest.getSystemInstruction();
+      if (!tiRequest.getImageUris().isEmpty()) {
+        Uri uri = tiRequest.getImageUris().get(0);
         try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
-          imageBitmap = BitmapFactory.decodeStream(inputStream);
+          if (inputStream != null) {
+            imageBitmap = BitmapFactory.decodeStream(inputStream);
+          }
         } catch (IOException e) {
           Log.e(TAG, "Error decoding image URI: " + uri, e);
         }
       }
     } else if (request instanceof ContentItem.TextItem textItem) {
       requestText = textItem.getText();
+      systemPromptText = textItem.getSystemInstruction();
     } else if (request instanceof ContentItem.TextWithPromptPrefixItem textWithPromptPrefixItem) {
       requestText = textWithPromptPrefixItem.getDynamicSuffix();
       promptPrefixText = textWithPromptPrefixItem.getPromptPrefix();
+      systemPromptText = textWithPromptPrefixItem.getSystemInstruction();
     } else if (request instanceof ContentItem.TextWithPrefixCacheItem textWithPrefixCacheItem) {
       requestText = textWithPrefixCacheItem.getDynamicSuffix();
       cachedContextNameText = textWithPrefixCacheItem.getCacheName();
@@ -412,12 +479,16 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
     }
 
     GenerateContentRequest.Builder requestBuilder;
-
     if (imageBitmap != null) {
       requestBuilder =
-          new GenerateContentRequest.Builder(new ImagePart(imageBitmap), new TextPart(requestText));
+          new GenerateContentRequest.Builder(
+              new SystemInstruction(systemPromptText),
+              new ImagePart(imageBitmap),
+              new TextPart(requestText));
     } else {
-      requestBuilder = new GenerateContentRequest.Builder(new TextPart(requestText));
+      requestBuilder =
+          new GenerateContentRequest.Builder(
+              new SystemInstruction(systemPromptText), new TextPart(requestText));
       if (useExplicitCache) {
         requestBuilder.setCachedContextName(cachedContextNameText);
       } else {
@@ -434,6 +505,73 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
     return requestBuilder.build();
   }
 
+  private CompletableFuture<List<Part>> getContentFromEditText() {
+    Editable editable = requestEditText.getEditableText();
+    String text = editable.toString();
+    ImageSpan[] spans = editable.getSpans(0, editable.length(), ImageSpan.class);
+
+    // Sort spans by their start index to guarantee visual layout order, matching the exact
+    // sequence of text and images entered by the user.
+    Arrays.sort(
+        spans, (a, b) -> Integer.compare(editable.getSpanStart(a), editable.getSpanStart(b)));
+
+    class SpanInfo {
+      final int start;
+      final int end;
+      @Nullable final String source;
+
+      SpanInfo(int start, int end, @Nullable String source) {
+        this.start = start;
+        this.end = end;
+        this.source = source;
+      }
+    }
+
+    List<SpanInfo> spanInfos = new ArrayList<>();
+    for (ImageSpan span : spans) {
+      spanInfos.add(
+          new SpanInfo(editable.getSpanStart(span), editable.getSpanEnd(span), span.getSource()));
+    }
+
+    return CompletableFuture.supplyAsync(
+        () -> {
+          List<Part> result = new ArrayList<>();
+          int lastIndex = 0;
+          for (SpanInfo span : spanInfos) {
+            // Extract and slice the plain text segment situated between the last processed image
+            // span
+            // and the current image span.
+            if (span.start > lastIndex) {
+              result.add(new TextPart(text.substring(lastIndex, span.start)));
+            }
+
+            if (span.source != null) {
+              try {
+                Uri uri = Uri.parse(span.source);
+                try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
+                  if (inputStream != null) {
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    result.add(new ImagePart(bitmap));
+                  }
+                }
+              } catch (Exception e) {
+                Log.e(TAG, "Error decoding image from span", e);
+                runOnUiThread(
+                    () -> Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show());
+              }
+            }
+            lastIndex = span.end;
+          }
+          // Extract any remaining trailing plain text located after the very last image span has
+          // been
+          // processed.
+          if (lastIndex < text.length()) {
+            result.add(new TextPart(text.substring(lastIndex)));
+          }
+          return result;
+        });
+  }
+
   @Override
   protected List<String> runInferenceForBatchTask(String request) {
     try {
@@ -447,7 +585,7 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
             generativeModelFutures
                 .generateContent(
                     buildGenerateContentRequest(
-                        ContentItem.TextItem.Companion.fromRequest(request)))
+                        ContentItem.TextItem.Companion.fromRequest(request, "")))
                 .get();
       }
       if (result.getCandidates().get(0).getText() != null) {
@@ -494,7 +632,7 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
     resetProcessor();
   }
 
-  private ListenableFuture<List<String>> createCache(ContentItem.CacheRequestItem request) {
+  private ListenableFuture<List<ContentItem>> createCache(ContentItem.CacheRequestItem request) {
     CreateCachedContextRequest cacheRequest =
         new CreateCachedContextRequest.Builder(
                 request.getCacheName(), new PromptPrefix(request.getPrefixToCache()))
@@ -503,7 +641,9 @@ public class OpenPromptActivity extends BaseActivity<ContentItem>
     String cachedSuccessMessage = getString(R.string.prefix_cached) + ": " + request.getCacheName();
     return Futures.transform(
         cachesFutures.create(cacheRequest),
-        response -> ImmutableList.of(cachedSuccessMessage),
+        response ->
+            ImmutableList.of(
+                ContentItem.TextItem.Companion.fromResponse(cachedSuccessMessage, null)),
         ContextCompat.getMainExecutor(this));
   }
 

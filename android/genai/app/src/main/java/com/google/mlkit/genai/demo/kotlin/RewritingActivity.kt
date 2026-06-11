@@ -31,6 +31,7 @@ import com.google.mlkit.genai.rewriting.RewriterOptions.Language
 import com.google.mlkit.genai.rewriting.RewriterOptions.OutputType
 import com.google.mlkit.genai.rewriting.Rewriting
 import com.google.mlkit.genai.rewriting.RewritingRequest
+import kotlinx.coroutines.flow.map
 
 /** Demonstrates the Rewriting API usage. */
 class RewritingActivity : TextInputBaseActivity() {
@@ -83,7 +84,7 @@ class RewritingActivity : TextInputBaseActivity() {
   override fun runInferenceImpl(
     request: ContentItem.TextItem,
     streamingCallback: StreamingCallback?,
-  ): ListenableFuture<List<String>> {
+  ): ListenableFuture<List<ContentItem>> {
     val rewritingRequest = RewritingRequest.builder(request.text).build()
     val inferenceFuture =
       checkNotNull(rewriter).let { rewriter ->
@@ -93,7 +94,9 @@ class RewritingActivity : TextInputBaseActivity() {
 
     return Futures.transform(
       inferenceFuture,
-      { rewriteResult -> rewriteResult.results.map { it.text } },
+      { rewriteResult ->
+        rewriteResult.results.map { ContentItem.TextItem.fromResponse(it.text, null) }
+      },
       ContextCompat.getMainExecutor(this),
     )
   }

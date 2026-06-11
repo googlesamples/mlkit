@@ -21,15 +21,20 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import android.widget.CheckBox
 import android.widget.EditText
+import com.google.mlkit.genai.demo.GenerationConfigUtils.getEnableThinking
+import com.google.mlkit.genai.demo.GenerationConfigUtils.getShowThinking
 import com.google.mlkit.genai.demo.GenerationConfigUtils.getStoredCandidateCount
 import com.google.mlkit.genai.demo.GenerationConfigUtils.getStoredMaxOutputTokens
 import com.google.mlkit.genai.demo.GenerationConfigUtils.getStoredSeed
 import com.google.mlkit.genai.demo.GenerationConfigUtils.getStoredTemperature
 import com.google.mlkit.genai.demo.GenerationConfigUtils.getStoredTopK
 import com.google.mlkit.genai.demo.GenerationConfigUtils.setCandidateCount
+import com.google.mlkit.genai.demo.GenerationConfigUtils.setEnableThinking
 import com.google.mlkit.genai.demo.GenerationConfigUtils.setMaxOutputTokens
 import com.google.mlkit.genai.demo.GenerationConfigUtils.setSeed
+import com.google.mlkit.genai.demo.GenerationConfigUtils.setShowThinking
 import com.google.mlkit.genai.demo.GenerationConfigUtils.setTemperature
 import com.google.mlkit.genai.demo.GenerationConfigUtils.setTopK
 import java.text.NumberFormat
@@ -45,6 +50,8 @@ class GenerationConfigDialog : DialogFragment() {
   private lateinit var seedEditText: EditText
   private lateinit var maxOutputTokensEditText: EditText
   private lateinit var candidateCountEditText: EditText
+  private lateinit var enableThinkingCheckBox: CheckBox
+  private lateinit var showThinkingCheckBox: CheckBox
   private val numberFormat = NumberFormat.getInstance()
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -62,6 +69,14 @@ class GenerationConfigDialog : DialogFragment() {
     maxOutputTokensEditText.setText(numberFormat.format(getStoredMaxOutputTokens(activity)))
     candidateCountEditText = view.findViewById<EditText>(R.id.candidate_count_edit_text)
     candidateCountEditText.setText(numberFormat.format(getStoredCandidateCount(activity)))
+    enableThinkingCheckBox = view.findViewById<CheckBox>(R.id.enable_thinking_checkbox)
+    enableThinkingCheckBox.isChecked = getEnableThinking(activity)
+    showThinkingCheckBox = view.findViewById<CheckBox>(R.id.show_thinking_checkbox)
+    showThinkingCheckBox.isChecked = getShowThinking(activity)
+    showThinkingCheckBox.isEnabled = enableThinkingCheckBox.isChecked
+    enableThinkingCheckBox.setOnCheckedChangeListener { _, isChecked ->
+      showThinkingCheckBox.isEnabled = isChecked
+    }
 
     builder
       .setView(view)
@@ -162,5 +177,7 @@ class GenerationConfigDialog : DialogFragment() {
         "CandidateCount should not be null after validation"
       }
     setCandidateCount(activity, candidateCount.toInt())
+    setEnableThinking(activity, enableThinkingCheckBox.isChecked)
+    setShowThinking(activity, showThinkingCheckBox.isChecked)
   }
 }

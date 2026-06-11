@@ -26,6 +26,7 @@
   <string name="image_description_entry_title_java" translatable="false">Image Description API (Java)</string>
   <string name="open_prompt_entry_title_kotlin" translatable="false">Open Prompt API (Kotlin)</string>
   <string name="open_prompt_entry_title_java" translatable="false">Open Prompt API (Java)</string>
+  <string name="hidden_compose_entry_title" translatable="false">Hidden Compose Activity</string>
   <string name="button_send" translatable="false">Send</string>
   <string name="button_select_image" translatable="false">Select Image</string>
   <string name="button_cancel" translatable="false">Cancel</string>
@@ -39,6 +40,9 @@
   <string name="kotlin_flow" translatable="false">Kotlin Flow</string>
   <string name="streaming_callback" translatable="false">Streaming Callback</string>
   <string name="batch_run" translatable="false">Batch Run</string>
+  <string name="action_settings" translatable="false">Settings</string>
+  <string name="generation_settings" translatable="false">Generation Settings</string>
+  <string name="streaming_output_subtitle" translatable="false">Stream responses as they are generated</string>
   <string name="batch_run_start_message" translatable="false">Start processing...</string>
   <string name="empty" translatable="false"/>
   <string name="input_type_label" translatable="false">Input:</string>
@@ -50,6 +54,10 @@
   <string name="hint_seed" translatable="false">Seed</string>
   <string name="hint_max_output_tokens" translatable="false">MaxOutputTokens</string>
   <string name="hint_candidate_count" translatable="false">CandidateCount</string>
+  <string name="hint_enable_thinking" translatable="false">EnableThinking</string>
+  <string name="pref_key_enable_thinking" translatable="false">pk_et</string>
+  <string name="hint_show_thinking" translatable="false">Show Thought Process</string>
+  <string name="pref_key_show_thinking" translatable="false">pk_st</string>
   <string name="pref_key_temperature" translatable="false">pk_temp</string>
   <string name="pref_key_top_k" translatable="false">pk_topk</string>
   <string name="pref_key_max_output_tokens" translatable="false">pk_mot</string>
@@ -57,8 +65,11 @@
   <string name="pref_key_candidate_count" translatable="false">pk_cc</string>
   <string name="pref_key_use_default_config" translatable="false">pk_udc</string>
   <string name="pref_key_use_explicit_cache" translatable="false">pk_uec</string>
+  <string name="pref_key_use_structured_output" translatable="false">pk_uso</string>
+  <string name="pref_key_use_streaming" translatable="false">pk_us</string>
   <string name="action_simple_api" translatable="false">Use Simple Utility API</string>
   <string name="action_explicit_cache" translatable="false">Use Explicit Prefix Cache</string>
+  <string name="action_structured_output" translatable="false">Use Structured Output</string>
   <string name="selected_image_preview_for_prompt" translatable="false">Selected Image Preview for Prompt</string>
   <string name="button_add_image" translatable="false">Add Image to Prompt</string>
   <string name="button_save" translatable="false">Save</string>
@@ -66,6 +77,7 @@
   <string name="selected_image_thumbnail_preview" translatable="false">Selected Image Thumbnail Preview</string>
   <string name="hint_type_a_message" translatable="false">Ask Open Prompt API</string>
   <string name="hint_add_prompt_prefix" translatable="false">Optional: enter prompt prefix for lower latency</string>
+  <string name="hint_add_system_prompt" translatable="false">Optional: enter system prompt</string>
   <string name="hint_add_cache_name" translatable="false">Enter cache name</string>
   <string name="hint_add_prefix_to_cache" translatable="false">Enter prefix to cache</string>
   <string name="hint_add_suffix_for_inference" translatable="false">Enter suffix for inference</string>
@@ -77,6 +89,9 @@
   <string name="message_format_cache_name_and_suffix" translatable="false">Cache Name:\n%1$s\n\nSuffix:\n%2$s</string>
   <string name="message_format_cache_request" translatable="false">Cache Name:\n%1$s\n\nPrefix to Cache:\n%2$s</string>
   <string name="cache_name_empty" translatable="false">Cache name cannot be empty</string>
+  <string name="plant_button_text" translatable="false">Plant</string>
+  <string name="schedule_event_button_text" translatable="false">Schedule Event</string>
+  <string name="info_button_description" translatable="false">Show schema</string>
   <string name="prefix_cached" translatable="false">Prefix cached</string>
   <string-array name="summarization_input_types" translatable="false">
     <item>Article</item>
@@ -122,4 +137,7 @@
     <item>Spanish</item>
     <item>Korean</item>
   </string-array>
+  <string name="feature_unavailable" translatable="false">Feature is unavailable.</string>
+  <string name="download_failed" translatable="false">Download failed.</string>
+  <string name="downloading_model_progress" translatable="false">Downloading model: %1$d / %2$d MB (%3$.2f%%)</string>
 </resources>

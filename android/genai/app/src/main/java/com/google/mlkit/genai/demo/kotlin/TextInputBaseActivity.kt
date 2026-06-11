@@ -41,7 +41,12 @@ abstract class TextInputBaseActivity : BaseActivity<ContentItem.TextItem>() {
         Toast.makeText(this, R.string.input_message_is_empty, Toast.LENGTH_SHORT).show()
         return@setOnClickListener
       }
-      onSend(ContentItem.TextItem.fromRequest(request))
+      onSend(
+        ContentItem.TextItem.fromRequest(
+          request,
+          systemInstruction = DEFAULT_EMPTY_SYSTEM_INSTRUCTION,
+        )
+      )
     }
   }
 
@@ -56,5 +61,9 @@ abstract class TextInputBaseActivity : BaseActivity<ContentItem.TextItem>() {
     super.endGeneratingUi(debugInfo)
     sendButton.isEnabled = true
     sendButton.setText(R.string.button_send)
+  }
+
+  companion object {
+    private const val DEFAULT_EMPTY_SYSTEM_INSTRUCTION = ""
   }
 }

@@ -29,6 +29,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.genai.common.DownloadCallback;
 import com.google.mlkit.genai.common.FeatureStatus;
 import com.google.mlkit.genai.common.StreamingCallback;
+import com.google.mlkit.genai.demo.ContentItem;
 import com.google.mlkit.genai.demo.ContentItem.TextItem;
 import com.google.mlkit.genai.demo.R;
 import com.google.mlkit.genai.prompt.CountTokensResponse;
@@ -91,7 +92,7 @@ public class ProofreadingActivity extends TextInputBaseActivity {
   }
 
   @Override
-  protected ListenableFuture<List<String>> runInferenceImpl(
+  protected ListenableFuture<List<ContentItem>> runInferenceImpl(
       TextItem request, @Nullable StreamingCallback streamingCallback) {
     ProofreadingRequest proofreadingRequest =
         ProofreadingRequest.builder(request.getText()).build();
@@ -101,7 +102,9 @@ public class ProofreadingActivity extends TextInputBaseActivity {
             : proofreader.runInference(proofreadingRequest),
         proofreadingResult ->
             requireNonNull(proofreadingResult).getResults().stream()
-                .map(ProofreadingSuggestion::getText)
+                .map(
+                    suggestion ->
+                        ContentItem.TextItem.Companion.fromResponse(suggestion.getText(), null))
                 .collect(toImmutableList()),
         ContextCompat.getMainExecutor(this));
   }

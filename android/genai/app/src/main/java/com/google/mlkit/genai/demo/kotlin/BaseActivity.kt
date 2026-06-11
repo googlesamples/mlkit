@@ -43,7 +43,10 @@ import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.common.GenAiException
 import com.google.mlkit.genai.common.StreamingCallback
 import com.google.mlkit.genai.demo.ContentAdapter
+import com.google.mlkit.genai.demo.ContentAdapter.Companion.VIEW_TYPE_RESPONSE_STREAMING
+import com.google.mlkit.genai.demo.ContentAdapter.Companion.VIEW_TYPE_RESPONSE_STREAMING_THOUGHT
 import com.google.mlkit.genai.demo.ContentItem
+import com.google.mlkit.genai.demo.GenerationConfigUtils
 import com.google.mlkit.genai.demo.R
 import com.google.mlkit.genai.prompt.CountTokensResponse
 import com.opencsv.CSVReader
@@ -82,11 +85,16 @@ abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(getLayoutResId())
+    streaming = GenerationConfigUtils.getUseStreaming(this)
 
     debugInfoTextView = findViewById(R.id.debug_info_text_view)
 
     findViewById<RecyclerView>(R.id.content_recycler_view).apply {
-      layoutManager = LinearLayoutManager(this@BaseActivity)
+      layoutManager =
+        LinearLayoutManager(this@BaseActivity).apply {
+          // This enables focusing to the bottom when new content is added.
+          stackFromEnd = true
+        }
       adapter = ContentAdapter().also { contentAdapter = it }
     }
 
@@ -103,6 +111,10 @@ abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
           createBatchOutputFileLauncher.launch(outputFileName)
         }
       }
+  }
+
+  protected fun refreshConfigs() {
+    streaming = GenerationConfigUtils.getUseStreaming(this)
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -167,6 +179,7 @@ abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
     return when (item.itemId) {
       R.id.action_streaming -> {
         streaming = !streaming
+        GenerationConfigUtils.setUseStreaming(this, streaming)
         item.isChecked = streaming
         invalidateOptionsMenu()
         true
@@ -295,37 +308,72 @@ abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
       val tokenInfoText = tokenInfoTextBuilder.toString()
 
       if (streaming) {
-        hasFirstStreamingResult = false
-        val resultBuilder = StringBuilder()
+        var lastViewType: Int? = null
+        val thoughtBuilder = StringBuilder()
+        val textBuilder = StringBuilder()
 
-        val onChunk: (String) -> Unit = { additionalText ->
-          runOnUiThread {
-            resultBuilder.append(additionalText)
-            if (hasFirstStreamingResult) {
-              contentAdapter.updateStreamingResponse(resultBuilder.toString())
-            } else {
-              contentAdapter.addContent(
-                ContentItem.TextItem.fromStreamingResponse(resultBuilder.toString())
-              )
-              hasFirstStreamingResult = true
-              firstTokenLatency = Instant.now().minusMillis(startMs).toEpochMilli()
+        val onChunk: (ContentItem) -> Unit = { chunkItem ->
+          if (chunkItem is ContentItem.TextItem) {
+            runOnUiThread {
+              if (chunkItem.viewType == VIEW_TYPE_RESPONSE_STREAMING_THOUGHT) {
+                thoughtBuilder.append(chunkItem.text)
+                if (lastViewType == VIEW_TYPE_RESPONSE_STREAMING_THOUGHT) {
+                  contentAdapter.updateStreamingThoughtResponse(thoughtBuilder.toString())
+                } else {
+                  contentAdapter.addContent(
+                    ContentItem.TextItem.fromStreamingThoughtResponse(thoughtBuilder.toString())
+                  )
+                  lastViewType = VIEW_TYPE_RESPONSE_STREAMING_THOUGHT
+                }
+              } else if (chunkItem.viewType == VIEW_TYPE_RESPONSE_STREAMING) {
+                textBuilder.append(chunkItem.text)
+                if (lastViewType == VIEW_TYPE_RESPONSE_STREAMING_THOUGHT) {
+                  // Transition from thought to text
+                  contentAdapter.finalizeStreamingThought(thoughtBuilder.toString())
+                  contentAdapter.addContent(
+                    ContentItem.TextItem.fromStreamingResponse(textBuilder.toString())
+                  )
+                  lastViewType = VIEW_TYPE_RESPONSE_STREAMING
+                } else if (lastViewType == VIEW_TYPE_RESPONSE_STREAMING) {
+                  contentAdapter.updateStreamingResponse(textBuilder.toString())
+                } else {
+                  contentAdapter.addContent(
+                    ContentItem.TextItem.fromStreamingResponse(textBuilder.toString())
+                  )
+                  lastViewType = VIEW_TYPE_RESPONSE_STREAMING
+                  firstTokenLatency = Instant.now().minusMillis(startMs).toEpochMilli()
+                }
+              }
             }
           }
         }
-        val onSuccess: (List<String>) -> Unit = { results ->
+        val onSuccess: (List<ContentItem>) -> Unit = { results ->
           val totalLatency: Long = Instant.now().minusMillis(startMs).toEpochMilli()
           val debugInfo = getString(R.string.debug_info_streaming, firstTokenLatency, totalLatency)
           val latencyMetadata =
             if (tokenInfoText.isEmpty()) debugInfo else "$tokenInfoText\n$debugInfo"
-          results
-            .filter { it.isNotEmpty() }
-            .forEach { result ->
-              contentAdapter.addContent(ContentItem.TextItem.fromResponse(result, latencyMetadata))
-            }
+
+          if (lastViewType == VIEW_TYPE_RESPONSE_STREAMING_THOUGHT) {
+            contentAdapter.finalizeStreamingThought(thoughtBuilder.toString())
+          }
+
+          for (result in results) {
+            val finalizedResult =
+              if (result is ContentItem.TextItem) {
+                if (result.viewType == ContentAdapter.VIEW_TYPE_RESPONSE) {
+                  result.copy(metadata = latencyMetadata)
+                } else {
+                  result
+                }
+              } else {
+                result
+              }
+            contentAdapter.addContent(finalizedResult)
+          }
           endGeneratingUi(debugInfo)
         }
         val onFailure: (Throwable) -> Unit = { t ->
-          Log.d(TAG, "Streaming result so far:\n$resultBuilder")
+          Log.d(TAG, "Streaming result so far:\n$textBuilder")
           Log.e(TAG, "Failed to run inference.", t)
           displayErrorMessage("Failed to run inference", t)
         }
@@ -335,15 +383,34 @@ abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
         if (streamFlow != null) {
           try {
             streamFlow.collect { onChunk(it) }
-            onSuccess(listOf(resultBuilder.toString()))
+            val finalResults = mutableListOf<ContentItem>()
+            if (thoughtBuilder.isNotEmpty()) {
+              finalResults.add(ContentItem.TextItem.fromThoughtResponse(thoughtBuilder.toString()))
+            }
+            if (textBuilder.isNotEmpty()) {
+              finalResults.add(ContentItem.TextItem.fromResponse(textBuilder.toString(), null))
+            }
+            onSuccess(finalResults)
           } catch (t: Throwable) {
             onFailure(t)
           }
         } else {
+          val callback =
+            object : StreamingCallback {
+              override fun onNewText(additionalText: String) {
+                onChunk(ContentItem.TextItem.fromStreamingResponse(additionalText))
+              }
+
+              override fun onNewThought(additionalThought: String) {
+                if (GenerationConfigUtils.getShowThinking(this@BaseActivity)) {
+                  onChunk(ContentItem.TextItem.fromStreamingThoughtResponse(additionalThought))
+                }
+              }
+            }
           Futures.addCallback(
-            runInferenceImpl(request) { additionalText -> onChunk(additionalText) },
-            object : FutureCallback<List<String>> {
-              override fun onSuccess(results: List<String>) {
+            runInferenceImpl(request, callback),
+            object : FutureCallback<List<ContentItem>> {
+              override fun onSuccess(results: List<ContentItem>) {
                 onSuccess(results)
               }
 
@@ -357,16 +424,23 @@ abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
       } else {
         Futures.addCallback(
           runInferenceImpl(request, streamingCallback = null),
-          object : FutureCallback<List<String>> {
-            override fun onSuccess(results: List<String>) {
+          object : FutureCallback<List<ContentItem>> {
+            override fun onSuccess(results: List<ContentItem>) {
               val debugInfo =
                 getString(R.string.debug_info, Instant.now().minusMillis(startMs).toEpochMilli())
               val latencyMetadata =
                 if (tokenInfoText.isEmpty()) debugInfo else "$tokenInfoText\n$debugInfo"
-              results.forEach { result ->
-                contentAdapter.addContent(
-                  ContentItem.TextItem.fromResponse(result, latencyMetadata)
-                )
+              for (result in results) {
+                val finalizedResult =
+                  if (
+                    result is ContentItem.TextItem &&
+                      result.viewType == ContentAdapter.VIEW_TYPE_RESPONSE
+                  ) {
+                    result.copy(metadata = latencyMetadata)
+                  } else {
+                    result
+                  }
+                contentAdapter.addContent(finalizedResult)
               }
               endGeneratingUi(debugInfo)
             }
@@ -385,9 +459,9 @@ abstract class BaseActivity<RequestT : ContentItem> : AppCompatActivity() {
   protected abstract fun runInferenceImpl(
     request: RequestT,
     streamingCallback: StreamingCallback?,
-  ): ListenableFuture<List<String>>
+  ): ListenableFuture<List<ContentItem>>
 
-  protected open fun runInferenceStreamImpl(request: RequestT): Flow<String>? = null
+  protected open fun runInferenceStreamImpl(request: RequestT): Flow<ContentItem>? = null
 
   protected open suspend fun countTokens(request: RequestT): CountTokensResponse =
     throw UnsupportedOperationException("Not implemented")

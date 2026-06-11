@@ -46,13 +46,24 @@ class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
   fun addContent(content: ContentItem) {
     contentList.add(content)
     notifyItemInserted(contentList.size - 1)
-    recyclerView?.post { recyclerView?.smoothScrollToPosition(contentList.size - 1) }
+    recyclerView?.post { recyclerView?.scrollToPosition(contentList.size - 1) }
   }
 
   fun updateStreamingResponse(response: String) {
     contentList[contentList.size - 1] = TextItem.fromStreamingResponse(response)
-    notifyDataSetChanged()
-    recyclerView?.post { recyclerView?.smoothScrollToPosition(contentList.size - 1) }
+    notifyItemChanged(contentList.size - 1)
+    recyclerView?.post { recyclerView?.scrollToPosition(contentList.size - 1) }
+  }
+
+  fun updateStreamingThoughtResponse(response: String) {
+    contentList[contentList.size - 1] = TextItem.fromStreamingThoughtResponse(response)
+    notifyItemChanged(contentList.size - 1)
+    recyclerView?.post { recyclerView?.scrollToPosition(contentList.size - 1) }
+  }
+
+  fun finalizeStreamingThought(finalThought: String) {
+    contentList[contentList.size - 1] = TextItem.fromThoughtResponse(finalThought)
+    notifyItemChanged(contentList.size - 1)
   }
 
   override fun getItemViewType(position: Int): Int {
@@ -73,6 +84,8 @@ class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
         ImageViewHolder(layoutInflater.inflate(R.layout.row_item_request_image, viewGroup, false))
       VIEW_TYPE_RESPONSE,
       VIEW_TYPE_RESPONSE_STREAMING,
+      VIEW_TYPE_RESPONSE_THOUGHT,
+      VIEW_TYPE_RESPONSE_STREAMING_THOUGHT,
       VIEW_TYPE_RESPONSE_ERROR ->
         TextViewHolder(layoutInflater.inflate(R.layout.row_item_response, viewGroup, false))
       VIEW_TYPE_REQUEST_TEXT_AND_IMAGES ->
@@ -90,6 +103,10 @@ class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
       VIEW_TYPE_REQUEST_TEXT_WITH_PREFIX_CACHE ->
         TextWithPrefixCacheViewHolder(
           layoutInflater.inflate(R.layout.row_item_request_text, viewGroup, false)
+        )
+      VIEW_TYPE_REQUEST_INTERLEAVED_CONTENT ->
+        InterleavedContentViewHolder(
+          layoutInflater.inflate(R.layout.row_item_request_interleaved_content, viewGroup, false)
         )
       else -> throw IllegalArgumentException("Invalid view type $viewType")
     }
@@ -143,6 +160,34 @@ class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
               setSpan(StyleSpan(Typeface.BOLD), 0, length, SPAN_EXCLUSIVE_EXCLUSIVE)
               append(item.text)
             }
+        } else if (item.viewType == VIEW_TYPE_RESPONSE_STREAMING_THOUGHT) {
+          contentTextView.setTextColor(Color.GRAY)
+          contentTextView.text =
+            SpannableStringBuilder().apply {
+              append(STREAMING_THOUGHT_INDICATOR)
+              setSpan(StyleSpan(Typeface.BOLD_ITALIC), 0, length, SPAN_EXCLUSIVE_EXCLUSIVE)
+              append(item.text)
+              setSpan(
+                StyleSpan(Typeface.ITALIC),
+                length - item.text.length,
+                length,
+                SPAN_EXCLUSIVE_EXCLUSIVE,
+              )
+            }
+        } else if (item.viewType == VIEW_TYPE_RESPONSE_THOUGHT) {
+          contentTextView.setTextColor(Color.GRAY)
+          contentTextView.text =
+            SpannableStringBuilder().apply {
+              append("[Thought]\n")
+              setSpan(StyleSpan(Typeface.BOLD_ITALIC), 0, length, SPAN_EXCLUSIVE_EXCLUSIVE)
+              append(item.text)
+              setSpan(
+                StyleSpan(Typeface.ITALIC),
+                length - item.text.length,
+                length,
+                SPAN_EXCLUSIVE_EXCLUSIVE,
+              )
+            }
         } else {
           contentTextView.text = item.text
           if (item.metadata != null) {
@@ -190,9 +235,11 @@ class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
       imageContainer.removeAllViews()
       if (item.imageUris.isNotEmpty()) {
         imageContainer.visibility = View.VISIBLE
+        val imageSize =
+          imageContainer.context.resources.getDimensionPixelSize(R.dimen.interleaved_image_size)
         for (uri in item.imageUris) {
           val imageView = ImageView(imageContainer.context)
-          val layoutParams = LinearLayout.LayoutParams(400, 400)
+          val layoutParams = LinearLayout.LayoutParams(imageSize, imageSize)
           layoutParams.setMargins(0, 0, 16, 0)
           imageView.layoutParams = layoutParams
           Glide.with(imageView).load(uri).into(imageView)
@@ -205,6 +252,46 @@ class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
 
       bubbleLayout.setBackgroundResource(R.drawable.request_item_background)
       messageText.setTextColor(defaultTextColors)
+    }
+  }
+
+  /** Hosts interleaved text and image request item view. */
+  class InterleavedContentViewHolder(itemView: View) : ViewHolder(itemView), ContentViewHolder {
+    private val bubbleLayout: LinearLayout = itemView.findViewById(R.id.chat_bubble_layout)
+
+    override fun bind(item: ContentItem) {
+      if (item !is ContentItem.InterleavedContentItem) {
+        return
+      }
+      bubbleLayout.removeAllViews()
+
+      for (part in item.parts) {
+        when (part) {
+          is com.google.mlkit.genai.prompt.TextPart -> {
+            val textView = TextView(bubbleLayout.context)
+            textView.text = part.textString
+            textView.layoutParams =
+              LinearLayout.LayoutParams(
+                  LinearLayout.LayoutParams.WRAP_CONTENT,
+                  LinearLayout.LayoutParams.WRAP_CONTENT,
+                )
+                .apply { setMargins(0, 0, 0, 8) }
+            bubbleLayout.addView(textView)
+          }
+          is com.google.mlkit.genai.prompt.ImagePart -> {
+            val imageView = ImageView(bubbleLayout.context)
+            val imageSize =
+              bubbleLayout.context.resources.getDimensionPixelSize(R.dimen.interleaved_image_size)
+            val layoutParams = LinearLayout.LayoutParams(imageSize, imageSize)
+            layoutParams.setMargins(0, 0, 0, 8)
+            imageView.layoutParams = layoutParams
+            Glide.with(imageView).load(part.bitmap).into(imageView)
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            bubbleLayout.addView(imageView)
+          }
+          else -> {}
+        }
+      }
     }
   }
 
@@ -278,7 +365,11 @@ class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
     const val VIEW_TYPE_REQUEST_TEXT_WITH_PROMPT_PREFIX: Int = 6
     const val VIEW_TYPE_CACHE_REQUEST: Int = 7
     const val VIEW_TYPE_REQUEST_TEXT_WITH_PREFIX_CACHE: Int = 8
+    const val VIEW_TYPE_REQUEST_INTERLEAVED_CONTENT: Int = 9
+    const val VIEW_TYPE_RESPONSE_THOUGHT: Int = 10
+    const val VIEW_TYPE_RESPONSE_STREAMING_THOUGHT: Int = 11
 
     const val STREAMING_INDICATOR: String = "STREAMING...\n"
+    const val STREAMING_THOUGHT_INDICATOR: String = "THINKING...\n"
   }
 }

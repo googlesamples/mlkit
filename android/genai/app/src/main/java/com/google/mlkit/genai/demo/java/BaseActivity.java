@@ -48,6 +48,7 @@ import com.google.mlkit.genai.common.StreamingCallback;
 import com.google.mlkit.genai.demo.ContentAdapter;
 import com.google.mlkit.genai.demo.ContentItem;
 import com.google.mlkit.genai.demo.ContentItem.TextItem;
+import com.google.mlkit.genai.demo.GenerationConfigUtils;
 import com.google.mlkit.genai.demo.R;
 import com.google.mlkit.genai.prompt.CountTokensResponse;
 import com.opencsv.CSVReader;
@@ -81,7 +82,6 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
   private long totalBytesToDownload;
 
   private boolean streaming = true;
-  private boolean hasFirstStreamingResult;
   private long firstTokenLatency;
 
   @Nullable private Uri batchInputUri;
@@ -101,7 +101,10 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
     debugInfoTextView = findViewById(R.id.debug_info_text_view);
 
     RecyclerView contentRecyclerView = findViewById(R.id.content_recycler_view);
-    contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    // This enables focusing to the bottom when new content is added.
+    layoutManager.setStackFromEnd(true);
+    contentRecyclerView.setLayoutManager(layoutManager);
     contentRecyclerView.setAdapter(contentAdapter);
 
     createBatchOutputFileLauncher =
@@ -277,14 +280,14 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
     ListenableFuture<CountTokensResponse> countTokensFuture = countTokens(request);
     ListenableFuture<Integer> tokenLimitFuture = getTokenLimit();
 
-    ListenableFuture<List<Object>> combinedFuture =
+    ListenableFuture<? extends List<?>> combinedFuture =
         Futures.successfulAsList(countTokensFuture, tokenLimitFuture);
 
     Futures.addCallback(
         combinedFuture,
-        new FutureCallback<List<Object>>() {
+        new FutureCallback<List<?>>() {
           @Override
-          public void onSuccess(List<Object> results) {
+          public void onSuccess(List<?> results) {
             StringBuilder tokenInfoTextBuilder = new StringBuilder();
 
             try {
@@ -340,43 +343,103 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
   private void runInferenceWithTokenInfo(RequestT request, String tokenInfoText) {
     long startMs = System.currentTimeMillis();
     if (streaming) {
-      hasFirstStreamingResult = false;
-      StringBuilder resultBuilder = new StringBuilder();
+      final StringBuilder textBuilder = new StringBuilder();
+      final StringBuilder thoughtBuilder = new StringBuilder();
+      final int[] lastViewType = {-1};
+      boolean showThinking = GenerationConfigUtils.getShowThinking(this);
+
+      Consumer<ContentItem> onChunk =
+          chunkItem -> {
+            if (chunkItem instanceof ContentItem.TextItem textItem) {
+              runOnUiThread(
+                  () -> {
+                    if (textItem.getViewType()
+                        == ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING_THOUGHT) {
+                      thoughtBuilder.append(textItem.getText());
+                      if (lastViewType[0] == ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING_THOUGHT) {
+                        contentAdapter.updateStreamingThoughtResponse(thoughtBuilder.toString());
+                      } else {
+                        contentAdapter.addContent(
+                            ContentItem.TextItem.Companion.fromStreamingThoughtResponse(
+                                thoughtBuilder.toString()));
+                        lastViewType[0] = ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING_THOUGHT;
+                      }
+                    } else if (textItem.getViewType()
+                        == ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING) {
+                      textBuilder.append(textItem.getText());
+                      if (lastViewType[0] == ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING_THOUGHT) {
+                        contentAdapter.finalizeStreamingThought(thoughtBuilder.toString());
+                        contentAdapter.addContent(
+                            ContentItem.TextItem.Companion.fromStreamingResponse(
+                                textBuilder.toString()));
+                        lastViewType[0] = ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING;
+                      } else if (lastViewType[0] == ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING) {
+                        contentAdapter.updateStreamingResponse(textBuilder.toString());
+                      } else {
+                        contentAdapter.addContent(
+                            ContentItem.TextItem.Companion.fromStreamingResponse(
+                                textBuilder.toString()));
+                        lastViewType[0] = ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING;
+                        BaseActivity.this.firstTokenLatency =
+                            Instant.now().minusMillis(startMs).toEpochMilli();
+                      }
+                    }
+                  });
+            }
+          };
+
+      StreamingCallback callback =
+          new StreamingCallback() {
+            @Override
+            public void onNewText(@NonNull String additionalText) {
+              onChunk.accept(ContentItem.TextItem.Companion.fromStreamingResponse(additionalText));
+            }
+
+            @Override
+            public void onNewThought(@NonNull String additionalThought) {
+              if (showThinking) {
+                onChunk.accept(
+                    ContentItem.TextItem.Companion.fromStreamingThoughtResponse(additionalThought));
+              }
+            }
+          };
+
       Futures.addCallback(
-          runInferenceImpl(
-              request,
-              additionalText ->
-                  runOnUiThread(
-                      () -> {
-                        resultBuilder.append(additionalText);
-                        if (hasFirstStreamingResult) {
-                          contentAdapter.updateStreamingResponse(resultBuilder.toString());
-                        } else {
-                          contentAdapter.addContent(
-                              TextItem.Companion.fromStreamingResponse(resultBuilder.toString()));
-                          hasFirstStreamingResult = true;
-                          firstTokenLatency = Instant.now().minusMillis(startMs).toEpochMilli();
-                        }
-                      })),
+          runInferenceImpl(request, callback),
           new FutureCallback<>() {
             @Override
-            public void onSuccess(List<String> results) {
+            public void onSuccess(List<ContentItem> results) {
               long totalLatency = Instant.now().minusMillis(startMs).toEpochMilli();
               String debugInfo =
-                  getString(R.string.debug_info_streaming, firstTokenLatency, totalLatency);
+                  getString(
+                      R.string.debug_info_streaming,
+                      BaseActivity.this.firstTokenLatency,
+                      totalLatency);
               String latencyMetadata =
                   tokenInfoText.isEmpty() ? debugInfo : tokenInfoText + "\n" + debugInfo;
+
+              if (lastViewType[0] == ContentAdapter.VIEW_TYPE_RESPONSE_STREAMING_THOUGHT) {
+                contentAdapter.finalizeStreamingThought(thoughtBuilder.toString());
+              }
+
               results.forEach(
                   result -> {
-                    contentAdapter.addContent(
-                        TextItem.Companion.fromResponse(result, latencyMetadata));
+                    ContentItem finalizedResult = result;
+                    if (result instanceof ContentItem.TextItem textItem) {
+                      if (textItem.getViewType() == ContentAdapter.VIEW_TYPE_RESPONSE) {
+                        finalizedResult =
+                            ContentItem.TextItem.Companion.fromResponse(
+                                textItem.getText(), latencyMetadata);
+                      }
+                    }
+                    contentAdapter.addContent(finalizedResult);
                   });
               endGeneratingUi(debugInfo);
             }
 
             @Override
             public void onFailure(@NonNull Throwable t) {
-              Log.d(TAG, "Streaming result so far:\n" + resultBuilder);
+              Log.d(TAG, "Streaming result so far:\n" + textBuilder);
               Log.e(TAG, "Failed to run inference.", t);
               displayErrorMessage("Failed to run inference", t);
             }
@@ -388,15 +451,22 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
           runInferenceImpl(request, /* streamingCallback= */ null),
           new FutureCallback<>() {
             @Override
-            public void onSuccess(List<String> results) {
+            public void onSuccess(List<ContentItem> results) {
               String debugInfo =
                   getString(R.string.debug_info, Instant.now().minusMillis(startMs).toEpochMilli());
               String latencyMetadata =
                   tokenInfoText.isEmpty() ? debugInfo : tokenInfoText + "\n" + debugInfo;
               results.forEach(
                   result -> {
-                    contentAdapter.addContent(
-                        TextItem.Companion.fromResponse(result, latencyMetadata));
+                    ContentItem finalizedResult = result;
+                    if (result instanceof ContentItem.TextItem textItem) {
+                      if (textItem.getViewType() == ContentAdapter.VIEW_TYPE_RESPONSE) {
+                        finalizedResult =
+                            ContentItem.TextItem.Companion.fromResponse(
+                                textItem.getText(), latencyMetadata);
+                      }
+                    }
+                    contentAdapter.addContent(finalizedResult);
                   });
               endGeneratingUi(debugInfo);
             }
@@ -411,7 +481,7 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
     }
   }
 
-  protected abstract ListenableFuture<List<String>> runInferenceImpl(
+  protected abstract ListenableFuture<List<ContentItem>> runInferenceImpl(
       RequestT request, @Nullable StreamingCallback streamingCallback);
 
   protected ListenableFuture<CountTokensResponse> countTokens(RequestT request) {
@@ -482,6 +552,7 @@ abstract class BaseActivity<RequestT extends ContentItem> extends AppCompatActiv
    * additional columns: one for the result text (or error message) and one for the score,
    * continuing sequentially.
    */
+  @SuppressWarnings("UnnecessaryIterableToArray")
   private void batchRun(Uri inputUri, Uri outputUri) {
     batchRunCancelled = false;
     AlertDialog processingDialog =

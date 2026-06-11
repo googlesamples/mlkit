@@ -141,4 +141,54 @@ object GenerationConfigUtils {
       putBoolean(context.getString(R.string.pref_key_use_explicit_cache), useExplicitCache)
     }
   }
+
+  @JvmStatic
+  fun getUseStructuredOutput(context: Context): Boolean {
+    return PreferenceManager.getDefaultSharedPreferences(context)
+      .getBoolean(context.getString(R.string.pref_key_use_structured_output), false)
+  }
+
+  @JvmStatic
+  fun setUseStructuredOutput(context: Context, useStructuredOutput: Boolean) {
+    PreferenceManager.getDefaultSharedPreferences(context).edit {
+      putBoolean(context.getString(R.string.pref_key_use_structured_output), useStructuredOutput)
+    }
+  }
+
+  @JvmStatic
+  fun getUseStreaming(context: Context): Boolean {
+    return PreferenceManager.getDefaultSharedPreferences(context)
+      .getBoolean(context.getString(R.string.pref_key_use_streaming), true)
+  }
+
+  @JvmStatic
+  fun setUseStreaming(context: Context, useStreaming: Boolean) {
+    PreferenceManager.getDefaultSharedPreferences(context).edit {
+      putBoolean(context.getString(R.string.pref_key_use_streaming), useStreaming)
+    }
+  }
+
+  @JvmStatic
+  fun setEnableThinking(context: Context, enableThinking: Boolean) {
+    PreferenceManager.getDefaultSharedPreferences(context).edit {
+      putBoolean(context.getString(R.string.pref_key_enable_thinking), enableThinking)
+    }
+  }
+
+  @JvmStatic
+  fun getEnableThinking(context: Context): Boolean =
+    PreferenceManager.getDefaultSharedPreferences(context)
+      .getBoolean(context.getString(R.string.pref_key_enable_thinking), false)
+
+  @JvmStatic
+  fun setShowThinking(context: Context, showThinking: Boolean) {
+    PreferenceManager.getDefaultSharedPreferences(context).edit {
+      putBoolean(context.getString(R.string.pref_key_show_thinking), showThinking)
+    }
+  }
+
+  @JvmStatic
+  fun getShowThinking(context: Context): Boolean =
+    PreferenceManager.getDefaultSharedPreferences(context)
+      .getBoolean(context.getString(R.string.pref_key_show_thinking), true)
 }

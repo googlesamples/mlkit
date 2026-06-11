@@ -29,6 +29,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.genai.common.DownloadCallback;
 import com.google.mlkit.genai.common.FeatureStatus;
 import com.google.mlkit.genai.common.StreamingCallback;
+import com.google.mlkit.genai.demo.ContentItem;
 import com.google.mlkit.genai.demo.ContentItem.TextItem;
 import com.google.mlkit.genai.demo.R;
 import com.google.mlkit.genai.prompt.CountTokensResponse;
@@ -91,7 +92,7 @@ public class SummarizationActivity extends TextInputBaseActivity {
   }
 
   @Override
-  protected ListenableFuture<List<String>> runInferenceImpl(
+  protected ListenableFuture<List<ContentItem>> runInferenceImpl(
       TextItem request, @Nullable StreamingCallback streamingCallback) {
     SummarizationRequest summarizationRequest =
         SummarizationRequest.builder(request.getText()).build();
@@ -99,7 +100,10 @@ public class SummarizationActivity extends TextInputBaseActivity {
         streamingCallback != null
             ? summarizer.runInference(summarizationRequest, streamingCallback)
             : summarizer.runInference(summarizationRequest),
-        result -> ImmutableList.of(requireNonNull(result).getSummary()),
+        result ->
+            ImmutableList.of(
+                ContentItem.TextItem.Companion.fromResponse(
+                    requireNonNull(result).getSummary(), null)),
         ContextCompat.getMainExecutor(this));
   }
 

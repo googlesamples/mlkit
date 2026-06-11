@@ -38,6 +38,7 @@ import com.google.mlkit.genai.imagedescription.ImageDescription
 import com.google.mlkit.genai.imagedescription.ImageDescriptionRequest
 import com.google.mlkit.genai.prompt.CountTokensResponse
 import java.io.IOException
+import kotlinx.coroutines.flow.map
 
 /** Demonstrates the Image Description API usage. */
 class ImageDescriptionActivity : BaseActivity<ContentItem.ImageItem>() {
@@ -91,7 +92,7 @@ class ImageDescriptionActivity : BaseActivity<ContentItem.ImageItem>() {
   override fun runInferenceImpl(
     request: ContentItem.ImageItem,
     streamingCallback: StreamingCallback?,
-  ): ListenableFuture<List<String>> {
+  ): ListenableFuture<List<ContentItem>> {
     try {
       val bitmap =
         ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, request.imageUri))
@@ -104,7 +105,9 @@ class ImageDescriptionActivity : BaseActivity<ContentItem.ImageItem>() {
 
       return Futures.transform(
         inferenceFuture,
-        { imageDescriptionResult -> listOf(imageDescriptionResult.description) },
+        { imageDescriptionResult ->
+          listOf(ContentItem.TextItem.fromResponse(imageDescriptionResult.description, null))
+        },
         ContextCompat.getMainExecutor(this),
       )
     } catch (e: IOException) {

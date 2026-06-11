@@ -53,25 +53,59 @@
       android:layout_weight="1"
       android:clipToPadding="false"
       android:paddingTop="8dp"/>
-
   <LinearLayout
+      android:id="@+id/structured_output_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="?android:attr/windowBackground"
-      android:gravity="center_vertical"
       android:orientation="horizontal"
-      android:paddingStart="8dp"
+      android:gravity="center"
       android:paddingTop="8dp"
-      android:paddingEnd="8dp"
-      android:paddingBottom="8dp">
+      android:paddingBottom="8dp"
+      android:visibility="gone">
+
+    <Button
+        android:id="@+id/plant_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/plant_button_text"
+        android:layout_marginEnd="8dp"/>
+
+    <Button
+        android:id="@+id/schedule_event_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/schedule_event_button_text"/>
+
+    <ImageButton
+        android:id="@+id/info_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_dialog_info"
+        android:tint="@color/white"
+        android:contentDescription="@string/info_button_description"
+        style="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginStart="8dp"/>
+  </LinearLayout>
+
+  <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp">
 
     <EditText
-        android:id="@+id/prefix_edit_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/system_prompt_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/edit_text_background_chat"
-        android:hint="@string/hint_add_prompt_prefix"
+        android:hint="@string/hint_add_system_prompt"
         android:importantForAutofill="no"
         android:inputType="textMultiLine|textCapSentences"
         android:maxLines="5"
@@ -83,14 +117,40 @@
         android:textColor="#FFFFFF"
         android:textColorHint="#CCCCCC"
         tools:ignore="LabelFor" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <CheckBox
-        android:id="@+id/create_cache_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:text="@string/create_cache"
-        android:layout_marginStart="8dp"
-        android:visibility="gone"/>
+      <EditText
+          android:id="@+id/prefix_edit_text"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:background="@drawable/edit_text_background_chat"
+          android:hint="@string/hint_add_prompt_prefix"
+          android:importantForAutofill="no"
+          android:inputType="textMultiLine|textCapSentences"
+          android:maxLines="5"
+          android:minHeight="48dp"
+          android:paddingStart="12dp"
+          android:paddingTop="10dp"
+          android:paddingEnd="12dp"
+          android:paddingBottom="10dp"
+          android:textColor="#FFFFFF"
+          android:textColorHint="#CCCCCC"
+          tools:ignore="LabelFor" />
+
+      <CheckBox
+          android:id="@+id/create_cache_checkbox"
+          android:layout_width="wrap_content"
+          android:layout_height="48dp"
+          android:text="@string/create_cache"
+          android:layout_marginStart="8dp"
+          android:visibility="gone"/>
+    </LinearLayout>
   </LinearLayout>
 
   <LinearLayout

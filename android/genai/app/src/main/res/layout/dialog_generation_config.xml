@@ -85,5 +85,17 @@
 
   </com.google.android.material.textfield.TextInputLayout>
 
+  <CheckBox
+      android:id="@+id/enable_thinking_checkbox"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/hint_enable_thinking" />
+
+  <CheckBox
+      android:id="@+id/show_thinking_checkbox"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/hint_show_thinking" />
+
 </LinearLayout>
 

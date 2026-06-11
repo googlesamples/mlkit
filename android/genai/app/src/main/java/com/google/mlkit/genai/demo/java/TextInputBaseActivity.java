@@ -44,7 +44,7 @@ abstract class TextInputBaseActivity extends BaseActivity<TextItem> {
             Toast.makeText(this, R.string.input_message_is_empty, Toast.LENGTH_SHORT).show();
             return;
           }
-          onSend(TextItem.Companion.fromRequest(request));
+          onSend(TextItem.Companion.fromRequest(request, /* systemInstruction= */ ""));
         });
   }
 

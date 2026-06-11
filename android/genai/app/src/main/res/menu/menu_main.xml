@@ -56,4 +56,11 @@
       android:checked="false"
       android:visible="false"
       app:showAsAction="never" />
+  <item
+      android:id="@+id/action_structured_output"
+      android:title="@string/action_structured_output"
+      android:checkable="true"
+      android:checked="false"
+      android:visible="false"
+      app:showAsAction="never" />
 </menu>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="interleaved_image_size">200dp</dimen>
+  <dimen name="interleaved_thumbnail_size">50dp</dimen>
+</resources>
