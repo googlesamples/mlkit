@@ -1,7 +1,7 @@
 package com.google.mlkit.genai.demo.kotlin
 
-import com.google.mlkit.genai.structuredoutput.annotations.Generable
-import com.google.mlkit.genai.structuredoutput.annotations.Guide
+import com.google.mlkit.genai.schema.annotations.Generable
+import com.google.mlkit.genai.schema.annotations.Guide
 
 @Generable(description = "Basic information about a plant")
 data class Plant(

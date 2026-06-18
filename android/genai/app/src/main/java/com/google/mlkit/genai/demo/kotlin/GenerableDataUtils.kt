@@ -1,8 +1,8 @@
 package com.google.mlkit.genai.demo.kotlin
 
 import android.util.Log
-import com.google.mlkit.genai.structuredoutput.guided.GenerableDetail
-import com.google.mlkit.genai.structuredoutput.guided.GenerableProvider
+import com.google.mlkit.genai.schema.guided.GenerableDetail
+import com.google.mlkit.genai.schema.guided.GenerableProvider
 import java.util.ServiceLoader
 import kotlin.reflect.KClass
 import org.json.JSONArray

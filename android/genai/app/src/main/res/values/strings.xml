@@ -26,7 +26,6 @@
   <string name="image_description_entry_title_java" translatable="false">Image Description API (Java)</string>
   <string name="open_prompt_entry_title_kotlin" translatable="false">Open Prompt API (Kotlin)</string>
   <string name="open_prompt_entry_title_java" translatable="false">Open Prompt API (Java)</string>
-  <string name="hidden_compose_entry_title" translatable="false">Hidden Compose Activity</string>
   <string name="button_send" translatable="false">Send</string>
   <string name="button_select_image" translatable="false">Select Image</string>
   <string name="button_cancel" translatable="false">Cancel</string>
@@ -140,4 +139,5 @@
   <string name="feature_unavailable" translatable="false">Feature is unavailable.</string>
   <string name="download_failed" translatable="false">Download failed.</string>
   <string name="downloading_model_progress" translatable="false">Downloading model: %1$d / %2$d MB (%3$.2f%%)</string>
+
 </resources>
