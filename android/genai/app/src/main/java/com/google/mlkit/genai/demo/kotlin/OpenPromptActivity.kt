@@ -88,7 +88,7 @@ class OpenPromptActivity :
   private lateinit var configButton: Button
   private lateinit var prefixEditText: EditText
   private lateinit var createCacheCheckBox: CheckBox
-  private lateinit var structuredOutputButtons: LinearLayout
+  private lateinit var extraButtonsContainer: LinearLayout
   private lateinit var plantButton: Button
   private lateinit var scheduleEventButton: Button
   private lateinit var infoButton: ImageButton
@@ -202,7 +202,7 @@ class OpenPromptActivity :
       updatePrefixEditTextState()
     }
     systemPromptEditText = findViewById(R.id.system_prompt_edit_text)
-    structuredOutputButtons = findViewById(R.id.structured_output_buttons)
+    extraButtonsContainer = findViewById(R.id.extra_buttons_container)
     plantButton = findViewById(R.id.plant_button)
     scheduleEventButton = findViewById(R.id.schedule_event_button)
     infoButton = findViewById(R.id.info_button)
@@ -214,7 +214,7 @@ class OpenPromptActivity :
       if (outputClass != null) {
         val schema = GenerableDataUtils.getJsonSchema(outputClass)
         if (schema != null) {
-          showSchemaDialog(schema)
+          showSchemaDialog(getString(R.string.dialog_title_output_class_schema), schema)
         } else {
           Toast.makeText(this, "Schema not available", Toast.LENGTH_SHORT).show()
         }
@@ -307,9 +307,9 @@ class OpenPromptActivity :
     )
   }
 
-  private fun showSchemaDialog(schema: String) {
+  private fun showSchemaDialog(title: String, schema: String) {
     AlertDialog.Builder(this)
-      .setTitle("Output Class Schema")
+      .setTitle(title)
       .setMessage(schema)
       .setPositiveButton("Dismiss") { dialog, _ -> dialog.dismiss() }
       .show()
@@ -318,19 +318,27 @@ class OpenPromptActivity :
   override fun onConfigUpdated() {
     useDefaultConfig = GenerationConfigUtils.getUseDefaultConfig(applicationContext)
     if (useDefaultConfig) {
-      // Cache and structured output cannot be used in the simple utility API.
+      // Cache, structured output, and function calling cannot be used in the simple utility API.
       GenerationConfigUtils.setUseExplicitCache(applicationContext, false)
       GenerationConfigUtils.setUseStructuredOutput(applicationContext, false)
     }
     useExplicitCache = GenerationConfigUtils.getUseExplicitCache(applicationContext)
     useStructuredOutput = GenerationConfigUtils.getUseStructuredOutput(applicationContext)
-    if (useStructuredOutput) {
+
+    var disableStreaming = useStructuredOutput
+    if (disableStreaming) {
       GenerationConfigUtils.setUseStreaming(applicationContext, false)
     }
 
-    structuredOutputButtons.visibility = if (useStructuredOutput) View.VISIBLE else View.GONE
-    if (useStructuredOutput) {
-      updateOutputClassButtonColors()
+    var showExtraButtons = useStructuredOutput
+    extraButtonsContainer.visibility =
+      if (showExtraButtons) View.VISIBLE else View.GONE
+    if (showExtraButtons) {
+      if (useStructuredOutput) {
+        plantButton.visibility = View.VISIBLE
+        scheduleEventButton.visibility = View.VISIBLE
+        updateOutputClassButtonColors()
+      }
     }
 
     if (useExplicitCache) {
@@ -677,13 +685,15 @@ class OpenPromptActivity :
     }
     for (candidate in result.candidates) {
       val text = candidate.text
-      val formattedText =
-        if (candidate.finishReason == Candidate.FinishReason.MAX_TOKENS) {
-          "$text\n(FinishReason: MAX_TOKENS)"
-        } else {
-          text
-        }
-      items.add(ContentItem.TextItem.fromResponse(formattedText, null))
+      if (text.isNotBlank()) {
+        val formattedText =
+          if (candidate.finishReason == Candidate.FinishReason.MAX_TOKENS) {
+            "$text\n(FinishReason: MAX_TOKENS)"
+          } else {
+            text
+          }
+        items.add(ContentItem.TextItem.fromResponse(formattedText, null))
+      }
     }
     return items
   }
@@ -800,7 +810,8 @@ class OpenPromptActivity :
       isEnabled = !useDefaultConfig
     }
     menu.findItem(R.id.action_streaming)?.apply {
-      if (useStructuredOutput) {
+      var disableStreaming = useStructuredOutput
+      if (disableStreaming) {
         isEnabled = false
         isChecked = false
       } else {

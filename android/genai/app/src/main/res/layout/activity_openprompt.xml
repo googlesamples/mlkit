@@ -54,7 +54,7 @@
       android:clipToPadding="false"
       android:paddingTop="8dp"/>
   <LinearLayout
-      android:id="@+id/structured_output_buttons"
+      android:id="@+id/extra_buttons_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"

@@ -69,6 +69,7 @@
   <string name="action_simple_api" translatable="false">Use Simple Utility API</string>
   <string name="action_explicit_cache" translatable="false">Use Explicit Prefix Cache</string>
   <string name="action_structured_output" translatable="false">Use Structured Output</string>
+  <string name="dialog_title_output_class_schema" translatable="false">Output Class Schema</string>
   <string name="selected_image_preview_for_prompt" translatable="false">Selected Image Preview for Prompt</string>
   <string name="button_add_image" translatable="false">Add Image to Prompt</string>
   <string name="button_save" translatable="false">Save</string>
