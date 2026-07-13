@@ -58,11 +58,11 @@ android {
 }
 
 dependencies {
-  implementation 'com.google.mlkit:genai-image-description:1.0.0-beta2'
+  implementation 'com.google.mlkit:genai-image-description:1.0.0-beta1'
   implementation 'com.google.mlkit:genai-prompt:1.0.0-beta3'
-  implementation 'com.google.mlkit:genai-proofreading:1.0.0-beta2'
-  implementation 'com.google.mlkit:genai-rewriting:1.0.0-beta2'
-  implementation 'com.google.mlkit:genai-summarization:1.0.0-beta2'
+  implementation 'com.google.mlkit:genai-proofreading:1.0.0-beta1'
+  implementation 'com.google.mlkit:genai-rewriting:1.0.0-beta1'
+  implementation 'com.google.mlkit:genai-summarization:1.0.0-beta1'
   ksp 'com.google.mlkit:genai-schema-compiler:1.0.0-alpha1'
 
   implementation 'androidx.concurrent:concurrent-futures:1.3.0'
