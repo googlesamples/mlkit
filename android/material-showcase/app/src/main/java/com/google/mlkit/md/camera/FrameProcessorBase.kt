@@ -22,8 +22,9 @@ import androidx.annotation.GuardedBy
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskExecutors
-import com.google.mlkit.md.addOnFailureListener
-import com.google.mlkit.md.addOnSuccessListener
+import com.google.android.odml.image.MediaImageExtractor
+import com.google.android.odml.image.MlImage
+import com.google.mlkit.md.Camera2InputInfo
 import com.google.mlkit.md.CameraInputInfo
 import com.google.mlkit.md.InputInfo
 import com.google.mlkit.md.ScopedExecutor
@@ -46,8 +47,14 @@ abstract class FrameProcessorBase<T> : FrameProcessor {
 
     @GuardedBy("this")
     private var processingFrameMetaData: FrameMetadata? = null
+
+    // To keep the reference of current detection task
+    @GuardedBy("this")
+    private var currentDetectionTask: Task<T>? = null
+
     private val executor = ScopedExecutor(TaskExecutors.MAIN_THREAD)
 
+    @Deprecated("Keeping it only to support Camera API frame processing")
     @Synchronized
     override fun process(
         data: ByteBuffer,
@@ -61,6 +68,7 @@ abstract class FrameProcessorBase<T> : FrameProcessor {
         }
     }
 
+    @Deprecated("Keeping it only to support Camera API frame processing")
     @Synchronized
     private fun processLatestFrame(graphicOverlay: GraphicOverlay) {
         processingFrame = latestFrame
@@ -83,13 +91,46 @@ abstract class FrameProcessorBase<T> : FrameProcessor {
                 this@FrameProcessorBase.onSuccess(CameraInputInfo(frame, frameMetaData), results, graphicOverlay)
                 processLatestFrame(graphicOverlay)
             }
-            .addOnFailureListener(executor) { e -> OnFailureListener { this@FrameProcessorBase.onFailure(it) } }
+            .addOnFailureListener(executor) { e -> this@FrameProcessorBase.onFailure(e) }
+    }
+
+    @Synchronized
+    override fun process(image: MlImage, graphicOverlay: GraphicOverlay): Boolean {
+        return processLatestFrame(image, graphicOverlay)
+    }
+
+    @Synchronized
+    private fun processLatestFrame(frame: MlImage, graphicOverlay: GraphicOverlay): Boolean {
+        return if(currentDetectionTask?.isComplete == false){
+            false
+        }else {
+            //val startMs = SystemClock.elapsedRealtime()
+            currentDetectionTask = detectInImage(frame).addOnCompleteListener(executor) { task ->
+                if (task.isSuccessful) {
+                    //Log.d(TAG, "Latency is: ${SystemClock.elapsedRealtime() - startMs}")
+                    MediaImageExtractor.extract(frame).let {
+                        this@FrameProcessorBase.onSuccess(
+                            Camera2InputInfo(it, frame.rotation), task.result, graphicOverlay
+                        )
+                    }
+                } else {
+                    //Log.d(TAG, "Detect In Image Failure: ${e.message}")
+                    this@FrameProcessorBase.onFailure(task.exception)
+                }
+
+                //Close the processing frame
+                frame.close()
+            }
+            true
+        }
     }
 
     override fun stop() {
         executor.shutdown()
     }
 
+    protected abstract fun detectInImage(image: MlImage): Task<T>
+    @Deprecated("Keeping it only to support Camera API frame processing")
     protected abstract fun detectInImage(image: InputImage): Task<T>
 
     /** Be called when the detection succeeds.  */
@@ -99,7 +140,7 @@ abstract class FrameProcessorBase<T> : FrameProcessor {
         graphicOverlay: GraphicOverlay
     )
 
-    protected abstract fun onFailure(e: Exception)
+    protected abstract fun onFailure(e: Exception?)
 
     companion object {
         private const val TAG = "FrameProcessorBase"

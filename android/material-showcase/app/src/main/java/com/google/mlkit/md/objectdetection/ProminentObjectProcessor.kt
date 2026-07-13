@@ -20,6 +20,7 @@ import android.graphics.RectF
 import android.util.Log
 import androidx.annotation.MainThread
 import com.google.android.gms.tasks.Task
+import com.google.android.odml.image.MlImage
 import com.google.mlkit.md.camera.CameraReticleAnimator
 import com.google.mlkit.md.camera.GraphicOverlay
 import com.google.mlkit.md.R
@@ -85,9 +86,10 @@ class ProminentObjectProcessor(
         }
     }
 
-    override fun detectInImage(image: InputImage): Task<List<DetectedObject>> {
-        return detector.process(image)
-    }
+    override fun detectInImage(image: MlImage): Task<List<DetectedObject>> = detector.process(image)
+
+    @Deprecated("Keeping it only to support Camera API frame processing")
+    override fun detectInImage(image: InputImage): Task<List<DetectedObject>> = detector.process(image)
 
     @MainThread
     override fun onSuccess(
@@ -176,7 +178,7 @@ class ProminentObjectProcessor(
         return reticleRect.intersect(boxRect)
     }
 
-    override fun onFailure(e: Exception) {
+    override fun onFailure(e: Exception?) {
         Log.e(TAG, "Object detection failed!", e)
     }
 
