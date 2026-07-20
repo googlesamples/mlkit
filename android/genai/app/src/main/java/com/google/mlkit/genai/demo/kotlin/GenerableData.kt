@@ -30,7 +30,13 @@ data class PlantList(
 @Generable(description = "A schedule event")
 data class ScheduleEvent(
   @Guide(description = "The title of the event") val title: String,
-  @Guide(description = "The date of the event in YYYY-MM-DD format") val date: String,
-  @Guide(description = "The time of the event in HH:MM format") val time: String,
+  @Guide(
+    description = "The date of the event in YYYY-MM-DD format",
+  )
+  val date: String,
+  @Guide(
+    description = "The time of the event in HH:MM format",
+  )
+  val time: String,
   @Guide(description = "The position of the event") val position: String,
 )

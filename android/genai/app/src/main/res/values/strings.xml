@@ -16,16 +16,11 @@
 -->
 <resources>
   <string name="app_name" translatable="false">MLKit-GenAI</string>
-  <string name="summarization_entry_title_kotlin" translatable="false">Summarization API (Kotlin)</string>
-  <string name="summarization_entry_title_java" translatable="false">Summarization API (Java)</string>
-  <string name="rewriting_entry_title_kotlin" translatable="false">Rewriting API (Kotlin)</string>
-  <string name="rewriting_entry_title_java" translatable="false">Rewriting API (Java)</string>
-  <string name="proofreading_entry_title_kotlin" translatable="false">Proofreading API (Kotlin)</string>
-  <string name="proofreading_entry_title_java" translatable="false">Proofreading API (Java)</string>
-  <string name="image_description_entry_title_kotlin" translatable="false">Image Description API (Kotlin)</string>
-  <string name="image_description_entry_title_java" translatable="false">Image Description API (Java)</string>
-  <string name="open_prompt_entry_title_kotlin" translatable="false">Open Prompt API (Kotlin)</string>
-  <string name="open_prompt_entry_title_java" translatable="false">Open Prompt API (Java)</string>
+  <string name="summarization_entry_title" translatable="false">Summarization API</string>
+  <string name="rewriting_entry_title" translatable="false">Rewriting API</string>
+  <string name="proofreading_entry_title" translatable="false">Proofreading API</string>
+  <string name="image_description_entry_title" translatable="false">Image Description API</string>
+  <string name="open_prompt_entry_title" translatable="false">Open Prompt API</string>
   <string name="button_send" translatable="false">Send</string>
   <string name="button_select_image" translatable="false">Select Image</string>
   <string name="button_cancel" translatable="false">Cancel</string>

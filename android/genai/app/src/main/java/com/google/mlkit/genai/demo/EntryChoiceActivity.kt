@@ -25,7 +25,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.google.mlkit.genai.demo.java.OpenPromptActivity as OpenPromptActivityJava
 import com.google.mlkit.genai.demo.kotlin.ImageDescriptionActivity
 import com.google.mlkit.genai.demo.kotlin.OpenPromptActivity
 import com.google.mlkit.genai.demo.kotlin.ProofreadingActivity
@@ -40,31 +39,11 @@ class EntryChoiceActivity : AppCompatActivity() {
 
     val activityItems =
       listOf(
-        ActivityItem(R.string.summarization_entry_title_kotlin, SummarizationActivity::class.java),
-        ActivityItem(
-          R.string.summarization_entry_title_java,
-          com.google.mlkit.genai.demo.java.SummarizationActivity::class.java,
-        ),
-        ActivityItem(R.string.rewriting_entry_title_kotlin, RewritingActivity::class.java),
-        ActivityItem(
-          R.string.rewriting_entry_title_java,
-          com.google.mlkit.genai.demo.java.RewritingActivity::class.java,
-        ),
-        ActivityItem(R.string.proofreading_entry_title_kotlin, ProofreadingActivity::class.java),
-        ActivityItem(
-          R.string.proofreading_entry_title_java,
-          com.google.mlkit.genai.demo.java.ProofreadingActivity::class.java,
-        ),
-        ActivityItem(
-          R.string.image_description_entry_title_kotlin,
-          ImageDescriptionActivity::class.java,
-        ),
-        ActivityItem(
-          R.string.image_description_entry_title_java,
-          com.google.mlkit.genai.demo.java.ImageDescriptionActivity::class.java,
-        ),
-        ActivityItem(R.string.open_prompt_entry_title_kotlin, OpenPromptActivity::class.java),
-        ActivityItem(R.string.open_prompt_entry_title_java, OpenPromptActivityJava::class.java),
+        ActivityItem(R.string.summarization_entry_title, SummarizationActivity::class.java),
+        ActivityItem(R.string.rewriting_entry_title, RewritingActivity::class.java),
+        ActivityItem(R.string.proofreading_entry_title, ProofreadingActivity::class.java),
+        ActivityItem(R.string.image_description_entry_title, ImageDescriptionActivity::class.java),
+        ActivityItem(R.string.open_prompt_entry_title, OpenPromptActivity::class.java),
       )
 
     val recyclerView: RecyclerView = findViewById(R.id.entry_recycler_view)

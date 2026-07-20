@@ -38,52 +38,27 @@
 
     <activity
         android:name="com.google.mlkit.genai.demo.kotlin.SummarizationActivity"
-        android:label="@string/summarization_entry_title_kotlin"
-        android:screenOrientation="portrait" />
-
-    <activity
-        android:name="com.google.mlkit.genai.demo.java.SummarizationActivity"
-        android:label="@string/summarization_entry_title_java"
+        android:label="@string/summarization_entry_title"
         android:screenOrientation="portrait" />
 
     <activity
         android:name="com.google.mlkit.genai.demo.kotlin.RewritingActivity"
-        android:label="@string/rewriting_entry_title_kotlin"
-        android:screenOrientation="portrait" />
-
-    <activity
-        android:name="com.google.mlkit.genai.demo.java.RewritingActivity"
-        android:label="@string/rewriting_entry_title_java"
+        android:label="@string/rewriting_entry_title"
         android:screenOrientation="portrait" />
 
     <activity
         android:name="com.google.mlkit.genai.demo.kotlin.ProofreadingActivity"
-        android:label="@string/proofreading_entry_title_kotlin"
-        android:screenOrientation="portrait" />
-
-    <activity
-        android:name="com.google.mlkit.genai.demo.java.ProofreadingActivity"
-        android:label="@string/proofreading_entry_title_java"
+        android:label="@string/proofreading_entry_title"
         android:screenOrientation="portrait" />
 
     <activity
         android:name="com.google.mlkit.genai.demo.kotlin.ImageDescriptionActivity"
-        android:label="@string/image_description_entry_title_kotlin"
-        android:screenOrientation="portrait" />
-
-    <activity
-        android:name="com.google.mlkit.genai.demo.java.ImageDescriptionActivity"
-        android:label="@string/image_description_entry_title_java"
+        android:label="@string/image_description_entry_title"
         android:screenOrientation="portrait" />
 
     <activity
         android:name="com.google.mlkit.genai.demo.kotlin.OpenPromptActivity"
-        android:label="@string/open_prompt_entry_title_kotlin"
-        android:screenOrientation="portrait" />
-
-    <activity
-        android:name="com.google.mlkit.genai.demo.java.OpenPromptActivity"
-        android:label="@string/open_prompt_entry_title_java"
+        android:label="@string/open_prompt_entry_title"
         android:screenOrientation="portrait" />
 
   </application>
