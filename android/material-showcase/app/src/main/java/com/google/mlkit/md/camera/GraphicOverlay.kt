@@ -39,6 +39,7 @@ import java.util.ArrayList
  * Associated [Graphic] items should use [.translateX] and [ ][.translateY] to convert to view coordinate from the preview's coordinate.
  */
 class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attrs) {
+
     private val lock = Any()
 
     private var previewWidth: Int = 0
@@ -79,7 +80,7 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
      * coordinates later.
      */
     fun setCameraInfo(cameraSource: CameraSource) {
-        val previewSize = cameraSource.previewSize ?: return
+        val previewSize = cameraSource.getSelectedPreviewSize() ?: return
         if (Utils.isPortraitMode(context)) {
             // Swap width and height when in portrait, since camera's natural orientation is landscape.
             previewWidth = previewSize.height
