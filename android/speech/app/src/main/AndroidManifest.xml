@@ -27,14 +27,29 @@
         android:theme="@style/Theme.SpeechToTextDemo"
         tools:targetApi="34">
         <activity
-            android:name=".SpeechRecognitionActivity"
+            android:name=".SpeechDemoActivity"
             android:exported="true"
-            android:label="@string/speech_recognition_title"
+            android:label="@string/speech_demo_title"
             android:theme="@style/Theme.SpeechToTextDemo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SpeechRecognitionActivity"
+            android:exported="true"
+            android:label="@string/speech_recognition_title"
+            android:theme="@style/Theme.SpeechToTextDemo" />
+        <activity
+            android:name=".SpeechTranslationActivity"
+            android:exported="true"
+            android:label="@string/speech_translation_title"
+            android:theme="@style/Theme.SpeechToTextDemo" />
+        <activity
+            android:name=".TextToSpeechActivity"
+            android:exported="true"
+            android:label="@string/text_to_speech_title"
+            android:theme="@style/Theme.SpeechToTextDemo" />
     </application>
 </manifest>

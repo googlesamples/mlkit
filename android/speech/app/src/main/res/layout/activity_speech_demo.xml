@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="?android:attr/colorBackground">
+
+    <TextView
+        android:id="@+id/hi_there_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mlkit_hi_there"
+        android:textSize="20sp"
+        android:textColor="?android:attr/textColorSecondary"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/what_to_test_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mlkit_what_would_you_like_to_test"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="?android:attr/textColorPrimary"
+        android:layout_marginBottom="30dp" />
+
+    <!-- Row 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <!-- Speech Recognition Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_speech_recognition"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@color/card_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:layout_margin="4dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/speech_recognition_title"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="bottom|start"
+                    android:textColor="@color/card_text_color" />
+            </FrameLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Speech Translation Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_speech_translation"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@color/card_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:layout_margin="4dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/speech_translation_title"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="bottom|start"
+                    android:textColor="@color/card_text_color" />
+            </FrameLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <!-- Row 2 (Full width Card) -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_text_to_speech"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        app:cardCornerRadius="16dp"
+        app:cardBackgroundColor="@color/card_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_margin="4dp"
+        android:layout_marginTop="8dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_to_speech_title"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_gravity="bottom|start"
+                android:textColor="@color/card_text_color" />
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

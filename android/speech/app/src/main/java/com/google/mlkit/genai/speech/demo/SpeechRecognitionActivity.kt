@@ -24,9 +24,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -36,6 +40,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.mlkit.genai.common.DownloadStatus
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.common.audio.AudioSource
@@ -63,9 +68,16 @@ class SpeechRecognitionActivity : ComponentActivity() {
 
   private lateinit var downloadButton: Button
 
+  private lateinit var warmupButton: Button
+
   private lateinit var languageSpinner: AutoCompleteTextView
   private lateinit var modeSpinner: Spinner
   private lateinit var audioSourceSpinner: Spinner
+  private lateinit var wordTimingSwitch: SwitchMaterial
+  private lateinit var filepathLayout: View
+  private lateinit var filepathInput: EditText
+  private lateinit var audioLevelLayout: View
+  private lateinit var progressBar: ProgressBar
 
   private lateinit var pipe: Array<ParcelFileDescriptor>
   private var recordingThread: Thread? = null
@@ -73,6 +85,7 @@ class SpeechRecognitionActivity : ComponentActivity() {
   private var audioRecord: AudioRecord? = null
   private var audioFile: File? = null
   private var curText: String = ""
+  private var isWarmedUp = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -80,9 +93,42 @@ class SpeechRecognitionActivity : ComponentActivity() {
     textView = findViewById(R.id.text_view)
     micButton = findViewById(R.id.mic_button)
     downloadButton = findViewById(R.id.download_button)
+    warmupButton = findViewById(R.id.warmup_button)
     languageSpinner = findViewById(R.id.language_spinner)
     modeSpinner = findViewById(R.id.mode_spinner)
     audioSourceSpinner = findViewById(R.id.audiosource_spinner)
+    wordTimingSwitch = findViewById(R.id.switch_word_timing)
+    audioLevelLayout = findViewById(R.id.audio_level_layout)
+    progressBar = findViewById(R.id.progress_bar)
+    filepathLayout = findViewById(R.id.filepath_layout)
+    filepathInput = findViewById(R.id.filepath_input)
+
+    audioSourceSpinner.onItemSelectedListener =
+      object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+          val selected = parent?.getItemAtPosition(position).toString()
+          if (selected == SOURCE_AUDIO_FILE) {
+            filepathLayout.visibility = View.VISIBLE
+            audioLevelLayout.visibility = View.GONE
+            wordTimingSwitch.isChecked = false
+            wordTimingSwitch.isEnabled = false
+          } else {
+            filepathLayout.visibility = View.GONE
+            audioLevelLayout.visibility = View.VISIBLE
+            wordTimingSwitch.isEnabled = true
+          }
+          if (!isRecording) {
+            micButton.text = getStartButtonText(selected)
+          }
+        }
+
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+          filepathLayout.visibility = View.GONE
+          audioLevelLayout.visibility = View.VISIBLE
+        }
+      }
+
+    findViewById<View>(R.id.button_back).setOnClickListener { finish() }
 
     // setup language spinner
     val adapter =
@@ -134,6 +180,12 @@ class SpeechRecognitionActivity : ComponentActivity() {
       }
     }
 
+    warmupButton.setOnClickListener {
+      if (createAndSetSpeechRecognizer()) {
+        lifecycleScope.launch { checkFeatureStatusAndWarmup() }
+      }
+    }
+
     // Request audio recording permission
     val permissions =
       arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -173,24 +225,35 @@ class SpeechRecognitionActivity : ComponentActivity() {
         is SpeechRecognizerResponse.PartialTextResponse -> {
           runOnUiThread {
             textView.text = getString(R.string.text_transcription_format, curText, response.text)
-            micButton.text = getString(R.string.text_stop_recording)
+            micButton.text = getStopButtonText()
           }
         }
         is SpeechRecognizerResponse.FinalTextResponse -> {
           runOnUiThread {
-            textView.text = getString(R.string.text_transcription_format, curText, response.text)
-            micButton.text = getString(R.string.text_stop_recording)
-            curText += response.text
+            val textToDisplay =
+              if (response.wordTimings.isNotEmpty()) {
+                response.wordTimings.joinToString(" ") { "${it.text} (${it.timestampMs}ms)" }
+              } else {
+                response.text
+              }
+            textView.text = getString(R.string.text_transcription_format, curText, textToDisplay)
+            micButton.text = getStopButtonText()
+            curText = if (curText.isEmpty()) textToDisplay else "$curText $textToDisplay"
           }
         }
         is SpeechRecognizerResponse.CompletedResponse -> {
           Log.i(TAG, "CompletedResponse")
           stopRecording()
           runOnUiThread {
-            micButton.text = getString(R.string.text_start_recording)
             Toast.makeText(this, "Transcription completed.", Toast.LENGTH_SHORT).show()
           }
           curText = ""
+        }
+        is SpeechRecognizerResponse.AudioLevelResponse -> {
+          Log.v(TAG, "AudioLevelResponse: ${response.audioLevel}")
+          runOnUiThread {
+            progressBar.progress = response.audioLevel
+          }
         }
         is SpeechRecognizerResponse.ErrorResponse -> {
           Log.i(TAG, "ErrorResponse")
@@ -198,7 +261,6 @@ class SpeechRecognitionActivity : ComponentActivity() {
           runOnUiThread {
             textView.text =
               getString(R.string.text_error_format, response.e.message, response.e.errorCode)
-            micButton.text = getString(R.string.text_start_recording)
           }
           response.e.printStackTrace()
           curText = ""
@@ -210,12 +272,14 @@ class SpeechRecognitionActivity : ComponentActivity() {
   private suspend fun startSpeechRecognition() {
     runOnUiThread {
       textView.text = ""
-      micButton.text = getString(R.string.text_stop_recording)
+      micButton.text = getStopButtonText()
       setControlUiEnabled(false)
+      progressBar.progress = 0
     }
 
     isRecording = true
-    if (audioSourceSpinner.selectedItem.toString() == SOURCE_MICPHONE) {
+    val selectedSource = audioSourceSpinner.selectedItem.toString()
+    if (selectedSource == SOURCE_MICPHONE) {
       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
         Toast.makeText(this, "Microphone input requires API level 31 or higher", Toast.LENGTH_SHORT)
           .show()
@@ -223,8 +287,42 @@ class SpeechRecognitionActivity : ComponentActivity() {
         return
       }
       processSpeechRecognitionResponse(
-        speechRecognizerRequest { audioSource = AudioSource.fromMic() }
+        speechRecognizerRequest {
+          audioSource = AudioSource.fromMic()
+          recognitionOptions { enableWordTiming = wordTimingSwitch.isChecked }
+        }
       )
+    } else if (selectedSource == SOURCE_AUDIO_FILE) {
+      val filePath = filepathInput.text.toString()
+      if (filePath.isEmpty()) {
+        Toast.makeText(this, "Please enter a file path", Toast.LENGTH_SHORT).show()
+        stopRecording()
+        return
+      }
+      val file = File(filePath)
+      if (!file.exists() || !file.canRead()) {
+        Toast.makeText(this, "File does not exist or is not readable", Toast.LENGTH_SHORT).show()
+        stopRecording()
+        return
+      }
+      try {
+        AudioSource.fromFile(file).use { source ->
+          processSpeechRecognitionResponse(
+            speechRecognizerRequest {
+              this.audioSource = source
+              recognitionOptions { enableWordTiming = false }
+            }
+          )
+        }
+      } catch (e: IOException) {
+        Log.e(TAG, "Error opening file: $filePath", e)
+        Toast.makeText(this, "Error opening file: ${e.message}", Toast.LENGTH_SHORT).show()
+        stopRecording()
+      } catch (e: IllegalArgumentException) {
+        Log.e(TAG, "Error starting recognition: $filePath", e)
+        Toast.makeText(this, "Error starting recognition: ${e.message}", Toast.LENGTH_SHORT).show()
+        stopRecording()
+      }
     } else {
       // Create a temporary file to store the audio
       audioFile = File.createTempFile("audio_record", ".pcm", cacheDir)
@@ -257,19 +355,22 @@ class SpeechRecognitionActivity : ComponentActivity() {
           )
         audioRecord?.startRecording()
 
-        runOnUiThread { micButton.text = getString(R.string.text_stop_recording) }
+        runOnUiThread { micButton.text = getStopButtonText() }
 
         recordingThread = Thread { writeAudioDataToFile(bufferSize) }
         recordingThread?.start()
 
         // Start the recording thread first and then start the recognition.
         processSpeechRecognitionResponse(
-          speechRecognizerRequest { audioSource = AudioSource.fromPfd(pipe[0]) }
+          speechRecognizerRequest {
+            audioSource = AudioSource.fromPfd(pipe[0], AudioSource.Mode.STREAMING)
+            recognitionOptions { enableWordTiming = wordTimingSwitch.isChecked }
+          }
         )
       } catch (e: IOException) {
         runOnUiThread {
           textView.text = getString(R.string.text_error_create_file)
-          micButton.text = getString(R.string.text_start_recording)
+          micButton.text = getStartButtonText()
         }
         isRecording = false
         return
@@ -307,12 +408,15 @@ class SpeechRecognitionActivity : ComponentActivity() {
   private fun stopRecording() {
     isRecording = false
     runOnUiThread {
-      micButton.text = getString(R.string.text_start_recording)
+      micButton.text = getStartButtonText()
       setControlUiEnabled(true)
+      progressBar.progress = 0
     }
 
     lifecycleScope.launch { speechRecognizer?.stopRecognition() }
-    if (audioSourceSpinner.selectedItem.toString() == SOURCE_MICPHONE) {
+
+    val selectedSource = audioSourceSpinner.selectedItem.toString()
+    if (selectedSource == SOURCE_MICPHONE || selectedSource == SOURCE_AUDIO_FILE) {
       return
     }
 
@@ -328,15 +432,35 @@ class SpeechRecognitionActivity : ComponentActivity() {
     recordingThread = null
 
     // Close the pipe
-    pipe[0].close()
-    pipe[1].close()
+    if (this::pipe.isInitialized) {
+      try {
+        pipe[0].close()
+        pipe[1].close()
+      } catch (e: IOException) {
+        Log.e(TAG, "Error closing pipe", e)
+      }
+    }
   }
 
   private suspend fun checkFeatureStatusAndStartRecognition() {
     speechRecognizer?.checkStatus()?.let {
       if (it == FeatureStatus.AVAILABLE) {
+        speechRecognizer?.warmup()
         Log.i(TAG, "Feature is available, starting recognition.")
         startSpeechRecognition()
+      } else {
+        showFeatureStatusToast(it)
+      }
+    }
+  }
+
+  private suspend fun checkFeatureStatusAndWarmup() {
+    speechRecognizer?.checkStatus()?.let {
+      if (it == FeatureStatus.AVAILABLE) {
+        Toast.makeText(this, "Warming up...", Toast.LENGTH_SHORT).show()
+        speechRecognizer?.warmup()
+        isWarmedUp = true
+        Toast.makeText(this, "Warmup completed", Toast.LENGTH_SHORT).show()
       } else {
         showFeatureStatusToast(it)
       }
@@ -467,6 +591,8 @@ class SpeechRecognitionActivity : ComponentActivity() {
     languageSpinner.isEnabled = enabled
     modeSpinner.isEnabled = enabled
     audioSourceSpinner.isEnabled = enabled
+    wordTimingSwitch.isEnabled =
+      enabled && audioSourceSpinner.selectedItem?.toString() != SOURCE_AUDIO_FILE
   }
 
   private fun formatDownloadProgress(downloadedBytes: Long, totalBytes: Long): String {
@@ -481,10 +607,35 @@ class SpeechRecognitionActivity : ComponentActivity() {
     return "Downloading progress: ${downloadedString}MB / ${totalString}MB"
   }
 
+  private fun getStartButtonText(selectedSource: String?): String {
+    return if (selectedSource == SOURCE_AUDIO_FILE) {
+      getString(R.string.text_start_playing)
+    } else {
+      getString(R.string.text_start_recording)
+    }
+  }
+
+  private fun getStartButtonText(): String {
+    return getStartButtonText(audioSourceSpinner.selectedItem?.toString())
+  }
+
+  private fun getStopButtonText(selectedSource: String?): String {
+    return if (selectedSource == SOURCE_AUDIO_FILE) {
+      getString(R.string.text_stop_playing)
+    } else {
+      getString(R.string.text_stop_recording)
+    }
+  }
+
+  private fun getStopButtonText(): String {
+    return getStopButtonText(audioSourceSpinner.selectedItem?.toString())
+  }
+
   companion object {
     private const val TAG = "SpeechToTextDemo"
     private const val PERMISSIONS_REQUEST_CODE = 1001
     private const val AUDIO_SAMPLE_RATE = 16000
     private const val SOURCE_MICPHONE = "Microphone"
+    private const val SOURCE_AUDIO_FILE = "Audio File"
   }
 }

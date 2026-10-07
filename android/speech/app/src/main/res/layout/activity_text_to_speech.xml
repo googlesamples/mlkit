@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
+    android:keepScreenOn="true"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <ImageButton
+        android:id="@+id/button_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="?android:attr/homeAsUpIndicator"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/button_back"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp" />
+
+    <!-- Locale Input (Top) -->
+    <LinearLayout
+        android:id="@+id/locale_layout"
+        android:layout_below="@id/button_back"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingEnd="10dp"
+            android:text="@string/label_locale"
+            android:textSize="20sp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="0dp">
+            <AutoCompleteTextView
+                android:id="@+id/locale_spinner"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:paddingVertical="20dp"
+                android:textSize="20sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <!-- Earcon Input -->
+    <LinearLayout
+        android:id="@+id/earcon_layout"
+        android:gravity="center_vertical"
+        android:layout_below="@id/locale_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingEnd="10dp"
+            android:text="@string/label_earcon"
+            android:textSize="20sp" />
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="0dp">
+            <AutoCompleteTextView
+                android:id="@+id/earcon_spinner"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:paddingVertical="20dp"
+                android:textSize="20sp"
+                android:inputType="none"
+                android:background="@null" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <!-- Voice Fallback Toggle -->
+    <LinearLayout
+        android:id="@+id/fallback_layout"
+        android:gravity="center_vertical"
+        android:layout_below="@id/earcon_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp">
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_voice_fallback"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/label_voice_fallback"
+            android:checked="true"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <!-- Buttons at the bottom -->
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="20dp"
+        android:text="@string/button_submit" />
+
+    <Button
+        android:id="@+id/query_voices_button"
+        android:layout_above="@+id/submit_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="20dp"
+        android:text="Query Voices" />
+
+    <Button
+        android:id="@+id/play_earcon_button"
+        android:layout_above="@+id/query_voices_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="20dp"
+        android:text="@string/button_play_earcon" />
+
+    <!-- Input Layout above Play Earcon Button -->
+    <LinearLayout
+        android:id="@+id/input_layout"
+        android:gravity="center_vertical"
+        android:layout_above="@+id/play_earcon_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingEnd="10dp"
+            android:text="@string/label_input_text"
+            android:textSize="20sp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="0dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_text"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:paddingVertical="20dp"
+                android:textSize="20sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <!-- Status and Download Progress Layout above Input Layout -->
+    <LinearLayout
+        android:id="@+id/status_layout"
+        android:layout_above="@+id/input_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="5dp">
+        <ProgressBar
+            android:id="@+id/download_progress_bar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:visibility="gone" />
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingVertical="5dp"
+            android:textSize="16sp"
+            android:text="Status: Idle" />
+    </LinearLayout>
+
+    <!-- ListView fills the middle space -->
+    <ListView
+        android:id="@+id/voices_list_view"
+        android:layout_below="@id/fallback_layout"
+        android:layout_above="@id/status_layout"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:padding="10dp" />
+
+</RelativeLayout>

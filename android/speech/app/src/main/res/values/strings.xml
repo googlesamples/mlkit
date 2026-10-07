@@ -13,12 +13,22 @@
      limitations under the License. -->
 <resources>
     <string name="app_name">SpeechDemo</string>
+    <string name="speech_demo_title">Speech Demo App</string>
+    <string name="button_back">Back</string>
+    <string name="mlkit_hi_there">Hi there,</string>
+    <string name="mlkit_what_would_you_like_to_test">What would you like to test?</string>
     <string
         name="text_start_recording"
         description="Text for the button to start recording. [CHAR LIMIT=NONE]">Start Recording</string>
     <string
         name="text_stop_recording"
         description="Text for the button to stop recording. [CHAR LIMIT=NONE]">Stop Recording</string>
+    <string
+        name="text_start_playing"
+        description="Text for the button to start playing. [CHAR LIMIT=NONE]">Start Playing</string>
+    <string
+        name="text_stop_playing"
+        description="Text for the button to stop playing. [CHAR LIMIT=NONE]">Stop Playing</string>
     <string
         name="text_status_running"
         description="Text to indicate app is running. [CHAR LIMIT=NONE]">Running&#8230;</string>
@@ -32,4 +42,86 @@
         name="text_error_format"
         description="Text to indicate error creating file. [CHAR LIMIT=NONE]">Error: %1$s Error code: %2$d</string>
     <string name="speech_recognition_title">Speech Recognition</string>
+    <string
+        name="text_audio_level"
+        description="Text for audio level. [CHAR LIMIT=NONE]">Audio Level:</string>
+    <string
+        name="label_locale"
+        description="Label for the language/locale selection spinner. [CHAR LIMIT=NONE]">Locale</string>
+    <string
+        name="label_mode"
+        description="Label for the recognition mode selection spinner. [CHAR LIMIT=NONE]">Mode</string>
+    <string
+        name="label_audiosource"
+        description="Label for the audio source selection spinner. [CHAR LIMIT=NONE]">AudioSource</string>
+    <string
+        name="label_word_timing"
+        description="Label for the word timing toggle switch. [CHAR LIMIT=NONE]">Word Timing</string>
+    <string
+        name="button_download"
+        description="Text for the button to initiate downloading resources. [CHAR LIMIT=NONE]">Download</string>
+    <string
+        name="text_warmup"
+        description="Text for the button to warmup. [CHAR LIMIT=NONE]">Warmup</string>
+    <string name="speech_translation_title">Speech Translation</string>
+    <string name="text_speech_translation_download_started">Download started&#8230;</string>
+    <string name="text_speech_translation_download_failed">Download failed.</string>
+    <string name="text_speech_translation_download_failed_with_reason">Download failed: %1$s</string>
+    <string name="text_speech_translation_download_completed">Download completed.</string>
+    <string name="text_speech_translation_downloading_progress_format">Downloading progress: %1$sMB / %2$sMB</string>
+    <string name="text_speech_translation_error_message_format">Error: %1$s</string>
+    <string name="text_speech_translation_unsupported_language_combination">Source and target languages must be different.</string>
+    <string name="text_speech_translation_feature_status_downloadable">Feature is not available, please download first.</string>
+    <string name="text_speech_translation_feature_status_downloading">Download is in progress, please wait&#8230;</string>
+    <string name="text_speech_translation_feature_status_unavailable">Feature is not available in this device.</string>
+    <string name="text_speech_translation_feature_status_available">Feature is already available.</string>
+    <string name="hint_input_text">Enter text to speak</string>
+    <string name="button_submit">Speak</string>
+    <string name="label_input_text">Text</string>
+    <string name="label_earcon">Earcon</string>
+    <string name="text_to_speech_title">Text to Speech</string>
+    <string name="text_download_started">Download started&#8230;</string>
+    <string name="text_download_failed">Download failed</string>
+    <string name="text_download_completed">Model downloaded successfully.</string>
+    <string name="text_found_voices">Found %1$d voices for %2$s</string>
+    <string name="text_selected_voice">Selected voice: %1$s</string>
+    <string name="text_speaking">Speaking: %1$s</string>
+    <string name="text_downloading_voice">Downloading voice: %1$sMB / %2$sMB</string>
+    <string name="text_voice_ready">Voice ready: %1$s</string>
+    <string name="toast_invalid_language_tag">Invalid language tag: %1$s</string>
+    <string name="button_play_earcon">Play Earcon</string>
+    <string name="text_playing_earcon">Playing earcon&#8230;</string>
+    <string name="text_earcon_status">Earcon status: %1$s</string>
+    <string name="text_earcon_error">Earcon error: %1$d</string>
+    <string name="text_earcon_error_toast">Earcon error occurred: %1$d</string>
+    <string
+        name="label_voice_fallback"
+        description="Label for the voice fallback toggle switch. [CHAR LIMIT=30]">Voice Fallback</string>
+    <string
+        name="text_fallback_enabled"
+        description="Status message indicating voice fallback is enabled. [CHAR LIMIT=40]">Voice fallback enabled</string>
+    <string
+        name="text_fallback_disabled"
+        description="Status message indicating voice fallback is disabled (exact voice required). [CHAR LIMIT=60]">Voice fallback disabled (opt-out)</string>
+    <string
+        name="text_voice_fallback_toast"
+        description="Toast message when synthesizing with fallback because the voice is not downloaded. [CHAR LIMIT=60]">Voice not downloaded; using fallback</string>
+    <string
+        name="toast_voice_not_downloaded"
+        description="Toast prompting that voice model is downloading before speaking. [CHAR LIMIT=NONE]">Voice model not downloaded yet. Starting download&#8230;</string>
+    <string
+        name="toast_voice_downloading"
+        description="Toast indicating voice model download is in progress. [CHAR LIMIT=NONE]">Voice model download is in progress. Please wait&#8230;</string>
+    <string
+        name="toast_voice_unavailable"
+        description="Toast indicating voice model is not available for download on this device. [CHAR LIMIT=NONE]">Voice model is not available for download on this device.</string>
+    <string
+        name="text_voice_not_downloaded_status"
+        description="Status text indicating voice model is not downloaded. [CHAR LIMIT=NONE]">Voice model not downloaded yet. Starting download&#8230;</string>
+    <string
+        name="text_voice_unavailable_status"
+        description="Status text indicating voice model is unavailable on this device. [CHAR LIMIT=NONE]">Voice model unavailable on this device.</string>
+    <string
+        name="text_synthesis_error"
+        description="Status text showing synthesis error code. [CHAR LIMIT=40]">Synthesis error: %1$d</string>
 </resources>

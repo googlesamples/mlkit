@@ -18,6 +18,9 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="google_blue">#1a73e8</color>
+    <color name="card_background">#F5F5F5</color>
+    <color name="card_text_color">#202124</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

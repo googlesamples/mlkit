@@ -21,8 +21,20 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical">
+    <ImageButton
+        android:id="@+id/button_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="?android:attr/homeAsUpIndicator"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/button_back"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp" />
+
     <LinearLayout
         android:id="@+id/language_layout"
+        android:layout_below="@id/button_back"
         android:gravity="center_vertical"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -32,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:paddingEnd="10dp"
-            android:text="Locale"
+            android:text="@string/label_locale"
             android:textSize="20sp" />
         <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
@@ -58,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:paddingEnd="10dp"
-            android:text="Mode"
+            android:text="@string/label_mode"
             android:textSize="20sp" />
         <Spinner
             android:id="@+id/mode_spinner"
@@ -80,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:paddingEnd="10dp"
-            android:text="AudioSource"
+            android:text="@string/label_audiosource"
             android:textSize="20sp" />
         <Spinner
             android:id="@+id/audiosource_spinner"
@@ -88,9 +100,48 @@
             android:layout_weight="1"
             android:layout_width="0dp" />
     </LinearLayout>
-    <ScrollView
-        android:layout_above="@id/download_button"
+    <LinearLayout
+        android:id="@+id/filepath_layout"
+        android:gravity="center_vertical"
         android:layout_below="@id/audiosource_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:visibility="gone">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingEnd="10dp"
+            android:text="File Path"
+            android:textSize="20sp" />
+        <EditText
+            android:id="@+id/filepath_input"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:hint="/sdcard/audio.wav"
+            android:inputType="text"
+            android:textSize="18sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/word_timing_layout"
+        android:gravity="center_vertical"
+        android:layout_below="@id/filepath_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp">
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_word_timing"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/label_word_timing"
+            android:textSize="20sp" />
+    </LinearLayout>
+    <ScrollView
+        android:layout_above="@+id/audio_level_layout"
+        android:layout_below="@id/word_timing_layout"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
         <TextView
@@ -100,13 +151,52 @@
             android:padding="20dp"
             android:textSize="24sp" />
     </ScrollView>
+
+    <!-- Layout to contain the label and the progress bar -->
+    <LinearLayout
+        android:id="@+id/audio_level_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/download_button"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/audio_level_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_audio_level"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- Audio Level Indicator ProgressBar -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:max="100"
+            android:progress="0" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/download_button"
+        android:layout_above="@+id/warmup_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="20dp"
+        android:text="@string/button_download" />
+    <Button
+        android:id="@+id/warmup_button"
         android:layout_above="@+id/mic_button"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:padding="20dp"
-        android:text="Download" />
+        android:text="@string/text_warmup" />
     <Button
         android:id="@+id/mic_button"
         android:layout_alignParentBottom="true"
@@ -114,5 +204,5 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:padding="20dp"
-        android:text="Start Recording" />
+        android:text="@string/text_start_recording" />
 </RelativeLayout>
