@@ -62,6 +62,7 @@ object GenerableDataUtils {
           guide.minimum?.let { prop.put("minimum", it) }
           guide.maximum?.let { prop.put("maximum", it) }
           guide.enumValues?.let { prop.put("enumValues", JSONArray(it.toList())) }
+          guide.pattern?.let { prop.put("pattern", it) }
           properties.put(guide.name, prop)
         }
       }

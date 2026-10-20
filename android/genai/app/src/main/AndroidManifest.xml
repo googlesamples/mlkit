@@ -61,6 +61,37 @@
         android:label="@string/open_prompt_entry_title"
         android:screenOrientation="portrait" />
 
+    <activity
+        android:name="com.google.mlkit.genai.demo.kotlin.EmbeddingActivity"
+        android:label="@string/embedding_entry_title"
+        android:screenOrientation="portrait" />
+
+    <activity
+        android:name="com.google.mlkit.genai.demo.kotlin.AgentActivity"
+        android:exported="false"
+        android:label="@string/agent_entry_title"
+        android:screenOrientation="portrait" />
+
+    <service
+        xmlns:tools="http://schemas.android.com/tools"
+        android:name="com.google.mlkit.genai.demo.kotlin.AgentDemoAppFunctionService"
+        android:exported="true"
+        android:permission="android.permission.BIND_APP_FUNCTION_SERVICE"
+        tools:targetApi="36">
+      <property
+          android:name="android.app.appfunctions.schema"
+          android:value="app_functions_schema.xsd" />
+      <property
+          android:name="android.app.appfunctions"
+          android:value="agent_demo_app_functions-v1.xml" />
+      <property
+          android:name="android.app.appfunctions.v2"
+          android:value="agent_demo_app_functions.xml" />
+      <intent-filter>
+        <action android:name="android.app.appfunctions.AppFunctionService" />
+      </intent-filter>
+    </service>
+
   </application>
 
 </manifest>

@@ -63,4 +63,11 @@
       android:checked="false"
       android:visible="false"
       app:showAsAction="never" />
+  <item
+      android:id="@+id/action_function_calling"
+      android:title="@string/action_function_calling"
+      android:checkable="true"
+      android:checked="false"
+      android:visible="false"
+      app:showAsAction="never" />
 </menu>

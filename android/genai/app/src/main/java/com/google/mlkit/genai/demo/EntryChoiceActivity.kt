@@ -25,6 +25,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.mlkit.genai.demo.kotlin.AgentActivity
+import com.google.mlkit.genai.demo.kotlin.EmbeddingActivity
 import com.google.mlkit.genai.demo.kotlin.ImageDescriptionActivity
 import com.google.mlkit.genai.demo.kotlin.OpenPromptActivity
 import com.google.mlkit.genai.demo.kotlin.ProofreadingActivity
@@ -44,6 +46,8 @@ class EntryChoiceActivity : AppCompatActivity() {
         ActivityItem(R.string.proofreading_entry_title, ProofreadingActivity::class.java),
         ActivityItem(R.string.image_description_entry_title, ImageDescriptionActivity::class.java),
         ActivityItem(R.string.open_prompt_entry_title, OpenPromptActivity::class.java),
+        ActivityItem(R.string.embedding_entry_title, EmbeddingActivity::class.java),
+        ActivityItem(R.string.agent_entry_title, AgentActivity::class.java),
       )
 
     val recyclerView: RecyclerView = findViewById(R.id.entry_recycler_view)

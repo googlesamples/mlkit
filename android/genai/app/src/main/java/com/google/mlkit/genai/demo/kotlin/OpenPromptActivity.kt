@@ -15,6 +15,7 @@
  */
 package com.google.mlkit.genai.demo.kotlin
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -41,6 +42,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.genai.common.DownloadCallback
 import com.google.mlkit.genai.common.DownloadStatus
+import com.google.mlkit.genai.common.FunctionArgValue
+import com.google.mlkit.genai.common.FunctionCall
 import com.google.mlkit.genai.common.StreamingCallback
 import com.google.mlkit.genai.demo.ContentItem
 import com.google.mlkit.genai.demo.GenerationConfigDialog
@@ -55,6 +58,9 @@ import com.google.mlkit.genai.prompt.GenerateContentResponse
 import com.google.mlkit.genai.prompt.GenerateTypedContentResponse
 import com.google.mlkit.genai.prompt.GenerativeModel
 import com.google.mlkit.genai.prompt.ImagePart
+import com.google.mlkit.genai.prompt.ModelPreference
+import com.google.mlkit.genai.prompt.ModelReleaseStage
+import com.google.mlkit.genai.prompt.Part
 import com.google.mlkit.genai.prompt.PromptPrefix
 import com.google.mlkit.genai.prompt.SystemInstruction
 import com.google.mlkit.genai.prompt.TextPart
@@ -62,6 +68,7 @@ import com.google.mlkit.genai.prompt.createCachedContextRequest
 import com.google.mlkit.genai.prompt.generateContentRequest
 import com.google.mlkit.genai.prompt.generateTypedContentRequest
 import com.google.mlkit.genai.prompt.generationConfig
+import com.google.mlkit.genai.prompt.modelConfig
 import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
@@ -86,6 +93,8 @@ class OpenPromptActivity :
   private lateinit var selectImageButton: ImageButton
   private lateinit var imagePreview: ImageView
   private lateinit var configButton: Button
+  private lateinit var modelReleaseStageButton: Button
+  private lateinit var modelPreferenceButton: Button
   private lateinit var prefixEditText: EditText
   private lateinit var createCacheCheckBox: CheckBox
   private lateinit var extraButtonsContainer: LinearLayout
@@ -98,9 +107,12 @@ class OpenPromptActivity :
   private var curSeed: Int? = null
   private var curMaxOutputTokens: Int? = null
   private var curCandidateCount: Int? = null
+  private var curReleaseStage: Int = ModelReleaseStage.STABLE
+  private var curPreference: Int = ModelPreference.FULL
   private var useDefaultConfig = false
   private var useExplicitCache = false
   private var useStructuredOutput = false
+  private var useFunctionCalling = false
   private var selectedOutputClass: KClass<*>? = Plant::class
   private lateinit var systemPromptEditText: EditText
   private var curEnableThinking: Boolean = false
@@ -139,6 +151,7 @@ class OpenPromptActivity :
     requestEditText.setSelection(cursorPosition + 1)
   }
 
+  @SuppressLint("ContentResolverUri")
   private suspend fun getContentFromEditText(): List<com.google.mlkit.genai.prompt.Part> =
     kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
       val result = mutableListOf<com.google.mlkit.genai.prompt.Part>()
@@ -194,6 +207,8 @@ class OpenPromptActivity :
     selectImageButton = findViewById(R.id.select_image_prompt_button)
     imagePreview = findViewById(R.id.image_thumbnail_preview_input)
     configButton = findViewById(R.id.config_button)
+    modelReleaseStageButton = findViewById(R.id.model_release_stage_button)
+    modelPreferenceButton = findViewById(R.id.model_preference_button)
     prefixEditText = findViewById(R.id.prefix_edit_text)
     createCacheCheckBox = findViewById(R.id.create_cache_checkbox)
     createCacheCheckBox.setOnCheckedChangeListener { _, _ ->
@@ -210,6 +225,11 @@ class OpenPromptActivity :
     plantButton.setOnClickListener { selectOutputClass(Plant::class) }
     scheduleEventButton.setOnClickListener { selectOutputClass(ScheduleEvent::class) }
     infoButton.setOnClickListener {
+      if (useFunctionCalling) {
+        val schema = ToolDetailUtils.getToolDetailJson(MockTools.tools)
+        showSchemaDialog(getString(R.string.dialog_title_available_functions), schema)
+        return@setOnClickListener
+      }
       val outputClass = selectedOutputClass
       if (outputClass != null) {
         val schema = GenerableDataUtils.getJsonSchema(outputClass)
@@ -230,6 +250,8 @@ class OpenPromptActivity :
     }
 
     configButton.setOnClickListener { GenerationConfigDialog().show(supportFragmentManager, null) }
+    modelReleaseStageButton.setOnClickListener { showReleaseStageSelectionDialog() }
+    modelPreferenceButton.setOnClickListener { showPreferenceSelectionDialog() }
 
     sendButton.setOnClickListener {
       if (useExplicitCache) {
@@ -275,13 +297,8 @@ class OpenPromptActivity :
 
         val prefixText = prefixEditText.text.toString().trim()
         val systemText = systemPromptEditText.text.toString().trim()
+        val requestItem = createRequestItem(parts, prefixText, systemText) ?: return@launch
 
-        val resolvedParts = parts.toMutableList()
-        if (prefixText.isNotEmpty()) {
-          resolvedParts.add(0, com.google.mlkit.genai.prompt.TextPart(prefixText))
-        }
-
-        val requestItem = ContentItem.InterleavedContentItem.fromRequest(resolvedParts, systemText)
         onSend(requestItem)
         requestEditText.setText("")
         systemPromptEditText.setText("")
@@ -292,6 +309,32 @@ class OpenPromptActivity :
 
     initGenerator()
   }
+
+  private fun createRequestItem(
+    parts: List<Part>,
+    prefixText: String,
+    systemText: String,
+  ): ContentItem? =
+    if (prefixText.isNotEmpty()) {
+      if (parts.any { part -> part !is TextPart }) {
+        Toast.makeText(
+            this@OpenPromptActivity,
+            R.string.warning_prefix_used_with_image,
+            Toast.LENGTH_SHORT,
+          )
+          .show()
+        null
+      } else {
+        val text = parts.filterIsInstance<TextPart>().joinToString("") { part -> part.textString }
+        ContentItem.TextWithPromptPrefixItem.fromRequest(
+          prefixText,
+          text,
+          systemInstruction = systemText,
+        )
+      }
+    } else {
+      ContentItem.InterleavedContentItem.fromRequest(parts, systemText)
+    }
 
   private fun selectOutputClass(outputClass: KClass<*>) {
     selectedOutputClass = outputClass
@@ -321,23 +364,30 @@ class OpenPromptActivity :
       // Cache, structured output, and function calling cannot be used in the simple utility API.
       GenerationConfigUtils.setUseExplicitCache(applicationContext, false)
       GenerationConfigUtils.setUseStructuredOutput(applicationContext, false)
+      GenerationConfigUtils.setUseFunctionCalling(applicationContext, false)
     }
     useExplicitCache = GenerationConfigUtils.getUseExplicitCache(applicationContext)
     useStructuredOutput = GenerationConfigUtils.getUseStructuredOutput(applicationContext)
+    useFunctionCalling = GenerationConfigUtils.getUseFunctionCalling(applicationContext)
 
     var disableStreaming = useStructuredOutput
+    disableStreaming = disableStreaming || useFunctionCalling
     if (disableStreaming) {
       GenerationConfigUtils.setUseStreaming(applicationContext, false)
     }
 
     var showExtraButtons = useStructuredOutput
-    extraButtonsContainer.visibility =
-      if (showExtraButtons) View.VISIBLE else View.GONE
+    showExtraButtons = showExtraButtons || useFunctionCalling
+    extraButtonsContainer.visibility = if (showExtraButtons) View.VISIBLE else View.GONE
     if (showExtraButtons) {
       if (useStructuredOutput) {
         plantButton.visibility = View.VISIBLE
         scheduleEventButton.visibility = View.VISIBLE
         updateOutputClassButtonColors()
+      }
+      if (useFunctionCalling) {
+        plantButton.visibility = View.GONE
+        scheduleEventButton.visibility = View.GONE
       }
     }
 
@@ -368,8 +418,59 @@ class OpenPromptActivity :
     curCandidateCount = GenerationConfigUtils.getCandidateCount(applicationContext)
     curMaxOutputTokens = GenerationConfigUtils.getMaxOutputTokens(applicationContext)
     curEnableThinking = GenerationConfigUtils.getEnableThinking(applicationContext)
+    curReleaseStage = GenerationConfigUtils.getStoredModelReleaseStage(applicationContext)
+    curPreference = GenerationConfigUtils.getStoredModelPreference(applicationContext)
+    updateModelConfigButtons()
     refreshConfigs()
     invalidateOptionsMenu()
+  }
+
+  private fun updateModelConfigButtons() {
+    val releaseStages = resources.getStringArray(R.array.model_release_stages)
+    modelReleaseStageButton.text =
+      getString(
+        R.string.button_select_model_release_stage,
+        if (curReleaseStage == ModelReleaseStage.STABLE) releaseStages[0] else releaseStages[1],
+      )
+
+    val preferences = resources.getStringArray(R.array.model_preferences)
+    modelPreferenceButton.text =
+      getString(
+        R.string.button_select_model_preference,
+        if (curPreference == ModelPreference.FAST) preferences[0] else preferences[1],
+      )
+  }
+
+  private fun showReleaseStageSelectionDialog() {
+    val items = resources.getStringArray(R.array.model_release_stages)
+    AlertDialog.Builder(this)
+      .setTitle(R.string.model_release_stage_dialog_title)
+      .setItems(items) { _, which ->
+        val newStage = if (which == 0) ModelReleaseStage.STABLE else ModelReleaseStage.PREVIEW
+        if (newStage != curReleaseStage) {
+          curReleaseStage = newStage
+          GenerationConfigUtils.setModelReleaseStage(applicationContext, curReleaseStage)
+          updateModelConfigButtons()
+          initGenerator()
+        }
+      }
+      .show()
+  }
+
+  private fun showPreferenceSelectionDialog() {
+    val items = resources.getStringArray(R.array.model_preferences)
+    AlertDialog.Builder(this)
+      .setTitle(R.string.model_preference_dialog_title)
+      .setItems(items) { _, which ->
+        val newPreference = if (which == 0) ModelPreference.FAST else ModelPreference.FULL
+        if (newPreference != curPreference) {
+          curPreference = newPreference
+          GenerationConfigUtils.setModelPreference(applicationContext, curPreference)
+          updateModelConfigButtons()
+          initGenerator()
+        }
+      }
+      .show()
   }
 
   private fun updateRequestEditTextHint() {
@@ -471,7 +572,7 @@ class OpenPromptActivity :
 
   override fun runInferenceStreamImpl(request: ContentItem): Flow<ContentItem>? {
     if (request is ContentItem.CacheRequestItem) {
-      return flow { emit(ContentItem.TextItem.fromResponse(createCache(request), null)) }
+      return flow { emit(ContentItem.TextItem.fromStreamingResponse(createCache(request))) }
     }
     val showThinking = GenerationConfigUtils.getShowThinking(applicationContext)
     if (request is ContentItem.TextItem && useDefaultConfig) {
@@ -580,6 +681,7 @@ class OpenPromptActivity :
     return "${getString(R.string.prefix_cached)}: ${request.cacheName}"
   }
 
+  @SuppressLint("ContentResolverUri")
   private fun createGenerateContentRequest(request: ContentItem): GenerateContentRequest {
     var requestText = ""
     var promptPrefixText = ""
@@ -632,6 +734,9 @@ class OpenPromptActivity :
           contentBuilder.addPart(part)
         }
         return generateContentRequest(contentBuilder.build()) {
+          if (useFunctionCalling) {
+            setTools(MockTools.tools)
+          }
           temperature = curTemperature
           topK = curTopK
           seed = curSeed
@@ -652,6 +757,9 @@ class OpenPromptActivity :
         ImagePart(imageBitmap),
         TextPart(requestText),
       ) {
+        if (useFunctionCalling) {
+          setTools(MockTools.tools)
+        }
         temperature = curTemperature
         topK = curTopK
         seed = curSeed
@@ -665,6 +773,9 @@ class OpenPromptActivity :
           cachedContextName = cachedContextNameText
         } else {
           promptPrefix = PromptPrefix(promptPrefixText)
+        }
+        if (useFunctionCalling) {
+          setTools(MockTools.tools)
         }
         temperature = curTemperature
         topK = curTopK
@@ -684,6 +795,11 @@ class OpenPromptActivity :
       }
     }
     for (candidate in result.candidates) {
+      if (useFunctionCalling && candidate.functionCalls.isNotEmpty()) {
+        for (functionCall in candidate.functionCalls) {
+          items.add(ContentItem.TextItem.fromResponse(functionCall.toDisplayString(), null))
+        }
+      }
       val text = candidate.text
       if (text.isNotBlank()) {
         val formattedText =
@@ -781,6 +897,10 @@ class OpenPromptActivity :
   private fun initGenerator() {
     generativeModel?.close()
     val generationConfig = generationConfig {
+      modelConfig = modelConfig {
+        releaseStage = GenerationConfigUtils.getStoredModelReleaseStage(this@OpenPromptActivity)
+        preference = GenerationConfigUtils.getStoredModelPreference(this@OpenPromptActivity)
+      }
     }
     generativeModel = com.google.mlkit.genai.prompt.Generation.getClient(generationConfig)
     resetProcessor()
@@ -809,8 +929,14 @@ class OpenPromptActivity :
       isChecked = useStructuredOutput
       isEnabled = !useDefaultConfig
     }
+    menu.findItem(R.id.action_function_calling)?.apply {
+      isVisible = true
+      isChecked = useFunctionCalling
+      isEnabled = !useDefaultConfig
+    }
     menu.findItem(R.id.action_streaming)?.apply {
       var disableStreaming = useStructuredOutput
+      disableStreaming = disableStreaming || useFunctionCalling
       if (disableStreaming) {
         isEnabled = false
         isChecked = false
@@ -864,10 +990,40 @@ class OpenPromptActivity :
         val newState = !item.isChecked
         item.isChecked = newState
         GenerationConfigUtils.setUseStructuredOutput(applicationContext, newState)
+        if (newState) {
+          GenerationConfigUtils.setUseFunctionCalling(applicationContext, false)
+        }
+        onConfigUpdated()
+        return true
+      }
+      R.id.action_function_calling -> {
+        val newState = !item.isChecked
+        item.isChecked = newState
+        GenerationConfigUtils.setUseFunctionCalling(applicationContext, newState)
+        if (newState) {
+          GenerationConfigUtils.setUseStructuredOutput(applicationContext, false)
+        }
         onConfigUpdated()
         return true
       }
     }
     return super.onOptionsItemSelected(item)
+  }
+}
+
+private fun FunctionCall.toDisplayString(): String {
+  val argsString = arguments.map { "${it.key}=${it.value.toDisplayString()}" }.joinToString(", ")
+  return "Tool Call: $name($argsString)"
+}
+
+private fun FunctionArgValue.toDisplayString(): String {
+  return when (this) {
+    is FunctionArgValue.StringValue -> "\"$value\""
+    is FunctionArgValue.BoolValue -> value.toString()
+    is FunctionArgValue.IntValue -> value.toString()
+    is FunctionArgValue.DoubleValue -> value.toString()
+    is FunctionArgValue.LongValue -> value.toString()
+    is FunctionArgValue.ListValue -> values.map { it.toDisplayString() }.toString()
+    is FunctionArgValue.MapValue -> map.mapValues { it.value.toDisplayString() }.toString()
   }
 }

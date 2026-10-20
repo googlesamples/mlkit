@@ -156,6 +156,19 @@ object GenerationConfigUtils {
   }
 
   @JvmStatic
+  fun getUseFunctionCalling(context: Context): Boolean {
+    return PreferenceManager.getDefaultSharedPreferences(context)
+      .getBoolean(context.getString(R.string.pref_key_use_function_calling), false)
+  }
+
+  @JvmStatic
+  fun setUseFunctionCalling(context: Context, useFunctionCalling: Boolean) {
+    PreferenceManager.getDefaultSharedPreferences(context).edit {
+      putBoolean(context.getString(R.string.pref_key_use_function_calling), useFunctionCalling)
+    }
+  }
+
+  @JvmStatic
   fun getUseStreaming(context: Context): Boolean {
     return PreferenceManager.getDefaultSharedPreferences(context)
       .getBoolean(context.getString(R.string.pref_key_use_streaming), true)
@@ -165,6 +178,30 @@ object GenerationConfigUtils {
   fun setUseStreaming(context: Context, useStreaming: Boolean) {
     PreferenceManager.getDefaultSharedPreferences(context).edit {
       putBoolean(context.getString(R.string.pref_key_use_streaming), useStreaming)
+    }
+  }
+
+  @JvmStatic
+  fun getStoredModelReleaseStage(context: Context): Int =
+    PreferenceManager.getDefaultSharedPreferences(context)
+      .getInt(context.getString(R.string.pref_key_model_release_stage), 0) // 0 for STABLE
+
+  @JvmStatic
+  fun setModelReleaseStage(context: Context, releaseStage: Int) {
+    PreferenceManager.getDefaultSharedPreferences(context).edit {
+      putInt(context.getString(R.string.pref_key_model_release_stage), releaseStage)
+    }
+  }
+
+  @JvmStatic
+  fun getStoredModelPreference(context: Context): Int =
+    PreferenceManager.getDefaultSharedPreferences(context)
+      .getInt(context.getString(R.string.pref_key_model_preference), 2) // 2 for FULL
+
+  @JvmStatic
+  fun setModelPreference(context: Context, preference: Int) {
+    PreferenceManager.getDefaultSharedPreferences(context).edit {
+      putInt(context.getString(R.string.pref_key_model_preference), preference)
     }
   }
 

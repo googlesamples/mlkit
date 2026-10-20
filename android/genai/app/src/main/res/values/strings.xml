@@ -65,6 +65,9 @@
   <string name="action_explicit_cache" translatable="false">Use Explicit Prefix Cache</string>
   <string name="action_structured_output" translatable="false">Use Structured Output</string>
   <string name="dialog_title_output_class_schema" translatable="false">Output Class Schema</string>
+  <string name="action_function_calling" translatable="false">Use Function Calling</string>
+  <string name="pref_key_use_function_calling" translatable="false">pk_ufc</string>
+  <string name="dialog_title_available_functions" translatable="false">Available functions</string>
   <string name="selected_image_preview_for_prompt" translatable="false">Selected Image Preview for Prompt</string>
   <string name="button_add_image" translatable="false">Add Image to Prompt</string>
   <string name="button_save" translatable="false">Save</string>
@@ -87,6 +90,20 @@
   <string name="plant_button_text" translatable="false">Plant</string>
   <string name="schedule_event_button_text" translatable="false">Schedule Event</string>
   <string name="info_button_description" translatable="false">Show schema</string>
+  <string name="pref_key_model_release_stage" translatable="false">pk_mrs</string>
+  <string name="pref_key_model_preference" translatable="false">pk_mp</string>
+  <string name="button_select_model_release_stage" translatable="false">Stage: %s</string>
+  <string name="button_select_model_preference" translatable="false">Preference: %s</string>
+  <string name="model_release_stage_dialog_title" translatable="false">Select Model Release Stage</string>
+  <string name="model_preference_dialog_title" translatable="false">Select Model Preference</string>
+  <string-array name="model_release_stages" translatable="false">
+    <item>Stable</item>
+    <item>Preview</item>
+  </string-array>
+  <string-array name="model_preferences" translatable="false">
+    <item>Fast</item>
+    <item>Full</item>
+  </string-array>
   <string name="prefix_cached" translatable="false">Prefix cached</string>
   <string-array name="summarization_input_types" translatable="false">
     <item>Article</item>
@@ -136,4 +153,63 @@
   <string name="download_failed" translatable="false">Download failed.</string>
   <string name="downloading_model_progress" translatable="false">Downloading model: %1$d / %2$d MB (%3$.2f%%)</string>
 
+  <string name="hint_embed_a_message" translatable="false">Type to Generate Embedding</string>
+  <!-- Text Embedding Entry Title Strings -->
+  <string name="embedding_entry_title" translatable="false">Embedding API</string>
+  <string name="hint_search_query" translatable="false">Type to Search...</string>
+  <string name="label_search_query" translatable="false">Search query</string>
+  <string name="label_model_signature" translatable="false">Model Signature: %1$s</string>
+  <string name="no_results_found" translatable="false">No results found.</string>
+  <string name="title_query_embedding_info" translatable="false">Query Embedding Info</string>
+  <string name="attached_image" translatable="false">Attached Image</string>
+  <string name="content_desc_clear_image" translatable="false">Clear image</string>
+
+  <!-- Button UI Labels -->
+  <string name="button_download" translatable="false">Download</string>
+  <string name="button_downloading" translatable="false">Downloading...</string>
+
+  <!-- Model Selection Dialog Title -->
+  <string name="title_dialog_select_model" translatable="false">Select Embedding Model</string>
+
+  <!-- Metadata Dialog Keys -->
+  <string name="model_info_title" translatable="false">Model Metadata</string>
+  <string name="model_info_signature" translatable="false">Model Signature</string>
+  <string name="model_info_dimension" translatable="false">Dimension</string>
+  <string name="model_info_modalities" translatable="false">Supported Modalities</string>
+  <string name="model_info_locales" translatable="false">Supported Locales</string>
+  <string name="model_info_release_date" translatable="false">Release Date</string>
+  <string name="model_info_shutdown_date" translatable="false">Shutdown Date</string>
+  <string name="model_info_deprecation_date" translatable="false">Deprecation Date</string>
+  <string name="model_info_status" translatable="false">Status</string>
+  <string name="model_info_warning_deprecated" translatable="false">⚠️ Deprecated (Shutdown: %s)</string>
+  <string name="model_info_warning_will_deprecate" translatable="false">⚠️ Deprecates on %s</string>
+
+  <!-- Task Configuration Menu & Choices -->
+  <string name="menu_select_task_type" translatable="false">Task Type</string>
+  <string name="dialog_select_task_type" translatable="false">Select Task Type</string>
+  <string name="task_type_none" translatable="false">None (Default)</string>
+  <string name="task_type_retrieval_query" translatable="false">Retrieval Query</string>
+  <string name="task_type_retrieval_document" translatable="false">Retrieval Document</string>
+  <string name="task_type_question_answering" translatable="false">Question Answering</string>
+  <string name="task_type_fact_verification" translatable="false">Fact Verification</string>
+  <string name="task_type_classification" translatable="false">Classification</string>
+  <string name="task_type_clustering" translatable="false">Clustering</string>
+  <string name="task_type_semantic_similarity" translatable="false">Semantic Similarity</string>
+  <string name="task_type_code_retrieval" translatable="false">Code Retrieval</string>
+
+  <!-- Document Title Dialog Subfields -->
+  <string name="dialog_document_title_title" translatable="false">Document Title</string>
+  <string name="dialog_document_title_message" translatable="false">Enter a document title to help optimize the embedding vector (Optional):</string>
+  <string name="dialog_document_title_hint" translatable="false">Title (e.g. Science Article)</string>
+  <string name="dialog_document_title_confirm" translatable="false">Confirm</string>
+  <string name="dialog_document_title_cancel" translatable="false">Cancel</string>
+
+  <!-- Error / State Notifications -->
+  <string name="no_models_found" translatable="false">No embedding models found on device.</string>
+  <string name="error_fetching_models" translatable="false">Failed to load models: %s</string>
+  <string name="model_not_downloaded" translatable="false">Model must be downloaded first.</string>
+  <string name="downloading_progress_simple" translatable="false">Downloading model: %1$s MB</string>
+  <string name="downloading_progress_percentage" translatable="false">Downloading model: %1$s / %2$s MB (%3$.2f%%)</string>
+  <string name="agent_entry_title" translatable="false">Agent API</string>
+  <string name="agent_prompt_hint" translatable="false">Ask Agent API (or run @AppFunction tools)...</string>
 </resources>
