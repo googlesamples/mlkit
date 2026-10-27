@@ -16,21 +16,28 @@
 
 package com.google.mlkit.md.settings
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.mlkit.md.R
+import com.google.mlkit.md.Utils
+import com.google.mlkit.md.camera.CameraSizePair
+import com.google.mlkit.md.camera.CameraSource
 
 /** Hosts the preference fragment to configure settings.  */
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_settings)
+        val previewSizeList = intent.getParcelableArrayListExtra<CameraSizePair>(EXTRA_PREVIEW_SIZE_LIST) ?: arrayListOf()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.settings_container, SettingsFragment())
+            .replace(R.id.settings_container, SettingsFragment.newInstance(previewSizeList))
             .commit()
     }
 
@@ -38,4 +45,15 @@ class SettingsActivity : AppCompatActivity() {
         onBackPressed()
         return true
     }
+
+    companion object {
+        private const val EXTRA_PREVIEW_SIZE_LIST = "extra_preview_size_list"
+
+        fun newIntent(context: Context, cameraSource: CameraSource?) = Intent(context, SettingsActivity::class.java).apply {
+            cameraSource?.let {
+                putParcelableArrayListExtra(EXTRA_PREVIEW_SIZE_LIST, ArrayList(Utils.generateValidPreviewSizeList(it)))
+            }
+        }
+    }
+
 }

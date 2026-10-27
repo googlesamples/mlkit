@@ -20,6 +20,7 @@ import android.animation.ValueAnimator
 import android.util.Log
 import androidx.annotation.MainThread
 import com.google.android.gms.tasks.Task
+import com.google.android.odml.image.MlImage
 import com.google.mlkit.md.InputInfo
 import com.google.mlkit.md.camera.CameraReticleAnimator
 import com.google.mlkit.md.camera.GraphicOverlay
@@ -39,8 +40,10 @@ class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel
     private val scanner = BarcodeScanning.getClient()
     private val cameraReticleAnimator: CameraReticleAnimator = CameraReticleAnimator(graphicOverlay)
 
-    override fun detectInImage(image: InputImage): Task<List<Barcode>> =
-        scanner.process(image)
+    override fun detectInImage(image: MlImage): Task<List<Barcode>> = scanner.process(image)
+
+    @Deprecated("Keeping it only to support Camera API frame processing")
+    override fun detectInImage(image: InputImage): Task<List<Barcode>> = scanner.process(image)
 
     @MainThread
     override fun onSuccess(
@@ -105,7 +108,7 @@ class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel
         }
     }
 
-    override fun onFailure(e: Exception) {
+    override fun onFailure(e: Exception?) {
         Log.e(TAG, "Barcode detection failed!", e)
     }
 
